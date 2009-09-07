@@ -1,4 +1,5 @@
-package com {
+package com
+{
 	import asunit.framework.TestSuite;
 	import com.robertpenner.AllTests;
 

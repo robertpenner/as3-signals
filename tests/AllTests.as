@@ -1,10 +1,13 @@
-package {
+package
+{
 	import asunit.framework.TestSuite;
 	import com.AllTests;
+	
+	public class AllTests extends TestSuite
+	{
 
-	public class AllTests extends TestSuite {
-
-		public function AllTests() {
+		public function AllTests()
+		{
 			addTest(new com.AllTests());
 		}
 	}
