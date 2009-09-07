@@ -2,6 +2,10 @@ package com.robertpenner.signals
 {
 	import com.robertpenner.signals.IEvent;
 	
+	/**
+	 * @see com.robertpenner.signals.IEvent
+	 * Documentation for the event interface being maintained in IEvent to avoid duplication for now.
+	 */
 	public class GenericEvent implements IEvent
 	{
 		protected var _bubbles:Boolean;

@@ -4,6 +4,14 @@ package com.robertpenner.signals
 	import com.robertpenner.signals.IEvent;
 	import com.robertpenner.signals.IEventBubbler;
 
+	/**
+	 * Signal dispatches events to multiple listeners.
+	 * It is inspired by C# events and delegates, and by
+	 * <a target="_top" href="http://en.wikipedia.org/wiki/Signals_and_slots">signals and slots</a>
+	 * in Qt.
+	 * A Signal adds event dispatching functionality through composition and interfaces,
+	 * rather than inheritance as is commonly down with flash.event.EventDispatcher.
+	 */
 	public class Signal implements ISignal
 	{
 		protected var _target:*;
