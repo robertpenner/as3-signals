@@ -16,7 +16,7 @@ package com.robertpenner.signals
 		
 		function remove(listener:Function):void;
 		
-		function dispatch(eventObject:Object):void;
+		function dispatch(eventObject:Object = null):void;
 		
 		function removeAll():void;
 	}
