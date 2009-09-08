@@ -6,8 +6,9 @@ package com.robertpenner.signals {
 
 	public class SignalWithBubblingEventTest extends TestCase
 	{
-		protected var container:Container;
-		protected var child:Child;
+		protected var theChild:Container;
+		protected var theParent:Container;
+		protected var theGrandParent:Container;
 
 		public function SignalWithBubblingEventTest(testMethod:String = null)
 		{
@@ -16,14 +17,19 @@ package com.robertpenner.signals {
 
 		protected override function setUp():void
 		{
-			child = new Child();
-			container = new Container(child);
+			theChild = new Container('theChild');
+			theParent = new Container('theParent', theChild);
+			theGrandParent = new Container('theGrandParent', theParent);
 		}
 
 		protected override function tearDown():void
 		{
-			container.child = null; // break circular reference
-			container = null;
+			if (theParent)
+			{
+				theParent.child = null; // break circular reference
+				theParent.complete.removeAll();
+				theParent = null;
+			}
 		}
 		
 		// This is a convenience override to set the async timeout really low, so failures happen more quickly.
@@ -34,50 +40,61 @@ package com.robertpenner.signals {
 		
 		public function test_parent_child_relationships():void
 		{
-			assertSame("container's child is child", child, container.child);
-			assertSame("child's parent is container", container, child.parent);
+			assertSame("theParent's child is theChild", theChild, theParent.child);
+			assertSame("theChild's parent is theParent", theParent, theChild.parent);
 		}
 		//////
-		public function test_listen_to_container_and_dispatch_bubbling_event_from_child_should_bubble_to_container():void
+		public function test_listen_to_parent_and_dispatch_bubbling_event_from_theChild_should_bubble_to_parent():void
 		{
-			container.complete.addOnce(addAsync(onContainerComplete)); // will be event.currentTarget
+			theParent.complete.addOnce( addAsync(onParentComplete) ); // will be event.currentTarget
+			var event:IEvent = new GenericEvent();
+			event.bubbles = true;
+			
+			theChild.complete.dispatch(event); // event.target will be child
+		}
+		
+		private function onParentComplete(e:GenericEvent):void
+		{
+			assertSame('e.target should be the object that originally dispatched event', theChild, e.target);
+			assertSame('e.currentTarget should be the object that added this listener', theParent, e.currentTarget);
+			assertSame('e.signal should be signal that added this listener', theParent.complete, e.signal);
+		}
+		//////
+		public function test_listen_to_grandparent_and_dispatch_bubbling_event_from_child_should_bubble_to_grandparent():void
+		{
+			theGrandParent.complete.addOnce( addAsync(onGrandParentComplete) );
 			
 			var event:IEvent = new GenericEvent();
 			event.bubbles = true;
 			
-			child.complete.dispatch(event); // will be event.target
+			theChild.complete.dispatch(event);
 		}
 		
-		private function onContainerComplete(e:GenericEvent):void
+		private function onGrandParentComplete(e:GenericEvent):void
 		{
-			assertSame('e.signal should be signal that added this listener', container.complete, e.signal);
-			assertSame('e.target should be the object that originally dispatched event', child, e.target);
-			assertSame('e.currentTarget should be the object that added this listener', container, e.currentTarget);
+			assertSame('e.target should be the object that originally dispatched event', theChild, e.target);
+			assertSame('e.currentTarget should be the object that added this listener', theGrandParent, e.currentTarget);
+			assertSame('e.signal should be signal that added this listener', theGrandParent.complete, e.signal);
 		}
 		//////
-		public function test_listen_to_container_and_child_and_dispatch_bubbling_event_from_child_should_not_bubble_to_container():void
+		public function test_listen_to_container_and_theChild_and_dispatch_bubbling_event_from_theChild_should_trigger_both():void
 		{
-			container.complete.addOnce(failIfCalled);
-			child.complete.addOnce( addAsync(onChildComplete) );
+			theParent.complete.addOnce( addAsync(onParentComplete) );
+			theChild.complete.addOnce( addAsync(onChildComplete) );
 			
 			var event:IEvent = new GenericEvent();
 			event.bubbles = true;
 			
-			child.complete.dispatch(event);
-		}
-		
-		private function failIfCalled(e:IEvent):void
-		{
-			fail('This event handler should not have been called.');
+			theChild.complete.dispatch(event);
 		}
 		
 		private function onChildComplete(e:GenericEvent):void
 		{
-			assertSame('e.signal should be signal that added this listener', child.complete, e.signal);
-			assertSame('e.target should be the object that originally dispatched event', child, e.target);
-			assertSame('e.currentTarget should be the object that added this listener', child, e.currentTarget);
+			assertSame('e.target should be the object that originally dispatched event', theChild, e.target);
+			assertSame('e.currentTarget should be the object that added this listener', theChild, e.currentTarget);
+			assertSame('e.signal should be signal that added this listener', theChild.complete, e.signal);
 		}
-		//////
+		
 	}
 }
 
@@ -87,16 +104,24 @@ import com.robertpenner.signals.ISignal;
 import com.robertpenner.signals.Signal;
 import com.robertpenner.signals.IEventBubbler;
 import com.robertpenner.signals.IEvent;
+import flash.display.DisplayObject;
+import flash.display.Sprite;
 
-class Container implements IEventBubbler
+dynamic class Container implements IEventBubbler
 {
-	public var child:Child;
+	public var parent:Object;
+	public var child:Object;
 	public var complete:ISignal;
+	public var name:String;
 	
-	public function Container(child:Child)
+	public function Container(name:String, child:Object = null)
 	{
-		this.child = child;
-		child.parent = this;
+		this.name = name;
+		if (child)
+		{
+			this.child = child;
+			child.parent = this;
+		}
 		complete = new Signal(this);
 	}
 	
@@ -104,15 +129,9 @@ class Container implements IEventBubbler
 	{
 		complete.dispatch(event);
 	}
-}
-
-class Child
-{
-	public var complete:ISignal;
-	public var parent:Object;
 	
-	public function Child()
+	public function toString():String
 	{
-		complete = new Signal(this);
+		return '[Container '+name+']';
 	}
 }
