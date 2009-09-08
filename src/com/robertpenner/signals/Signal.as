@@ -79,31 +79,40 @@ package com.robertpenner.signals
 		{
 			if (_eventClass && !(eventObject is _eventClass))
 				throw new ArgumentError('Event object '+eventObject+' is not an instance of '+_eventClass+'.');
-				
+
 			var event:IEvent = eventObject as IEvent;
 			if (event)
 			{
 				if (!event.target) event.target = this.target;
 				event.currentTarget = this.target;
 				event.signal = this;
-				// Bubble the event if desired and possible.
-				if (!listeners.length && event.bubbles)
+			}
+				
+			//// Send eventObject to each listener.
+			if (listeners.length)
+			{
+				// Clone listeners array because add/remove may occur during the dispatch.
+				//TODO: test performance of for each vs. for
+				for each (var listener:Function in listeners.concat())
 				{
-					var bubbler:IEventBubbler = this.target.parent as IEventBubbler;
-					if (bubbler) bubbler.onEventBubbled(event);
-					return;
+					if (onceListeners[listener]) remove(listener);
+					//TODO: Maybe put this conditional outside the loop.
+					eventObject ? listener(eventObject) : listener();
 				}
 			}
-			if (!listeners.length) return; // exit early and avoid cloning array
-			
-			// Clone listeners array because add/remove may occur during the dispatch.
-			for each (var listener:Function in listeners.concat())
+				
+			if (!event || !event.bubbles) return;
+
+			//// Bubble the event as far as possible.
+			var currentTarget:Object = this.target;
+			while ( currentTarget.hasOwnProperty("parent")
+					&& (currentTarget = currentTarget.parent) )
 			{
-				if (onceListeners[listener]) remove(listener);
-				//TODO: Maybe put this conditional outside the loop.
-				eventObject ? listener(eventObject) : listener();
+				if (currentTarget is IEventBubbler)
+				{
+					IEventBubbler(currentTarget).onEventBubbled(event);
+				}
 			}
 		}
-		
 	}
 }
