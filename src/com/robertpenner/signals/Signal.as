@@ -83,7 +83,8 @@ package com.robertpenner.signals
 			var event:IEvent = eventObject as IEvent;
 			if (event)
 			{
-				if (!event.target) event.target = this.target;
+				//TODO: figure out when the event should be cloned
+				if (!event.target) event.target = this.target; // write-once
 				event.currentTarget = this.target;
 				event.signal = this;
 			}
