@@ -3,7 +3,7 @@ package com.robertpenner.signals {
 
 	public class SignalWithCustomEventTest extends TestCase
 	{
-		public var message:Signal;
+		public var messaged:Signal;
 
 		public function SignalWithCustomEventTest(testMethod:String = null)
 		{
@@ -12,29 +12,29 @@ package com.robertpenner.signals {
 
 		protected override function setUp():void
 		{
-			message = new Signal(this, MessageEvent);
+			messaged = new Signal(this, MessageEvent);
 		}
 
 		protected override function tearDown():void
 		{
-			message.removeAll();
-			message = null;
+			messaged.removeAll();
+			messaged = null;
 		}
 		//////
 		public function test_eventClass_roundtrips_through_constructor():void
 		{
-			assertSame(MessageEvent, message.eventClass);
+			assertSame(MessageEvent, messaged.eventClass);
 		}
 		
 		public function test_add_one_listener_and_dispatch():void
 		{
-			message.add(addAsync(onMessage, 50));
-			message.dispatch(new MessageEvent('ok'));
+			messaged.add(addAsync(onMessage, 50));
+			messaged.dispatch(new MessageEvent('ok'));
 		}
 		
 		protected function onMessage(e:MessageEvent):void
 		{
-			assertEquals('source of the event', message, e.signal);
+			assertEquals('source of the event', messaged, e.signal);
 			assertEquals('target of the event', this, e.target);
 			assertEquals('message value in the event', 'ok', e.message);
 		}
@@ -46,7 +46,21 @@ package com.robertpenner.signals {
 		
 		private function dispatchWrongEventType():void
 		{
-			message.dispatch(new GenericEvent());
+			messaged.dispatch(new GenericEvent());
+		}
+		//////
+		public function test_signal_with_eventClass_adding_listener_without_args_should_throw_ArgumentError():void
+		{
+			assertThrows(ArgumentError, addListenerWithoutArgs);
+		}
+		
+		private function addListenerWithoutArgs():void
+		{
+			messaged.add(noArgs);
+		}
+		
+		private function noArgs():void
+		{
 		}
 		
 		

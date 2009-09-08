@@ -81,16 +81,6 @@ package com.robertpenner.signals {
 			assertEquals('listener removed from signal', 0, e.signal.length);
 		}
 		//////
-		public function test_add_function_without_arguments_should_throw_ArgumentException():void
-		{
-			assertThrows(ArgumentError, signal_add_function_without_arguments);
-		}
-		
-		private function signal_add_function_without_arguments():void
-		{
-			complete.add(function():void{});
-		}
-		//////
 		public function test_add_listener_then_remove_then_dispatch_should_not_call_listener():void
 		{
 			var delegate:Function = failIfCalled;
@@ -152,16 +142,6 @@ package com.robertpenner.signals {
 			complete.add(func);
 			complete.add(func);
 			assertEquals(1, complete.length);
-		}
-		//////
-		public function test_dispatch_null_should_throw_ArgumentError():void
-		{
-			assertThrows(ArgumentError, dispatchNull);
-		}
-		
-		private function dispatchNull():void
-		{
-			complete.dispatch(null);
 		}
 		//////
 		public function test_dispatch_object_that_isnt_an_IEvent_should_dispatch_without_error():void

@@ -52,7 +52,9 @@ package com.robertpenner.signals
 		 */
 		public function add(listener:Function):void
 		{
-			if (!listener.length) throw new ArgumentError('Missing argument in listener function.');
+			// If eventClass is specified, the listener must have at least 1 argument.
+			if (eventClass && !listener.length)
+				throw new ArgumentError('Listener must declare at least 1 argument.');
 			if (listeners.indexOf(listener) >= 0) return; // Don't add same listener twice.
 			listeners.push(listener);
 		}
@@ -65,8 +67,8 @@ package com.robertpenner.signals
 		 */
 		public function addOnce(listener:Function):void
 		{
+			add(listener); // call this first in case it throws an error
 			onceListeners[listener] = true;
-			add(listener);
 		}
 		
 		/**
@@ -85,10 +87,10 @@ package com.robertpenner.signals
 		 * @throws	ArgumentError	Null argument passed to dispatch().
 		 * @throws	TypeError		Incompatible event type passed to dispatch().
 		 */
-		public function dispatch(eventObject:Object):void
+		public function dispatch(eventObject:Object = null):void
 		{
-			if (!eventObject)
-				throw new ArgumentError('Null argument passed to dispatch().');
+			//if (!eventObject)
+				//throw new ArgumentError('Null argument passed to dispatch().');
 			
 			if (_eventClass && !(eventObject is _eventClass))
 				throw new TypeError('Incompatible event type passed to dispatch().');
@@ -113,7 +115,8 @@ package com.robertpenner.signals
 			for each (var listener:Function in listeners.concat())
 			{
 				if (onceListeners[listener]) remove(listener);
-				listener(eventObject);
+				//TODO: Maybe put this conditional outside the loop.
+				eventObject ? listener(eventObject) : listener();
 			}
 		}
 		
