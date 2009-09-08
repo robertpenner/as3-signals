@@ -3,14 +3,14 @@ package com.robertpenner.signals
 	import asunit.framework.TestCase;
 	import com.robertpenner.signals.ISignal;
 	import com.robertpenner.signals.IDispatcher;
-	import com.robertpenner.signals.ISubscriber;
+	import com.robertpenner.signals.IListenerManager;
 	import com.robertpenner.signals.Signal;
 
 	public class SignalSplitInterfacesTest extends TestCase
 	{
 		// Notice the use of the smaller ISubscriber interface, rather than ISignal.
 		// This makes dispatch() inaccessible unless the Signal is cast to IDispatcher.
-		public var completed:ISubscriber;
+		public var completed:IListenerManager;
 
 		public function SignalSplitInterfacesTest(testMethod:String = null)
 		{

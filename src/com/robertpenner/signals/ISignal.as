@@ -3,7 +3,7 @@ package com.robertpenner.signals
 	/**
 	 *
 	 */
-	public interface ISignal extends ISubscriber, IDispatcher
+	public interface ISignal extends IListenerManager, IDispatcher
 	{
 	}
 }
