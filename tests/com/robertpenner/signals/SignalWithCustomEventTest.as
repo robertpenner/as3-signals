@@ -39,9 +39,9 @@ package com.robertpenner.signals {
 			assertEquals('message value in the event', 'ok', e.message);
 		}
 		//////
-		public function test_dispatch_wrong_event_type_should_throw_TypeError():void
+		public function test_dispatch_wrong_event_type_should_throw_ArgumentError():void
 		{
-			assertThrows(TypeError, dispatchWrongEventType);
+			assertThrows(ArgumentError, dispatchWrongEventType);
 		}
 		
 		private function dispatchWrongEventType():void
