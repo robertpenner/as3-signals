@@ -5,7 +5,7 @@ package com.robertpenner.signals {
 
 	public class SignalWithGenericEventTest extends TestCase
 	{
-		public var complete:Signal;
+		public var complete:ISignal;
 
 		public function SignalWithGenericEventTest(testMethod:String = null)
 		{
