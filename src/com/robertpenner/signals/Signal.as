@@ -71,6 +71,7 @@ package com.robertpenner.signals
 		public function removeAll():void
 		{
 			listeners.length = 0;
+			onceListeners = new Dictionary();
 		}
 		
 		/** @inheritDoc */
