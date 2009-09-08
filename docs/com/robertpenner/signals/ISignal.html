@@ -35,7 +35,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("In
 <td class="classHeaderTableLabel">Package</td><td><a onclick="javascript:loadClassListFrame('class-list.html')" href="package-detail.html">com.robertpenner.signals</a></td>
 </tr>
 <tr>
-<td class="classHeaderTableLabel">Interface</td><td class="classSignature">public interface ISignal extends <a href="ISubscriber.html">ISubscriber</a>, <a href="IDispatcher.html">IDispatcher</a></td>
+<td class="classHeaderTableLabel">Interface</td><td class="classSignature">public interface ISignal extends <a href="IListenerManager.html">IListenerManager</a>, <a href="IDispatcher.html">IDispatcher</a></td>
 </tr>
 <tr>
 <td class="classHeaderTableLabel">Implementors</td><td><a href="../signals/Signal.html">Signal</a></td>
@@ -62,13 +62,13 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("In
 <th>&nbsp;</th><th colspan="2">Property</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
 </tr>
 <tr class="hideInheritedProperty">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="ISubscriber.html#eventClass">eventClass</a> : Class<div class="summaryTableDescription">
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="IDispatcher.html#eventClass">eventClass</a> : Class<div class="summaryTableDescription">
    An optional class reference that enables an event type check in dispatch().</div>
-</td><td class="summaryTableOwnerCol"><a href="ISubscriber.html">ISubscriber</a></td>
+</td><td class="summaryTableOwnerCol"><a href="IDispatcher.html">IDispatcher</a></td>
 </tr>
 <tr class="hideInheritedProperty">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="ISubscriber.html#length">length</a> : uint<div class="summaryTableDescription"> The current number of listeners for the signal.</div>
-</td><td class="summaryTableOwnerCol"><a href="ISubscriber.html">ISubscriber</a></td>
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol"><a class="signatureLink" href="IListenerManager.html#length">length</a> : uint<div class="summaryTableDescription"> The current number of listeners for the signal.</div>
+</td><td class="summaryTableOwnerCol"><a href="IListenerManager.html">IListenerManager</a></td>
 </tr>
 </table>
 </div>
@@ -90,18 +90,18 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("In
 <tr class="hideInheritedMethod">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="ISubscriber.html#add()">add</a>(listener:Function):void</div>
+<a class="signatureLink" href="IListenerManager.html#add()">add</a>(listener:Function):void</div>
 <div class="summaryTableDescription">
    Subscribes a listener for the signal.</div>
-</td><td class="summaryTableOwnerCol"><a href="ISubscriber.html">ISubscriber</a></td>
+</td><td class="summaryTableOwnerCol"><a href="IListenerManager.html">IListenerManager</a></td>
 </tr>
 <tr class="hideInheritedMethod">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="ISubscriber.html#addOnce()">addOnce</a>(listener:Function):void</div>
+<a class="signatureLink" href="IListenerManager.html#addOnce()">addOnce</a>(listener:Function):void</div>
 <div class="summaryTableDescription">
    Subscribes a one-time listener for this signal.</div>
-</td><td class="summaryTableOwnerCol"><a href="ISubscriber.html">ISubscriber</a></td>
+</td><td class="summaryTableOwnerCol"><a href="IListenerManager.html">IListenerManager</a></td>
 </tr>
 <tr class="hideInheritedMethod">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
@@ -114,17 +114,17 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("In
 <tr class="hideInheritedMethod">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="ISubscriber.html#remove()">remove</a>(listener:Function):void</div>
+<a class="signatureLink" href="IListenerManager.html#remove()">remove</a>(listener:Function):void</div>
 <div class="summaryTableDescription">
    Unsubscribes a listener from the signal.</div>
-</td><td class="summaryTableOwnerCol"><a href="ISubscriber.html">ISubscriber</a></td>
+</td><td class="summaryTableOwnerCol"><a href="IListenerManager.html">IListenerManager</a></td>
 </tr>
 <tr class="hideInheritedMethod">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol"><img class="inheritedSummaryImage" title="Inherited" alt="Inherited" src="../../../images/inheritedSummary.gif"></td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="ISubscriber.html#removeAll()">removeAll</a>():void</div>
+<a class="signatureLink" href="IListenerManager.html#removeAll()">removeAll</a>():void</div>
 <div class="summaryTableDescription"> Unsubscribes all listeners from the signal.</div>
-</td><td class="summaryTableOwnerCol"><a href="ISubscriber.html">ISubscriber</a></td>
+</td><td class="summaryTableOwnerCol"><a href="IListenerManager.html">IListenerManager</a></td>
 </tr>
 </table>
 </div>

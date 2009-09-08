@@ -3,13 +3,8 @@ package com.robertpenner.signals
 	/**
 	 *
 	 */
-	public interface ISubscriber
+	public interface IListenerManager
 	{
-		/**
-		 * An optional class reference that enables an event type check in dispatch().
-		 */
-		function get eventClass():Class;
-
 		/** The current number of listeners for the signal. */
 		function get length():uint;
 		
