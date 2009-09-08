@@ -109,7 +109,7 @@ class Container implements IEventBubbler
 class Child
 {
 	public var complete:ISignal;
-	public var parent:*;
+	public var parent:Object;
 	
 	public function Child()
 	{

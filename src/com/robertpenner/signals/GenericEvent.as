@@ -10,8 +10,8 @@ package com.robertpenner.signals
 	public class GenericEvent implements IEvent
 	{
 		protected var _bubbles:Boolean;
-		protected var _target:*;
-		protected var _currentTarget:*;
+		protected var _target:Object;
+		protected var _currentTarget:Object;
 		protected var _signal:ISignal;
 		
 		public function GenericEvent(bubbles:Boolean = false)
@@ -24,12 +24,12 @@ package com.robertpenner.signals
 		public function set signal(value:ISignal):void { _signal = value; }
 		
 		/** @inheritDoc */
-		public function get target():* { return _target; }
-		public function set target(value:*):void { _target = value; }
+		public function get target():Object { return _target; }
+		public function set target(value:Object):void { _target = value; }
 		
 		/** @inheritDoc */
-		public function get currentTarget():* { return _currentTarget; }
-		public function set currentTarget(value:*):void { _currentTarget = value; }
+		public function get currentTarget():Object { return _currentTarget; }
+		public function set currentTarget(value:Object):void { _currentTarget = value; }
 		
 		/** @inheritDoc */
 		public function get bubbles():Boolean { return _bubbles; }

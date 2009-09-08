@@ -16,7 +16,7 @@ package com.robertpenner.signals
 	 */
 	public class Signal implements ISignal
 	{
-		protected var _target:*;
+		protected var _target:Object;
 		protected var _eventClass:Class;
 		protected var listeners:Array;
 		protected var onceListeners:Dictionary;
@@ -26,7 +26,7 @@ package com.robertpenner.signals
 		 * @param	target The object the signal is dispatching events on behalf of.
 		 * @param	eventClass An optional class reference that enables an event type check in dispatch().
 		 */
-		public function Signal(target:*, eventClass:Class = null)
+		public function Signal(target:Object, eventClass:Class = null)
 		{
 			_target = target;
 			_eventClass = eventClass;
@@ -41,14 +41,14 @@ package com.robertpenner.signals
 		public function get length():uint { return listeners.length; }
 		
 		/** @inheritDoc */
-		public function get target():* { return _target; }
+		public function get target():Object { return _target; }
 		
 		/** @inheritDoc */
+		//TODO: @throws
 		public function add(listener:Function):void
 		{
-			// If eventClass is specified, the listener must have at least 1 argument.
 			if (eventClass && !listener.length)
-				throw new ArgumentError('Listener must declare at least 1 argument.');
+				throw new ArgumentError('Listener must declare at least 1 argument when eventClass is specified.');
 			if (listeners.indexOf(listener) >= 0) return; // Don't add same listener twice.
 			listeners.push(listener);
 		}
