@@ -4,12 +4,12 @@
 	{
 		/** The object that originally dispatched the event.
 		 *  When dispatched from an signal, the target is the object containing the signal. */
-		function get target():*;
-		function set target(value:*):void;
+		function get target():Object;
+		function set target(value:Object):void;
 		
 		/** The object that added the listener for the event. */
-		function get currentTarget():*;
-		function set currentTarget(value:*):void;
+		function get currentTarget():Object;
+		function set currentTarget(value:Object):void;
 		
 		/** The signal that dispatched the event. */
 		function get signal():ISignal;
