@@ -83,6 +83,7 @@ package com.robertpenner.signals {
 
 ////// PRIVATE CLASSES //////
 
+import com.robertpenner.signals.ISignal;
 import com.robertpenner.signals.Signal;
 import com.robertpenner.signals.IEventBubbler;
 import com.robertpenner.signals.IEvent;
@@ -90,7 +91,7 @@ import com.robertpenner.signals.IEvent;
 class Container implements IEventBubbler
 {
 	public var child:Child;
-	public var complete:Signal;
+	public var complete:ISignal;
 	
 	public function Container(child:Child)
 	{
@@ -107,7 +108,7 @@ class Container implements IEventBubbler
 
 class Child
 {
-	public var complete:Signal;
+	public var complete:ISignal;
 	public var parent:*;
 	
 	public function Child()

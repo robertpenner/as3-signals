@@ -42,7 +42,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 </tr>
 </table>
 <p></p>
-  <p></p>
+    <p></p>
 <p>
 <span class="classHeaderTableLabel">See also</span>
 </p>
@@ -60,20 +60,20 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <th>&nbsp;</th><th colspan="2">Property</th><th class="summaryTableOwnerCol">Defined&nbsp;by</th>
 </tr>
 <tr class="">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#bubbles">bubbles</a> : Boolean<div class="summaryTableDescription"></div>
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#bubbles">bubbles</a> : Boolean<div class="summaryTableDescription">  Indicates whether the event is a bubbling event.</div>
 </td><td class="summaryTableOwnerCol">GenericEvent</td>
 </tr>
 <tr class="">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#currentTarget">currentTarget</a> : *<div class="summaryTableDescription"></div>
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#currentTarget">currentTarget</a> : *<div class="summaryTableDescription">  The object that added the listener for the event.</div>
 </td><td class="summaryTableOwnerCol">GenericEvent</td>
 </tr>
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#signal">signal</a> : <a href="../signals/ISignal.html">ISignal</a>
-<div class="summaryTableDescription"></div>
+<div class="summaryTableDescription">  The signal that dispatched the event.</div>
 </td><td class="summaryTableOwnerCol">GenericEvent</td>
 </tr>
 <tr class="">
-<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#target">target</a> : *<div class="summaryTableDescription"></div>
+<td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol"><a class="signatureLink" href="#target">target</a> : *<div class="summaryTableDescription">  The object that originally dispatched the event.</div>
 </td><td class="summaryTableOwnerCol">GenericEvent</td>
 </tr>
 </table>
@@ -123,7 +123,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <div class="summarySignature">
 <a class="signatureLink" href="#clone()">clone</a>():<a href="../signals/IEvent.html">IEvent</a>
 </div>
-<div class="summaryTableDescription"></div>
+<div class="summaryTableDescription">  Returns a new copy of the instance.</div>
 </td><td class="summaryTableOwnerCol">GenericEvent</td>
 </tr>
 </table>
@@ -151,7 +151,7 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>bubbles:Boolean</code>&nbsp;&nbsp;[read-write]<span class="label">Implementation</span>
+<code>bubbles:Boolean</code>&nbsp;&nbsp;[read-write]<p>  Indicates whether the event is a bubbling event. </p><span class="label">Implementation</span>
 <br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function get bubbles():Boolean</code>
 <br>
@@ -174,7 +174,7 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>currentTarget:*</code>&nbsp;&nbsp;[read-write]<span class="label">Implementation</span>
+<code>currentTarget:*</code>&nbsp;&nbsp;[read-write]<p>  The object that added the listener for the event. </p><span class="label">Implementation</span>
 <br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function get currentTarget():*</code>
 <br>
@@ -197,7 +197,7 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>signal:<a href="../signals/ISignal.html">ISignal</a></code>&nbsp;&nbsp;[read-write]<span class="label">Implementation</span>
+<code>signal:<a href="../signals/ISignal.html">ISignal</a></code>&nbsp;&nbsp;[read-write]<p>  The signal that dispatched the event. </p><span class="label">Implementation</span>
 <br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function get signal():<a href="../signals/ISignal.html">ISignal</a></code>
 <br>
@@ -220,7 +220,8 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>target:*</code>&nbsp;&nbsp;[read-write]<span class="label">Implementation</span>
+<code>target:*</code>&nbsp;&nbsp;[read-write]<p>  The object that originally dispatched the event.
+    When dispatched from an signal, the target is the object containing the signal. </p><span class="label">Implementation</span>
 <br>
 <code>&nbsp;&nbsp;&nbsp;&nbsp;public function get target():*</code>
 <br>
@@ -252,8 +253,7 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public function clone():<a href="../signals/IEvent.html">IEvent</a></code>
-<p></p>
+<code>public function clone():<a href="../signals/IEvent.html">IEvent</a></code><p>  Returns a new copy of the instance. </p><p></p>
 <span class="label">Returns</span>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>

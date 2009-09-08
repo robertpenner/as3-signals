@@ -34,23 +34,16 @@ package com.robertpenner.signals
 			onceListeners = new Dictionary();
 		}
 		
-		/** The current number of listeners for the signal. */
-		public function get length():uint { return listeners.length; }
-		
-		/** The object that contains the signal. */
-		public function get target():* { return _target; }
-		
-		/**
-		 * An optional class reference that enables an event type check in dispatch().
-		 */
+		/** @inheritDoc */
 		public function get eventClass():Class { return _eventClass; }
 		
-		/**
-		 * Subscribes a listener for the signal.
-		 * @param	listener A function with an argument
-		 * that matches the type of event dispatched by the signal.
-		 * If eventClass is not specified, the listener and dispatch() can called without an argument.
-		 */
+		/** @inheritDoc */
+		public function get length():uint { return listeners.length; }
+		
+		/** @inheritDoc */
+		public function get target():* { return _target; }
+		
+		/** @inheritDoc */
 		public function add(listener:Function):void
 		{
 			// If eventClass is specified, the listener must have at least 1 argument.
@@ -60,34 +53,27 @@ package com.robertpenner.signals
 			listeners.push(listener);
 		}
 		
-		/**
-		 * Subscribes a one-time listener for this signal.
-		 * The signal will remove the listener automatically the first time it is called.
-		 * @param	listener A function with an argument
-		 * that matches the type of event dispatched by the signal.
-		 * If eventClass is not specified, the listener and dispatch() can be called without an argument.
-		 */
+		/** @inheritDoc */
 		public function addOnce(listener:Function):void
 		{
 			add(listener); // call this first in case it throws an error
 			onceListeners[listener] = true;
 		}
 		
-		/**
-		 * Unsubscribes a listener from the signal.
-		 * @param	listener
-		 */
+		/** @inheritDoc */
 		public function remove(listener:Function):void
 		{
 			listeners.splice(listeners.indexOf(listener), 1);
 			delete onceListeners[listener];
 		}
 		
-		/**
-		 * Dispatches an object to the signal's listeners.
-		 * @param	eventObject		Any object, but an IEvent will take advantage of targeting and bubbling.
-		 * @throws	ArgumentError	When eventClass is specified and eventObject is not an instance of it.
-		 */
+		/** @inheritDoc */
+		public function removeAll():void
+		{
+			listeners.length = 0;
+		}
+		
+		/** @inheritDoc */
 		public function dispatch(eventObject:Object = null):void
 		{
 			if (_eventClass && !(eventObject is _eventClass))
@@ -116,12 +102,6 @@ package com.robertpenner.signals
 				//TODO: Maybe put this conditional outside the loop.
 				eventObject ? listener(eventObject) : listener();
 			}
-		}
-		
-		/** Unsubscribes all listeners from the signal. */
-		public function removeAll():void
-		{
-			listeners.length = 0;
 		}
 		
 	}

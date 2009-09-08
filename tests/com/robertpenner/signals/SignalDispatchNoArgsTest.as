@@ -1,9 +1,11 @@
-package com.robertpenner.signals {
+package com.robertpenner.signals
+{
 	import asunit.framework.TestCase;
+	import com.robertpenner.signals.ISignal;
 
 	public class SignalDispatchNoArgsTest extends TestCase
 	{
-		public var completed:Signal;
+		public var completed:ISignal;
 
 		public function SignalDispatchNoArgsTest(testMethod:String = null)
 		{

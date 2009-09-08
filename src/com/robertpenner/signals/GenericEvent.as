@@ -3,6 +3,7 @@ package com.robertpenner.signals
 	import com.robertpenner.signals.IEvent;
 	
 	/**
+	 *
 	 * @see com.robertpenner.signals.IEvent
 	 * Documentation for the event interface being maintained in IEvent to avoid duplication for now.
 	 */
@@ -18,18 +19,23 @@ package com.robertpenner.signals
 			_bubbles = bubbles;
 		}
 		
+		/** @inheritDoc */
 		public function get signal():ISignal { return _signal; }
 		public function set signal(value:ISignal):void { _signal = value; }
 		
+		/** @inheritDoc */
 		public function get target():* { return _target; }
 		public function set target(value:*):void { _target = value; }
 		
+		/** @inheritDoc */
 		public function get currentTarget():* { return _currentTarget; }
 		public function set currentTarget(value:*):void { _currentTarget = value; }
 		
+		/** @inheritDoc */
 		public function get bubbles():Boolean { return _bubbles; }
 		public function set bubbles(value:Boolean):void	{ _bubbles = value;	}
 		
+		/** @inheritDoc */
 		public function clone():IEvent
 		{
 			return new GenericEvent(_bubbles);

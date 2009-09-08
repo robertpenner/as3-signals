@@ -3,7 +3,7 @@ package com.robertpenner.signals {
 
 	public class SignalWithCustomEventTest extends TestCase
 	{
-		public var messaged:Signal;
+		public var messaged:ISignal;
 
 		public function SignalWithCustomEventTest(testMethod:String = null)
 		{
