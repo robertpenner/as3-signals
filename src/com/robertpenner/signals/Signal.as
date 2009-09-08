@@ -10,7 +10,9 @@ package com.robertpenner.signals
 	 * <a target="_top" href="http://en.wikipedia.org/wiki/Signals_and_slots">signals and slots</a>
 	 * in Qt.
 	 * A Signal adds event dispatching functionality through composition and interfaces,
-	 * rather than inheritance as is commonly down with flash.event.EventDispatcher.
+	 * rather than inheriting from a dispatcher.
+	 * <br/><br/>
+	 * Project home: <a target="_top" href="http://code.google.com/p/as3-signals/">http://code.google.com/p/as3-signals/</a>
 	 */
 	public class Signal implements ISignal
 	{
