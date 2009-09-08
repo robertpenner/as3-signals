@@ -135,7 +135,7 @@ if (!isEclipse() || window.name != ECLIPSE_FRAME_NAME) {titleBar_setSubTitle("Cl
 <tr class="">
 <td class="summaryTablePaddingCol">&nbsp;</td><td class="summaryTableInheritanceCol">&nbsp;</td><td class="summaryTableSignatureCol">
 <div class="summarySignature">
-<a class="signatureLink" href="#dispatch()">dispatch</a>(eventObject:Object):void</div>
+<a class="signatureLink" href="#dispatch()">dispatch</a>(eventObject:Object = null):void</div>
 <div class="summaryTableDescription">
    Dispatches an object to the signal's listeners.</div>
 </td><td class="summaryTableOwnerCol">Signal</td>
@@ -278,8 +278,9 @@ showHideInherited();
    </p><span class="label">Parameters</span>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="20px"></td><td><code><span class="label">listener</span>:Function</code> &mdash; A function with a single argument
+<td width="20px"></td><td><code><span class="label">listener</span>:Function</code> &mdash; A function with an argument
    that matches the type of event dispatched by the signal.
+   If eventClass is not specified, the listener and dispatch() can called without an argument.
    </td>
 </tr>
 </table>
@@ -297,8 +298,9 @@ showHideInherited();
    </p><span class="label">Parameters</span>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="20px"></td><td><code><span class="label">listener</span>:Function</code> &mdash; A function with a single argument
+<td width="20px"></td><td><code><span class="label">listener</span>:Function</code> &mdash; A function with an argument
    that matches the type of event dispatched by the signal.
+   If eventClass is not specified, the listener and dispatch() can called without an argument.
    </td>
 </tr>
 </table>
@@ -310,12 +312,12 @@ showHideInherited();
 </tr>
 </table>
 <div class="detailBody">
-<code>public function dispatch(eventObject:Object):void</code><p>
+<code>public function dispatch(eventObject:Object = null):void</code><p>
    Dispatches an object to the signal's listeners.
    </p><span class="label">Parameters</span>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="20px"></td><td><code><span class="label">eventObject</span>:Object</code> &mdash;  Any object, but an IEvent will take advantage of targeting and bubbling.
+<td width="20px"></td><td><code><span class="label">eventObject</span>:Object</code> (default = <code>null</code>)<code></code> &mdash;  Any object, but an IEvent will take advantage of targeting and bubbling.
    </td>
 </tr>
 </table>
@@ -323,14 +325,7 @@ showHideInherited();
 <span class="label">Throws</span>
 <table border="0" cellspacing="0" cellpadding="0">
 <tr>
-<td width="20"></td><td><code></code> &mdash; Null argument passed to dispatch().
-   </td>
-</tr>
-<tr>
-<td class="paramSpacer">&nbsp;</td>
-</tr>
-<tr>
-<td width="20"></td><td><code></code> &mdash;  Incompatible event type passed to dispatch().
+<td width="20"></td><td><code></code> &mdash; When eventClass is specified and eventObject is not an instance of it.
    </td>
 </tr>
 </table>
