@@ -106,12 +106,13 @@ package com.robertpenner.signals
 
 			//// Bubble the event as far as possible.
 			var currentTarget:Object = this.target;
-			while ( currentTarget.hasOwnProperty("parent")
+			while ( currentTarget && currentTarget.hasOwnProperty("parent")
 					&& (currentTarget = currentTarget.parent) )
 			{
 				if (currentTarget is IEventBubbler)
 				{
 					IEventBubbler(currentTarget).onEventBubbled(event);
+					currentTarget = null;
 				}
 			}
 		}
