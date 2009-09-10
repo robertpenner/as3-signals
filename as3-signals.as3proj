@@ -4,7 +4,7 @@
   <output>
     <movie disabled="False" />
     <movie input="" />
-    <movie path="bin/TestRunner.swf" />
+    <movie path="bin\TestRunner.swf" />
     <movie fps="30" />
     <movie width="1000" />
     <movie height="600" />
@@ -44,7 +44,7 @@
   </includeLibraries>
   <!-- SWC Libraries -->
   <libraryPaths>
-    <element path="libs\" />
+    <element path="libs" />
   </libraryPaths>
   <!-- External Libraries -->
   <externalLibraryPaths>
