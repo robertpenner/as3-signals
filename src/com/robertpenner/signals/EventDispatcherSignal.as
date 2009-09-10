@@ -26,15 +26,21 @@ package com.robertpenner.signals
 		/** @inheritDoc */
 		override public function add(listener:Function):void
 		{
+			var prevListenerCount:uint = listeners.length;
+			// Try to add first because it may throw an exception.
 			super.add(listener);
-			IEventDispatcher(target).addEventListener(_name, dispatch);
+			// Account for cases where the same listener is added twice.
+			if (prevListenerCount == 0 && listeners.length == 1)
+				IEventDispatcher(target).addEventListener(_name, dispatch);
 		}
 		
 		/** @inheritDoc */
 		override public function remove(listener:Function):void
 		{
+			var prevListenerCount:uint = listeners.length;
 			super.remove(listener);
-			IEventDispatcher(target).removeEventListener(_name, dispatch);
+			if (prevListenerCount == 1 && listeners.length == 0)
+				IEventDispatcher(target).removeEventListener(_name, dispatch);
 		}
 		
 	}
