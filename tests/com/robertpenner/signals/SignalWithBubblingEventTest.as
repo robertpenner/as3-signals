@@ -102,12 +102,12 @@ package com.robertpenner.signals {
 
 import com.robertpenner.signals.ISignal;
 import com.robertpenner.signals.Signal;
-import com.robertpenner.signals.IEventBubbler;
+import com.robertpenner.signals.IBubbleEventHandler;
 import com.robertpenner.signals.IEvent;
 import flash.display.DisplayObject;
 import flash.display.Sprite;
 
-dynamic class Container implements IEventBubbler
+dynamic class Container implements IBubbleEventHandler
 {
 	public var parent:Object;
 	public var child:Object;

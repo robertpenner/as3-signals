@@ -2,7 +2,7 @@ package com.robertpenner.signals
 {
 	import flash.utils.Dictionary;
 	import com.robertpenner.signals.IEvent;
-	import com.robertpenner.signals.IEventBubbler;
+	import com.robertpenner.signals.IBubbleEventHandler;
 
 	/**
 	 * Signal dispatches events to multiple listeners.
@@ -109,9 +109,9 @@ package com.robertpenner.signals
 			while ( currentTarget && currentTarget.hasOwnProperty("parent")
 					&& (currentTarget = currentTarget.parent) )
 			{
-				if (currentTarget is IEventBubbler)
+				if (currentTarget is IBubbleEventHandler)
 				{
-					IEventBubbler(currentTarget).onEventBubbled(event);
+					IBubbleEventHandler(currentTarget).onEventBubbled(event);
 					currentTarget = null;
 				}
 			}
