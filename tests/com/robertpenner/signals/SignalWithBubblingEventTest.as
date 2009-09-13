@@ -27,7 +27,7 @@ package com.robertpenner.signals {
 			if (theParent)
 			{
 				theParent.child = null; // break circular reference
-				theParent.complete.removeAll();
+				theParent.completed.removeAll();
 				theParent = null;
 			}
 		}
@@ -46,53 +46,53 @@ package com.robertpenner.signals {
 		//////
 		public function test_listen_to_parent_and_dispatch_bubbling_event_from_theChild_should_bubble_to_parent():void
 		{
-			theParent.complete.addOnce( addAsync(onParentComplete) ); // will be event.currentTarget
+			theParent.completed.addOnce( addAsync(onParentcompleted) ); // will be event.currentTarget
 			var event:IEvent = new GenericEvent();
 			event.bubbles = true;
 			
-			theChild.complete.dispatch(event); // event.target will be child
+			theChild.completed.dispatch(event); // event.target will be child
 		}
 		
-		private function onParentComplete(e:GenericEvent):void
+		private function onParentcompleted(e:GenericEvent):void
 		{
 			assertSame('e.target should be the object that originally dispatched event', theChild, e.target);
 			assertSame('e.currentTarget should be the object that added this listener', theParent, e.currentTarget);
-			assertSame('e.signal should be signal that added this listener', theParent.complete, e.signal);
+			assertSame('e.signal should be signal that added this listener', theParent.completed, e.signal);
 		}
 		//////
 		public function test_listen_to_grandparent_and_dispatch_bubbling_event_from_child_should_bubble_to_grandparent():void
 		{
-			theGrandParent.complete.addOnce( addAsync(onGrandParentComplete) );
+			theGrandParent.completed.addOnce( addAsync(onGrandParentcompleted) );
 			
 			var event:IEvent = new GenericEvent();
 			event.bubbles = true;
 			
-			theChild.complete.dispatch(event);
+			theChild.completed.dispatch(event);
 		}
 		
-		private function onGrandParentComplete(e:GenericEvent):void
+		private function onGrandParentcompleted(e:GenericEvent):void
 		{
 			assertSame('e.target should be the object that originally dispatched event', theChild, e.target);
 			assertSame('e.currentTarget should be the object that added this listener', theGrandParent, e.currentTarget);
-			assertSame('e.signal should be signal that added this listener', theGrandParent.complete, e.signal);
+			assertSame('e.signal should be signal that added this listener', theGrandParent.completed, e.signal);
 		}
 		//////
 		public function test_listen_to_container_and_theChild_and_dispatch_bubbling_event_from_theChild_should_trigger_both():void
 		{
-			theParent.complete.addOnce( addAsync(onParentComplete) );
-			theChild.complete.addOnce( addAsync(onChildComplete) );
+			theParent.completed.addOnce( addAsync(onParentcompleted) );
+			theChild.completed.addOnce( addAsync(onChildcompleted) );
 			
 			var event:IEvent = new GenericEvent();
 			event.bubbles = true;
 			
-			theChild.complete.dispatch(event);
+			theChild.completed.dispatch(event);
 		}
 		
-		private function onChildComplete(e:GenericEvent):void
+		private function onChildcompleted(e:GenericEvent):void
 		{
 			assertSame('e.target should be the object that originally dispatched event', theChild, e.target);
 			assertSame('e.currentTarget should be the object that added this listener', theChild, e.currentTarget);
-			assertSame('e.signal should be signal that added this listener', theChild.complete, e.signal);
+			assertSame('e.signal should be signal that added this listener', theChild.completed, e.signal);
 		}
 		
 	}
@@ -111,7 +111,7 @@ dynamic class Container implements IEventBubbler
 {
 	public var parent:Object;
 	public var child:Object;
-	public var complete:ISignal;
+	public var completed:ISignal;
 	public var name:String;
 	
 	public function Container(name:String, child:Object = null)
@@ -122,12 +122,12 @@ dynamic class Container implements IEventBubbler
 			this.child = child;
 			child.parent = this;
 		}
-		complete = new Signal(this);
+		completed = new Signal(this);
 	}
 	
 	public function onEventBubbled(event:IEvent):void
 	{
-		complete.dispatch(event);
+		completed.dispatch(event);
 	}
 	
 	public function toString():String
