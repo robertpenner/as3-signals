@@ -1,8 +1,8 @@
 package com.robertpenner.signals {
 	import asunit.framework.TestSuite;
 	import com.robertpenner.signals.EventDispatcherSignalTest;
-	import com.robertpenner.signals.EventDispatcherWrapperTest;
 	import com.robertpenner.signals.GenericEventTest;
+	import com.robertpenner.signals.NativeSignalTest;
 	import com.robertpenner.signals.SignalDispatchNoArgsTest;
 	import com.robertpenner.signals.SignalSplitInterfacesTest;
 	import com.robertpenner.signals.SignalWithBubblingEventTest;
@@ -13,8 +13,8 @@ package com.robertpenner.signals {
 
 		public function AllTests() {
 			addTest(new com.robertpenner.signals.EventDispatcherSignalTest());
-			addTest(new com.robertpenner.signals.EventDispatcherWrapperTest());
 			addTest(new com.robertpenner.signals.GenericEventTest());
+			addTest(new com.robertpenner.signals.NativeSignalTest());
 			addTest(new com.robertpenner.signals.SignalDispatchNoArgsTest());
 			addTest(new com.robertpenner.signals.SignalSplitInterfacesTest());
 			addTest(new com.robertpenner.signals.SignalWithBubblingEventTest());
