@@ -1,8 +1,8 @@
-package com.robertpenner.signals {
+package org.osflash.signals {
 	import asunit.framework.TestCase;
 	import flash.display.Sprite;
-	import com.robertpenner.signals.GenericEvent;
-	import com.robertpenner.signals.Signal;
+	import org.osflash.signals.GenericEvent;
+	import org.osflash.signals.Signal;
 
 	public class SignalWithBubblingEventTest extends TestCase
 	{
@@ -100,10 +100,10 @@ package com.robertpenner.signals {
 
 ////// PRIVATE CLASSES //////
 
-import com.robertpenner.signals.ISignal;
-import com.robertpenner.signals.Signal;
-import com.robertpenner.signals.IBubbleEventHandler;
-import com.robertpenner.signals.IEvent;
+import org.osflash.signals.ISignal;
+import org.osflash.signals.Signal;
+import org.osflash.signals.IBubbleEventHandler;
+import org.osflash.signals.IEvent;
 import flash.display.DisplayObject;
 import flash.display.Sprite;
 

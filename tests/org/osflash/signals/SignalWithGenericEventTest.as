@@ -1,7 +1,7 @@
-package com.robertpenner.signals {
+package org.osflash.signals {
 	import asunit.framework.TestCase;
 	import flash.display.Sprite;
-	import com.robertpenner.signals.GenericEvent;
+	import org.osflash.signals.GenericEvent;
 
 	public class SignalWithGenericEventTest extends TestCase
 	{

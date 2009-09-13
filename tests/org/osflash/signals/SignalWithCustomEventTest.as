@@ -1,4 +1,4 @@
-package com.robertpenner.signals {
+package org.osflash.signals {
 	import asunit.framework.TestCase;
 
 	public class SignalWithCustomEventTest extends TestCase
@@ -69,8 +69,8 @@ package com.robertpenner.signals {
 
 ////// PRIVATE CLASSES //////
 
-import com.robertpenner.signals.GenericEvent;
-import com.robertpenner.signals.IEvent;
+import org.osflash.signals.GenericEvent;
+import org.osflash.signals.IEvent;
 
 class MessageEvent extends GenericEvent implements IEvent
 {

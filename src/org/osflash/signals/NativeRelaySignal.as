@@ -1,6 +1,6 @@
-package com.robertpenner.signals
+package org.osflash.signals
 {
-	import com.robertpenner.signals.Signal;
+	import org.osflash.signals.Signal;
 	import flash.events.IEventDispatcher;
 
 	/**

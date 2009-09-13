@@ -1,25 +1,25 @@
-package com.robertpenner.signals {
+package org.osflash.signals {
 	import asunit.framework.TestSuite;
-	import com.robertpenner.signals.GenericEventTest;
-	import com.robertpenner.signals.NativeRelaySignalTest;
-	import com.robertpenner.signals.NativeSignalTest;
-	import com.robertpenner.signals.SignalDispatchNoArgsTest;
-	import com.robertpenner.signals.SignalSplitInterfacesTest;
-	import com.robertpenner.signals.SignalWithBubblingEventTest;
-	import com.robertpenner.signals.SignalWithCustomEventTest;
-	import com.robertpenner.signals.SignalWithGenericEventTest;
+	import org.osflash.signals.GenericEventTest;
+	import org.osflash.signals.NativeRelaySignalTest;
+	import org.osflash.signals.NativeSignalTest;
+	import org.osflash.signals.SignalDispatchNoArgsTest;
+	import org.osflash.signals.SignalSplitInterfacesTest;
+	import org.osflash.signals.SignalWithBubblingEventTest;
+	import org.osflash.signals.SignalWithCustomEventTest;
+	import org.osflash.signals.SignalWithGenericEventTest;
 
 	public class AllTests extends TestSuite {
 
 		public function AllTests() {
-			addTest(new com.robertpenner.signals.GenericEventTest());
-			addTest(new com.robertpenner.signals.NativeRelaySignalTest());
-			addTest(new com.robertpenner.signals.NativeSignalTest());
-			addTest(new com.robertpenner.signals.SignalDispatchNoArgsTest());
-			addTest(new com.robertpenner.signals.SignalSplitInterfacesTest());
-			addTest(new com.robertpenner.signals.SignalWithBubblingEventTest());
-			addTest(new com.robertpenner.signals.SignalWithCustomEventTest());
-			addTest(new com.robertpenner.signals.SignalWithGenericEventTest());
+			addTest(new org.osflash.signals.GenericEventTest());
+			addTest(new org.osflash.signals.NativeRelaySignalTest());
+			addTest(new org.osflash.signals.NativeSignalTest());
+			addTest(new org.osflash.signals.SignalDispatchNoArgsTest());
+			addTest(new org.osflash.signals.SignalSplitInterfacesTest());
+			addTest(new org.osflash.signals.SignalWithBubblingEventTest());
+			addTest(new org.osflash.signals.SignalWithCustomEventTest());
+			addTest(new org.osflash.signals.SignalWithGenericEventTest());
 		}
 	}
 }

@@ -1,10 +1,10 @@
-package com.robertpenner.signals
+package org.osflash.signals
 {
 	import asunit.framework.TestCase;
-	import com.robertpenner.signals.ISignal;
-	import com.robertpenner.signals.IDispatcher;
-	import com.robertpenner.signals.IListenerManager;
-	import com.robertpenner.signals.Signal;
+	import org.osflash.signals.ISignal;
+	import org.osflash.signals.IDispatcher;
+	import org.osflash.signals.IListenerManager;
+	import org.osflash.signals.Signal;
 
 	public class SignalSplitInterfacesTest extends TestCase
 	{

@@ -1,10 +1,10 @@
-package com.robertpenner.signals
+package org.osflash.signals
 {
-	import com.robertpenner.signals.IEvent;
+	import org.osflash.signals.IEvent;
 	
 	/**
 	 *
-	 * @see com.robertpenner.signals.IEvent
+	 * @see org.osflash.signals.IEvent
 	 * Documentation for the event interface being maintained in IEvent to avoid duplication for now.
 	 */
 	public class GenericEvent implements IEvent

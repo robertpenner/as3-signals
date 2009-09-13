@@ -1,8 +1,8 @@
-package com.robertpenner.signals
+package org.osflash.signals
 {
 	import flash.utils.Dictionary;
-	import com.robertpenner.signals.IEvent;
-	import com.robertpenner.signals.IBubbleEventHandler;
+	import org.osflash.signals.IEvent;
+	import org.osflash.signals.IBubbleEventHandler;
 
 	/**
 	 * Signal dispatches events to multiple listeners.

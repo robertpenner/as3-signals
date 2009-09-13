@@ -1,4 +1,4 @@
-﻿package com.robertpenner.signals
+﻿package org.osflash.signals
 {
 	public interface IEvent
 	{

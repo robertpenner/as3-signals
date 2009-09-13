@@ -1,11 +1,11 @@
-package com.robertpenner {
+package org.osflash {
 	import asunit.framework.TestSuite;
-	import com.robertpenner.signals.AllTests;
+	import org.osflash.signals.AllTests;
 
 	public class AllTests extends TestSuite {
 
 		public function AllTests() {
-			addTest(new com.robertpenner.signals.AllTests());
+			addTest(new org.osflash.signals.AllTests());
 		}
 	}
 }

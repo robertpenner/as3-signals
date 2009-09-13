@@ -1,7 +1,7 @@
-package com.robertpenner.signals
+package org.osflash.signals
 {
 	import asunit.framework.TestCase;
-	import com.robertpenner.signals.ISignal;
+	import org.osflash.signals.ISignal;
 
 	public class SignalDispatchNoArgsTest extends TestCase
 	{
