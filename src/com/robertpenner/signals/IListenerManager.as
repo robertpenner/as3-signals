@@ -6,7 +6,7 @@ package com.robertpenner.signals
 	public interface IListenerManager
 	{
 		/** The current number of listeners for the signal. */
-		function get length():uint;
+		function get numListeners():uint;
 		
 		/**
 		 * Subscribes a listener for the signal.

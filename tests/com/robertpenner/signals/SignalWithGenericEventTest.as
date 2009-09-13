@@ -30,7 +30,7 @@ package com.robertpenner.signals {
 
 		public function test_signal_length_is_0_after_creation():void
 		{
-			assertEquals(0, completed.length);
+			assertEquals(0, completed.numListeners);
 		}
 		//////
 		public function test_add_listener_and_dispatch_event_should_pass_event_to_listener():void
@@ -63,7 +63,7 @@ package com.robertpenner.signals {
 	
 		private function checkNoListeners(e:IEvent):void
 		{
-			assertEquals('there should be no listeners', 0, completed.length);
+			assertEquals('there should be no listeners', 0, completed.numListeners);
 		}
 		//////
 		public function test_add_one_listener_and_dispatch_then_listener_remove_itself_using_event_signal():void
@@ -74,11 +74,11 @@ package com.robertpenner.signals {
 		
 		private function remove_myself_from_signal(e:IEvent):void
 		{
-			assertEquals('listener still in signal', 1, e.signal.length);
+			assertEquals('listener still in signal', 1, e.signal.numListeners);
 			
 			e.signal.remove(arguments.callee);
 			
-			assertEquals('listener removed from signal', 0, e.signal.length);
+			assertEquals('listener removed from signal', 0, e.signal.numListeners);
 		}
 		//////
 		public function test_add_listener_then_remove_then_dispatch_should_not_call_listener():void
@@ -107,7 +107,7 @@ package com.robertpenner.signals {
 		{
 			completed.add(newEmptyHandler());
 			completed.add(newEmptyHandler());
-			assertEquals(2, completed.length);
+			assertEquals(2, completed.numListeners);
 		}
 		
 		private function newEmptyHandler():Function
@@ -123,7 +123,7 @@ package com.robertpenner.signals {
 			
 			completed.remove(firstFunc);
 			
-			assertEquals(1, completed.length);
+			assertEquals(1, completed.numListeners);
 		}
 		
 		public function test_add_2_listeners_then_removeAll_should_yield_length_of_0():void
@@ -133,7 +133,7 @@ package com.robertpenner.signals {
 			
 			completed.removeAll();
 			
-			assertEquals(0, completed.length);
+			assertEquals(0, completed.numListeners);
 		}
 		
 		public function test_add_same_listener_twice_should_only_add_it_once():void
@@ -141,7 +141,7 @@ package com.robertpenner.signals {
 			var func:Function = newEmptyHandler();
 			completed.add(func);
 			completed.add(func);
-			assertEquals(1, completed.length);
+			assertEquals(1, completed.numListeners);
 		}
 		//////
 		public function test_dispatch_object_that_isnt_an_IEvent_should_dispatch_without_error():void

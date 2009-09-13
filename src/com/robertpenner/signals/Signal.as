@@ -38,7 +38,7 @@ package com.robertpenner.signals
 		public function get eventClass():Class { return _eventClass; }
 		
 		/** @inheritDoc */
-		public function get length():uint { return listeners.length; }
+		public function get numListeners():uint { return listeners.length; }
 		
 		/** @inheritDoc */
 		public function get target():Object { return _target; }
