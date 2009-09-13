@@ -3,8 +3,6 @@ package com.robertpenner.signals
 	import flash.events.Event;
 	import flash.utils.Dictionary;
 	import flash.events.IEventDispatcher;
-	import com.robertpenner.signals.IEvent;
-	import com.robertpenner.signals.IEventBubbler;
 
 	/**
 	 * The NativeSignal class uses an ISignal interface as a facade for an IEventDispatcher.
@@ -26,7 +24,7 @@ package com.robertpenner.signals
 		{
 			_target = IEventDispatcher(target);
 			_name = name;
-			_eventClass = eventClass;
+			_eventClass = eventClass || Event;
 			listeners = [];
 			onceListeners = new Dictionary();
 		}
@@ -79,7 +77,7 @@ package com.robertpenner.signals
 		public function dispatch(eventObject:Object = null):void
 		{
 			var event:Event = Event(eventObject);
-			if (_eventClass && !(event is _eventClass))
+			if (!(event is _eventClass))
 				throw new ArgumentError('Event object '+eventObject+' is not an instance of '+_eventClass+'.');
 
 			_target.dispatchEvent(event);
