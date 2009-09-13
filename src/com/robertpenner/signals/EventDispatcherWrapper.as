@@ -7,7 +7,7 @@ package com.robertpenner.signals
 	import com.robertpenner.signals.IEventBubbler;
 
 	/**
-	 *
+	 * The EventDispatcherWrapper class uses an ISignal interface as a facade for an IEventDispatcher.
 	 */
 	public class EventDispatcherWrapper implements ISignal
 	{
