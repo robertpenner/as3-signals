@@ -7,9 +7,9 @@ package com.robertpenner.signals
 	import com.robertpenner.signals.IEventBubbler;
 
 	/**
-	 * The EventDispatcherWrapper class uses an ISignal interface as a facade for an IEventDispatcher.
+	 * The NativeSignal class uses an ISignal interface as a facade for an IEventDispatcher.
 	 */
-	public class EventDispatcherWrapper implements ISignal
+	public class NativeSignal implements ISignal
 	{
 		protected var _target:IEventDispatcher;
 		protected var _name:String;
@@ -22,7 +22,7 @@ package com.robertpenner.signals
 		 * @param	target The object the signal is dispatching events on behalf of.
 		 * @param	eventClass An optional class reference that enables an event type check in dispatch().
 		 */
-		public function EventDispatcherWrapper(target:IEventDispatcher, name:String, eventClass:Class = null)
+		public function NativeSignal(target:IEventDispatcher, name:String, eventClass:Class = null)
 		{
 			_target = IEventDispatcher(target);
 			_name = name;

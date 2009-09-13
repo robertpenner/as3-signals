@@ -5,12 +5,12 @@ package com.robertpenner.signals
 	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
 
-	public class EventDispatcherWrapperTest extends TestCase
+	public class NativeSignalTest extends TestCase
 	{
 		private var click:ISignal;
 		private var sprite:IEventDispatcher;
 
-		public function EventDispatcherWrapperTest(testMethod:String = null)
+		public function NativeSignalTest(testMethod:String = null)
 		{
 			super(testMethod);
 		}
@@ -18,7 +18,7 @@ package com.robertpenner.signals
 		protected override function setUp():void
 		{
 			sprite = new Sprite();
-			click = new EventDispatcherWrapper(sprite, 'click', MouseEvent);
+			click = new NativeSignal(sprite, 'click', MouseEvent);
 		}
 
 		protected override function tearDown():void
@@ -29,7 +29,7 @@ package com.robertpenner.signals
 
 		public function testInstantiated():void
 		{
-			assertTrue("EventDispatcherWrapper instantiated", click is EventDispatcherWrapper);
+			assertTrue("NativeSignal instantiated", click is NativeSignal);
 			assertTrue('implements ISignal', click is ISignal);
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener('click'));
 		}
