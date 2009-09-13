@@ -6,7 +6,7 @@ package com.robertpenner.signals
 
 	public class NativeRelaySignalTest extends TestCase
 	{
-		private var click:ISignal;
+		private var clicked:ISignal;
 		private var sprite:Sprite;
 
 		public function NativeRelaySignalTest(testMethod:String = null)
@@ -17,25 +17,25 @@ package com.robertpenner.signals
 		protected override function setUp():void
 		{
 			sprite = new Sprite();
-			click = new NativeRelaySignal(sprite, 'click', MouseEvent);
+			clicked = new NativeRelaySignal(sprite, 'click', MouseEvent);
 		}
 
 		protected override function tearDown():void
 		{
-			click.removeAll();
-			click = null;
+			clicked.removeAll();
+			clicked = null;
 		}
 
 		public function testInstantiated():void
 		{
-			assertTrue("NativeRelaySignal instantiated", click is NativeRelaySignal);
-			assertTrue('implements ISignal', click is ISignal);
+			assertTrue("NativeRelaySignal instantiated", clicked is NativeRelaySignal);
+			assertTrue('implements ISignal', clicked is ISignal);
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener('click'));
 		}
 		//////
 		public function test_signal_add_then_EventDispatcher_dispatch_should_call_signal_listener():void
 		{
-			click.add( addAsync(onClicked, 10) );
+			clicked.add( addAsync(onClicked, 10) );
 			sprite.dispatchEvent(new MouseEvent('click'));
 		}
 		
@@ -46,7 +46,7 @@ package com.robertpenner.signals
 		//////
 		public function test_when_signal_adds_listener_then_hasEventListener_should_be_true():void
 		{
-			click.add(emptyHandler);
+			clicked.add(emptyHandler);
 			assertTrue(sprite.hasEventListener('click'));
 		}
 		
@@ -54,8 +54,8 @@ package com.robertpenner.signals
 		
 		public function test_when_signal_adds_then_removes_listener_then_hasEventListener_should_be_false():void
 		{
-			click.add(emptyHandler);
-			click.remove(emptyHandler);
+			clicked.add(emptyHandler);
+			clicked.remove(emptyHandler);
 			assertFalse(sprite.hasEventListener('click'));
 		}
 		//////
