@@ -20,6 +20,6 @@ package org.osflash.signals
 		 * @param	eventObject		Any object, but an IEvent will take advantage of targeting and bubbling.
 		 * @throws	ArgumentError	<code>ArgumentError</code>:	eventObject is not compatible with eventClass.
 		 */
-		function dispatch(eventObject:Object = null):void;
+		function dispatch(eventObject:Object = null, ...args):void;
 	}
 }

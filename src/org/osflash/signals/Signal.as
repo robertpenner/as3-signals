@@ -61,8 +61,8 @@ package org.osflash.signals
 			// Don't add the same listener twice.
 			if (indexOfListener(listener) >= 0) return;
 			
-			// Assume the listeners are already sorted by priority.
-			// For listeners with the same priority,
+			// Assume the listeners are already sorted by priority
+			// and insert in the right spot. For listeners with the same priority,
 			// we must preserve the order in which they were added.
 			var len:int = listeners.length;
 			for (var i:int = 0; i < len; i++)
@@ -109,7 +109,7 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function dispatch(eventObject:Object = null):void
+		public function dispatch(eventObject:Object = null, ...args):void
 		{
 			if (_eventClass && !(eventObject is _eventClass))
 				throw new ArgumentError('Event object '+eventObject+' is not an instance of '+_eventClass+'.');
@@ -122,17 +122,27 @@ package org.osflash.signals
 				event.currentTarget = this.target;
 				event.signal = this;
 			}
-				
+			
 			//// Send eventObject to each listener.
 			if (listeners.length)
 			{
+				if (args.length && eventObject)
+				{
+					args.unshift(eventObject);
+				}
+				
+				//TODO: investigate performance of various approaches
 				// Clone listeners array because add/remove may occur during the dispatch.
-				//TODO: test performance of for each vs. for
 				for each (var listenerBox:Object in listeners.concat())
 				{
 					var listener:Function = listenerBox.listener;
 					//TODO: Maybe put this conditional outside the loop.
-					eventObject ? listener(eventObject) : listener();
+					if (!eventObject)
+						listener();
+					else if (args.length)
+						listener.apply(null, args);
+					else
+						listener(eventObject);
 				}
 			}
 			
@@ -140,7 +150,7 @@ package org.osflash.signals
 			{
 				remove(onceListener as Function);
 			}
-				
+			
 			if (!event || !event.bubbles) return;
 
 			//// Bubble the event as far as possible.

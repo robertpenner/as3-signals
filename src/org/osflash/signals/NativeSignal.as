@@ -75,7 +75,7 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function dispatch(eventObject:Object = null):void
+		public function dispatch(eventObject:Object = null, ...args):void
 		{
 			var event:Event = Event(eventObject); // will throw TypeError if the cast fails
 			if (!(event is _eventClass))
