@@ -3,14 +3,14 @@ package org.osflash.signals
 	import asunit.framework.TestCase;
 	import org.osflash.signals.ISignal;
 	import org.osflash.signals.IDispatcher;
-	import org.osflash.signals.IListenerManager;
+	import org.osflash.signals.IListeners;
 	import org.osflash.signals.Signal;
 
 	public class SignalSplitInterfacesTest extends TestCase
 	{
 		// Notice the use of the smaller ISubscriber interface, rather than ISignal.
 		// This makes dispatch() inaccessible unless the Signal is cast to IDispatcher.
-		public var completed:IListenerManager;
+		public var completed:IListeners;
 
 		public function SignalSplitInterfacesTest(testMethod:String = null)
 		{
