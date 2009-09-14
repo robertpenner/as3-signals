@@ -9,6 +9,11 @@ package org.osflash.signals
 		 * An optional class reference that enables an event type check in dispatch().
 		 */
 		function get eventClass():Class;
+		
+		/**
+		 * The object considered the source of the dispatched events.
+		 */
+		function get target():Object;
 
 		/**
 		 * Dispatches an object to listeners.
