@@ -12,7 +12,7 @@ package org.osflash.signals
 	 * A Signal adds event dispatching functionality through composition and interfaces,
 	 * rather than inheriting from a dispatcher.
 	 * <br/><br/>
-	 * Project home: <a target="_top" href="http://code.google.com/p/as3-signals/">http://code.google.com/p/as3-signals/</a>
+	 * Project home: <a target="_top" href="http://github.com/robertpenner/as3-signals/">http://github.com/robertpenner/as3-signals/</a>
 	 */
 	public class Signal implements ISignal
 	{

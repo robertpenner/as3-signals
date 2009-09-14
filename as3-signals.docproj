@@ -3,7 +3,7 @@
   <pageTitle>as3-signals</pageTitle>
   <classPaths>src</classPaths>
   <sourcesList />
-  <outputDirectory>C:\Users\robert.penner\Documents\scratchpad\personal\as3-signals\trunk\docs</outputDirectory>
+  <outputDirectory>docs</outputDirectory>
   <activeCompiler>1</activeCompiler>
   <extraOptions>--library-path libs/</extraOptions>
 </docProject>
