@@ -1,11 +1,15 @@
 package org.osflash.signals
 {
+	import flash.events.Event;
 	import org.osflash.signals.Signal;
 	import flash.events.IEventDispatcher;
 
 	/**
 	 * The NativeRelaySignal class is used to relay events from an IEventDispatcher
-	 * to signal listeners.
+	 * to listeners.
+	 * The difference as compared to NativeSignal is that
+	 * NativeRelaySignal has its own dispatching code,
+	 * whereas NativeSignal uses the IEventDispatcher to dispatch.
 	 */
 	public class NativeRelaySignal extends Signal implements ISignal
 	{
@@ -16,10 +20,12 @@ package org.osflash.signals
 		 * @param	target	An object that implements the flash.events.IEventDispatcher interface.
 		 * @param	name	The event string name that would normally be passed to IEventDispatcher.addEventListener().
 		 * @param	eventClass An optional class reference that enables an event type check in dispatch().
+		 * Because the target is an IEventDispatcher,
+		 * eventClass needs to be flash.events.Event or a subclass of it.
 		 */
 		public function NativeRelaySignal(target:IEventDispatcher, name:String, eventClass:Class = null)
 		{
-			super(target, eventClass);
+			super(target, eventClass || Event);
 			_name = name;
 		}
 		
