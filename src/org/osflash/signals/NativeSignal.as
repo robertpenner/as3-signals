@@ -42,8 +42,8 @@ package org.osflash.signals
 		//TODO: @throws
 		public function add(listener:Function):void
 		{
-			if (eventClass && !listener.length)
-				throw new ArgumentError('Listener must declare at least 1 argument when eventClass is specified.');
+			if (listener.length != 1)
+				throw new ArgumentError('Listener for native event must declare exactly 1 argument.');
 			if (listeners.indexOf(listener) >= 0) return; // Don't add same listener twice.
 			listeners.push(listener);
 			_target.addEventListener(_name, listener);
@@ -76,11 +76,16 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function dispatch(eventObject:Object = null):void
 		{
-			var event:Event = Event(eventObject);
+			var event:Event = Event(eventObject); // will throw TypeError if the cast fails
 			if (!(event is _eventClass))
 				throw new ArgumentError('Event object '+eventObject+' is not an instance of '+_eventClass+'.');
 
 			_target.dispatchEvent(event);
+			
+			for (var onceListener:Object in onceListeners)
+			{
+				remove(onceListener as Function);
+			}
 		}
 	}
 }

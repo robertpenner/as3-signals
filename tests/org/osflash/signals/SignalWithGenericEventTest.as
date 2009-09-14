@@ -57,12 +57,8 @@ package org.osflash.signals {
 		//////
 		public function test_addOnce_and_dispatch_should_remove_listener_automatically():void
 		{
-			completed.addOnce(addAsync(checkNoListeners));
+			completed.addOnce(newEmptyHandler());
 			completed.dispatch(new GenericEvent());
-		}
-	
-		private function checkNoListeners(e:IEvent):void
-		{
 			assertEquals('there should be no listeners', 0, completed.numListeners);
 		}
 		//////

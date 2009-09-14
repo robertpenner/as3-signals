@@ -20,7 +20,7 @@ package org.osflash.signals
 		protected var _eventClass:Class;
 		protected var listeners:Array;
 		protected var onceListeners:Dictionary;
-				
+		
 		/**
 		 * Creates a Signal instance to dispatch events on behalf of a target object.
 		 * @param	target The object the signal is dispatching events on behalf of.
@@ -96,10 +96,14 @@ package org.osflash.signals
 				//TODO: test performance of for each vs. for
 				for each (var listener:Function in listeners.concat())
 				{
-					if (onceListeners[listener]) remove(listener);
 					//TODO: Maybe put this conditional outside the loop.
 					eventObject ? listener(eventObject) : listener();
 				}
+			}
+			
+			for (var onceListener:Object in onceListeners)
+			{
+				remove(onceListener as Function);
 			}
 				
 			if (!event || !event.bubbles) return;
