@@ -40,19 +40,20 @@ package org.osflash.signals
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function):void
+		public function add(listener:Function, priority:int = 0):void
 		{
 			if (listener.length != 1)
 				throw new ArgumentError('Listener for native event must declare exactly 1 argument.');
+				
 			if (listeners.indexOf(listener) >= 0) return; // Don't add same listener twice.
 			listeners.push(listener);
-			_target.addEventListener(_name, listener);
+			_target.addEventListener(_name, listener, false, priority);
 		}
 		
 		/** @inheritDoc */
-		public function addOnce(listener:Function):void
+		public function addOnce(listener:Function, priority:int = 0):void
 		{
-			add(listener); // call this first in case it throws an error
+			add(listener, priority); // call this first in case it throws an error
 			onceListeners[listener] = true;
 		}
 		

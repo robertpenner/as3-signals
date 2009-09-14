@@ -30,14 +30,14 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		override public function add(listener:Function):void
+		override public function add(listener:Function, priority:int = 0):void
 		{
 			var prevListenerCount:uint = listeners.length;
 			// Try to add first because it may throw an exception.
 			super.add(listener);
 			// Account for cases where the same listener is added twice.
 			if (prevListenerCount == 0 && listeners.length == 1)
-				IEventDispatcher(target).addEventListener(_name, dispatch);
+				IEventDispatcher(target).addEventListener(_name, dispatch, false, priority);
 		}
 		
 		/** @inheritDoc */

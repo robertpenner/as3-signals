@@ -45,25 +45,36 @@ package org.osflash.signals
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function):void
+		public function add(listener:Function, priority:int = 0):void
 		{
 			if (eventClass && !listener.length)
 				throw new ArgumentError('Listener must declare at least 1 argument when eventClass is specified.');
-			if (listeners.indexOf(listener) >= 0) return; // Don't add same listener twice.
-			listeners.push(listener);
+			if (indexOfListener(listener) >= 0) return; // Don't add same listener twice.
+			var listenerBox:Object = { listener:listener, priority:priority };
+			listeners.push(listenerBox);
+			listeners.sortOn('priority', Array.DESCENDING | Array.NUMERIC);
+		}
+		
+		protected function indexOfListener(listener:Object):int
+		{
+			for (var i:int = listeners.length; i--;)
+			{
+				if (listeners[i].listener == listener) return i;
+			}
+			return -1;
 		}
 		
 		/** @inheritDoc */
-		public function addOnce(listener:Function):void
+		public function addOnce(listener:Function, priority:int = 0):void
 		{
-			add(listener); // call this first in case it throws an error
+			add(listener, priority); // call this first in case it throws an error
 			onceListeners[listener] = true;
 		}
 		
 		/** @inheritDoc */
 		public function remove(listener:Function):void
 		{
-			listeners.splice(listeners.indexOf(listener), 1);
+			listeners.splice(indexOfListener(listener), 1);
 			delete onceListeners[listener];
 		}
 		
@@ -94,8 +105,9 @@ package org.osflash.signals
 			{
 				// Clone listeners array because add/remove may occur during the dispatch.
 				//TODO: test performance of for each vs. for
-				for each (var listener:Function in listeners.concat())
+				for each (var listenerBox:Object in listeners.concat())
 				{
+					var listener:Function = listenerBox.listener;
 					//TODO: Maybe put this conditional outside the loop.
 					eventObject ? listener(eventObject) : listener();
 				}
