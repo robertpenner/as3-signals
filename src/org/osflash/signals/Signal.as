@@ -47,17 +47,40 @@ package org.osflash.signals
 		//TODO: @throws
 		public function add(listener:Function, priority:int = 0):void
 		{
+			// function.length is the number of arguments.
 			if (eventClass && !listener.length)
 				throw new ArgumentError('Listener must declare at least 1 argument when eventClass is specified.');
-			if (indexOfListener(listener) >= 0) return; // Don't add same listener twice.
+
 			var listenerBox:Object = { listener:listener, priority:priority };
+			// Process the first listener as quickly as possible.
+			if (!listeners.length)
+			{
+				listeners[0] = listenerBox;
+				return;
+			}
+			// Don't add the same listener twice.
+			if (indexOfListener(listener) >= 0) return;
+			
+			// Assume the listeners are already sorted by priority.
+			// For listeners with the same priority,
+			// we must preserve the order in which they were added.
+			var len:int = listeners.length;
+			for (var i:int = 0; i < len; i++)
+			{
+				// As soon as a lower-priority listener is found, go in front of it.
+				if (priority > listeners[i].priority)
+				{
+					listeners.splice(i, 0, listenerBox);
+					return;
+				}
+			}
+			// Lowest priority goes last.
 			listeners.push(listenerBox);
-			listeners.sortOn('priority', Array.DESCENDING | Array.NUMERIC);
 		}
 		
 		protected function indexOfListener(listener:Object):int
 		{
-			for (var i:int = listeners.length; i--;)
+			for (var i:int = listeners.length; i--; )
 			{
 				if (listeners[i].listener == listener) return i;
 			}
