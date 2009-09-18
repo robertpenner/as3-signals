@@ -4,11 +4,11 @@ package org.osflash.signals {
 	import org.osflash.signals.GenericEvent;
 	import org.osflash.signals.Signal;
 
-	public class SignalWithBubblingEventTest extends TestCase
+	public class SignalWithBubblingEventTest extends TestCase implements IBubbleEventHandler
 	{
-		protected var theChild:Container;
-		protected var theParent:Container;
-		protected var theGrandParent:Container;
+		protected var theChild:Child;
+		protected var theGrandChild:Child;
+		protected var cancelTimeout:Function;
 
 		public function SignalWithBubblingEventTest(testMethod:String = null)
 		{
@@ -17,19 +17,13 @@ package org.osflash.signals {
 
 		protected override function setUp():void
 		{
-			theChild = new Container('theChild');
-			theParent = new Container('theParent', theChild);
-			theGrandParent = new Container('theGrandParent', theParent);
+			theChild = new Child('theChild', this);
+			theGrandChild = new Child('theGrandChild', theChild);
 		}
 
 		protected override function tearDown():void
 		{
-			if (theParent)
-			{
-				theParent.child = null; // break circular reference
-				theParent.completed.removeAll();
-				theParent = null;
-			}
+			//theChild = null; //This happens too soon and messes up the test--probably an ASUnit bug.
 		}
 		
 		// This is a convenience override to set the async timeout really low, so failures happen more quickly.
@@ -40,61 +34,26 @@ package org.osflash.signals {
 		
 		public function test_parent_child_relationships():void
 		{
-			assertSame("theParent's child is theChild", theChild, theParent.child);
-			assertSame("theChild's parent is theParent", theParent, theChild.parent);
+			assertSame("theChild's parent is this", this, theChild.parent);
+			assertTrue("this can handle bubbling events", this is IBubbleEventHandler);
 		}
 		//////
-		public function test_listen_to_parent_and_dispatch_bubbling_event_from_theChild_should_bubble_to_parent():void
+		public function test_dispatch_bubbling_event_from_theGrandChild_should_bubble_to_IBubbleHandler():void
 		{
-			theParent.completed.addOnce( addAsync(onParentcompleted) ); // will be event.currentTarget
+			cancelTimeout = addAsync();
 			var event:IEvent = new GenericEvent();
 			event.bubbles = true;
 			
-			theChild.completed.dispatch(event); // event.target will be child
+			theGrandChild.completed.dispatch(event); // event.target will be child
 		}
 		
-		private function onParentcompleted(e:GenericEvent):void
+		public function onEventBubbled(e:IEvent):void
 		{
-			assertSame('e.target should be the object that originally dispatched event', theChild, e.target);
-			assertSame('e.currentTarget should be the object that added this listener', theParent, e.currentTarget);
-			assertSame('e.signal should be signal that added this listener', theParent.completed, e.signal);
+			cancelTimeout();
+			cancelTimeout = null;
+			assertSame('e.target should be the object that originally dispatched event', theGrandChild, e.target);
+			assertSame('e.currentTarget should be the object receiving the bubbled event', this, e.currentTarget);
 		}
-		//////
-		public function test_listen_to_grandparent_and_dispatch_bubbling_event_from_child_should_bubble_to_grandparent():void
-		{
-			theGrandParent.completed.addOnce( addAsync(onGrandParentcompleted) );
-			
-			var event:IEvent = new GenericEvent();
-			event.bubbles = true;
-			
-			theChild.completed.dispatch(event);
-		}
-		
-		private function onGrandParentcompleted(e:GenericEvent):void
-		{
-			assertSame('e.target should be the object that originally dispatched event', theChild, e.target);
-			assertSame('e.currentTarget should be the object that added this listener', theGrandParent, e.currentTarget);
-			assertSame('e.signal should be signal that added this listener', theGrandParent.completed, e.signal);
-		}
-		//////
-		public function test_listen_to_container_and_theChild_and_dispatch_bubbling_event_from_theChild_should_trigger_both():void
-		{
-			theParent.completed.addOnce( addAsync(onParentcompleted) );
-			theChild.completed.addOnce( addAsync(onChildcompleted) );
-			
-			var event:IEvent = new GenericEvent();
-			event.bubbles = true;
-			
-			theChild.completed.dispatch(event);
-		}
-		
-		private function onChildcompleted(e:GenericEvent):void
-		{
-			assertSame('e.target should be the object that originally dispatched event', theChild, e.target);
-			assertSame('e.currentTarget should be the object that added this listener', theChild, e.currentTarget);
-			assertSame('e.signal should be signal that added this listener', theChild.completed, e.signal);
-		}
-		
 	}
 }
 
@@ -102,36 +61,22 @@ package org.osflash.signals {
 
 import org.osflash.signals.ISignal;
 import org.osflash.signals.Signal;
-import org.osflash.signals.IBubbleEventHandler;
-import org.osflash.signals.IEvent;
-import flash.display.DisplayObject;
-import flash.display.Sprite;
 
-dynamic class Container implements IBubbleEventHandler
+class Child
 {
 	public var parent:Object;
-	public var child:Object;
 	public var completed:ISignal;
 	public var name:String;
 	
-	public function Container(name:String, child:Object = null)
+	public function Child(name:String, parent:Object = null)
 	{
 		this.name = name;
-		if (child)
-		{
-			this.child = child;
-			child.parent = this;
-		}
+		this.parent = parent;
 		completed = new Signal(this);
-	}
-	
-	public function onEventBubbled(event:IEvent):void
-	{
-		completed.dispatch(event);
 	}
 	
 	public function toString():String
 	{
-		return '[Container '+name+']';
+		return '[Child '+name+']';
 	}
 }

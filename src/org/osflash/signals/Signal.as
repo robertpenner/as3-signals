@@ -164,7 +164,7 @@ package org.osflash.signals
 			{
 				if (currentTarget is IBubbleEventHandler)
 				{
-					IBubbleEventHandler(currentTarget).onEventBubbled(event);
+					IBubbleEventHandler(event.currentTarget = currentTarget).onEventBubbled(event);
 					currentTarget = null;
 				}
 			}
