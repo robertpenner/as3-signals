@@ -117,8 +117,12 @@ package org.osflash.signals
 			var event:IEvent = eventObject as IEvent;
 			if (event)
 			{
-				//TODO: figure out when the event should be cloned
-				if (!event.target) event.target = this.target; // write-once
+				// clone re-dispatched event
+				if (event.target)
+				{
+					eventObject = event = event.clone();
+				}
+				event.target = this.target;
 				event.currentTarget = this.target;
 				event.signal = this;
 			}

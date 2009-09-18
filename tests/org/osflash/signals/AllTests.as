@@ -4,6 +4,7 @@ package org.osflash.signals {
 	import org.osflash.signals.PriorityListenersTest;
 	import org.osflash.signals.NativeRelaySignalTest;
 	import org.osflash.signals.NativeSignalTest;
+	import org.osflash.signals.RedispatchedEventTest;
 	import org.osflash.signals.SignalDispatchExtraArgsTest;
 	import org.osflash.signals.SignalSplitInterfacesTest;
 	import org.osflash.signals.SignalWithBubblingEventTest;
@@ -17,6 +18,7 @@ package org.osflash.signals {
 			addTest(new org.osflash.signals.PriorityListenersTest());
 			addTest(new org.osflash.signals.NativeRelaySignalTest());
 			addTest(new org.osflash.signals.NativeSignalTest());
+			addTest(new org.osflash.signals.RedispatchedEventTest());
 			addTest(new org.osflash.signals.SignalDispatchExtraArgsTest());
 			addTest(new org.osflash.signals.SignalDispatchNoArgsTest());
 			addTest(new org.osflash.signals.SignalSplitInterfacesTest());
