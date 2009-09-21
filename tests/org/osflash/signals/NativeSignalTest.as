@@ -108,14 +108,24 @@ package org.osflash.signals
 		{
 		}
 		//////
-		public function test_dispatch_wrong_event_type_should_throw_ArgumentError():void
+		public function test_dispatch_wrong_event_class_should_throw_ArgumentError():void
+		{
+			assertThrows(ArgumentError, dispatchWrongEventClass);
+		}
+		
+		private function dispatchWrongEventClass():void
+		{
+			clicked.dispatch(new Event('click'));
+		}
+		//////
+		public function test_dispatch_event_with_type_not_matching_signal_name_should_throw_ArgumentError():void
 		{
 			assertThrows(ArgumentError, dispatchWrongEventType);
 		}
 		
 		private function dispatchWrongEventType():void
 		{
-			clicked.dispatch(new Event('click'));
+			clicked.dispatch(new MouseEvent('rollOver'));
 		}
 		//////
 		public function test_dispatch_non_event_object_should_throw_TypeError():void

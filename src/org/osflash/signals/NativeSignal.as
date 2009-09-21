@@ -80,6 +80,9 @@ package org.osflash.signals
 			var event:Event = Event(eventObject); // will throw TypeError if the cast fails
 			if (!(event is _eventClass))
 				throw new ArgumentError('Event object '+eventObject+' is not an instance of '+_eventClass+'.');
+				
+			if (event.type != _name)
+				throw new ArgumentError('Event object has incorrect type. Expected <'+name+'> but was <'+event.type+'>.');
 
 			_target.dispatchEvent(event);
 			
