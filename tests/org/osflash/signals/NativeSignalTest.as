@@ -31,7 +31,9 @@ package org.osflash.signals
 		public function testInstantiated():void
 		{
 			assertTrue("NativeSignal instantiated", clicked is NativeSignal);
-			assertTrue('implements ISignal', clicked is ISignal);
+			assertTrue('implements INativeSignal', clicked is INativeSignal);
+			assertTrue('implements IListeners', clicked is IListeners);
+			assertTrue('implements INativeDispatcher', clicked is INativeDispatcher);
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener('click'));
 			assertSame('target round-trips through constructor', sprite, clicked.target);
 		}
@@ -128,19 +130,19 @@ package org.osflash.signals
 			clicked.dispatch(new MouseEvent('rollOver'));
 		}
 		//////
-		public function test_dispatch_non_event_object_should_throw_TypeError():void
+		public function test_dispatch_null_should_throw_ArgumentError():void
 		{
-			assertThrows(TypeError, dispatchNonEventObject);
+			assertThrows(ArgumentError, dispatchNonEventObject);
 		}
 		
 		private function dispatchNonEventObject():void
 		{
-			clicked.dispatch(new Date());
+			clicked.dispatch(null);
 		}
 		//////
 		public function test_eventClass_defaults_to_native_Event_class():void
 		{
-			var added:ISignal = new NativeSignal(sprite, 'added');
+			var added:NativeSignal = new NativeSignal(sprite, 'added');
 			assertSame(Event, added.eventClass);
 		}
 	}

@@ -7,7 +7,7 @@ package org.osflash.signals
 	/**
 	 * The NativeSignal class uses an ISignal interface as a facade for an IEventDispatcher.
 	 */
-	public class NativeSignal implements ISignal
+	public class NativeSignal implements INativeSignal
 	{
 		protected var _target:IEventDispatcher;
 		protected var _name:String;
@@ -36,7 +36,7 @@ package org.osflash.signals
 		public function get numListeners():uint { return listeners.length; }
 		
 		/** @inheritDoc */
-		public function get target():Object { return _target; }
+		public function get target():IEventDispatcher { return _target; }
 		
 		/** @inheritDoc */
 		//TODO: @throws
@@ -75,21 +75,22 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function dispatch(eventObject:Object = null, ...args):void
+		public function dispatch(event:Event):Boolean
 		{
-			var event:Event = Event(eventObject); // will throw TypeError if the cast fails
 			if (!(event is _eventClass))
-				throw new ArgumentError('Event object '+eventObject+' is not an instance of '+_eventClass+'.');
+				throw new ArgumentError('Event object '+event+' is not an instance of '+_eventClass+'.');
 				
 			if (event.type != _name)
-				throw new ArgumentError('Event object has incorrect type. Expected <'+name+'> but was <'+event.type+'>.');
+				throw new ArgumentError('Event object has incorrect type. Expected <'+_name+'> but was <'+event.type+'>.');
 
-			_target.dispatchEvent(event);
+			var result:Boolean = _target.dispatchEvent(event);
 			
 			for (var onceListener:Object in onceListeners)
 			{
 				remove(onceListener as Function);
 			}
+			
+			return result;
 		}
 	}
 }
