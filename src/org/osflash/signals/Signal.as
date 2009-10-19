@@ -53,8 +53,8 @@ package org.osflash.signals
 			if (eventClass && !listener.length)
 				throw new ArgumentError('Listener must declare at least 1 argument when eventClass is specified.');
 			
-			if (onetimeListenerRelationshipExists(listener))
-				throw new AmbiguousRelationshipError('You cannot add a listener then addOnce the same listener without removing the relationship first.');
+			if (onceListeners[listener])
+				throw new AmbiguousRelationshipError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 		
 			createListenerRelationship(listener, priority);
 		}
@@ -75,8 +75,8 @@ package org.osflash.signals
 			if (eventClass && !listener.length)
 				throw new ArgumentError('Listener must declare at least 1 argument when eventClass is specified.');
 			
-			if (permanentListenerRelationshipExists(listener))
-				throw new AmbiguousRelationshipError('You cannot addOnce a listener then adds the same listener without removing the relationship first.');
+			if (indexOfListener(listener) >= 0 && !onceListeners[listener])
+				throw new AmbiguousRelationshipError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 			
 			createListenerRelationship(listener, priority);
 			onceListeners[listener] = true;
@@ -159,7 +159,7 @@ package org.osflash.signals
 		}
 		
 		
-		private function createListenerRelationship(listener:Function, priority:int):void
+		protected function createListenerRelationship(listener:Function, priority:int):void
 		{
 			var listenerBox:Object = { listener:listener, priority:priority };
 			// Process the first listener as quickly as possible.
@@ -191,24 +191,5 @@ package org.osflash.signals
 			listeners.push(listenerBox);
 		}
 		
-		
-		private function permanentListenerRelationshipExists(listener:Function):Boolean
-		{
-			if (indexOfListener(listener) == -1)
-				return false;
-			
-			return !onceListeners[listener];
-		}
-
-		
-		private function onetimeListenerRelationshipExists(listener:Function):Boolean
-		{
-			if (indexOfListener(listener) == -1)
-				return false;
-			
-			return onceListeners[listener];
-		}
-
-				
 	}
 }
