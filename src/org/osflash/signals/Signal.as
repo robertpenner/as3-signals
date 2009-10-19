@@ -1,8 +1,10 @@
 package org.osflash.signals
 {
-	import flash.utils.Dictionary;
-	import org.osflash.signals.IEvent;
 	import org.osflash.signals.IBubbleEventHandler;
+	import org.osflash.signals.IEvent;
+	import org.osflash.signals.error.AmbiguousRelationshipError;
+
+	import flash.utils.Dictionary;
 
 	/**
 	 * Signal dispatches events to multiple listeners.
@@ -50,32 +52,11 @@ package org.osflash.signals
 			// function.length is the number of arguments.
 			if (eventClass && !listener.length)
 				throw new ArgumentError('Listener must declare at least 1 argument when eventClass is specified.');
-
-			var listenerBox:Object = { listener:listener, priority:priority };
-			// Process the first listener as quickly as possible.
-			if (!listeners.length)
-			{
-				listeners[0] = listenerBox;
-				return;
-			}
-			// Don't add the same listener twice.
-			if (indexOfListener(listener) >= 0) return;
 			
-			// Assume the listeners are already sorted by priority
-			// and insert in the right spot. For listeners with the same priority,
-			// we must preserve the order in which they were added.
-			var len:int = listeners.length;
-			for (var i:int = 0; i < len; i++)
-			{
-				// As soon as a lower-priority listener is found, go in front of it.
-				if (priority > listeners[i].priority)
-				{
-					listeners.splice(i, 0, listenerBox);
-					return;
-				}
-			}
-			// Lowest priority goes last.
-			listeners.push(listenerBox);
+			if (onetimeListenerRelationshipExists(listener))
+				throw new AmbiguousRelationshipError('You cannot add a listener then addOnce the same listener without removing the relationship first.');
+		
+			createListenerRelationship(listener, priority);
 		}
 		
 		protected function indexOfListener(listener:Object):int
@@ -90,7 +71,14 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function addOnce(listener:Function, priority:int = 0):void
 		{
-			add(listener, priority); // call this first in case it throws an error
+			// function.length is the number of arguments.
+			if (eventClass && !listener.length)
+				throw new ArgumentError('Listener must declare at least 1 argument when eventClass is specified.');
+			
+			if (permanentListenerRelationshipExists(listener))
+				throw new AmbiguousRelationshipError('You cannot addOnce a listener then adds the same listener without removing the relationship first.');
+			
+			createListenerRelationship(listener, priority);
 			onceListeners[listener] = true;
 		}
 		
@@ -169,5 +157,58 @@ package org.osflash.signals
 				}
 			}
 		}
+		
+		
+		private function createListenerRelationship(listener:Function, priority:int):void
+		{
+			var listenerBox:Object = { listener:listener, priority:priority };
+			// Process the first listener as quickly as possible.
+			if (!listeners.length)
+			{
+				listeners[0] = listenerBox;
+				return;
+			}
+			
+			// Don't add the same listener twice.
+			if (indexOfListener(listener) >= 0)
+				return;
+			
+			// Assume the listeners are already sorted by priority
+			// and insert in the right spot. For listeners with the same priority,
+			// we must preserve the order in which they were added.
+			var len:int = listeners.length;
+			for (var i:int = 0; i < len; i++)
+			{
+				// As soon as a lower-priority listener is found, go in front of it.
+				if (priority > listeners[i].priority)
+				{
+					listeners.splice(i, 0, listenerBox);
+					return;
+				}
+			}
+			
+			// Lowest priority goes last.
+			listeners.push(listenerBox);
+		}
+		
+		
+		private function permanentListenerRelationshipExists(listener:Function):Boolean
+		{
+			if (indexOfListener(listener) == -1)
+				return false;
+			
+			return !onceListeners[listener];
+		}
+
+		
+		private function onetimeListenerRelationshipExists(listener:Function):Boolean
+		{
+			if (indexOfListener(listener) == -1)
+				return false;
+			
+			return onceListeners[listener];
+		}
+
+				
 	}
 }
