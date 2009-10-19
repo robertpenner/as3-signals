@@ -45,11 +45,8 @@ package org.osflash.signals
 		//TODO: @throws
 		public function add(listener:Function, priority:int = 0):void
 		{
-			if (listener.length != 1)
-				throw new ArgumentError('Listener for native event must declare exactly 1 argument.');
-				
-			if (onetimeListenerRelationshipExists(listener))
-				throw new AmbiguousRelationshipError('You cannot add a listener then addOnce the same listener without removing the relationship first.');
+			if (onceListeners[listener])
+				throw new AmbiguousRelationshipError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 		
 			createListenerRelationship(listener, priority);
 		}
@@ -57,12 +54,8 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function addOnce(listener:Function, priority:int = 0):void
 		{
-			// function.length is the number of arguments.
-			if (!listener.length)
-				throw new ArgumentError('Listener must declare at least 1 argument when eventClass is specified.');
-			
-			if (permanentListenerRelationshipExists(listener))
-				throw new AmbiguousRelationshipError('You cannot addOnce a listener then adds the same listener without removing the relationship first.');
+			if (listeners.indexOf(listener) >= 0 && !onceListeners[listener])
+				throw new AmbiguousRelationshipError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 			
 			createListenerRelationship(listener, priority);
 			onceListeners[listener] = true;
@@ -107,8 +100,12 @@ package org.osflash.signals
 		}
 		
 		
-		private function createListenerRelationship(listener:Function, priority:int):void
+		protected function createListenerRelationship(listener:Function, priority:int):void
 		{
+			// function.length is the number of arguments.
+			if (listener.length != 1)
+				throw new ArgumentError('Listener for native event must declare exactly 1 argument.');
+				
 			// Don't add same listener twice.
 			if (listeners.indexOf(listener) >= 0)
 				return;
@@ -124,23 +121,6 @@ package org.osflash.signals
 			{
 				remove(onceListener as Function);
 			}
-		}
-		
-		private function permanentListenerRelationshipExists(listener:Function):Boolean
-		{
-			if (listeners.indexOf(listener) == -1)
-				return false;
-			
-			return !onceListeners[listener];
-		}
-
-		
-		private function onetimeListenerRelationshipExists(listener:Function):Boolean
-		{
-			if (listeners.indexOf(listener) == -1)
-				return false;
-			
-			return onceListeners[listener];
 		}
 	}
 }
