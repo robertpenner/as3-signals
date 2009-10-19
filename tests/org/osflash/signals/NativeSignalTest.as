@@ -24,10 +24,22 @@ package org.osflash.signals
 
 		protected override function tearDown():void
 		{
-			clicked.removeAll();
-			clicked = null;
+			// tearDown() is getting called too early for some reason, so commenting out for now.
+			//clicked.removeAll();
+			//clicked = null;
 		}
-
+		
+		override protected function addAsync(handler:Function = null, duration:Number = 1, failureHandler:Function = null):Function
+		{
+			return super.addAsync(handler, duration, failureHandler);
+		}
+		
+		protected function verifyNoListeners():void
+		{
+			assertFalse('the EventDispatcher should not have listeners for the event', sprite.hasEventListener('click'));
+			assertEquals('the NativeSignal should have no listeners', 0, clicked.numListeners);
+		}
+		//////
 		public function testInstantiated():void
 		{
 			assertTrue("NativeSignal instantiated", clicked is NativeSignal);
@@ -40,7 +52,7 @@ package org.osflash.signals
 		//////
 		public function test_signal_add_then_EventDispatcher_dispatch_should_call_signal_listener():void
 		{
-			clicked.add( addAsync(onClicked, 10) );
+			clicked.add( addAsync(onClicked) );
 			sprite.dispatchEvent(new MouseEvent('click'));
 		}
 		
@@ -63,7 +75,7 @@ package org.osflash.signals
 			clicked.add(emptyHandler);
 			clicked.remove(emptyHandler);
 			assertEquals(0, clicked.numListeners);
-			assertFalse(sprite.hasEventListener('click'));
+			verifyNoListeners();
 		}
 		
 		public function test_when_signal_removes_all_listeners_then_target_should_not_have_listener():void
@@ -72,14 +84,38 @@ package org.osflash.signals
 			clicked.add( function(e:*):void {} );
 			clicked.removeAll();
 			assertEquals(0, clicked.numListeners);
-			assertFalse(sprite.hasEventListener('click'));
+			verifyNoListeners();
 		}
 		//////
-		public function test_addOnce_and_dispatch_should_remove_listener_automatically():void
+		public function test_addOnce_and_dispatch_from_signal_should_remove_listener_automatically():void
 		{
-			clicked.addOnce(emptyHandler);
+			clicked.addOnce( addAsync(emptyHandler) );
 			clicked.dispatch(new MouseEvent('click'));
-			assertEquals('there should be no listeners', 0, clicked.numListeners);
+			verifyNoListeners();
+		}
+		//////
+		public function test_addOnce_normal_priority_and_dispatch_from_EventDispatcher_should_remove_listener_automatically():void
+		{
+			var normalPriority:int = 0;
+			clicked.addOnce( addAsync(emptyHandler) , normalPriority);
+			sprite.dispatchEvent(new MouseEvent('click'));
+			verifyNoListeners();
+		}
+		//////
+		public function test_addOnce_lowest_priority_and_dispatch_from_EventDispatcher_should_remove_listener_automatically():void
+		{
+			var lowestPriority:int = int.MIN_VALUE;
+			clicked.addOnce( addAsync(emptyHandler) , lowestPriority);
+			sprite.dispatchEvent(new MouseEvent('click'));
+			verifyNoListeners();
+		}
+		//////
+		public function test_addOnce_highest_priority_and_dispatch_from_EventDispatcher_should_remove_listener_automatically():void
+		{
+			var highestPriority:int = int.MAX_VALUE;
+			clicked.addOnce( addAsync(emptyHandler) , highestPriority);
+			sprite.dispatchEvent(new MouseEvent('click'));
+			verifyNoListeners();
 		}
 		//////
 		public function test_adding_listener_without_args_should_throw_ArgumentError():void
@@ -127,7 +163,8 @@ package org.osflash.signals
 		
 		private function dispatchWrongEventType():void
 		{
-			clicked.dispatch(new MouseEvent('rollOver'));
+			var wrongType:String = 'rollOver';
+			clicked.dispatch(new MouseEvent(wrongType));
 		}
 		//////
 		public function test_dispatch_null_should_throw_ArgumentError():void
