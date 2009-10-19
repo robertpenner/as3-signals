@@ -49,32 +49,15 @@ package org.osflash.signals
 		//TODO: @throws
 		public function add(listener:Function, priority:int = 0):void
 		{
-			// function.length is the number of arguments.
-			if (eventClass && !listener.length)
-				throw new ArgumentError('Listener must declare at least 1 argument when eventClass is specified.');
-			
 			if (onceListeners[listener])
 				throw new AmbiguousRelationshipError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 		
 			createListenerRelationship(listener, priority);
 		}
 		
-		protected function indexOfListener(listener:Object):int
-		{
-			for (var i:int = listeners.length; i--; )
-			{
-				if (listeners[i].listener == listener) return i;
-			}
-			return -1;
-		}
-		
 		/** @inheritDoc */
 		public function addOnce(listener:Function, priority:int = 0):void
 		{
-			// function.length is the number of arguments.
-			if (eventClass && !listener.length)
-				throw new ArgumentError('Listener must declare at least 1 argument when eventClass is specified.');
-			
 			if (indexOfListener(listener) >= 0 && !onceListeners[listener])
 				throw new AmbiguousRelationshipError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 			
@@ -158,9 +141,21 @@ package org.osflash.signals
 			}
 		}
 		
-		
+		protected function indexOfListener(listener:Object):int
+		{
+			for (var i:int = listeners.length; i--; )
+			{
+				if (listeners[i].listener == listener) return i;
+			}
+			return -1;
+		}
+				
 		protected function createListenerRelationship(listener:Function, priority:int):void
 		{
+			// function.length is the number of arguments.
+			if (eventClass && !listener.length)
+				throw new ArgumentError('Listener must declare at least 1 argument when eventClass is specified.');
+			
 			var listenerBox:Object = { listener:listener, priority:priority };
 			// Process the first listener as quickly as possible.
 			if (!listeners.length)
@@ -187,8 +182,8 @@ package org.osflash.signals
 				}
 			}
 			
-			// Lowest priority goes last.
-			listeners.push(listenerBox);
+			// If we made it this far, the new listener has lowest priority, so put it last.
+			listeners[listeners.length] = listenerBox;
 		}
 		
 	}
