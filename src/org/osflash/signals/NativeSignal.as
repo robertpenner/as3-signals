@@ -11,7 +11,6 @@ package org.osflash.signals
 	 */
 	public class NativeSignal implements INativeSignal
 	{
-		protected static const LOWEST_PRIORITY:int = int.MIN_VALUE;
 		protected var _target:IEventDispatcher;
 		protected var _name:String;
 		protected var _eventClass:Class;
@@ -57,10 +56,8 @@ package org.osflash.signals
 			if (listeners.indexOf(listener) >= 0 && !onceListeners[listener])
 				throw new AmbiguousRelationshipError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 			
-			createListenerRelationship(listener, priority);
+			createListenerRelationship(createOnceDelegate(listener), priority);
 			onceListeners[listener] = true;
-			// Handle cases where the event is dispatched through the target instead of the NativeSignal.
-			_target.addEventListener(_name, removeOnceListeners, false, LOWEST_PRIORITY);
 		}
 		
 		/** @inheritDoc */
@@ -74,7 +71,7 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			for (var i:int = listeners.length-1; i >= 0; i--)
+			for (var i:int = listeners.length; i--; )
 			{
 				remove(listeners[i]);
 			}
@@ -89,16 +86,8 @@ package org.osflash.signals
 			if (event.type != _name)
 				throw new ArgumentError('Event object has incorrect type. Expected <'+_name+'> but was <'+event.type+'>.');
 
-			var result:Boolean = _target.dispatchEvent(event);
-			
-			for (var onceListener:Object in onceListeners)
-			{
-				remove(onceListener as Function);
-			}
-			
-			return result;
+			return _target.dispatchEvent(event);
 		}
-		
 		
 		protected function createListenerRelationship(listener:Function, priority:int):void
 		{
@@ -114,13 +103,14 @@ package org.osflash.signals
 			_target.addEventListener(_name, listener, false, priority);
 		}
 		
-		protected function removeOnceListeners(event:Event):void
+		protected function createOnceDelegate(listener:Function):Function
 		{
-			_target.removeEventListener(_name, arguments.callee);
-			for (var onceListener:Object in onceListeners)
+			var delegate:Function = function(event:Event):void
 			{
-				remove(onceListener as Function);
-			}
+				listener(event);
+				remove(arguments.callee);
+			};
+			return delegate;
 		}
 	}
 }
