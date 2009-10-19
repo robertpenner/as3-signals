@@ -1,8 +1,10 @@
 package org.osflash.signals
 {
+	import org.osflash.signals.error.AmbiguousRelationshipError;
+
 	import flash.events.Event;
-	import flash.utils.Dictionary;
 	import flash.events.IEventDispatcher;
+	import flash.utils.Dictionary;
 
 	/**
 	 * The NativeSignal class uses an ISignal interface as a facade for an IEventDispatcher.
@@ -45,15 +47,23 @@ package org.osflash.signals
 			if (listener.length != 1)
 				throw new ArgumentError('Listener for native event must declare exactly 1 argument.');
 				
-			if (listeners.indexOf(listener) >= 0) return; // Don't add same listener twice.
-			listeners.push(listener);
-			_target.addEventListener(_name, listener, false, priority);
+			if (onetimeListenerRelationshipExists(listener))
+				throw new AmbiguousRelationshipError('You cannot add a listener then addOnce the same listener without removing the relationship first.');
+		
+			createListenerRelationship(listener, priority);
 		}
 		
 		/** @inheritDoc */
 		public function addOnce(listener:Function, priority:int = 0):void
 		{
-			add(listener, priority); // call this first in case it throws an error
+			// function.length is the number of arguments.
+			if (!listener.length)
+				throw new ArgumentError('Listener must declare at least 1 argument when eventClass is specified.');
+			
+			if (permanentListenerRelationshipExists(listener))
+				throw new AmbiguousRelationshipError('You cannot addOnce a listener then adds the same listener without removing the relationship first.');
+			
+			createListenerRelationship(listener, priority);
 			onceListeners[listener] = true;
 		}
 		
@@ -91,6 +101,35 @@ package org.osflash.signals
 			}
 			
 			return result;
+		}
+		
+		
+		private function createListenerRelationship(listener:Function, priority:int):void
+		{
+			// Don't add same listener twice.
+			if (listeners.indexOf(listener) >= 0)
+				return;
+			
+			listeners.push(listener);
+			_target.addEventListener(_name, listener, false, priority);
+		}
+		
+		
+		private function permanentListenerRelationshipExists(listener:Function):Boolean
+		{
+			if (listeners.indexOf(listener) == -1)
+				return false;
+			
+			return !onceListeners[listener];
+		}
+
+		
+		private function onetimeListenerRelationshipExists(listener:Function):Boolean
+		{
+			if (listeners.indexOf(listener) == -1)
+				return false;
+			
+			return onceListeners[listener];
 		}
 	}
 }

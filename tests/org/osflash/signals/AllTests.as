@@ -2,6 +2,7 @@ package org.osflash.signals
 {
 	import asunit.framework.TestSuite;
 
+	import org.osflash.signals.AmbiguousRelationshipInNativeSignalTest;
 	import org.osflash.signals.AmbiguousRelationshipTest;
 	import org.osflash.signals.GenericEventTest;
 	import org.osflash.signals.NativeRelaySignalTest;
@@ -18,7 +19,7 @@ package org.osflash.signals
 	public class AllTests extends TestSuite {
 
 		public function AllTests() {
-			addTest(new org.osflash.signals.AmbiguousRelationshipTest());			addTest(new org.osflash.signals.GenericEventTest());
+			addTest(new org.osflash.signals.AmbiguousRelationshipInNativeSignalTest());			addTest(new org.osflash.signals.AmbiguousRelationshipTest());			addTest(new org.osflash.signals.GenericEventTest());
 			addTest(new org.osflash.signals.NativeRelaySignalTest());
 			addTest(new org.osflash.signals.NativeSignalTest());
 			addTest(new org.osflash.signals.PriorityListenersTest());
