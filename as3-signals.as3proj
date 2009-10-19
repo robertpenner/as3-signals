@@ -35,7 +35,7 @@
     <option verboseStackTraces="False" />
     <option linkReport="" />
     <option loadExterns="" />
-    <option additional="-coverage&#xA;-coverage-metadata=bin\TestRunner.cvm" />
+    <option additional="" />
     <option customSDK="" />
   </build>
   <!-- SWC Include Libraries -->
