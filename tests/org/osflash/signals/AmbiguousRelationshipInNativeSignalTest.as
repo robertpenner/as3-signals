@@ -1,10 +1,10 @@
-package org.osflash.signals 
+package org.osflash.signals
 {
 	import asunit.framework.TestCase;
-
 	import flash.display.Sprite;
 	import flash.events.Event;
-
+	import org.osflash.signals.error.AmbiguousRelationshipError;
+	
 	public class AmbiguousRelationshipInNativeSignalTest extends TestCase
 	{
 		private var target:Sprite;
@@ -22,86 +22,33 @@ package org.osflash.signals
 			instance = null;
 		}
 		
-		public function test_add_then_addonce_throws_error():void
+		public function test_add_then_addOnce_throws_error():void
 		{
-			var throwsError:Boolean = false;
-			
-			instance.add(listener);
-			
-			try
-			{
-				instance.addOnce(listener);
-			}
-			catch (err:Error)
-			{
-				throwsError = true;
-			}
-			finally
-			{
-				assertTrue("an error is thrown if you call addOnce after calling add with same listener without first removing listener", throwsError);
-			}
+			instance.add(failIfCalled);
+			assertThrows(AmbiguousRelationshipError, function():void { instance.addOnce(failIfCalled); });
 		}
 		
-		public function test_addonce_then_add_throws_error():void
+		public function test_addOnce_then_add_should_throw_error():void
 		{
-			var throwsError:Boolean = false;
-			
-			instance.addOnce(listener);
-			
-			try
-			{
-				instance.add(listener);
-			}
-			catch (err:Error)
-			{
-				throwsError = true;
-			}
-			finally
-			{
-				assertTrue("an error is thrown if you call add after calling addOnce with same listener without first removing listener", throwsError);
-			}
+			instance.addOnce(failIfCalled);
+			assertThrows(AmbiguousRelationshipError, function():void { instance.add(failIfCalled); });
 		}
 		
-		public function test_add_then_add_doesnt_throw_error():void
+		public function test_add_then_add_should_not_throw_error():void
 		{
-			var throwsError:Boolean = false;
-			
-			instance.add(listener);
-			
-			try
-			{				instance.add(listener);
-			}
-			catch (err:Error)
-			{
-				throwsError = true;
-			}
-			finally
-			{
-				assertFalse("adding a listener then adding again should not throw an error", throwsError);
-			}
+			instance.add(failIfCalled);
+			instance.add(failIfCalled);
+			assertEquals(1, instance.numListeners);
 		}
 		
-		public function test_addonce_then_addonce_doesnt_throw_error():void
+		public function test_addOnce_then_addOnce_should_not_throw_error():void
 		{
-			var throwsError:Boolean = false;
-			
-			instance.addOnce(listener);
-			
-			try
-			{
-				instance.addOnce(listener);
-			}
-			catch (err:Error)
-			{
-				throwsError = true;
-			}
-			finally
-			{
-				assertFalse("adding a listener then adding again should not throw an error", throwsError);
-			}
+			instance.addOnce(failIfCalled);
+			instance.addOnce(failIfCalled);
+			assertEquals(1, instance.numListeners);
 		}
 		
-		private function listener(event:Event):void
+		private function failIfCalled(event:Event):void
 		{
 			fail("if this listener is called, something horrible is going on");
 		}
