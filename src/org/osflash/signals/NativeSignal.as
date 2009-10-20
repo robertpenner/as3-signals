@@ -14,7 +14,7 @@ package org.osflash.signals
 		protected var _target:IEventDispatcher;
 		protected var _name:String;
 		protected var _eventClass:Class;
-		protected var listeners:Array;
+		protected var listenerCmds:Array;
 		protected var onceListeners:Dictionary;
 				
 		/**
@@ -27,7 +27,7 @@ package org.osflash.signals
 			_target = IEventDispatcher(target);
 			_name = name;
 			_eventClass = eventClass || Event;
-			listeners = [];
+			listenerCmds = [];
 			onceListeners = new Dictionary();
 		}
 		
@@ -35,7 +35,7 @@ package org.osflash.signals
 		public function get eventClass():Class { return _eventClass; }
 		
 		/** @inheritDoc */
-		public function get numListeners():uint { return listeners.length; }
+		public function get numListeners():uint { return listenerCmds.length; }
 		
 		/** @inheritDoc */
 		public function get target():IEventDispatcher { return _target; }
@@ -47,23 +47,23 @@ package org.osflash.signals
 			if (onceListeners[listener])
 				throw new AmbiguousRelationshipError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 		
-			createListenerRelationship(listener, priority);
+			createListenerRelationship(listener, false, priority);
 		}
 		
 		/** @inheritDoc */
 		public function addOnce(listener:Function, priority:int = 0):void
 		{
-			if (listeners.indexOf(listener) >= 0 && !onceListeners[listener])
+			if (indexOfListener(listener) >= 0 && !onceListeners[listener])
 				throw new AmbiguousRelationshipError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 			
-			createListenerRelationship(createOnceDelegate(listener), priority);
+			createListenerRelationship(listener, true, priority);
 			onceListeners[listener] = true;
 		}
 		
 		/** @inheritDoc */
 		public function remove(listener:Function):void
 		{
-			listeners.splice(listeners.indexOf(listener), 1);
+			listenerCmds.splice(indexOfListener(listener), 1);
 			_target.removeEventListener(_name, listener);
 			delete onceListeners[listener];
 		}
@@ -71,10 +71,12 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			for (var i:int = listeners.length; i--; )
+			for (var i:int = listenerCmds.length; i--; )
 			{
-				remove(listeners[i]);
+				_target.removeEventListener(_name, listenerCmds[i].execute);
 			}
+			listenerCmds.length = 0;
+			onceListeners = new Dictionary();
 		}
 		
 		/** @inheritDoc */
@@ -89,28 +91,56 @@ package org.osflash.signals
 			return _target.dispatchEvent(event);
 		}
 		
-		protected function createListenerRelationship(listener:Function, priority:int):void
+		protected function createListenerRelationship(listener:Function, once:Boolean = false, priority:int = 0):void
 		{
 			// function.length is the number of arguments.
 			if (listener.length != 1)
 				throw new ArgumentError('Listener for native event must declare exactly 1 argument.');
 				
 			// Don't add same listener twice.
-			if (listeners.indexOf(listener) >= 0)
+			if (indexOfListener(listener) >= 0)
 				return;
 			
-			listeners.push(listener);
-			_target.addEventListener(_name, listener, false, priority);
+			var listenerCmd:ListenerCommand = new ListenerCommand(listener, once, this);
+			listenerCmds[listenerCmds.length] = listenerCmd;
+			_target.addEventListener(_name, listenerCmd.execute, false, priority);
 		}
 		
-		protected function createOnceDelegate(listener:Function):Function
+		protected function indexOfListener(listener:Function):int
 		{
-			var delegate:Function = function(event:Event):void
+			for (var i:int = listenerCmds.length; i--; )
 			{
-				listener(event);
-				remove(arguments.callee);
-			};
-			return delegate;
+				if (listenerCmds[i].listener == listener) return i;
+			}
+			return -1;
 		}
 	}
 }
+
+import flash.events.Event;
+import org.osflash.signals.INativeSignal;
+
+class ListenerCommand
+{
+	public var listener:Function;
+	public var execute:Function;
+	
+	protected var signal:INativeSignal;
+	
+	public function ListenerCommand(listener:Function, once:Boolean = false, signal:INativeSignal = null)
+	{
+		this.listener = listener;
+		this.execute = once ? executeAndRemove : listener;
+		this.signal = signal;
+	}
+	
+	protected function executeAndRemove(event:Event):void
+	{
+		listener(event);
+		signal.remove(arguments.callee);
+		listener = null;
+		signal = null;
+		execute = null;
+	}
+}
+

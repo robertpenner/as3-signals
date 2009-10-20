@@ -70,20 +70,26 @@ package org.osflash.signals
 		
 		private function emptyHandler(e:MouseEvent):void {}
 		
-		public function test_when_signal_adds_then_removes_listener_then_target_should_not_have_listener():void
+		public function test_when_signal_adds_then_removes_listener_then_target_should_not_have_listeners():void
 		{
 			clicked.add(emptyHandler);
 			clicked.remove(emptyHandler);
-			assertEquals(0, clicked.numListeners);
 			verifyNoListeners();
 		}
 		
-		public function test_when_signal_removes_all_listeners_then_target_should_not_have_listener():void
+		public function test_when_signal_removes_all_listeners_then_target_should_not_have_listeners():void
 		{
 			clicked.add(emptyHandler);
 			clicked.add( function(e:*):void {} );
 			clicked.removeAll();
-			assertEquals(0, clicked.numListeners);
+			verifyNoListeners();
+		}
+		
+		public function test_when_addOnce_and_removeAll_listeners_then_target_should_not_have_listeners():void
+		{
+			clicked.addOnce(emptyHandler);
+			clicked.addOnce( function(e:*):void {} );
+			clicked.removeAll();
 			verifyNoListeners();
 		}
 		//////
