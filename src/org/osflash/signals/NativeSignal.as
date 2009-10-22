@@ -1,10 +1,9 @@
 package org.osflash.signals
 {
-	import org.osflash.signals.error.AmbiguousRelationshipError;
-
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	import flash.utils.Dictionary;
+	import org.osflash.signals.error.AmbiguousRelationshipError;
 
 	/**
 	 * The NativeSignal class uses an ISignal interface as a facade for an IEventDispatcher.
@@ -101,7 +100,22 @@ package org.osflash.signals
 			if (indexOfListener(listener) >= 0)
 				return;
 			
-			var listenerCmd:ListenerCommand = new ListenerCommand(listener, once, this);
+			var listenerCmd:Object = { listener:listener };
+			
+			if (once)
+			{
+				var signal:INativeSignal = this;
+				listenerCmd.execute = function(event:Event):void
+				{
+					listener(event);
+					signal.remove(arguments.callee);
+				};
+			}
+			else
+			{
+				listenerCmd.execute = listener;
+			}
+				
 			listenerCmds[listenerCmds.length] = listenerCmd;
 			_target.addEventListener(_name, listenerCmd.execute, false, priority);
 		}
@@ -116,31 +130,3 @@ package org.osflash.signals
 		}
 	}
 }
-
-import flash.events.Event;
-import org.osflash.signals.INativeSignal;
-
-class ListenerCommand
-{
-	public var listener:Function;
-	public var execute:Function;
-	
-	protected var signal:INativeSignal;
-	
-	public function ListenerCommand(listener:Function, once:Boolean = false, signal:INativeSignal = null)
-	{
-		this.listener = listener;
-		this.execute = once ? executeAndRemove : listener;
-		this.signal = signal;
-	}
-	
-	protected function executeAndRemove(event:Event):void
-	{
-		listener(event);
-		signal.remove(arguments.callee);
-		listener = null;
-		signal = null;
-		execute = null;
-	}
-}
-

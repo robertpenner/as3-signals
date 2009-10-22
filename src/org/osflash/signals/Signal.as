@@ -108,7 +108,7 @@ package org.osflash.signals
 				
 				//TODO: investigate performance of various approaches
 				// Clone listeners array because add/remove may occur during the dispatch.
-				for each (var listenerBox:ListenerBox in listeners.concat())
+				for each (var listenerBox:Object in listeners.concat())
 				{
 					var listener:Function = listenerBox.listener;
 					//TODO: Maybe put this conditional outside the loop.
@@ -156,7 +156,7 @@ package org.osflash.signals
 			if (eventClass && !listener.length)
 				throw new ArgumentError('Listener must declare at least 1 argument when eventClass is specified.');
 			
-			var listenerBox:ListenerBox = new ListenerBox(listener, priority);
+			var listenerBox:Object = {listener:listener, priority:priority};
 			// Process the first listener as quickly as possible.
 			if (!listeners.length)
 			{
@@ -186,17 +186,5 @@ package org.osflash.signals
 			listeners[listeners.length] = listenerBox;
 		}
 		
-	}
-}
-
-class ListenerBox
-{
-	public var listener:Function;
-	public var priority:int;
-	
-	public function ListenerBox(listener:Function, priority:int = 0)
-	{
-		this.listener = listener;
-		this.priority = priority;
 	}
 }
