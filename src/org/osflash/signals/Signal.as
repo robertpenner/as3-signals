@@ -112,7 +112,7 @@ package org.osflash.signals
 				{
 					var listener:Function = listenerBox.listener;
 					//TODO: Maybe put this conditional outside the loop.
-					if (!eventObject)
+					if (eventObject == null)
 						listener();
 					else if (args.length)
 						listener.apply(null, args);
