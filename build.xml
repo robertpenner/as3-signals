@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<project name="as3-signals" basedir="." default="usage">
+
+  <!-- set up a prefix for all environment variables -->
+  <property environment="env."/>
+
+  <!-- System environment must contain FLEX_HOME variable that points to Flex SDK -->
+  <property name="FLEX_HOME" location="${env.FLEX_HOME}"/>
+  
+  <!-- identify properties file -->
+  <property file="build.properties"/>
+  
+  <!-- Set up Flex and FlexUnit ant tasks -->
+  <taskdef resource="flexTasks.tasks" classpath="${lib.loc}/flexTasks.jar"/>
+  <taskdef resource="flexUnitTasks.tasks" classpath="${lib.loc}/flexUnitTasks.jar"/>
+
+  <target name="usage">
+      <echo message=""/>
+      <echo message="Robotlegs Build Usage"/>
+      <echo message="-----------------------------------"/>
+      <echo message=""/>
+      <echo message="Available targets are:"/>
+      <echo message=""/>
+      <echo message="test          --> Build AS3Signals SWC and run unit tests"/>
+      <echo message="asdoc         --> Build AS3Signals SWC, test, and generate asdocs"/>
+      <echo message="package       --> Build AS3Signals SWC, test, and create release zip"/>
+      <echo message="compile       --> Build AS3Signals SWC"/>
+      <echo message="clean         --> Remove all folders created by build script"/>
+      <echo message="init          --> Clean and create build folders"/>
+      <echo message=""/>
+  </target>
+  
+  <!-- Clean Build and Report files -->
+  <target name="clean">
+    <!-- Remove all directories created during the build process -->
+    <echo>[clean] Removing Build (${dist.loc}) and Report (${report.loc}) directories</echo>
+    <delete includeemptydirs="true" failonerror="false">
+      <fileset dir="${dist.loc}" defaultexcludes="false">
+        <include name="**/*"/>
+      </fileset>
+      <fileset dir="${report.loc}" defaultexcludes="false">
+        <include name="**/*"/>
+      </fileset>
+    </delete>
+    <echo>[clean] Build and Report directories removed</echo>
+  </target>
+  
+  <!-- Create directories needed for the build process -->
+  <target name="init" depends="clean">
+    <echo>[init] Creating Bin and Report directories</echo>
+    <mkdir dir="${bin.loc}"/>
+    <mkdir dir="${report.loc}"/>
+    <echo>[init] Bin and Report directories created</echo>
+  </target>
+  
+  <!-- Compile Release SWC -->
+  <target name="compile" depends="init">
+    <echo>[compile] Compiling release SWC</echo>
+    <echo>[compile] Using Flex SDK at: ${FLEX_HOME}</echo>
+    <!-- it won't let me use ${ant.project.name} here for some reason :/ -->
+    <compc output="${bin.loc}/${ant.project.name}-${as3-signals.ver.num}.swc" incremental="true" static-link-runtime-shared-libraries="true">
+      <!-- include our Class packages into the build (com folder) -->
+      <include-sources dir="${main.src.loc}/org" includes="*"/>
+      <compiler.verbose-stacktraces>true</compiler.verbose-stacktraces>
+      <compiler.headless-server>true</compiler.headless-server>
+      <keep-as3-metadata name="Inject"/>
+    </compc>
+    <echo>[compile] Release SWC ${ant.project.name}-${as3-signals.ver.num}.swc created successfully</echo>
+  </target>
+  
+  <!-- Run Unit Tests -->
+  <target name="test" depends="compile">
+    <echo>[test] Running Unit Tests</echo>
+    <!-- Compile TestRunner.mxml as a SWF -->
+    <mxmlc file="${test.src.loc}/TestRunner.as" output="${bin.loc}/TestRunner.swf" incremental="true">
+      <source-path path-element="${main.src.loc}"/>
+      <library-path dir="${lib.loc}" append="true">
+        <include name="*.swc"/>
+      </library-path>
+
+      <!-- default-size width="200" height="200"/>
+      <default-background-color>0x000000</default-background-color -->
+      <compiler.verbose-stacktraces>true</compiler.verbose-stacktraces>
+      <compiler.headless-server>true</compiler.headless-server>
+    </mxmlc>
+    <!-- Execute TestRunner.swf as FlexUnit tests and publish reports -->
+    <flexunit swf="${bin.loc}/TestRunner.swf" toDir="${report.loc}" haltonfailure="true" verbose="true" localTrusted="true" headless="true" />
+    <!-- Generate readable JUnit-style reports -->
+    <junitreport todir="${report.loc}">
+      <fileset dir="${report.loc}">
+        <include name="TEST-*.xml"/>
+      </fileset>
+      <report format="frames" todir="${report.loc}/html"/>
+    </junitreport>
+    <echo>[test] Finished running Unit Tests</echo>
+  </target>
+  
+  <!-- Build Documentation -->
+  <target name="asdoc" depends="test">
+    <echo>[create-docs] Generating ASDOC documentation</echo>
+    <tstamp>
+      <format property="docgen.time" pattern="MM/dd/yyyy hh:mm aa" unit="hour"/>
+    </tstamp>
+    <exec executable="${asdoc.loc}" failonerror="true">
+      <arg line="-external-library-path ${lib.loc}"/>
+      <arg line="-doc-sources ${main.src.loc}"/>
+      <arg line="-source-path ${main.src.loc}"/>
+      <arg line="-output ${doc.loc}"/>
+      <arg line="-window-title 'AS3 Signals ${as3-signals.ver.num}'"/>
+      <arg line="-main-title 'AS3 Signals ${as3-signals.ver.num}'"/>
+      <arg line="-footer 'AS3 Signals - {as3-signals.project.link}/ - Documentation generated at: ${docgen.time}'" />
+      <!--arg line="-package org.robotlegs.adapters 'Adapters to bridge third-party Di/IoC and reflection libraries'"/>
+      <arg line="-package org.robotlegs.base 'Base classes used to build custom Robotlegs frameworks'"/>
+      <arg line="-package org.robotlegs.core 'The core Robotlegs Framework apparatus contracts'"/>
+      <arg line="-package org.robotlegs.mvcs 'The reference MVCS Robotlegs Framework implementation'"/ -->
+    </exec>
+    <echo>[create-docs] ASDOC documentation generated successfully</echo>
+  </target>
+  
+  <!-- Package the Build -->
+  <target name="package" depends="test">
+    <tstamp>
+      <format property="touch.time" pattern="MM/dd/yyyy hh:mm aa" unit="hour"/>
+    </tstamp>
+    <!-- Assemble  -->
+    <echo>[package] Packaging Release</echo>
+    <mkdir dir="${dist.loc}"/>
+    <mkdir dir="${dist.loc}/bin"/>
+    <mkdir dir="${dist.loc}/src"/>
+    <copy file="${bin.loc}/${ant.project.name}-${as3-signals.ver.num}.swc" todir="${dist.loc}/bin"/>
+    <copy todir="${dist.loc}/src/org">
+      <fileset dir="${main.src.loc}/org"/>
+    </copy>
+    <!-- Copy README  -->
+    <copy file="${template.loc}/README.tmpl" tofile="${dist.loc}/README" overwrite="true">
+      <filterchain>
+        <replacetokens>
+          <token key="date" value="${touch.time}"/>
+          <token key="rlversion" value="${as3-signals.ver.num}"/>
+          <token key="releasename" value="${ant.project.name}-${as3-signals.ver.num}"/>
+          <!-- token key="ssversion" value="${swift.suspenders.version}"/>
+          <token key="sslink" value="${swift.suspenders.link}"/ -->
+          <token key="rlprojectlink" value="${as3-signals.project.link}"/>
+          <!-- token key="bestpracticeslink" value="${robotlegs.faq.link}"/>
+          <token key="faqlink" value="${robotlegs.best.practices.link}"/ -->
+        </replacetokens>
+      </filterchain>
+    </copy>
+    <!-- Zip It  -->
+    <zip destfile="${dist.loc}/${ant.project.name}-${as3-signals.ver.num}.zip">
+      <fileset dir="${dist.loc}"/>
+    </zip>
+    <!-- Clean Up  -->
+    <delete file="${dist.loc}/${ant.project.name}-${as3-signals.ver.num}.swc"/>
+    <delete file="${dist.loc}/README"/>
+    <delete dir="${dist.loc}/bin"/>
+    <delete dir="${dist.loc}/src"/>
+    <echo>[package] Release packaged successfully</echo>
+  </target>
+
+</project>
