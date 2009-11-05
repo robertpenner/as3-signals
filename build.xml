@@ -1,0 +1,37 @@
+<project name="as3-signals" default="swc">
+
+	<!-- Set up a prefix for all environment variables. -->
+	<property environment="env."/>
+	<fail unless="env.FLEX_HOME" message="FLEX_HOME needs to be defined as an environment variable or in the Ant build." />
+	<!-- Copy Flex SDK location from environment variable. This can be set manually instead. -->
+	<property name="FLEX_HOME" value="${env.FLEX_HOME}" />
+
+	<!-- project paths -->
+	<property name="root.dir" location="."/>
+	<property name="src.dir" location="${root.dir}/src"/>
+	<property name="test.dir" location="${root.dir}/test"/>
+	<!--<property name="libs.dir" location="${root.dir}/lib"/>-->
+	<property name="output.dir" location="${root.dir}/bin"/>
+	<property name="output.swc" location="${output.dir}/as3-signals.swc"/>
+			
+	<target name="swc" depends="" description="Compile AS3 code into a SWC">
+		<echo>Using Flex SDK at: ${FLEX_HOME}</echo>
+			
+		<java jar="${FLEX_HOME}/lib/compc.jar" dir="." fork="true" failonerror="true">
+			<arg value="+flexlib=${FLEX_HOME}/frameworks" />
+			<arg value="-incremental=true" />
+				
+			<arg value="-source-path+=${src.dir}" />
+			
+			<!-- Include all classes in this path. -->
+			<arg value="-include-sources=${src.dir}" />
+			
+			<!-- Link in classes from swc library (only those used). -->
+			<!--<arg value="-library-path+=${libs.dir}" />-->
+			
+			<arg value="-output=${output.swc}" />
+		</java>
+			
+	</target>
+		
+</project>
