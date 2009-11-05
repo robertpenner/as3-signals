@@ -1,39 +1,36 @@
 package org.osflash.signals
 {
-	import asunit.framework.TestSuite;
-
-	import org.osflash.signals.AmbiguousRelationshipInNativeSignalTest;
-	import org.osflash.signals.AmbiguousRelationshipTest;
-	import org.osflash.signals.GenericEventTest;
-	import org.osflash.signals.NativeRelaySignalTest;
-	import org.osflash.signals.NativeSignalTest;
-	import org.osflash.signals.PriorityListenersTest;
-	import org.osflash.signals.RedispatchedEventTest;
-	import org.osflash.signals.SignalDispatchExtraArgsTest;
-	import org.osflash.signals.SignalDispatchNoArgsTest;
-	import org.osflash.signals.SignalDispatchNonEventTest;
-	import org.osflash.signals.SignalSplitInterfacesTest;
-	import org.osflash.signals.SignalWithBubblingEventTest;
-	import org.osflash.signals.SignalWithCustomEventTest;
+	//import org.osflash.signals.AmbiguousRelationshipInNativeSignalTest;
+	//import org.osflash.signals.AmbiguousRelationshipTest;
+	//import org.osflash.signals.GenericEventTest;
+	//import org.osflash.signals.NativeRelaySignalTest;
+	//import org.osflash.signals.NativeSignalTest;
+	//import org.osflash.signals.PriorityListenersTest;
+	//import org.osflash.signals.RedispatchedEventTest;
+	//import org.osflash.signals.SignalDispatchExtraArgsTest;
+	//import org.osflash.signals.SignalDispatchNoArgsTest;
+	//import org.osflash.signals.SignalDispatchNonEventTest;
+	//import org.osflash.signals.SignalSplitInterfacesTest;
+	//import org.osflash.signals.SignalWithBubblingEventTest;
+	//import org.osflash.signals.SignalWithCustomEventTest;
 	import org.osflash.signals.SignalWithGenericEventTest;
-
-	public class AllTests extends TestSuite {
-
-		public function AllTests() {
-			addTest(new org.osflash.signals.AmbiguousRelationshipInNativeSignalTest());
-			addTest(new org.osflash.signals.AmbiguousRelationshipTest());
-			addTest(new org.osflash.signals.GenericEventTest());
-			addTest(new org.osflash.signals.NativeRelaySignalTest());
-			addTest(new org.osflash.signals.NativeSignalTest());
-			addTest(new org.osflash.signals.PriorityListenersTest());
-			addTest(new org.osflash.signals.RedispatchedEventTest());
-			addTest(new org.osflash.signals.SignalDispatchExtraArgsTest());
-			addTest(new org.osflash.signals.SignalDispatchNoArgsTest());
-			addTest(new org.osflash.signals.SignalDispatchNonEventTest());
-			addTest(new org.osflash.signals.SignalSplitInterfacesTest());
-			addTest(new org.osflash.signals.SignalWithBubblingEventTest());
-			addTest(new org.osflash.signals.SignalWithCustomEventTest());
-			addTest(new org.osflash.signals.SignalWithGenericEventTest());
-		}
+	
+	[Suite]
+	public class AllTests
+	{
+		//public var AmbiguousRelationshipInNativeSignalTest:AmbiguousRelationshipInNativeSignalTest;
+		//public var AmbiguousRelationshipTest:AmbiguousRelationshipTest;
+		//public var GenericEventTest:GenericEventTest;
+		//public var NativeRelaySignalTest:NativeRelaySignalTest;
+		//public var NativeSignalTest:NativeSignalTest;
+		//public var PriorityListenersTest:PriorityListenersTest;
+		//public var RedispatchedEventTest:RedispatchedEventTest;
+		//public var SignalDispatchExtraArgsTest:SignalDispatchExtraArgsTest;
+		//public var a:SignalDispatchNoArgsTest;
+		//public var a:SignalDispatchNonEventTest;
+		//public var a:SignalSplitInterfacesTest;
+		//public var a:SignalWithBubblingEventTest;
+		//public var a:SignalWithCustomEventTest;
+		public var _SignalWithGenericEventTest:SignalWithGenericEventTest;
 	}
 }

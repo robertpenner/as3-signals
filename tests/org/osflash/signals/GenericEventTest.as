@@ -2,7 +2,7 @@ package org.osflash.signals
 {
 	import asunit.framework.TestCase;
 
-	public class GenericEventTest extends TestCase
+	public class GenericEventTest
 	{
 		private var instance:GenericEvent;
 
@@ -11,12 +11,14 @@ package org.osflash.signals
 			super(testMethod);
 		}
 
-		protected override function setUp():void
+		[Before]
+		public function setUp():void
 		{
 			instance = new GenericEvent();
 		}
 
-		protected override function tearDown():void
+		[After]
+		public function tearDown():void
 		{
 			instance = null;
 		}
@@ -28,25 +30,29 @@ package org.osflash.signals
 			assertFalse('bubbles is false by default', instance.bubbles);
 		}
 		
-		public function test_bubbles_roundtrips_through_constructor():void
+		[Test]
+		public function bubbles_roundtrips_through_constructor():void
 		{
 			var bubblingEvent:GenericEvent = new GenericEvent(true);
 			assertTrue(bubblingEvent.bubbles);
 		}
 		
-		public function test_clone_should_be_instance_of_original_event_class():void
+		[Test]
+		public function clone_should_be_instance_of_original_event_class():void
 		{
 			var theClone:IEvent = instance.clone();
 			assertTrue(theClone is GenericEvent);
 		}
 		
-		public function test_clone_non_bubbling_event_should_have_bubbles_false():void
+		[Test]
+		public function clone_non_bubbling_event_should_have_bubbles_false():void
 		{
 			var theClone:GenericEvent = GenericEvent(instance.clone());
 			assertFalse(theClone.bubbles);
 		}
 		
-		public function test_clone_bubbling_event_should_have_bubbles_true():void
+		[Test]
+		public function clone_bubbling_event_should_have_bubbles_true():void
 		{
 			var bubblingEvent:GenericEvent = new GenericEvent(true);
 			var theClone:IEvent = bubblingEvent.clone();
