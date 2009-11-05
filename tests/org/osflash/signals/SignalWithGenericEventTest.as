@@ -1,39 +1,39 @@
-package org.osflash.signals {
-	import asunit.framework.TestCase;
+package org.osflash.signals
+{
+	import asunit.asserts.*;
+	import asunit4.async.addAsync;
 	import flash.display.Sprite;
 	import org.osflash.signals.GenericEvent;
-
-	public class SignalWithGenericEventTest extends TestCase
+	
+	public class SignalWithGenericEventTest
 	{
-		public var completed:ISignal;
+		public var completed:Signal;
+		
+		public function SignalWithGenericEventTest() {}
 
-		public function SignalWithGenericEventTest(testMethod:String = null)
-		{
-			super(testMethod);
-		}
-
-		protected override function setUp():void
+		[Before]
+		public function setUp():void
 		{
 			completed = new Signal(this);
 		}
 
-		protected override function tearDown():void
+		[After]
+		public function tearDown():void
 		{
 			completed.removeAll();
 			completed = null;
 		}
-		// This is a convenience override to set the async timeout really low, so failures happen more quickly.
-		override protected function addAsync(handler:Function = null, duration:Number = 10, failureHandler:Function=null):Function
-		{
-			return super.addAsync(handler, duration, failureHandler);
-		}
 
-		public function test_signal_length_is_0_after_creation():void
+		[Test]
+		public function signal_length_is_0_after_creation():void
 		{
 			assertEquals(0, completed.numListeners);
 		}
+		
 		//////
-		public function test_add_listener_and_dispatch_event_should_pass_event_to_listener():void
+		
+		[Test(async,timeout="10")]
+		public function add_listener_and_dispatch_event_should_pass_event_to_listener():void
 		{
 			completed.add(addAsync(checkGenericEvent));
 			completed.dispatch(new GenericEvent());
@@ -47,24 +47,35 @@ package org.osflash.signals {
 			assertEquals('event.target points to object containing the Signal', this, e.target);
 			assertEquals('event.target is e.currentTarget because event does not bubble', e.target, e.currentTarget);
 		}
+		
 		//////
-		public function test_add_two_listeners_and_dispatch_should_call_both():void
+
+		
+		[Test(async)]
+		public function add_two_listeners_and_dispatch_should_call_both():void
 		{
-			completed.add(addAsync(checkGenericEvent));
-			completed.add(addAsync(checkGenericEvent));
+			trace('add_two_listeners_and_dispatch_should_call_both: ' + add_two_listeners_and_dispatch_should_call_both);
+			completed.add(addAsync(checkGenericEvent, 10));
+			completed.add(addAsync(checkGenericEvent, 10));
 			completed.dispatch(new GenericEvent());
 		}
+
 		//////
-		public function test_addOnce_and_dispatch_should_remove_listener_automatically():void
+
+		//[Test]
+		public function addOnce_and_dispatch_should_remove_listener_automatically():void
 		{
 			completed.addOnce(newEmptyHandler());
 			completed.dispatch(new GenericEvent());
 			assertEquals('there should be no listeners', 0, completed.numListeners);
 		}
+		
 		//////
-		public function test_add_one_listener_and_dispatch_then_listener_remove_itself_using_event_signal():void
+
+		[Test(async)]
+		public function add_one_listener_and_dispatch_then_listener_remove_itself_using_event_signal():void
 		{
-			completed.add(addAsync(remove_myself_from_signal));
+			completed.add(addAsync(remove_myself_from_signal, 10));
 			completed.dispatch(new GenericEvent());
 		}
 		
@@ -76,8 +87,11 @@ package org.osflash.signals {
 			
 			assertEquals('listener removed from signal', 0, e.signal.numListeners);
 		}
+
 		//////
-		public function test_add_listener_then_remove_then_dispatch_should_not_call_listener():void
+		
+		[Test]
+		public function add_listener_then_remove_then_dispatch_should_not_call_listener():void
 		{
 			var delegate:Function = failIfCalled;
 			completed.add(delegate);
@@ -89,29 +103,36 @@ package org.osflash.signals {
 		{
 			fail('This event handler should not have been called.');
 		}
+		
 		//////
-		public function test_add_2_listeners_remove_2nd_then_dispatch_should_call_1st_not_2nd_listener():void
+
+		[Test(async)]
+		public function add_2_listeners_remove_2nd_then_dispatch_should_call_1st_not_2nd_listener():void
 		{
-			completed.add(addAsync(checkGenericEvent));
+			completed.add(addAsync(checkGenericEvent, 10));
 			var delegate:Function = failIfCalled;
 			completed.add(delegate);
 			completed.remove(delegate);
 			completed.dispatch(new GenericEvent());
 		}
 		//////
-		public function test_add_2_listeners_should_yield_length_of_2():void
+		[Test]
+		public function add_2_listeners_should_yield_length_of_2():void
 		{
 			completed.add(newEmptyHandler());
 			completed.add(newEmptyHandler());
 			assertEquals(2, completed.numListeners);
 		}
-		
+
 		private function newEmptyHandler():Function
 		{
 			return function(e:*):void {};
 		}
+		
+
 		//////
-		public function test_add_2_listeners_then_remove_1_should_yield_length_of_1():void
+		[Test]
+		public function add_2_listeners_then_remove_1_should_yield_length_of_1():void
 		{
 			var firstFunc:Function = newEmptyHandler();
 			completed.add(firstFunc);
@@ -122,7 +143,8 @@ package org.osflash.signals {
 			assertEquals(1, completed.numListeners);
 		}
 		
-		public function test_add_2_listeners_then_removeAll_should_yield_length_of_0():void
+		[Test]
+		public function add_2_listeners_then_removeAll_should_yield_length_of_0():void
 		{
 			completed.add(newEmptyHandler());
 			completed.add(newEmptyHandler());
@@ -132,7 +154,8 @@ package org.osflash.signals {
 			assertEquals(0, completed.numListeners);
 		}
 		
-		public function test_add_same_listener_twice_should_only_add_it_once():void
+		[Test]
+		public function add_same_listener_twice_should_only_add_it_once():void
 		{
 			var func:Function = newEmptyHandler();
 			completed.add(func);
@@ -140,7 +163,8 @@ package org.osflash.signals {
 			assertEquals(1, completed.numListeners);
 		}
 		//////
-		public function test_dispatch_object_that_isnt_an_IEvent_should_dispatch_without_error():void
+		[Test]
+		public function dispatch_object_that_isnt_an_IEvent_should_dispatch_without_error():void
 		{
 			completed.addOnce(checkSprite);
 			// Sprite doesn't have a target property,
@@ -154,5 +178,6 @@ package org.osflash.signals {
 			assertTrue(sprite is Sprite);
 		}
 		//////
+
 	}
 }

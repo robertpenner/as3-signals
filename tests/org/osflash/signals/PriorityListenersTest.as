@@ -1,10 +1,10 @@
 package org.osflash.signals
 {
-	import asunit.framework.TestCase;
+	import asunit.asserts.*;
 	import flash.display.Sprite;
 	import org.osflash.signals.GenericEvent;
 
-	public class PriorityListenersTest extends TestCase
+	public class PriorityListenersTest
 	{
 		public var completed:ISignal;
 		private var listenersCalled:Array;
@@ -14,13 +14,15 @@ package org.osflash.signals
 			super(testMethod);
 		}
 
-		protected override function setUp():void
+		[Before]
+		public function setUp():void
 		{
 			completed = new Signal(this);
 			listenersCalled = [];
 		}
 
-		protected override function tearDown():void
+		[After]
+		public function tearDown():void
 		{
 			completed.removeAll();
 			completed = null;
@@ -32,7 +34,8 @@ package org.osflash.signals
 			return super.addAsync(handler, duration, failureHandler);
 		}
 		//////
-		public function test_listener_added_second_with_higher_priority_should_be_called_first():void
+		[Test]
+		public function listener_added_second_with_higher_priority_should_be_called_first():void
 		{
 			completed.add( addAsync(listener1) );
 			completed.add( addAsync(listener0), 10 );
@@ -58,7 +61,8 @@ package org.osflash.signals
 			assertSame('this should be the third listener called', arguments.callee, listenersCalled[2]);
 		}
 		//////
-		public function test_listeners_added_with_same_priority_should_be_called_in_order_added():void
+		[Test]
+		public function listeners_added_with_same_priority_should_be_called_in_order_added():void
 		{
 			completed.add( addAsync(listener0), 10 );
 			completed.add( addAsync(listener1), 10 );

@@ -1,9 +1,9 @@
 package org.osflash.signals
 {
-	import asunit.framework.TestCase;
+	import asunit.asserts.*;
 	import org.osflash.signals.ISignal;
 
-	public class SignalDispatchNonEventTest extends TestCase
+	public class SignalDispatchNonEventTest
 	{
 		public var completed:ISignal;
 
@@ -12,12 +12,14 @@ package org.osflash.signals
 			super(testMethod);
 		}
 
-		protected override function setUp():void
+		[Before]
+		public function setUp():void
 		{
 			completed = new Signal(this);
 		}
 
-		protected override function tearDown():void
+		[After]
+		public function tearDown():void
 		{
 			completed.removeAll();
 			completed = null;
@@ -26,7 +28,8 @@ package org.osflash.signals
 		/**
 		 * Captures bug where dispatching 0 was considered null.
 		 */
-		public function test_dispatch_zero_should_call_listener_with_zero():void
+		[Test]
+		public function dispatch_zero_should_call_listener_with_zero():void
 		{
 			completed.add( addAsync(onZero, 10) );
 			completed.dispatch(0);

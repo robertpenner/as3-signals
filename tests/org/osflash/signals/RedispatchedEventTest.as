@@ -1,8 +1,8 @@
 package org.osflash.signals {
-	import asunit.framework.TestCase;
+	import asunit.asserts.*;
 	import org.osflash.signals.GenericEvent;
 
-	public class RedispatchedEventTest extends TestCase
+	public class RedispatchedEventTest
 	{
 		public var completed:ISignal;
 		protected var originalEvent:GenericEvent;
@@ -12,12 +12,14 @@ package org.osflash.signals {
 			super(testMethod);
 		}
 
-		protected override function setUp():void
+		[Before]
+		public function setUp():void
 		{
 			completed = new Signal(this);
 		}
 
-		protected override function tearDown():void
+		[After]
+		public function tearDown():void
 		{
 			completed.removeAll();
 			completed = null;
@@ -28,7 +30,8 @@ package org.osflash.signals {
 			return super.addAsync(handler, duration, failureHandler);
 		}
 		//////
-		public function test_dispatch_event_already_dispatched_should_clone_it():void
+		[Test]
+		public function dispatch_event_already_dispatched_should_clone_it():void
 		{
 			completed.add(addAsync(redispatchEvent));
 			originalEvent = new GenericEvent();

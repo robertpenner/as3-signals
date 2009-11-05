@@ -1,6 +1,6 @@
 package org.osflash.signals
 {
-	import asunit.framework.TestCase;
+	import asunit.asserts.*;
 
 	public class GenericEventTest
 	{

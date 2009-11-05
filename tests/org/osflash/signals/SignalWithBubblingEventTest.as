@@ -1,10 +1,10 @@
 package org.osflash.signals {
-	import asunit.framework.TestCase;
+	import asunit.asserts.*;
 	import flash.display.Sprite;
 	import org.osflash.signals.GenericEvent;
 	import org.osflash.signals.Signal;
 
-	public class SignalWithBubblingEventTest extends TestCase implements IBubbleEventHandler
+	public class SignalWithBubblingEventTest implements IBubbleEventHandler
 	{
 		protected var theChild:Child;
 		protected var theGrandChild:Child;
@@ -15,13 +15,15 @@ package org.osflash.signals {
 			super(testMethod);
 		}
 
-		protected override function setUp():void
+		[Before]
+		public function setUp():void
 		{
 			theChild = new Child('theChild', this);
 			theGrandChild = new Child('theGrandChild', theChild);
 		}
 
-		protected override function tearDown():void
+		[After]
+		public function tearDown():void
 		{
 			//theChild = null; //This happens too soon and messes up the test--probably an ASUnit bug.
 		}
@@ -32,13 +34,15 @@ package org.osflash.signals {
 			return super.addAsync(handler, duration, failureHandler);
 		}
 		
-		public function test_parent_child_relationships():void
+		[Test]
+		public function parent_child_relationships():void
 		{
 			assertSame("theChild's parent is this", this, theChild.parent);
 			assertTrue("this can handle bubbling events", this is IBubbleEventHandler);
 		}
 		//////
-		public function test_dispatch_bubbling_event_from_theGrandChild_should_bubble_to_IBubbleHandler():void
+		[Test]
+		public function dispatch_bubbling_event_from_theGrandChild_should_bubble_to_IBubbleHandler():void
 		{
 			cancelTimeout = addAsync();
 			var event:IEvent = new GenericEvent();

@@ -1,9 +1,9 @@
 package org.osflash.signals
 {
-	import asunit.framework.TestCase;
+	import asunit.asserts.*;
 	import org.osflash.signals.ISignal;
 
-	public class SignalDispatchNoArgsTest extends TestCase
+	public class SignalDispatchNoArgsTest
 	{
 		public var completed:ISignal;
 
@@ -12,18 +12,21 @@ package org.osflash.signals
 			super(testMethod);
 		}
 
-		protected override function setUp():void
+		[Before]
+		public function setUp():void
 		{
 			completed = new Signal(this);
 		}
 
-		protected override function tearDown():void
+		[After]
+		public function tearDown():void
 		{
 			completed.removeAll();
 			completed = null;
 		}
 		//////
-		public function test_dispatch_no_args_should_call_listener_with_no_args():void
+		[Test]
+		public function dispatch_no_args_should_call_listener_with_no_args():void
 		{
 			completed.add( addAsync(onCompleted, 10) );
 			completed.dispatch();
@@ -34,7 +37,8 @@ package org.osflash.signals
 			assertEquals(0, arguments.length);
 		}
 		//////
-		public function test_dispatch_null_should_call_listener_with_no_args():void
+		[Test]
+		public function dispatch_null_should_call_listener_with_no_args():void
 		{
 			completed.addOnce( addAsync(onCompleted, 10) );
 			completed.dispatch(null);

@@ -1,10 +1,10 @@
 package org.osflash.signals
 {
-	import asunit.framework.TestCase;
+	import asunit.asserts.*;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 
-	public class NativeRelaySignalTest extends TestCase
+	public class NativeRelaySignalTest
 	{
 		private var clicked:ISignal;
 		private var sprite:Sprite;
@@ -14,13 +14,15 @@ package org.osflash.signals
 			super(testMethod);
 		}
 
-		protected override function setUp():void
+		[Before]
+		public function setUp():void
 		{
 			sprite = new Sprite();
 			clicked = new NativeRelaySignal(sprite, 'click', MouseEvent);
 		}
 
-		protected override function tearDown():void
+		[After]
+		public function tearDown():void
 		{
 			clicked.removeAll();
 			clicked = null;
@@ -33,7 +35,8 @@ package org.osflash.signals
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener('click'));
 		}
 		//////
-		public function test_signal_add_then_EventDispatcher_dispatch_should_call_signal_listener():void
+		[Test]
+		public function signal_add_then_EventDispatcher_dispatch_should_call_signal_listener():void
 		{
 			clicked.add( addAsync(onClicked, 10) );
 			sprite.dispatchEvent(new MouseEvent('click'));
@@ -44,7 +47,8 @@ package org.osflash.signals
 			assertSame(sprite, e.currentTarget);
 		}
 		//////
-		public function test_when_signal_adds_listener_then_hasEventListener_should_be_true():void
+		[Test]
+		public function when_signal_adds_listener_then_hasEventListener_should_be_true():void
 		{
 			clicked.add(emptyHandler);
 			assertTrue(sprite.hasEventListener('click'));
@@ -52,7 +56,8 @@ package org.osflash.signals
 		
 		private function emptyHandler(e:MouseEvent):void {}
 		
-		public function test_when_signal_adds_then_removes_listener_then_hasEventListener_should_be_false():void
+		[Test]
+		public function when_signal_adds_then_removes_listener_then_hasEventListener_should_be_false():void
 		{
 			clicked.add(emptyHandler);
 			clicked.remove(emptyHandler);

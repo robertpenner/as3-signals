@@ -12,7 +12,7 @@ package org.osflash.signals
 	//import org.osflash.signals.SignalDispatchNonEventTest;
 	//import org.osflash.signals.SignalSplitInterfacesTest;
 	//import org.osflash.signals.SignalWithBubblingEventTest;
-	//import org.osflash.signals.SignalWithCustomEventTest;
+	import org.osflash.signals.SignalWithCustomEventTest;
 	import org.osflash.signals.SignalWithGenericEventTest;
 	
 	[Suite]
@@ -22,7 +22,7 @@ package org.osflash.signals
 		//public var AmbiguousRelationshipTest:AmbiguousRelationshipTest;
 		//public var GenericEventTest:GenericEventTest;
 		//public var NativeRelaySignalTest:NativeRelaySignalTest;
-		//public var NativeSignalTest:NativeSignalTest;
+		public var _NativeSignalTest:NativeSignalTest;
 		//public var PriorityListenersTest:PriorityListenersTest;
 		//public var RedispatchedEventTest:RedispatchedEventTest;
 		//public var SignalDispatchExtraArgsTest:SignalDispatchExtraArgsTest;
@@ -30,7 +30,7 @@ package org.osflash.signals
 		//public var a:SignalDispatchNonEventTest;
 		//public var a:SignalSplitInterfacesTest;
 		//public var a:SignalWithBubblingEventTest;
-		//public var a:SignalWithCustomEventTest;
+		public var _SignalWithCustomEventTest:SignalWithCustomEventTest;
 		public var _SignalWithGenericEventTest:SignalWithGenericEventTest;
 	}
 }

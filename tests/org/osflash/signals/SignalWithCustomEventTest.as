@@ -1,32 +1,32 @@
 package org.osflash.signals {
-	import asunit.framework.TestCase;
+	import asunit.asserts.*;
+	import asunit4.async.addAsync;
 
-	public class SignalWithCustomEventTest extends TestCase
+	public class SignalWithCustomEventTest
 	{
 		public var messaged:ISignal;
 
-		public function SignalWithCustomEventTest(testMethod:String = null)
-		{
-			super(testMethod);
-		}
-
-		protected override function setUp():void
+		[Before]
+		public function setUp():void
 		{
 			messaged = new Signal(this, MessageEvent);
 		}
 
-		protected override function tearDown():void
+		[After]
+		public function tearDown():void
 		{
 			messaged.removeAll();
 			messaged = null;
 		}
 		//////
-		public function test_eventClass_roundtrips_through_constructor():void
+		[Test]
+		public function eventClass_roundtrips_through_constructor():void
 		{
 			assertSame(MessageEvent, messaged.eventClass);
 		}
 		
-		public function test_add_one_listener_and_dispatch():void
+		[Test(async)]
+		public function add_one_listener_and_dispatch():void
 		{
 			messaged.add(addAsync(onMessage, 50));
 			messaged.dispatch(new MessageEvent('ok'));
@@ -39,7 +39,8 @@ package org.osflash.signals {
 			assertEquals('message value in the event', 'ok', e.message);
 		}
 		//////
-		public function test_dispatch_wrong_event_type_should_throw_ArgumentError():void
+		[Test]
+		public function dispatch_wrong_event_type_should_throw_ArgumentError():void
 		{
 			assertThrows(ArgumentError, dispatchWrongEventType);
 		}
@@ -49,7 +50,8 @@ package org.osflash.signals {
 			messaged.dispatch(new GenericEvent());
 		}
 		//////
-		public function test_signal_with_eventClass_adding_listener_without_args_should_throw_ArgumentError():void
+		[Test]
+		public function signal_with_eventClass_adding_listener_without_args_should_throw_ArgumentError():void
 		{
 			assertThrows(ArgumentError, addListenerWithoutArgs);
 		}
