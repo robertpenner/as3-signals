@@ -1,11 +1,9 @@
 package org.osflash.signals
 {
-	import org.osflash.signals.IBubbleEventHandler;
-	import org.osflash.signals.IEvent;
-	import org.osflash.signals.error.AmbiguousRelationshipError;
-
 	import flash.utils.Dictionary;
-
+	
+	import org.osflash.signals.error.AmbiguousRelationshipError;
+	
 	/**
 	 * Signal dispatches events to multiple listeners.
 	 * It is inspired by C# events and delegates, and by
@@ -51,7 +49,7 @@ package org.osflash.signals
 		{
 			if (onceListeners[listener])
 				throw new AmbiguousRelationshipError('You cannot addOnce() then add() the same listener without removing the relationship first.');
-		
+			
 			createListenerRelationship(listener, priority);
 		}
 		
@@ -84,7 +82,7 @@ package org.osflash.signals
 		{
 			if (_eventClass && !(eventObject is _eventClass))
 				throw new ArgumentError('Event object '+eventObject+' is not an instance of '+_eventClass+'.');
-
+			
 			var event:IEvent = eventObject as IEvent;
 			if (event)
 			{
@@ -127,16 +125,20 @@ package org.osflash.signals
 			}
 			
 			if (!event || !event.bubbles) return;
-
+			
 			//// Bubble the event as far as possible.
 			var currentTarget:Object = this.target;
-			while ( currentTarget && currentTarget.hasOwnProperty("parent")
-					&& (currentTarget = currentTarget.parent) )
+			while ( currentTarget && 
+				(currentTarget is IBubbler || currentTarget.hasOwnProperty("parent")) &&
+				(currentTarget = currentTarget.parent))
 			{
 				if (currentTarget is IBubbleEventHandler)
 				{
-					IBubbleEventHandler(event.currentTarget = currentTarget).onEventBubbled(event);
-					break;
+					if (IBubbleEventHandler(event.currentTarget = currentTarget).onEventBubbled(event)) {
+						continue;
+					} else {
+						break;
+					}
 				}
 			}
 		}
@@ -149,7 +151,7 @@ package org.osflash.signals
 			}
 			return -1;
 		}
-				
+		
 		protected function createListenerRelationship(listener:Function, priority:int):void
 		{
 			// function.length is the number of arguments.

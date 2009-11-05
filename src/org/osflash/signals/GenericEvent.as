@@ -4,8 +4,8 @@ package org.osflash.signals
 	
 	/**
 	 *
-	 * @see org.osflash.signals.IEvent
-	 * Documentation for the event interface being maintained in IEvent to avoid duplication for now.
+	 * @copy org.osflash.signals.IEvent
+	 * 
 	 */
 	public class GenericEvent implements IEvent
 	{
