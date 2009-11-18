@@ -6,7 +6,9 @@ package org.osflash.signals
 	import org.osflash.signals.error.AmbiguousRelationshipError;
 
 	/**
-	 * The NativeSignal class uses an ISignal interface as a facade for an IEventDispatcher.
+	 * The NativeSignal class provides a strongly-typed facade for an IEventDispatcher.
+	 * A NativeSignal is essentially a mini-dispatcher locked to a specific event type and class.
+	 * It can become part of an interface.
 	 */
 	public class NativeSignal implements INativeSignal
 	{
@@ -17,8 +19,8 @@ package org.osflash.signals
 		protected var onceListeners:Dictionary;
 				
 		/**
-		 * Creates a Signal instance to dispatch events on behalf of a target object.
-		 * @param	target The object the signal is dispatching events on behalf of.
+		 * Creates a NativeSignal instance to dispatch events on behalf of a target object.
+		 * @param	target The object on whose behalf the signal is dispatching events.
 		 * @param	eventType The type of Event permitted to be dispatched from this signal. Corresponds to Event.type.
 		 * @param	eventClass An optional class reference that enables an event type check in dispatch(). Defaults to flash.events.Event if omitted.
 		 */
@@ -30,6 +32,9 @@ package org.osflash.signals
 			listenerCmds = [];
 			onceListeners = new Dictionary();
 		}
+		
+		/** @inheritDoc */
+		public function get eventType():String { return _eventType; }
 		
 		/** @inheritDoc */
 		public function get eventClass():Class { return _eventClass; }

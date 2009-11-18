@@ -4,12 +4,17 @@ package org.osflash.signals
 	import flash.events.IEventDispatcher;
 	
 	/**
-	 *
+	 * Similar to IDispatcher but using strong types specific to Flash's native event system.
 	 */
 	public interface INativeDispatcher
 	{
 		/**
-		 * A class reference that enables an event type check in dispatch().
+		 * The type of event permitted to be dispatched. Corresponds to flash.events.Event.type.
+		 */
+		function get eventType():String;
+		
+		/**
+		 * The class of event permitted to be dispatched. Will be flash.events.Event or a subclass.
 		 */
 		function get eventClass():Class;
 		
@@ -19,9 +24,10 @@ package org.osflash.signals
 		function get target():IEventDispatcher;
 
 		/**
-		 * Dispatches an object to listeners.
-		 * @param	eventObject		An instance of a class that is or extends flash.events.Event.
-		 * @throws	ArgumentError	<code>ArgumentError</code>:	eventObject is not compatible with eventClass.
+		 * Dispatches an event to listeners.
+		 * @param	event			An instance of a class that is or extends flash.events.Event.
+		 * @throws	ArgumentError	<code>ArgumentError</code>:	Event object [event] is not an instance of [eventClass].
+		 * @throws	ArgumentError	<code>ArgumentError</code>:	Event object has incorrect type. Expected [eventType] but was [event.type].
 		 */
 		function dispatch(event:Event):Boolean;
 	}
