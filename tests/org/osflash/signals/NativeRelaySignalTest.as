@@ -1,6 +1,7 @@
 package org.osflash.signals
 {
 	import asunit.asserts.*;
+	import asunit4.async.addAsync;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 
@@ -8,11 +9,6 @@ package org.osflash.signals
 	{
 		private var clicked:ISignal;
 		private var sprite:Sprite;
-
-		public function NativeRelaySignalTest(testMethod:String = null)
-		{
-			super(testMethod);
-		}
 
 		[Before]
 		public function setUp():void
@@ -35,7 +31,7 @@ package org.osflash.signals
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener('click'));
 		}
 		//////
-		[Test]
+		[Test(async)]
 		public function signal_add_then_EventDispatcher_dispatch_should_call_signal_listener():void
 		{
 			clicked.add( addAsync(onClicked, 10) );

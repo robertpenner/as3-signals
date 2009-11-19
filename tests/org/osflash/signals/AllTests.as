@@ -21,7 +21,7 @@ package org.osflash.signals
 		//public var AmbiguousRelationshipInNativeSignalTest:AmbiguousRelationshipInNativeSignalTest;
 		//public var AmbiguousRelationshipTest:AmbiguousRelationshipTest;
 		//public var GenericEventTest:GenericEventTest;
-		//public var NativeRelaySignalTest:NativeRelaySignalTest;
+		public var _NativeRelaySignalTest:NativeRelaySignalTest;
 		public var _NativeSignalTest:NativeSignalTest;
 		//public var PriorityListenersTest:PriorityListenersTest;
 		//public var RedispatchedEventTest:RedispatchedEventTest;
