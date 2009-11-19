@@ -1,16 +1,12 @@
 package org.osflash.signals
 {
 	import asunit.asserts.*;
+	import asunit4.async.addAsync;
 	import org.osflash.signals.ISignal;
 
 	public class SignalDispatchExtraArgsTest
 	{
 		public var completed:ISignal;
-
-		public function SignalDispatchExtraArgsTest(testMethod:String = null)
-		{
-			super(testMethod);
-		}
 
 		[Before]
 		public function setUp():void
@@ -25,7 +21,7 @@ package org.osflash.signals
 			completed = null;
 		}
 		//////
-		[Test]
+		[Test(async)]
 		public function dispatch_extra_args_should_call_listener_with_extra_args():void
 		{
 			completed.add( addAsync(onCompleted, 10) );

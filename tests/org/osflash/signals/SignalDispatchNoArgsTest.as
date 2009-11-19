@@ -1,16 +1,12 @@
 package org.osflash.signals
 {
 	import asunit.asserts.*;
+	import asunit4.async.addAsync;
 	import org.osflash.signals.ISignal;
 
 	public class SignalDispatchNoArgsTest
 	{
 		public var completed:ISignal;
-
-		public function SignalDispatchNoArgsTest(testMethod:String = null)
-		{
-			super(testMethod);
-		}
 
 		[Before]
 		public function setUp():void
@@ -25,7 +21,7 @@ package org.osflash.signals
 			completed = null;
 		}
 		//////
-		[Test]
+		[Test(async)]
 		public function dispatch_no_args_should_call_listener_with_no_args():void
 		{
 			completed.add( addAsync(onCompleted, 10) );
@@ -37,7 +33,7 @@ package org.osflash.signals
 			assertEquals(0, arguments.length);
 		}
 		//////
-		[Test]
+		[Test(async)]
 		public function dispatch_null_should_call_listener_with_no_args():void
 		{
 			completed.addOnce( addAsync(onCompleted, 10) );

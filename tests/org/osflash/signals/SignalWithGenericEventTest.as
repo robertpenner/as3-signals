@@ -54,7 +54,6 @@ package org.osflash.signals
 		[Test(async)]
 		public function add_two_listeners_and_dispatch_should_call_both():void
 		{
-			trace('add_two_listeners_and_dispatch_should_call_both: ' + add_two_listeners_and_dispatch_should_call_both);
 			completed.add(addAsync(checkGenericEvent, 10));
 			completed.add(addAsync(checkGenericEvent, 10));
 			completed.dispatch(new GenericEvent());

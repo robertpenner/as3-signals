@@ -1,16 +1,12 @@
 package org.osflash.signals
 {
 	import asunit.asserts.*;
+	import asunit4.async.addAsync;
 	import org.osflash.signals.ISignal;
 
 	public class SignalDispatchNonEventTest
 	{
 		public var completed:ISignal;
-
-		public function SignalDispatchNonEventTest(testMethod:String = null)
-		{
-			super(testMethod);
-		}
 
 		[Before]
 		public function setUp():void
