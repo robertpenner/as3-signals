@@ -6,29 +6,35 @@ package org.osflash.signals
 	import org.osflash.signals.error.AmbiguousRelationshipError;
 
 	/**
-	 * The NativeSignal class uses an ISignal interface as a facade for an IEventDispatcher.
+	 * The NativeSignal class provides a strongly-typed facade for an IEventDispatcher.
+	 * A NativeSignal is essentially a mini-dispatcher locked to a specific event type and class.
+	 * It can become part of an interface.
 	 */
 	public class NativeSignal implements INativeSignal
 	{
 		protected var _target:IEventDispatcher;
-		protected var _name:String;
+		protected var _eventType:String;
 		protected var _eventClass:Class;
 		protected var listenerCmds:Array;
 		protected var onceListeners:Dictionary;
 				
 		/**
-		 * Creates a Signal instance to dispatch events on behalf of a target object.
-		 * @param	target The object the signal is dispatching events on behalf of.
-		 * @param	eventClass An optional class reference that enables an event type check in dispatch().
+		 * Creates a NativeSignal instance to dispatch events on behalf of a target object.
+		 * @param	target The object on whose behalf the signal is dispatching events.
+		 * @param	eventType The type of Event permitted to be dispatched from this signal. Corresponds to Event.type.
+		 * @param	eventClass An optional class reference that enables an event type check in dispatch(). Defaults to flash.events.Event if omitted.
 		 */
-		public function NativeSignal(target:IEventDispatcher, name:String, eventClass:Class = null)
+		public function NativeSignal(target:IEventDispatcher, eventType:String, eventClass:Class = null)
 		{
 			_target = IEventDispatcher(target);
-			_name = name;
+			_eventType = eventType;
 			_eventClass = eventClass || Event;
 			listenerCmds = [];
 			onceListeners = new Dictionary();
 		}
+		
+		/** @inheritDoc */
+		public function get eventType():String { return _eventType; }
 		
 		/** @inheritDoc */
 		public function get eventClass():Class { return _eventClass; }
@@ -63,7 +69,7 @@ package org.osflash.signals
 		public function remove(listener:Function):void
 		{
 			listenerCmds.splice(indexOfListener(listener), 1);
-			_target.removeEventListener(_name, listener);
+			_target.removeEventListener(_eventType, listener);
 			delete onceListeners[listener];
 		}
 		
@@ -72,7 +78,7 @@ package org.osflash.signals
 		{
 			for (var i:int = listenerCmds.length; i--; )
 			{
-				_target.removeEventListener(_name, listenerCmds[i].execute);
+				_target.removeEventListener(_eventType, listenerCmds[i].execute);
 			}
 			listenerCmds.length = 0;
 			onceListeners = new Dictionary();
@@ -84,8 +90,8 @@ package org.osflash.signals
 			if (!(event is _eventClass))
 				throw new ArgumentError('Event object '+event+' is not an instance of '+_eventClass+'.');
 				
-			if (event.type != _name)
-				throw new ArgumentError('Event object has incorrect type. Expected <'+_name+'> but was <'+event.type+'>.');
+			if (event.type != _eventType)
+				throw new ArgumentError('Event object has incorrect type. Expected <'+_eventType+'> but was <'+event.type+'>.');
 
 			return _target.dispatchEvent(event);
 		}
@@ -117,7 +123,7 @@ package org.osflash.signals
 			}
 				
 			listenerCmds[listenerCmds.length] = listenerCmd;
-			_target.addEventListener(_name, listenerCmd.execute, false, priority);
+			_target.addEventListener(_eventType, listenerCmd.execute, false, priority);
 		}
 		
 		protected function indexOfListener(listener:Function):int
