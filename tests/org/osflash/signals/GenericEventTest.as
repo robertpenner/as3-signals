@@ -6,11 +6,6 @@ package org.osflash.signals
 	{
 		private var instance:GenericEvent;
 
-		public function GenericEventTest(testMethod:String = null)
-		{
-			super(testMethod);
-		}
-
 		[Before]
 		public function setUp():void
 		{

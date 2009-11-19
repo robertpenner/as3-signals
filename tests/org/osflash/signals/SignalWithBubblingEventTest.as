@@ -1,5 +1,6 @@
 package org.osflash.signals {
 	import asunit.asserts.*;
+	import asunit4.async.addAsync;
 	import flash.display.Sprite;
 	import org.osflash.signals.GenericEvent;
 	import org.osflash.signals.Signal;
@@ -9,11 +10,6 @@ package org.osflash.signals {
 		protected var theChild:Child;
 		protected var theGrandChild:Child;
 		protected var cancelTimeout:Function;
-
-		public function SignalWithBubblingEventTest(testMethod:String = null)
-		{
-			super(testMethod);
-		}
 
 		[Before]
 		public function setUp():void
@@ -25,13 +21,7 @@ package org.osflash.signals {
 		[After]
 		public function tearDown():void
 		{
-			//theChild = null; //This happens too soon and messes up the test--probably an ASUnit bug.
-		}
-		
-		// This is a convenience override to set the async timeout really low, so failures happen more quickly.
-		override protected function addAsync(handler:Function = null, duration:Number = 10, failureHandler:Function=null):Function
-		{
-			return super.addAsync(handler, duration, failureHandler);
+			theChild = null;
 		}
 		
 		[Test]
@@ -41,10 +31,10 @@ package org.osflash.signals {
 			assertTrue("this can handle bubbling events", this is IBubbleEventHandler);
 		}
 		//////
-		[Test]
+		[Test(async)]
 		public function dispatch_bubbling_event_from_theGrandChild_should_bubble_to_IBubbleHandler():void
 		{
-			cancelTimeout = addAsync();
+			cancelTimeout = addAsync(null, 10);
 			var event:IEvent = new GenericEvent();
 			event.bubbles = true;
 			

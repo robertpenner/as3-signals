@@ -1,6 +1,7 @@
 package org.osflash.signals
 {
 	import asunit.asserts.*;
+	import asunit4.async.addAsync;
 	import org.osflash.signals.ISignal;
 	import org.osflash.signals.IDispatcher;
 	import org.osflash.signals.IListeners;
@@ -8,14 +9,9 @@ package org.osflash.signals
 
 	public class SignalSplitInterfacesTest
 	{
-		// Notice the use of the smaller ISubscriber interface, rather than ISignal.
+		// Notice the use of the smaller IListeners interface, rather than ISignal.
 		// This makes dispatch() inaccessible unless the Signal is cast to IDispatcher.
 		public var completed:IListeners;
-
-		public function SignalSplitInterfacesTest(testMethod:String = null)
-		{
-			super(testMethod);
-		}
 
 		[Before]
 		public function setUp():void

@@ -9,13 +9,15 @@ package org.osflash.signals
 		
 		private var instance:ISignal;
 
-		override protected function setUp():void
+		[Before]
+		public function setUp():void
 		{
 			target = {};
 			instance = new Signal(target);
 		}
 
-		override protected function tearDown():void
+		[After]
+		public function tearDown():void
 		{
 			instance = null;
 		}

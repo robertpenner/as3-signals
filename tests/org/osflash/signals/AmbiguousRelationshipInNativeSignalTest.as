@@ -11,13 +11,15 @@ package org.osflash.signals
 		
 		private var instance:INativeSignal;
 
-		override protected function setUp():void
+		[Before]
+		public function setUp():void
 		{
 			target = new Sprite();
 			instance = new NativeSignal(target, Event.CHANGE);
 		}
 
-		override protected function tearDown():void
+		[After]
+		public function tearDown():void
 		{
 			instance = null;
 		}
