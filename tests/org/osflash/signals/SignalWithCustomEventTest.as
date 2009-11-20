@@ -1,4 +1,5 @@
-package org.osflash.signals {
+package org.osflash.signals
+{
 	import asunit.asserts.*;
 	import asunit4.async.addAsync;
 	import org.osflash.signals.events.GenericEvent;

@@ -1,4 +1,4 @@
-package org.osflash.signals
+package org.osflash.signals.simple
 {
 	import flash.errors.IllegalOperationError;
 	import flash.utils.Dictionary;
