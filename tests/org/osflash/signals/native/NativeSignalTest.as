@@ -1,4 +1,4 @@
-package org.osflash.signals
+package org.osflash.signals.native
 {
 	import asunit.asserts.*;
 	import asunit4.async.addAsync;
@@ -6,6 +6,7 @@ package org.osflash.signals
 	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
 	import flash.events.Event;
+	import org.osflash.signals.IListeners;
 
 	public class NativeSignalTest
 	{

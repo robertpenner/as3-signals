@@ -1,4 +1,4 @@
-package org.osflash.signals
+package org.osflash.signals.native
 {
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;

@@ -1,4 +1,4 @@
-package org.osflash.signals
+package org.osflash.signals.native
 {
 	import asunit.asserts.*;
 	import flash.display.Sprite;

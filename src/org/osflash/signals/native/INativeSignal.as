@@ -1,5 +1,7 @@
-package org.osflash.signals
+package org.osflash.signals.native
 {
+	import org.osflash.signals.IListeners;
+	
 	/**
 	 *
 	 */

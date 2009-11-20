@@ -1,9 +1,10 @@
-package org.osflash.signals
+package org.osflash.signals.native
 {
 	import asunit.asserts.*;
 	import asunit4.async.addAsync;
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
+	import org.osflash.signals.ISignal;
 
 	public class NativeRelaySignalTest
 	{
