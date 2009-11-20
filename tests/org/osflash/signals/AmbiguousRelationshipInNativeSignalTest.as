@@ -3,7 +3,7 @@ package org.osflash.signals
 	import asunit.asserts.*;
 	import flash.display.Sprite;
 	import flash.events.Event;
-	import org.osflash.signals.error.AmbiguousRelationshipError;
+	import flash.errors.IllegalOperationError;
 	
 	public class AmbiguousRelationshipInNativeSignalTest
 	{
@@ -28,14 +28,14 @@ package org.osflash.signals
 		public function add_then_addOnce_throws_error():void
 		{
 			instance.add(failIfCalled);
-			assertThrows(AmbiguousRelationshipError, function():void { instance.addOnce(failIfCalled); });
+			assertThrows(IllegalOperationError, function():void { instance.addOnce(failIfCalled); });
 		}
 		
 		[Test]
 		public function addOnce_then_add_should_throw_error():void
 		{
 			instance.addOnce(failIfCalled);
-			assertThrows(AmbiguousRelationshipError, function():void { instance.add(failIfCalled); });
+			assertThrows(IllegalOperationError, function():void { instance.add(failIfCalled); });
 		}
 		
 		[Test]

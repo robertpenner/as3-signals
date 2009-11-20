@@ -3,7 +3,7 @@ package org.osflash.signals
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	import flash.utils.Dictionary;
-	import org.osflash.signals.error.AmbiguousRelationshipError;
+	import flash.errors.IllegalOperationError;
 
 	/**
 	 * The NativeSignal class provides a strongly-typed facade for an IEventDispatcher.
@@ -50,7 +50,7 @@ package org.osflash.signals
 		public function add(listener:Function, priority:int = 0):void
 		{
 			if (onceListeners[listener])
-				throw new AmbiguousRelationshipError('You cannot addOnce() then add() the same listener without removing the relationship first.');
+				throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 		
 			createListenerRelationship(listener, false, priority);
 		}
@@ -59,7 +59,7 @@ package org.osflash.signals
 		public function addOnce(listener:Function, priority:int = 0):void
 		{
 			if (indexOfListener(listener) >= 0 && !onceListeners[listener])
-				throw new AmbiguousRelationshipError('You cannot add() then addOnce() the same listener without removing the relationship first.');
+				throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 			
 			createListenerRelationship(listener, true, priority);
 			onceListeners[listener] = true;
