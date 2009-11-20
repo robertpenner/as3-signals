@@ -1,4 +1,4 @@
-﻿package org.osflash.signals
+﻿package org.osflash.signals.events
 {
 	import org.osflash.signals.events.IEvent;
 	

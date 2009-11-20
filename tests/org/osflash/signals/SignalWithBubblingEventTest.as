@@ -5,6 +5,7 @@ package org.osflash.signals {
 	import org.osflash.signals.events.GenericEvent;
 	import org.osflash.signals.Signal;
 	import org.osflash.signals.events.IEvent;
+	import org.osflash.signals.events.IBubbleEventHandler;
 
 	public class SignalWithBubblingEventTest implements IBubbleEventHandler
 	{
