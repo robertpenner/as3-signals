@@ -3,7 +3,8 @@ package org.osflash.signals
 	import asunit.asserts.*;
 	import asunit4.async.addAsync;
 	import flash.display.Sprite;
-	import org.osflash.signals.GenericEvent;
+	import org.osflash.signals.events.GenericEvent;
+	import org.osflash.signals.events.IEvent;
 	
 	public class SignalWithGenericEventTest
 	{
