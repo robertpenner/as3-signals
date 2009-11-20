@@ -3,18 +3,15 @@ package org.osflash.signals
 	import asunit.asserts.*;
 	import asunit4.async.addAsync;
 	import flash.display.Sprite;
-	import org.osflash.signals.GenericEvent;
 	
-	public class SignalWithGenericEventTest
+	public class SimpleSignalTest
 	{
-		public var completed:Signal;
+		public var completed:ISimpleSignal;
 		
-		public function SignalWithGenericEventTest() {}
-
 		[Before]
 		public function setUp():void
 		{
-			completed = new Signal(this);
+			completed = new SimpleSignal(this);
 		}
 
 		[After]
@@ -33,7 +30,7 @@ package org.osflash.signals
 		//////
 		
 		[Test(async)]
-		public function add_listener_and_dispatch_event_should_pass_event_to_listener():void
+		public function dispatch_event_should_pass_event_to_listener_but_not_set_IEvent_properties():void
 		{
 			completed.add(addAsync(checkGenericEvent, 10));
 			completed.dispatch(new GenericEvent());
@@ -43,13 +40,11 @@ package org.osflash.signals
 		{
 			assertTrue('instance of IEvent', e is IEvent);
 			assertTrue('instance of GenericEvent', e is GenericEvent);
-			assertEquals('event.signal points to the originating Signal', this.completed, e.signal);
-			assertEquals('event.target points to object containing the Signal', this, e.target);
-			assertEquals('event.target is e.currentTarget because event does not bubble', e.target, e.currentTarget);
+			assertNull('event.signal is not set by SimpleSignal', e.signal);
+			assertNull('event.target is not set by SimpleSignal', e.target);
 		}
 		
 		//////
-
 		
 		[Test(async)]
 		public function add_two_listeners_and_dispatch_should_call_both():void
@@ -69,24 +64,6 @@ package org.osflash.signals
 			assertEquals('there should be no listeners', 0, completed.numListeners);
 		}
 		
-		//////
-
-		[Test(async)]
-		public function add_one_listener_and_dispatch_then_listener_remove_itself_using_event_signal():void
-		{
-			completed.add(addAsync(remove_myself_from_signal, 10));
-			completed.dispatch(new GenericEvent());
-		}
-		
-		private function remove_myself_from_signal(e:IEvent):void
-		{
-			assertEquals('listener still in signal', 1, e.signal.numListeners);
-			
-			e.signal.remove(arguments.callee);
-			
-			assertEquals('listener removed from signal', 0, e.signal.numListeners);
-		}
-
 		//////
 		
 		[Test]
@@ -109,9 +86,8 @@ package org.osflash.signals
 		public function add_2_listeners_remove_2nd_then_dispatch_should_call_1st_not_2nd_listener():void
 		{
 			completed.add(addAsync(checkGenericEvent, 10));
-			var delegate:Function = failIfCalled;
-			completed.add(delegate);
-			completed.remove(delegate);
+			completed.add(failIfCalled);
+			completed.remove(failIfCalled);
 			completed.dispatch(new GenericEvent());
 		}
 		//////

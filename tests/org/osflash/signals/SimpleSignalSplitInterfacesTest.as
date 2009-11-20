@@ -2,21 +2,21 @@ package org.osflash.signals
 {
 	import asunit.asserts.*;
 	import asunit4.async.addAsync;
-	import org.osflash.signals.ISignal;
+	import org.osflash.signals.ISimpleSignal;
 	import org.osflash.signals.IDispatcher;
-	import org.osflash.signals.IListeners;
-	import org.osflash.signals.Signal;
+	import org.osflash.signals.ISimpleListeners;
+	import org.osflash.signals.SimpleSignal;
 
-	public class SignalSplitInterfacesTest
+	public class SimpleSignalSplitInterfacesTest
 	{
-		// Notice the use of the smaller IListeners interface, rather than ISignal.
+		// Notice the use of the smaller ISimpleListeners interface, rather than ISimpleSignal.
 		// This makes dispatch() inaccessible unless the Signal is cast to IDispatcher.
-		public var completed:IListeners;
+		public var completed:ISimpleListeners;
 
 		[Before]
 		public function setUp():void
 		{
-			completed = new Signal(this);
+			completed = new SimpleSignal(this);
 		}
 
 		[After]

@@ -1,20 +1,5 @@
 package org.osflash.signals
 {
-	import org.osflash.signals.AmbiguousRelationshipInNativeSignalTest;
-	import org.osflash.signals.AmbiguousRelationshipTest;
-	import org.osflash.signals.GenericEventTest;
-	import org.osflash.signals.NativeRelaySignalTest;
-	import org.osflash.signals.NativeSignalTest;
-	import org.osflash.signals.PriorityListenersTest;
-	import org.osflash.signals.RedispatchedEventTest;
-	import org.osflash.signals.SignalDispatchExtraArgsTest;
-	import org.osflash.signals.SignalDispatchNoArgsTest;
-	import org.osflash.signals.SignalDispatchNonEventTest;
-	import org.osflash.signals.SignalSplitInterfacesTest;
-	import org.osflash.signals.SignalWithBubblingEventTest;
-	import org.osflash.signals.SignalWithCustomEventTest;
-	import org.osflash.signals.SignalWithGenericEventTest;
-	
 	[Suite]
 	public class AllTests
 	{
@@ -32,5 +17,11 @@ package org.osflash.signals
 		public var _SignalWithBubblingEventTest:SignalWithBubblingEventTest;
 		public var _SignalWithCustomEventTest:SignalWithCustomEventTest;
 		public var _SignalWithGenericEventTest:SignalWithGenericEventTest;
+		public var _SimpleSignalDispatchExtraArgsTest:SimpleSignalDispatchExtraArgsTest;
+		public var _SimpleSignalDispatchNoArgsTest:SimpleSignalDispatchNoArgsTest;
+		public var _SimpleSignalDispatchNonEventTest:SimpleSignalDispatchNonEventTest;
+		public var _SimpleSignalSplitInterfacesTest:SimpleSignalSplitInterfacesTest;
+		public var _SimpleSignalTest:SimpleSignalTest;
+		public var _SimpleSignalWithCustomEventTest:SimpleSignalWithCustomEventTest;
 	}
 }
