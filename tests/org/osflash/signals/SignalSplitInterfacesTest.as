@@ -2,11 +2,7 @@ package org.osflash.signals
 {
 	import asunit.asserts.*;
 	import asunit4.async.addAsync;
-	import org.osflash.signals.ISignal;
-	import org.osflash.signals.IDispatcher;
-	import org.osflash.signals.IListeners;
-	import org.osflash.signals.Signal;
-
+	
 	public class SignalSplitInterfacesTest
 	{
 		// Notice the use of the smaller IListeners interface, rather than ISignal.

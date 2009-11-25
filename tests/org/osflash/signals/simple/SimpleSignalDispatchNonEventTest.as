@@ -1,8 +1,8 @@
 package org.osflash.signals.simple
 {
 	import asunit.asserts.*;
+
 	import asunit4.async.addAsync;
-	import org.osflash.signals.ISignal;
 
 	public class SimpleSignalDispatchNonEventTest
 	{
