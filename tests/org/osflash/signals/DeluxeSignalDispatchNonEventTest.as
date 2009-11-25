@@ -4,14 +4,14 @@ package org.osflash.signals
 
 	import asunit4.async.addAsync;
 
-	public class SimpleSignalDispatchNonEventTest
+	public class DeluxeSignalDispatchNonEventTest
 	{
-		public var completed:Signal;
+		public var completed:DeluxeSignal;
 
 		[Before]
 		public function setUp():void
 		{
-			completed = new Signal(this);
+			completed = new DeluxeSignal(this);
 		}
 
 		[After]
@@ -24,7 +24,7 @@ package org.osflash.signals
 		/**
 		 * Captures bug where dispatching 0 was considered null.
 		 */
-		[Test(async)]
+		[Test]
 		public function dispatch_zero_should_call_listener_with_zero():void
 		{
 			completed.add( addAsync(onZero, 10) );

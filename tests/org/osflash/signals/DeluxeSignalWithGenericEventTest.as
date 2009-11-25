@@ -9,11 +9,11 @@ package org.osflash.signals
 
 	import flash.display.Sprite;
 
-	public class SignalWithGenericEventTest
+	public class DeluxeSignalWithGenericEventTest
 	{
 		public var completed:DeluxeSignal;
 		
-		public function SignalWithGenericEventTest() {}
+		public function DeluxeSignalWithGenericEventTest() {}
 
 		[Before]
 		public function setUp():void

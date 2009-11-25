@@ -9,7 +9,7 @@ package org.osflash.signals
 
 	import flash.display.Sprite;
 
-	public class SimpleSignalTest
+	public class SignalTest
 	{
 		public var completed:Signal;
 		

@@ -6,12 +6,12 @@ package org.osflash.signals
 
 	public class SignalDispatchNonEventTest
 	{
-		public var completed:DeluxeSignal;
+		public var completed:Signal;
 
 		[Before]
 		public function setUp():void
 		{
-			completed = new DeluxeSignal(this);
+			completed = new Signal(this);
 		}
 
 		[After]
@@ -24,7 +24,7 @@ package org.osflash.signals
 		/**
 		 * Captures bug where dispatching 0 was considered null.
 		 */
-		[Test]
+		[Test(async)]
 		public function dispatch_zero_should_call_listener_with_zero():void
 		{
 			completed.add( addAsync(onZero, 10) );

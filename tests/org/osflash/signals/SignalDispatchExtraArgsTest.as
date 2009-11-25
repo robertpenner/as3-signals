@@ -1,17 +1,19 @@
 package org.osflash.signals
 {
+	
+	
+	
 	import asunit.asserts.*;
-
 	import asunit4.async.addAsync;
-
+	
 	public class SignalDispatchExtraArgsTest
 	{
-		public var completed:DeluxeSignal;
+		public var completed:Signal;
 
 		[Before]
 		public function setUp():void
 		{
-			completed = new DeluxeSignal(this);
+			completed = new Signal(this);
 		}
 
 		[After]

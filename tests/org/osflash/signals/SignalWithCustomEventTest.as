@@ -1,17 +1,20 @@
 package org.osflash.signals
 {
+	
+	
+	
 	import asunit.asserts.*;
 	import asunit4.async.addAsync;
 	import org.osflash.signals.events.GenericEvent;
 
 	public class SignalWithCustomEventTest
 	{
-		public var messaged:DeluxeSignal;
+		public var messaged:Signal;
 
 		[Before]
 		public function setUp():void
 		{
-			messaged = new DeluxeSignal(this, MessageEvent);
+			messaged = new Signal(this, MessageEvent);
 		}
 
 		[After]
@@ -36,8 +39,6 @@ package org.osflash.signals
 		
 		protected function onMessage(e:MessageEvent):void
 		{
-			assertEquals('source of the event', messaged, e.signal);
-			assertEquals('target of the event', this, e.target);
 			assertEquals('message value in the event', 'ok', e.message);
 		}
 		//////

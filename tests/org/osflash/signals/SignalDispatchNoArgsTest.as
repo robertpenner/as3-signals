@@ -6,12 +6,12 @@ package org.osflash.signals
 
 	public class SignalDispatchNoArgsTest
 	{
-		public var completed:DeluxeSignal;
+		public var completed:Signal;
 
 		[Before]
 		public function setUp():void
 		{
-			completed = new DeluxeSignal(this);
+			completed = new Signal(this);
 		}
 
 		[After]

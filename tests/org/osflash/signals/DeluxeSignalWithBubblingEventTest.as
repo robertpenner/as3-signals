@@ -8,7 +8,7 @@ package org.osflash.signals
 	import org.osflash.signals.events.IBubbleEventHandler;
 	import org.osflash.signals.events.IEvent;
 
-	public class SignalWithBubblingEventTest implements IBubbleEventHandler
+	public class DeluxeSignalWithBubblingEventTest implements IBubbleEventHandler
 	{
 		protected var theChild:Child;
 		protected var theGrandChild:Child;
