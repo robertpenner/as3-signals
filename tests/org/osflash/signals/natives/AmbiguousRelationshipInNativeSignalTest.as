@@ -1,5 +1,7 @@
-package org.osflash.signals.native
+package org.osflash.signals.natives
 {
+	
+	
 	import asunit.asserts.*;
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -9,7 +11,7 @@ package org.osflash.signals.native
 	{
 		private var target:Sprite;
 		
-		private var instance:INativeSignal;
+		private var instance:NativeSignal;
 
 		[Before]
 		public function setUp():void

@@ -1,14 +1,18 @@
-package org.osflash.signals.native
+package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
+
 	import asunit4.async.addAsync;
+
+	import org.osflash.signals.IDeluxeSignal;
+	import org.osflash.signals.ISignal;
+
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
-	import org.osflash.signals.ISignal;
 
 	public class NativeRelaySignalTest
 	{
-		private var clicked:ISignal;
+		private var clicked:IDeluxeSignal;
 		private var sprite:Sprite;
 
 		[Before]

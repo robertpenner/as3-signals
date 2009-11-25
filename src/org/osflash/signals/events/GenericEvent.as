@@ -1,7 +1,6 @@
 package org.osflash.signals.events
 {
 	import org.osflash.signals.IDeluxeSignal;
-	import org.osflash.signals.ISignal;
 
 	/**
 	 *
@@ -13,7 +12,7 @@ package org.osflash.signals.events
 		protected var _bubbles:Boolean;
 		protected var _target:Object;
 		protected var _currentTarget:Object;
-		protected var _signal:ISignal;
+		protected var _signal:IDeluxeSignal;
 		
 		public function GenericEvent(bubbles:Boolean = false)
 		{

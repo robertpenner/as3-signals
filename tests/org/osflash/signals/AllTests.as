@@ -1,8 +1,8 @@
 package org.osflash.signals
 {
-	import org.osflash.signals.native.AmbiguousRelationshipInNativeSignalTest;
-	import org.osflash.signals.native.NativeRelaySignalTest;
-	import org.osflash.signals.native.NativeSignalTest;
+	import org.osflash.signals.natives.AmbiguousRelationshipInNativeSignalTest;
+	import org.osflash.signals.natives.NativeRelaySignalTest;
+	import org.osflash.signals.natives.NativeSignalTest;
 	
 	[Suite]
 	public class AllTests
