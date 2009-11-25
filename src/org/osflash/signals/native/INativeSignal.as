@@ -1,11 +1,11 @@
 package org.osflash.signals.native
 {
-	import org.osflash.signals.IListeners;
+	import org.osflash.signals.IDeluxeSignal;
 	
 	/**
 	 *
 	 */
-	public interface INativeSignal extends IListeners, INativeDispatcher
+	public interface INativeSignal extends IDeluxeSignal, INativeDispatcher
 	{
 	}
 }

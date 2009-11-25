@@ -1,21 +1,24 @@
 package org.osflash.signals
 {
 	import asunit.asserts.*;
+
 	import asunit4.async.addAsync;
-	import flash.display.Sprite;
+
 	import org.osflash.signals.events.GenericEvent;
 	import org.osflash.signals.events.IEvent;
-	
+
+	import flash.display.Sprite;
+
 	public class SignalWithGenericEventTest
 	{
-		public var completed:Signal;
+		public var completed:DeluxeSignal;
 		
 		public function SignalWithGenericEventTest() {}
 
 		[Before]
 		public function setUp():void
 		{
-			completed = new Signal(this);
+			completed = new DeluxeSignal(this);
 		}
 
 		[After]

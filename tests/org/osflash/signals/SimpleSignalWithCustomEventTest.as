@@ -1,17 +1,20 @@
-package org.osflash.signals.simple
+package org.osflash.signals
 {
+	
+	
+	
 	import asunit.asserts.*;
 	import asunit4.async.addAsync;
 	import org.osflash.signals.events.GenericEvent;
 
 	public class SimpleSignalWithCustomEventTest
 	{
-		public var messaged:ISimpleSignal;
+		public var messaged:Signal;
 
 		[Before]
 		public function setUp():void
 		{
-			messaged = new SimpleSignal(this, MessageEvent);
+			messaged = new Signal(this, MessageEvent);
 		}
 
 		[After]

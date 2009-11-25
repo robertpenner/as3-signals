@@ -1,4 +1,4 @@
-package org.osflash.signals.simple
+package org.osflash.signals
 {
 	import asunit.asserts.*;
 
@@ -6,12 +6,12 @@ package org.osflash.signals.simple
 
 	public class SimpleSignalDispatchNoArgsTest
 	{
-		public var completed:ISimpleSignal;
+		public var completed:Signal;
 
 		[Before]
 		public function setUp():void
 		{
-			completed = new SimpleSignal(this);
+			completed = new Signal(this);
 		}
 
 		[After]

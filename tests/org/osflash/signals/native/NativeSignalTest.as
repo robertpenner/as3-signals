@@ -6,7 +6,7 @@ package org.osflash.signals.native
 	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
 	import flash.events.Event;
-	import org.osflash.signals.IListeners;
+	import org.osflash.signals.IDeluxeSignal;
 
 	public class NativeSignalTest
 	{
@@ -38,7 +38,7 @@ package org.osflash.signals.native
 		{
 			assertTrue("NativeSignal instantiated", clicked is NativeSignal);
 			assertTrue('implements INativeSignal', clicked is INativeSignal);
-			assertTrue('implements IListeners', clicked is IListeners);
+			assertTrue('implements IListeners', clicked is IDeluxeSignal);
 			assertTrue('implements INativeDispatcher', clicked is INativeDispatcher);
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener('click'));
 			assertSame('target round-trips through constructor', sprite, clicked.target);

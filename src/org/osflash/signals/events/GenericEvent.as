@@ -1,8 +1,8 @@
 package org.osflash.signals.events
 {
-	import org.osflash.signals.events.IEvent;
+	import org.osflash.signals.IDeluxeSignal;
 	import org.osflash.signals.ISignal;
-	
+
 	/**
 	 *
 	 * @see org.osflash.signals.events.IEvent
@@ -21,8 +21,8 @@ package org.osflash.signals.events
 		}
 		
 		/** @inheritDoc */
-		public function get signal():ISignal { return _signal; }
-		public function set signal(value:ISignal):void { _signal = value; }
+		public function get signal():IDeluxeSignal { return _signal; }
+		public function set signal(value:IDeluxeSignal):void { _signal = value; }
 		
 		/** @inheritDoc */
 		public function get target():Object { return _target; }

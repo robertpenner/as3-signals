@@ -7,13 +7,13 @@ package org.osflash.signals
 	{
 		private var target:Object;
 		
-		private var instance:ISignal;
+		private var instance:DeluxeSignal;
 
 		[Before]
 		public function setUp():void
 		{
 			target = {};
-			instance = new Signal(target);
+			instance = new DeluxeSignal(target);
 		}
 
 		[After]

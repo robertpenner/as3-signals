@@ -1,7 +1,7 @@
 package org.osflash.signals.native
 {
 	import flash.events.Event;
-	import org.osflash.signals.Signal;
+	import org.osflash.signals.DeluxeSignal;
 	import org.osflash.signals.ISignal;
 	import flash.events.IEventDispatcher;
 
@@ -12,7 +12,7 @@ package org.osflash.signals.native
 	 * NativeRelaySignal has its own dispatching code,
 	 * whereas NativeSignal uses the IEventDispatcher to dispatch.
 	 */
-	public class NativeRelaySignal extends Signal implements ISignal
+	public class NativeRelaySignal extends DeluxeSignal implements ISignal
 	{
 		protected var _name:String;
 

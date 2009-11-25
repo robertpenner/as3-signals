@@ -5,13 +5,13 @@ package org.osflash.signals {
 
 	public class RedispatchedEventTest
 	{
-		public var completed:ISignal;
+		public var completed:DeluxeSignal;
 		protected var originalEvent:GenericEvent;
 
 		[Before]
 		public function setUp():void
 		{
-			completed = new Signal(this);
+			completed = new DeluxeSignal(this);
 		}
 
 		[After]

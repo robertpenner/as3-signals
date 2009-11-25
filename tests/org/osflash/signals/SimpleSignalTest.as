@@ -1,19 +1,22 @@
-package org.osflash.signals.simple
+package org.osflash.signals
 {
 	import asunit.asserts.*;
+
 	import asunit4.async.addAsync;
-	import flash.display.Sprite;
-	import org.osflash.signals.events.IEvent;
+
 	import org.osflash.signals.events.GenericEvent;
-	
+	import org.osflash.signals.events.IEvent;
+
+	import flash.display.Sprite;
+
 	public class SimpleSignalTest
 	{
-		public var completed:ISimpleSignal;
+		public var completed:Signal;
 		
 		[Before]
 		public function setUp():void
 		{
-			completed = new SimpleSignal(this);
+			completed = new Signal(this);
 		}
 
 		[After]

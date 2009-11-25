@@ -6,12 +6,12 @@ package org.osflash.signals
 
 	public class SignalWithCustomEventTest
 	{
-		public var messaged:ISignal;
+		public var messaged:DeluxeSignal;
 
 		[Before]
 		public function setUp():void
 		{
-			messaged = new Signal(this, MessageEvent);
+			messaged = new DeluxeSignal(this, MessageEvent);
 		}
 
 		[After]

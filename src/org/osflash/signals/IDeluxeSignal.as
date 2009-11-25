@@ -1,9 +1,9 @@
-package org.osflash.signals.simple
+package org.osflash.signals
 {
 	/**
 	 *
 	 */
-	public interface ISimpleListeners
+	public interface IDeluxeSignal
 	{
 		/** The current number of listeners for the signal. */
 		function get numListeners():uint;
@@ -18,7 +18,7 @@ package org.osflash.signals.simple
 		 * that matches the type of event dispatched by the signal.
 		 * If eventClass is not specified, the listener and dispatch() can be called without an argument.
 		 */
-		function add(listener:Function):void;
+		function add(listener:Function, priority:int = 0):void;
 		
 		/**
 		 * Subscribes a one-time listener for this signal.
@@ -32,7 +32,7 @@ package org.osflash.signals.simple
 		 * The higher the number, the higher the priority.
 		 * All listeners with priority n are processed before listeners of priority n-1.
 		 */
-		function addOnce(listener:Function):void;
+		function addOnce(listener:Function, priority:int = 0):void;
 		
 		/**
 		 * Unsubscribes a listener from the signal.

@@ -1,7 +1,7 @@
 ﻿package org.osflash.signals.events
 {
-	import org.osflash.signals.ISignal;
-	
+	import org.osflash.signals.IDeluxeSignal;
+
 	public interface IEvent
 	{
 		/** The object that originally dispatched the event.
@@ -14,8 +14,8 @@
 		function set currentTarget(value:Object):void;
 		
 		/** The signal that dispatched the event. */
-		function get signal():ISignal;
-		function set signal(value:ISignal):void;
+		function get signal():IDeluxeSignal;
+		function set signal(value:IDeluxeSignal):void;
 		
 		/** Indicates whether the event is a bubbling event. */
 		function get bubbles():Boolean;

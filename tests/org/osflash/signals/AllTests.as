@@ -3,7 +3,6 @@ package org.osflash.signals
 	import org.osflash.signals.native.AmbiguousRelationshipInNativeSignalTest;
 	import org.osflash.signals.native.NativeRelaySignalTest;
 	import org.osflash.signals.native.NativeSignalTest;
-	import org.osflash.signals.simple.AllTests;
 	
 	[Suite]
 	public class AllTests
@@ -23,6 +22,11 @@ package org.osflash.signals
 		public var _SignalWithCustomEventTest:SignalWithCustomEventTest;
 		public var _SignalWithGenericEventTest:SignalWithGenericEventTest;
 		
-		public var _SimpleAllTests:org.osflash.signals.simple.AllTests;
+		public var _SimpleSignalDispatchExtraArgsTest:SimpleSignalDispatchExtraArgsTest;
+		public var _SimpleSignalDispatchNoArgsTest:SimpleSignalDispatchNoArgsTest;
+		public var _SimpleSignalDispatchNonEventTest:SimpleSignalDispatchNonEventTest;
+		public var _SimpleSignalSplitInterfacesTest:SimpleSignalSplitInterfacesTest;
+		public var _SimpleSignalTest:SimpleSignalTest;
+		public var _SimpleSignalWithCustomEventTest:SimpleSignalWithCustomEventTest;
 	}
 }

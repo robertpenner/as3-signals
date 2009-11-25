@@ -1,9 +1,7 @@
 package org.osflash.signals
 {
-	import org.osflash.signals.events.IBubbleEventHandler;
-	import org.osflash.signals.events.IEvent;
+	
 	import flash.errors.IllegalOperationError;
-
 	import flash.utils.Dictionary;
 
 	/**
@@ -16,7 +14,7 @@ package org.osflash.signals
 	 * <br/><br/>
 	 * Project home: <a target="_top" href="http://github.com/robertpenner/as3-signals/">http://github.com/robertpenner/as3-signals/</a>
 	 */
-	public class Signal implements ISignal
+	public class Signal implements ISignal, IDispatcher
 	{
 		protected var _target:Object;
 		protected var _eventClass:Class;
@@ -47,28 +45,28 @@ package org.osflash.signals
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function, priority:int = 0):void
+		public function add(listener:Function):void
 		{
 			if (onceListeners[listener])
 				throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 		
-			createListenerRelationship(listener, priority);
+			createListenerRelationship(listener);
 		}
 		
 		/** @inheritDoc */
-		public function addOnce(listener:Function, priority:int = 0):void
+		public function addOnce(listener:Function):void
 		{
-			if (indexOfListener(listener) >= 0 && !onceListeners[listener])
+			if (listeners.indexOf(listener) >= 0 && !onceListeners[listener])
 				throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 			
-			createListenerRelationship(listener, priority);
+			createListenerRelationship(listener);
 			onceListeners[listener] = true;
 		}
 		
 		/** @inheritDoc */
 		public function remove(listener:Function):void
 		{
-			listeners.splice(indexOfListener(listener), 1);
+			listeners.splice(listeners.indexOf(listener), 1);
 			delete onceListeners[listener];
 		}
 		
@@ -85,19 +83,6 @@ package org.osflash.signals
 			if (_eventClass && !(eventObject is _eventClass))
 				throw new ArgumentError('Event object '+eventObject+' is not an instance of '+_eventClass+'.');
 
-			var event:IEvent = eventObject as IEvent;
-			if (event)
-			{
-				// clone re-dispatched event
-				if (event.target)
-				{
-					eventObject = event = event.clone();
-				}
-				event.target = this.target;
-				event.currentTarget = this.target;
-				event.signal = this;
-			}
-			
 			//// Send eventObject to each listener.
 			if (listeners.length)
 			{
@@ -108,9 +93,8 @@ package org.osflash.signals
 				
 				//TODO: investigate performance of various approaches
 				// Clone listeners array because add/remove may occur during the dispatch.
-				for each (var listenerBox:Object in listeners.concat())
+				for each (var listener:Function in listeners.concat())
 				{
-					var listener:Function = listenerBox.listener;
 					//TODO: Maybe put this conditional outside the loop.
 					if (eventObject == null)
 						listener();
@@ -125,66 +109,26 @@ package org.osflash.signals
 			{
 				remove(onceListener as Function);
 			}
-			
-			if (!event || !event.bubbles) return;
-
-			//// Bubble the event as far as possible.
-			var currentTarget:Object = this.target;
-			while ( currentTarget && currentTarget.hasOwnProperty("parent")
-					&& (currentTarget = currentTarget.parent) )
-			{
-				if (currentTarget is IBubbleEventHandler)
-				{
-					IBubbleEventHandler(event.currentTarget = currentTarget).onEventBubbled(event);
-					break;
-				}
-			}
 		}
 		
-		protected function indexOfListener(listener:Object):int
-		{
-			for (var i:int = listeners.length; i--; )
-			{
-				if (listeners[i].listener == listener) return i;
-			}
-			return -1;
-		}
-				
-		protected function createListenerRelationship(listener:Function, priority:int):void
+		protected function createListenerRelationship(listener:Function):void
 		{
 			// function.length is the number of arguments.
 			if (eventClass && !listener.length)
 				throw new ArgumentError('Listener must declare at least 1 argument when eventClass is specified.');
 			
-			var listenerBox:Object = {listener:listener, priority:priority};
 			// Process the first listener as quickly as possible.
 			if (!listeners.length)
 			{
-				listeners[0] = listenerBox;
+				listeners[0] = listener;
 				return;
 			}
 			
 			// Don't add the same listener twice.
-			if (indexOfListener(listener) >= 0)
+			if (listeners.indexOf(listener) >= 0)
 				return;
-			
-			// Assume the listeners are already sorted by priority
-			// and insert in the right spot. For listeners with the same priority,
-			// we must preserve the order in which they were added.
-			var len:int = listeners.length;
-			for (var i:int = 0; i < len; i++)
-			{
-				// As soon as a lower-priority listener is found, go in front of it.
-				if (priority > listeners[i].priority)
-				{
-					listeners.splice(i, 0, listenerBox);
-					return;
-				}
-			}
-			
-			// If we made it this far, the new listener has lowest priority, so put it last.
-			listeners[listeners.length] = listenerBox;
+						
+			listeners[listeners.length] = listener;
 		}
-		
 	}
 }

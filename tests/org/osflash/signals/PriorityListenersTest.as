@@ -6,13 +6,13 @@ package org.osflash.signals
 
 	public class PriorityListenersTest
 	{
-		public var completed:ISignal;
+		public var completed:DeluxeSignal;
 		private var listenersCalled:Array;
 
 		[Before]
 		public function setUp():void
 		{
-			completed = new Signal(this);
+			completed = new DeluxeSignal(this);
 			listenersCalled = [];
 		}
 

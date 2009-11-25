@@ -54,8 +54,7 @@ package org.osflash.signals
 	}
 }
 
-import org.osflash.signals.ISignal;
-import org.osflash.signals.Signal;
+import org.osflash.signals.DeluxeSignal;
 
 ////// PRIVATE CLASSES //////
 
@@ -63,14 +62,14 @@ import org.osflash.signals.Signal;
 class Child
 {
 	public var parent:Object;
-	public var completed:ISignal;
+	public var completed:DeluxeSignal;
 	public var name:String;
 	
 	public function Child(name:String, parent:Object = null)
 	{
 		this.name = name;
 		this.parent = parent;
-		completed = new Signal(this);
+		completed = new DeluxeSignal(this);
 	}
 	
 	public function toString():String

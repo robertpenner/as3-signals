@@ -1,16 +1,19 @@
-package org.osflash.signals.simple
+package org.osflash.signals
 {
+	
+	
+	
 	import asunit.asserts.*;
 	import asunit4.async.addAsync;
 	
 	public class SimpleSignalDispatchExtraArgsTest
 	{
-		public var completed:ISimpleSignal;
+		public var completed:Signal;
 
 		[Before]
 		public function setUp():void
 		{
-			completed = new SimpleSignal(this);
+			completed = new Signal(this);
 		}
 
 		[After]
