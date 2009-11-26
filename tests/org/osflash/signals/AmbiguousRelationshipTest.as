@@ -1,6 +1,7 @@
 package org.osflash.signals
 {
 	import asunit.asserts.*;
+
 	import flash.errors.IllegalOperationError;
 
 	public class AmbiguousRelationshipTest

@@ -3,7 +3,7 @@ package org.osflash.signals
 	import org.osflash.signals.natives.AmbiguousRelationshipInNativeSignalTest;
 	import org.osflash.signals.natives.NativeRelaySignalTest;
 	import org.osflash.signals.natives.NativeSignalTest;
-	
+
 	[Suite]
 	public class AllTests
 	{

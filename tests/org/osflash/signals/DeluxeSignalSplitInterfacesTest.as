@@ -1,8 +1,9 @@
 package org.osflash.signals
 {
 	import asunit.asserts.*;
+
 	import asunit4.async.addAsync;
-	
+
 	public class DeluxeSignalSplitInterfacesTest
 	{
 		// Notice the use of the smaller IListeners interface, rather than ISignal.

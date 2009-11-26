@@ -1,6 +1,7 @@
 package org.osflash.signals
 {
 	import asunit.asserts.*;
+
 	import org.osflash.signals.events.GenericEvent;
 	import org.osflash.signals.events.IEvent;
 

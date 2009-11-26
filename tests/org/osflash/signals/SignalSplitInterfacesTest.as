@@ -1,11 +1,8 @@
 package org.osflash.signals
 {
-	
-	
-	
 	import asunit.asserts.*;
+
 	import asunit4.async.addAsync;
-	
 
 	public class SignalSplitInterfacesTest
 	{

@@ -1,10 +1,9 @@
 package org.osflash.signals
 {
-	
-	
-	
 	import asunit.asserts.*;
+
 	import asunit4.async.addAsync;
+
 	import org.osflash.signals.events.GenericEvent;
 
 	public class SignalWithCustomEventTest
@@ -67,15 +66,14 @@ package org.osflash.signals
 		private function noArgs():void
 		{
 		}
-		
-		
 	}
 }
 
-////// PRIVATE CLASSES //////
-
 import org.osflash.signals.events.GenericEvent;
 import org.osflash.signals.events.IEvent;
+
+////// PRIVATE CLASSES //////
+
 
 class MessageEvent extends GenericEvent implements IEvent
 {

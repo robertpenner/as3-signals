@@ -2,7 +2,7 @@ package org.osflash.signals.natives
 {
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
-	
+
 	/**
 	 * Similar to IDispatcher but using strong types specific to Flash's native event system.
 	 */
