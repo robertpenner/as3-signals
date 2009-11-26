@@ -169,5 +169,22 @@ package org.osflash.signals
 		{
 			assertNull(signalValue);
 		}
+		//////
+		[Test]
+		public function addOnce_in_handler_and_dispatch_should_call_new_listener():void
+		{
+			completed.addOnce(addOnceInHandler);
+			completed.dispatch();
+		}
+		
+		protected function addOnceInHandler():void
+		{
+			completed.addOnce( addAsync(secondAddOnceListener, 10) );
+			completed.dispatch();
+		}
+		
+		protected function secondAddOnceListener():void
+		{
+		}
 	}
 }

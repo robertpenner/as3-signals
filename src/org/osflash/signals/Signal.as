@@ -88,7 +88,7 @@ package org.osflash.signals
 			for (var i:int = 0; i < len; i++)
 			{
 				if (!(valueObjects[i] is _valueClasses[i]))
-					throw new ArgumentError('Event object '+valueObjects[i]+' is not an instance of '+_valueClasses[i]+'.');
+					throw new ArgumentError('Value object <'+valueObjects[i]+'> is not an instance of <'+_valueClasses[i]+'>.');
 			}
 
 			//// Send eventObject to each listener.
@@ -103,6 +103,7 @@ package org.osflash.signals
 					// Clone listeners array because add/remove may occur during the dispatch.
 					for each (listener in listeners.concat())
 					{
+						if (onceListeners[listener]) remove(listener);
 						listener();
 					}
 					break;
@@ -110,6 +111,7 @@ package org.osflash.signals
 				case 1:
 					for each (listener in listeners.concat())
 					{
+						if (onceListeners[listener]) remove(listener);
 						listener(valueObjects[0]);
 					}
 					break;
@@ -117,6 +119,7 @@ package org.osflash.signals
 				case 2:
 					for each (listener in listeners.concat())
 					{
+						if (onceListeners[listener]) remove(listener);
 						listener(valueObjects[0], valueObjects[1]);
 					}
 					break;
@@ -124,13 +127,9 @@ package org.osflash.signals
 				default:
 					for each (listener in listeners.concat())
 					{
+						if (onceListeners[listener]) remove(listener);
 						listener.apply(null, valueObjects);
 					}
-			}
-			
-			for (var onceListener:Object in onceListeners)
-			{
-				remove(onceListener as Function);
 			}
 		}
 		
@@ -138,7 +137,10 @@ package org.osflash.signals
 		{
 			// function.length is the number of arguments.
 			if (listener.length < _valueClasses.length)
-				throw new ArgumentError('Listener must declare at least as many arguments as valueClasses.');
+			{
+				var argumentString:String = (listener.length == 1) ? 'argument' : 'arguments';
+				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
+			}
 			
 			// If there are no previous listeners, add the first one as quickly as possible.
 			if (!listeners.length)
