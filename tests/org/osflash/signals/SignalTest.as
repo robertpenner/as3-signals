@@ -16,7 +16,7 @@ package org.osflash.signals
 		[Before]
 		public function setUp():void
 		{
-			completed = new Signal(this);
+			completed = new Signal();
 		}
 
 		[After]
@@ -158,6 +158,16 @@ package org.osflash.signals
 			assertTrue(sprite is Sprite);
 		}
 		//////
-
+		[Test(async)]
+		public function dispatch_null_should_call_listener_with_null():void
+		{
+			completed.addOnce( addAsync(checkNull, 10) );
+			completed.dispatch(null);
+		}
+		
+		private function checkNull(signalValue:Object):void
+		{
+			assertNull(signalValue);
+		}
 	}
 }

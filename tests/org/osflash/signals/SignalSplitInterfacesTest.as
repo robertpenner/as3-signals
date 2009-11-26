@@ -13,7 +13,7 @@ package org.osflash.signals
 		[Before]
 		public function setUp():void
 		{
-			completed = new Signal(this);
+			completed = new Signal();
 		}
 
 		[After]

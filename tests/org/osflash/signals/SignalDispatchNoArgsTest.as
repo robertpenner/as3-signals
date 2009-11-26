@@ -11,7 +11,7 @@ package org.osflash.signals
 		[Before]
 		public function setUp():void
 		{
-			completed = new Signal(this);
+			completed = new Signal();
 		}
 
 		[After]
@@ -31,13 +31,6 @@ package org.osflash.signals
 		private function onCompleted():void
 		{
 			assertEquals(0, arguments.length);
-		}
-		//////
-		[Test(async)]
-		public function dispatch_null_should_call_listener_with_no_args():void
-		{
-			completed.addOnce( addAsync(onCompleted, 10) );
-			completed.dispatch(null);
 		}
 		
 	}

@@ -13,7 +13,7 @@ package org.osflash.signals
 		[Before]
 		public function setUp():void
 		{
-			messaged = new Signal(this, MessageEvent);
+			messaged = new Signal(MessageEvent);
 		}
 
 		[After]
@@ -26,7 +26,7 @@ package org.osflash.signals
 		[Test]
 		public function eventClass_roundtrips_through_constructor():void
 		{
-			assertSame(MessageEvent, messaged.eventClass);
+			assertSame(MessageEvent, messaged.valueClasses[0]);
 		}
 		
 		[Test(async)]
@@ -60,12 +60,65 @@ package org.osflash.signals
 		
 		private function addListenerWithoutArgs():void
 		{
-			messaged.add(noArgs);
+			messaged.add(function():void {});
+		}
+		//////
+		[Test]
+		public function constructing_signal_with_non_class_should_throw_ArgumentError():void
+		{
+			assertThrows(ArgumentError, function():void { new Signal(new Date()); } );
 		}
 		
-		private function noArgs():void
+		[Test]
+		public function constructing_signal_with_two_nulls_should_throw_ArgumentError():void
 		{
+			assertThrows(ArgumentError, function():void { new Signal(null, null); } );
 		}
+		
+		[Test]
+		public function constructing_signal_with_class_and_non_class_should_throw_ArgumentError():void
+		{
+			assertThrows(ArgumentError, function():void { new Signal(Date, 42); } );
+		}
+		//////
+		[Test]
+		public function add_listener_with_fewer_args_than_valueClasses_should_throw_ArgumentError():void
+		{
+			assertThrows(ArgumentError, addListenerWithTooFewArgs);
+		}
+		
+		private function addListenerWithTooFewArgs():void
+		{
+			var signal:Signal = new Signal(Date, Array);
+			signal.add( function(date:Date):void { } );
+		}
+		//////
+		[Test]
+		public function dispatch_two_correct_value_objects_should_succeed():void
+		{
+			var signal:Signal = new Signal(Date, Array);
+			signal.dispatch(new Date(), new Array());
+		}
+		//////
+		[Test]
+		public function dispatch_more_value_objects_than_value_classes_should_succeed():void
+		{
+			var signal:Signal = new Signal(Date, Array);
+			signal.dispatch(new Date(), new Array(), "extra value object");
+		}
+		//////
+		[Test]
+		public function dispatch_one_correct_and_one_incorrect_value_object_should_throw_ArgumentError():void
+		{
+			assertThrows(ArgumentError, dispatchOneCorrectOneIncorrect);
+		}
+		
+		private function dispatchOneCorrectOneIncorrect():void
+		{
+			var signal:Signal = new Signal(Date, Array);
+			signal.dispatch(new Date(), "wrong value type");
+		}
+
 	}
 }
 

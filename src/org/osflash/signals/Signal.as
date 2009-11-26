@@ -1,6 +1,5 @@
 package org.osflash.signals
 {
-	
 	import flash.errors.IllegalOperationError;
 	import flash.utils.Dictionary;
 
@@ -16,32 +15,37 @@ package org.osflash.signals
 	 */
 	public class Signal implements ISignal, IDispatcher
 	{
-		protected var _target:Object;
-		protected var _eventClass:Class;
-		protected var listeners:Array;
-		protected var onceListeners:Dictionary;
+		protected var _valueClasses:Array;		// of Class
+		protected var listeners:Array;			// of Function
+		protected var onceListeners:Dictionary;	// of Function
 		
 		/**
 		 * Creates a Signal instance to dispatch events on behalf of a target object.
 		 * @param	target The object the signal is dispatching events on behalf of.
 		 * @param	eventClass An optional class reference that enables an event type check in dispatch().
 		 */
-		public function Signal(target:Object, eventClass:Class = null)
+		public function Signal(...valueClasses)
 		{
-			_target = target;
-			_eventClass = eventClass;
 			listeners = [];
 			onceListeners = new Dictionary();
+			if (!valueClasses) return;
+			
+			_valueClasses = valueClasses.concat();
+			for (var i:int = _valueClasses.length; i--; )
+			{
+				if (!(_valueClasses[i] is Class))
+				{
+					throw new ArgumentError('Invalid valueClasses argument: item at index ' + i
+						+ ' should be a Class but was:<' + _valueClasses[i] + '>.');
+				}
+			}
 		}
 		
 		/** @inheritDoc */
-		public function get eventClass():Class { return _eventClass; }
+		public function get valueClasses():Array { return _valueClasses; }
 		
 		/** @inheritDoc */
 		public function get numListeners():uint { return listeners.length; }
-		
-		/** @inheritDoc */
-		public function get target():Object { return _target; }
 		
 		/** @inheritDoc */
 		//TODO: @throws
@@ -78,31 +82,50 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function dispatch(eventObject:Object = null, ...args):void
+		public function dispatch(...valueObjects):void
 		{
-			if (_eventClass && !(eventObject is _eventClass))
-				throw new ArgumentError('Event object '+eventObject+' is not an instance of '+_eventClass+'.');
+			var len:int = _valueClasses.length;
+			for (var i:int = 0; i < len; i++)
+			{
+				if (!(valueObjects[i] is _valueClasses[i]))
+					throw new ArgumentError('Event object '+valueObjects[i]+' is not an instance of '+_valueClasses[i]+'.');
+			}
 
 			//// Send eventObject to each listener.
-			if (listeners.length)
+			if (!listeners.length) return;
+			
+			//TODO: investigate performance of various approaches
+			
+			var listener:Function;
+			switch (valueObjects.length)
 			{
-				if (args.length && eventObject)
-				{
-					args.unshift(eventObject);
-				}
-				
-				//TODO: investigate performance of various approaches
-				// Clone listeners array because add/remove may occur during the dispatch.
-				for each (var listener:Function in listeners.concat())
-				{
-					//TODO: Maybe put this conditional outside the loop.
-					if (eventObject == null)
+				case 0:
+					// Clone listeners array because add/remove may occur during the dispatch.
+					for each (listener in listeners.concat())
+					{
 						listener();
-					else if (args.length)
-						listener.apply(null, args);
-					else
-						listener(eventObject);
-				}
+					}
+					break;
+					
+				case 1:
+					for each (listener in listeners.concat())
+					{
+						listener(valueObjects[0]);
+					}
+					break;
+					
+				case 2:
+					for each (listener in listeners.concat())
+					{
+						listener(valueObjects[0], valueObjects[1]);
+					}
+					break;
+					
+				default:
+					for each (listener in listeners.concat())
+					{
+						listener.apply(null, valueObjects);
+					}
 			}
 			
 			for (var onceListener:Object in onceListeners)
@@ -114,10 +137,10 @@ package org.osflash.signals
 		protected function createListenerRelationship(listener:Function):void
 		{
 			// function.length is the number of arguments.
-			if (eventClass && !listener.length)
-				throw new ArgumentError('Listener must declare at least 1 argument when eventClass is specified.');
+			if (listener.length < _valueClasses.length)
+				throw new ArgumentError('Listener must declare at least as many arguments as valueClasses.');
 			
-			// Process the first listener as quickly as possible.
+			// If there are no previous listeners, add the first one as quickly as possible.
 			if (!listeners.length)
 			{
 				listeners[0] = listener;
@@ -127,7 +150,8 @@ package org.osflash.signals
 			// Don't add the same listener twice.
 			if (listeners.indexOf(listener) >= 0)
 				return;
-						
+				
+			// Faster than push().
 			listeners[listeners.length] = listener;
 		}
 	}
