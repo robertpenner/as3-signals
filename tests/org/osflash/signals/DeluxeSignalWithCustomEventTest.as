@@ -24,9 +24,9 @@ package org.osflash.signals
 		}
 		//////
 		[Test]
-		public function eventClass_roundtrips_through_constructor():void
+		public function valueClasses_roundtrip_through_constructor():void
 		{
-			assertSame(MessageEvent, messaged.eventClass);
+			assertSame(MessageEvent, messaged.valueClasses[0]);
 		}
 		
 		[Test(async)]

@@ -31,6 +31,7 @@ package org.osflash.signals
 			if (!valueClasses) return;
 			
 			_valueClasses = valueClasses.concat();
+			// loop backwards
 			for (var i:int = _valueClasses.length; i--; )
 			{
 				if (!(_valueClasses[i] is Class))
@@ -91,7 +92,7 @@ package org.osflash.signals
 					throw new ArgumentError('Value object <'+valueObjects[i]+'> is not an instance of <'+_valueClasses[i]+'>.');
 			}
 
-			//// Send eventObject to each listener.
+			//// Call listeners.
 			if (!listeners.length) return;
 			
 			//TODO: investigate performance of various approaches
@@ -113,14 +114,6 @@ package org.osflash.signals
 					{
 						if (onceListeners[listener]) remove(listener);
 						listener(valueObjects[0]);
-					}
-					break;
-					
-				case 2:
-					for each (listener in listeners.concat())
-					{
-						if (onceListeners[listener]) remove(listener);
-						listener(valueObjects[0], valueObjects[1]);
 					}
 					break;
 					

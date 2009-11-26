@@ -158,18 +158,6 @@ package org.osflash.signals
 			assertTrue(sprite is Sprite);
 		}
 		//////
-		[Test(async)]
-		public function dispatch_null_should_call_listener_with_null():void
-		{
-			completed.addOnce( addAsync(checkNull, 10) );
-			completed.dispatch(null);
-		}
-		
-		private function checkNull(signalValue:Object):void
-		{
-			assertNull(signalValue);
-		}
-		//////
 		[Test]
 		public function addOnce_in_handler_and_dispatch_should_call_new_listener():void
 		{

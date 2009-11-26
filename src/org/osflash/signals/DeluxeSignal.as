@@ -19,7 +19,7 @@ package org.osflash.signals
 	public class DeluxeSignal implements IDeluxeSignal, IDispatcher
 	{
 		protected var _target:Object;
-		protected var _eventClass:Class;
+		protected var _valueClasses:Array;
 		protected var listeners:Array;
 		protected var onceListeners:Dictionary;
 		
@@ -28,16 +28,27 @@ package org.osflash.signals
 		 * @param	target The object the signal is dispatching events on behalf of.
 		 * @param	eventClass An optional class reference that enables an event type check in dispatch().
 		 */
-		public function DeluxeSignal(target:Object, eventClass:Class = null)
+		public function DeluxeSignal(target:Object, ...valueClasses)
 		{
 			_target = target;
-			_eventClass = eventClass;
 			listeners = [];
 			onceListeners = new Dictionary();
+			if (!valueClasses) return;
+			
+			_valueClasses = valueClasses.concat();
+			// loop backwards
+			for (var i:int = _valueClasses.length; i--; )
+			{
+				if (!(_valueClasses[i] is Class))
+				{
+					throw new ArgumentError('Invalid valueClasses argument: item at index ' + i
+						+ ' should be a Class but was:<' + _valueClasses[i] + '>.');
+				}
+			}
 		}
 		
 		/** @inheritDoc */
-		public function get eventClass():Class { return _eventClass; }
+		public function get valueClasses():Array { return _valueClasses; }
 		
 		/** @inheritDoc */
 		public function get numListeners():uint { return listeners.length; }
@@ -80,50 +91,41 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function dispatch(eventObject:Object = null, ...args):void
+		public function dispatch(...valueObjects):void
 		{
-			if (_eventClass && !(eventObject is _eventClass))
-				throw new ArgumentError('Event object '+eventObject+' is not an instance of '+_eventClass+'.');
+			var len:int = _valueClasses.length;
+			for (var i:int = 0; i < len; i++)
+			{
+				if (!(valueObjects[i] is _valueClasses[i]))
+					throw new ArgumentError('Value object <'+valueObjects[i]+'> is not an instance of <'+_valueClasses[i]+'>.');
+			}
 
-			var event:IEvent = eventObject as IEvent;
+			var event:IEvent = valueObjects[0] as IEvent;
 			if (event)
 			{
 				// clone re-dispatched event
 				if (event.target)
 				{
-					eventObject = event = event.clone();
+					valueObjects[0] = event = event.clone();
 				}
 				event.target = this.target;
 				event.currentTarget = this.target;
 				event.signal = this;
 			}
 			
-			//// Send eventObject to each listener.
+			//// Call listeners.
+			var listener:Function;
 			if (listeners.length)
 			{
-				if (args.length && eventObject)
-				{
-					args.unshift(eventObject);
-				}
-				
 				//TODO: investigate performance of various approaches
+				
 				// Clone listeners array because add/remove may occur during the dispatch.
 				for each (var listenerBox:Object in listeners.concat())
 				{
-					var listener:Function = listenerBox.listener;
-					//TODO: Maybe put this conditional outside the loop.
-					if (eventObject == null)
-						listener();
-					else if (args.length)
-						listener.apply(null, args);
-					else
-						listener(eventObject);
+					listener = listenerBox.listener;
+					if (onceListeners[listener]) remove(listener);
+					listener.apply(null, valueObjects);
 				}
-			}
-			
-			for (var onceListener:Object in onceListeners)
-			{
-				remove(onceListener as Function);
 			}
 			
 			if (!event || !event.bubbles) return;
@@ -135,6 +137,7 @@ package org.osflash.signals
 			{
 				if (currentTarget is IBubbleEventHandler)
 				{
+					//TODO: incorporate secoif's Boolean return to check whether to continue.
 					IBubbleEventHandler(event.currentTarget = currentTarget).onEventBubbled(event);
 					break;
 				}
@@ -153,8 +156,11 @@ package org.osflash.signals
 		protected function createListenerRelationship(listener:Function, priority:int):void
 		{
 			// function.length is the number of arguments.
-			if (eventClass && !listener.length)
-				throw new ArgumentError('Listener must declare at least 1 argument when eventClass is specified.');
+			if (listener.length < _valueClasses.length)
+			{
+				var argumentString:String = (listener.length == 1) ? 'argument' : 'arguments';
+				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
+			}
 			
 			var listenerBox:Object = {listener:listener, priority:priority};
 			// Process the first listener as quickly as possible.
