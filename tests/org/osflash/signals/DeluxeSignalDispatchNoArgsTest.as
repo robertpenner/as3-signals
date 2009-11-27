@@ -33,10 +33,10 @@ package org.osflash.signals
 			assertEquals(0, arguments.length);
 		}
 		//////
-		[Test]
+		[Test(async)]
 		public function addOnce_in_handler_and_dispatch_should_call_new_listener():void
 		{
-			completed.addOnce(addOnceInHandler);
+			completed.addOnce( addAsync(addOnceInHandler, 10) );
 			completed.dispatch();
 		}
 		
@@ -49,6 +49,5 @@ package org.osflash.signals
 		protected function secondAddOnceListener():void
 		{
 		}
-		
 	}
 }
