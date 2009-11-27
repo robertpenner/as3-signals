@@ -96,8 +96,8 @@ package org.osflash.signals
 		[Test]
 		public function dispatch_two_correct_value_objects_should_succeed():void
 		{
-			var signal:Signal = new Signal(Date, Array);
-			signal.dispatch(new Date(), new Array());
+			var signal:Signal = new Signal(String, uint);
+			signal.dispatch("the Answer", 42);
 		}
 		//////
 		[Test]

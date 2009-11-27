@@ -15,9 +15,9 @@ package org.osflash.signals
 		
 		/**
 		 * Subscribes a listener for the signal.
-		 * @param	listener A function with an argument
-		 * that matches the type of event dispatched by the signal.
-		 * If eventClass is not specified, the listener and dispatch() can be called without an argument.
+		 * @param	listener A function with arguments
+		 * that matches the value classes dispatched by the signal.
+		 * If value classes are not specified (e.g. via Signal constructor), dispatch() can be called without arguments.
 		 */
 		function add(listener:Function):void;
 		
@@ -25,9 +25,9 @@ package org.osflash.signals
 		 * Subscribes a one-time listener for this signal.
 		 * The signal will remove the listener automatically the first time it is called,
 		 * after the dispatch to all listeners is complete.
-		 * @param	listener A function with an argument
-		 * that matches the type of event dispatched by the signal.
-		 * If eventClass is not specified, the listener and dispatch() can be called without an argument.
+		 * @param	listener A function with arguments
+		 * that matches the value classes dispatched by the signal.
+		 * If value classes are not specified (e.g. via Signal constructor), dispatch() can be called without arguments.
 		 */
 		function addOnce(listener:Function):void;
 		

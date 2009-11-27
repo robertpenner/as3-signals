@@ -26,7 +26,11 @@ package org.osflash.signals
 		/**
 		 * Creates a Signal instance to dispatch events on behalf of a target object.
 		 * @param	target The object the signal is dispatching events on behalf of.
-		 * @param	eventClass An optional class reference that enables an event type check in dispatch().
+		 * @param	valueClasses Any number of class references that enable type checks in dispatch().
+		 * For example, new DeluxeSignal(this, String, uint)
+		 * would allow: signal.dispatch("the Answer", 42)
+		 * but not: signal.dispatch(true, 42.5)
+		 * nor: signal.dispatch()
 		 */
 		public function DeluxeSignal(target:Object, ...valueClasses)
 		{
