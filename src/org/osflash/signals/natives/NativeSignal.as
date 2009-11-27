@@ -28,7 +28,7 @@ package org.osflash.signals.natives
 		 */
 		public function NativeSignal(target:IEventDispatcher, eventType:String, eventClass:Class = null)
 		{
-			_target = IEventDispatcher(target);
+			_target = target;
 			_eventType = eventType;
 			_eventClass = eventClass || Event;
 			listenerCmds = [];
@@ -115,8 +115,8 @@ package org.osflash.signals.natives
 				var signal:NativeSignal = this;
 				listenerCmd.execute = function(event:Event):void
 				{
-					listener(event);
 					signal.remove(arguments.callee);
+					listener(event);
 				};
 			}
 			else

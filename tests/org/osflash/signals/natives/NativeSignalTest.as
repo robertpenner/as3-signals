@@ -1,6 +1,7 @@
 package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
+	import flash.ui.Mouse;
 
 	import asunit4.async.addAsync;
 
@@ -198,6 +199,23 @@ package org.osflash.signals.natives
 		{
 			var added:NativeSignal = new NativeSignal(sprite, 'added');
 			assertSame(Event, added.eventClass);
+		}
+		//////
+		[Test(async)]
+		public function addOnce_in_handler_and_dispatch_should_call_new_listener():void
+		{
+			clicked.addOnce( addAsync(addOnceInHandler, 10) );
+			clicked.dispatch(new MouseEvent('click'));
+		}
+		
+		protected function addOnceInHandler(e:MouseEvent):void
+		{
+			clicked.addOnce( addAsync(secondAddOnceListener, 10) );
+			clicked.dispatch(new MouseEvent('click'));
+		}
+		
+		protected function secondAddOnceListener(e:MouseEvent):void
+		{
 		}
 	}
 }
