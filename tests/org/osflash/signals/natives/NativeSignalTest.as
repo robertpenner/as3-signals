@@ -130,70 +130,37 @@ package org.osflash.signals.natives
 			verifyNoListeners();
 		}
 		//////
-		[Test]
+		[Test(expects="ArgumentError")]
 		public function adding_listener_without_args_should_throw_ArgumentError():void
 		{
-			assertThrows(ArgumentError, addListenerWithoutArgs);
+			clicked.add(function():void {});
 		}
-		
-		private function addListenerWithoutArgs():void
-		{
-			clicked.add(noArgs);
-		}
-		
-		private function noArgs():void
-		{
-		}
-		//////
-		[Test]
+
+		[Test(expects="ArgumentError")]
 		public function adding_listener_with_two_args_should_throw_ArgumentError():void
 		{
-			assertThrows(ArgumentError, addListenerWithTwoArgs);
+			clicked.add(function(a:*, b:*):void {});
 		}
-		
-		private function addListenerWithTwoArgs():void
-		{
-			clicked.add(twoArgs);
-		}
-		
-		private function twoArgs(a:*, b:*):void
-		{
-		}
-		//////
-		[Test]
+
+		[Test(expects="ArgumentError")]
 		public function dispatch_wrong_event_class_should_throw_ArgumentError():void
-		{
-			assertThrows(ArgumentError, dispatchWrongEventClass);
-		}
-		
-		private function dispatchWrongEventClass():void
 		{
 			clicked.dispatch(new Event('click'));
 		}
-		//////
-		[Test]
+
+		[Test(expects="ArgumentError")]
 		public function dispatch_event_with_type_not_matching_signal_name_should_throw_ArgumentError():void
-		{
-			assertThrows(ArgumentError, dispatchWrongEventType);
-		}
-		
-		private function dispatchWrongEventType():void
 		{
 			var wrongType:String = 'rollOver';
 			clicked.dispatch(new MouseEvent(wrongType));
 		}
-		//////
-		[Test]
+
+		[Test(expects="ArgumentError")]
 		public function dispatch_null_should_throw_ArgumentError():void
-		{
-			assertThrows(ArgumentError, dispatchNonEventObject);
-		}
-		
-		private function dispatchNonEventObject():void
 		{
 			clicked.dispatch(null);
 		}
-		//////
+
 		[Test]
 		public function eventClass_defaults_to_native_Event_class():void
 		{
@@ -201,6 +168,7 @@ package org.osflash.signals.natives
 			assertSame(Event, added.eventClass);
 		}
 		//////
+		// Captures Issue #5 - You can't addOnce to a signal from a function called by the same signal.
 		[Test(async)]
 		public function addOnce_in_handler_and_dispatch_should_call_new_listener():void
 		{

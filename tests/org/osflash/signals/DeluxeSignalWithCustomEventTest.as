@@ -43,30 +43,16 @@ package org.osflash.signals
 			assertEquals('message value in the event', 'ok', e.message);
 		}
 		//////
-		[Test]
+		[Test(expects="ArgumentError")]
 		public function dispatch_wrong_event_type_should_throw_ArgumentError():void
-		{
-			assertThrows(ArgumentError, dispatchWrongEventType);
-		}
-		
-		private function dispatchWrongEventType():void
 		{
 			messaged.dispatch(new GenericEvent());
 		}
-		//////
-		[Test]
+
+		[Test(expects="ArgumentError")]
 		public function signal_with_eventClass_adding_listener_without_args_should_throw_ArgumentError():void
 		{
-			assertThrows(ArgumentError, addListenerWithoutArgs);
-		}
-		
-		private function addListenerWithoutArgs():void
-		{
-			messaged.add(noArgs);
-		}
-		
-		private function noArgs():void
-		{
+			messaged.add(function():void {});
 		}
 	}
 }

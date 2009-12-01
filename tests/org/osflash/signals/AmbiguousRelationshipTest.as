@@ -23,18 +23,18 @@ package org.osflash.signals
 			instance = null;
 		}
 		
-		[Test]
+		[Test(expects="flash.errors.IllegalOperationError")]
 		public function add_then_addOnce_throws_error():void
 		{
 			instance.add(failIfCalled);
-			assertThrows(IllegalOperationError, function():void { instance.addOnce(failIfCalled); });
+			instance.addOnce(failIfCalled);
 		}
 		
-		[Test]
+		[Test(expects="flash.errors.IllegalOperationError")]
 		public function addOnce_then_add_should_throw_error():void
 		{
 			instance.addOnce(failIfCalled);
-			assertThrows(IllegalOperationError, function():void { instance.add(failIfCalled); });
+			instance.add(failIfCalled);
 		}
 		
 		[Test]
