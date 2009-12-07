@@ -37,6 +37,20 @@ package org.osflash.signals
 		}
 		//////
 		[Test(async)]
+		public function dispatch_2_zeroes_should_call_listener_with_2_zeroes():void
+		{
+			completed = new Signal(Number, Number);
+			completed.add( addAsync(onZeroZero, 10) );
+			completed.dispatch(0, 0);
+		}
+		
+		private function onZeroZero(a:Object, b:Object):void
+		{
+			assertEquals(0, a);
+			assertEquals(0, b);
+		}
+		//////
+		[Test(async)]
 		public function dispatch_null_should_call_listener_with_null():void
 		{
 			completed.addOnce( addAsync(checkNull, 10) );
