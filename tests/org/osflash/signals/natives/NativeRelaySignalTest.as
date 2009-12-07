@@ -4,7 +4,7 @@ package org.osflash.signals.natives
 
 	import asunit4.async.addAsync;
 
-	import org.osflash.signals.IDeluxeSignal;
+	import org.osflash.signals.DeluxeSignal;
 	import org.osflash.signals.ISignal;
 
 	import flash.display.Sprite;
@@ -12,7 +12,7 @@ package org.osflash.signals.natives
 
 	public class NativeRelaySignalTest
 	{
-		private var clicked:IDeluxeSignal;
+		private var clicked:NativeRelaySignal;
 		private var sprite:Sprite;
 
 		[Before]
@@ -39,13 +39,20 @@ package org.osflash.signals.natives
 		[Test(async)]
 		public function signal_add_then_EventDispatcher_dispatch_should_call_signal_listener():void
 		{
-			clicked.add( addAsync(onClicked, 10) );
+			clicked.add( addAsync(checkSpriteAsCurrentTarget, 10) );
 			sprite.dispatchEvent(new MouseEvent('click'));
 		}
 		
-		private function onClicked(e:MouseEvent):void
+		private function checkSpriteAsCurrentTarget(e:MouseEvent):void
 		{
 			assertSame(sprite, e.currentTarget);
+		}
+		//////
+		[Test(async)]
+		public function signal_addOnce_then_EventDispatcher_dispatch_should_call_signal_listener():void
+		{
+			clicked.addOnce( addAsync(checkSpriteAsCurrentTarget, 10) );
+			sprite.dispatchEvent(new MouseEvent('click'));
 		}
 		//////
 		[Test]
@@ -55,7 +62,14 @@ package org.osflash.signals.natives
 			assertTrue(sprite.hasEventListener('click'));
 		}
 		
-		private function emptyHandler(e:MouseEvent):void {}
+		private function emptyHandler(e:MouseEvent):void { }
+		
+		[Test]
+		public function when_signal_addOnce_listener_then_hasEventListener_should_be_true():void
+		{
+			clicked.addOnce(emptyHandler);
+			assertTrue(sprite.hasEventListener('click'));
+		}
 		
 		[Test]
 		public function when_signal_adds_then_removes_listener_then_hasEventListener_should_be_false():void
@@ -64,6 +78,21 @@ package org.osflash.signals.natives
 			clicked.remove(emptyHandler);
 			assertFalse(sprite.hasEventListener('click'));
 		}
+		
+		[Test]
+		public function when_signal_addOnce_then_removes_listener_then_hasEventListener_should_be_false():void
+		{
+			clicked.addOnce(emptyHandler);
+			clicked.remove(emptyHandler);
+			assertFalse(sprite.hasEventListener('click'));
+		}
 		//////
+		[Test]
+		public function addOnce_and_dispatch_should_remove_listener_automatically():void
+		{
+			clicked.addOnce(emptyHandler);
+			clicked.dispatch(new MouseEvent('click'));
+			assertEquals('there should be no listeners', 0, clicked.numListeners);
+		}
 	}
 }

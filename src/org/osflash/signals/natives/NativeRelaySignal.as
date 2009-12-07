@@ -42,6 +42,17 @@ package org.osflash.signals.natives
 		}
 		
 		/** @inheritDoc */
+		override public function addOnce(listener:Function, priority:int = 0):void
+		{
+			var prevListenerCount:uint = listeners.length;
+			// Try to add first because it may throw an exception.
+			super.addOnce(listener);
+			// Account for cases where the same listener is added twice.
+			if (prevListenerCount == 0 && listeners.length == 1)
+				IEventDispatcher(target).addEventListener(_name, dispatch, false, priority);
+		}
+		
+		/** @inheritDoc */
 		override public function remove(listener:Function):void
 		{
 			var prevListenerCount:uint = listeners.length;
