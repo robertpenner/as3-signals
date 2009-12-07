@@ -28,12 +28,12 @@ package org.osflash.signals
 			completed.dispatch(22, 'done', new Date());
 		}
 		
-		private function onCompleted(...args:Array):void
+		private function onCompleted(a:uint, b:String, c:Date):void
 		{
-			assertEquals(3, args.length);
-			assertEquals(22, args[0]);
-			assertEquals('done', args[1]);
-			assertTrue(args[2] is Date);
+			assertEquals(3, arguments.length);
+			assertEquals(22, a);
+			assertEquals('done', b);
+			assertTrue(c is Date);
 		}
 		//////
 		
