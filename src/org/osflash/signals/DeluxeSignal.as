@@ -61,7 +61,12 @@ package org.osflash.signals
 		public function get target():Object { return _target; }
 		
 		/** @inheritDoc */
-		public function set target(value:Object):void { _target = value; }
+		public function set target(value:Object):void
+		{
+			if (value == _target) return;
+			removeAll();
+			_target = value;
+		}
 		
 		/** @inheritDoc */
 		//TODO: @throws

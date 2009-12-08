@@ -1,6 +1,7 @@
 package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
+	import flash.events.EventDispatcher;
 
 	import asunit4.async.addAsync;
 
@@ -93,6 +94,23 @@ package org.osflash.signals.natives
 			clicked.add(emptyHandler);
 			clicked.removeAll();
 			assertFalse(sprite.hasEventListener('click'));
+		}
+		//////
+		[Test]
+		public function setting_target_to_a_different_object_should_remove_all_listeners_from_1st_target():void
+		{
+			clicked.add(emptyHandler);
+			clicked.target = new EventDispatcher();
+			assertFalse(sprite.hasEventListener('click'));
+		}
+		//////
+		[Test]
+		public function setting_target_to_the_same_object_should_not_remove_listeners():void
+		{
+			clicked.add(emptyHandler);
+			var numListenersBefore:uint = clicked.numListeners;
+			clicked.target = sprite;
+			assertEquals(numListenersBefore, clicked.numListeners);
 		}
 		//////
 		[Test]
