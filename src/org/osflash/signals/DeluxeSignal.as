@@ -93,8 +93,11 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			listeners.length = 0;
-			onceListeners = new Dictionary();
+			// Looping backwards is more efficient when removing array items.
+			for (var i:uint = listeners.length; i--; )
+			{
+				remove(listeners[i] as Function);
+			}
 		}
 		
 		/** @inheritDoc */

@@ -86,6 +86,14 @@ package org.osflash.signals.natives
 			clicked.remove(emptyHandler);
 			assertFalse(sprite.hasEventListener('click'));
 		}
+		
+		[Test]
+		public function when_signal_adds_then_removeAll_listeners_then_hasEventListener_should_be_false():void
+		{
+			clicked.add(emptyHandler);
+			clicked.removeAll();
+			assertFalse(sprite.hasEventListener('click'));
+		}
 		//////
 		[Test]
 		public function addOnce_and_dispatch_should_remove_listener_automatically():void
