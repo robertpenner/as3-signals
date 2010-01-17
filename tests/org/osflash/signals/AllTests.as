@@ -14,19 +14,19 @@ package org.osflash.signals
 		public var _NativeSignalTest:NativeSignalTest;
 		public var _PriorityListenersTest:PriorityListenersTest;
 		public var _RedispatchedEventTest:RedispatchedEventTest;
-		public var _SignalDispatchExtraArgsTest:DeluxeSignalDispatchExtraArgsTest;
-		public var _SignalDispatchNoArgsTest:DeluxeSignalDispatchNoArgsTest;
-		public var _SignalDispatchNonEventTest:DeluxeSignalDispatchNonEventTest;
-		public var _SignalSplitInterfacesTest:DeluxeSignalSplitInterfacesTest;
-		public var _SignalWithBubblingEventTest:DeluxeSignalWithBubblingEventTest;
-		public var _SignalWithCustomEventTest:DeluxeSignalWithCustomEventTest;
-		public var _SignalWithGenericEventTest:DeluxeSignalWithGenericEventTest;
+		public var _DeluxeSignalDispatchExtraArgsTest:DeluxeSignalDispatchExtraArgsTest;
+		public var _DeluxeSignalDispatchNoArgsTest:DeluxeSignalDispatchNoArgsTest;
+		public var _DeluxeSignalDispatchNonEventTest:DeluxeSignalDispatchNonEventTest;
+		public var _DeluxeSignalSplitInterfacesTest:DeluxeSignalSplitInterfacesTest;
+		public var _DeluxeSignalWithBubblingEventTest:DeluxeSignalWithBubblingEventTest;
+		public var _DeluxeSignalWithCustomEventTest:DeluxeSignalWithCustomEventTest;
+		public var _DeluxeSignalWithGenericEventTest:DeluxeSignalWithGenericEventTest;
 		
-		public var _SimpleSignalDispatchExtraArgsTest:SignalDispatchExtraArgsTest;
-		public var _SimpleSignalDispatchNoArgsTest:SignalDispatchNoArgsTest;
-		public var _SimpleSignalDispatchNonEventTest:SignalDispatchNonEventTest;
-		public var _SimpleSignalSplitInterfacesTest:SignalSplitInterfacesTest;
-		public var _SimpleSignalTest:SignalTest;
-		public var _SimpleSignalWithCustomEventTest:SignalWithCustomEventTest;
+		public var _SignalDispatchExtraArgsTest:SignalDispatchExtraArgsTest;
+		public var _SignalDispatchNoArgsTest:SignalDispatchNoArgsTest;
+		public var _SignalDispatchNonEventTest:SignalDispatchNonEventTest;
+		public var _SignalSplitInterfacesTest:SignalSplitInterfacesTest;
+		public var _SignalTest:SignalTest;
+		public var _SignalWithCustomEventTest:SignalWithCustomEventTest;
 	}
 }

@@ -1,7 +1,6 @@
 package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
-	import flash.ui.Mouse;
 
 	import asunit4.async.addAsync;
 

@@ -27,7 +27,7 @@ package org.osflash.signals
 		}
 
 		[Test]
-		public function signal_length_is_0_after_creation():void
+		public function numListeners_is_0_after_creation():void
 		{
 			assertEquals(0, completed.numListeners);
 		}
@@ -35,18 +35,16 @@ package org.osflash.signals
 		//////
 		
 		[Test(async)]
-		public function dispatch_event_should_pass_event_to_listener_but_not_set_IEvent_properties():void
+		public function dispatch_should_pass_event_to_listener_but_not_set_signal_or_target_properties():void
 		{
 			completed.add(addAsync(checkGenericEvent, 10));
 			completed.dispatch(new GenericEvent());
 		}
 		
-		protected function checkGenericEvent(e:IEvent):void
+		protected function checkGenericEvent(e:GenericEvent):void
 		{
-			assertTrue('instance of IEvent', e is IEvent);
-			assertTrue('instance of GenericEvent', e is GenericEvent);
-			assertNull('event.signal is not set by SimpleSignal', e.signal);
-			assertNull('event.target is not set by SimpleSignal', e.target);
+			assertNull('event.signal is not set by Signal', e.signal);
+			assertNull('event.target is not set by Signal', e.target);
 		}
 		
 		//////
@@ -74,9 +72,8 @@ package org.osflash.signals
 		[Test]
 		public function add_listener_then_remove_then_dispatch_should_not_call_listener():void
 		{
-			var delegate:Function = failIfCalled;
-			completed.add(delegate);
-			completed.remove(delegate);
+			completed.add(failIfCalled);
+			completed.remove(failIfCalled);
 			completed.dispatch(new GenericEvent());
 		}
 		
@@ -97,7 +94,7 @@ package org.osflash.signals
 		}
 		//////
 		[Test]
-		public function add_2_listeners_should_yield_length_of_2():void
+		public function add_2_listeners_should_yield_numListeners_of_2():void
 		{
 			completed.add(newEmptyHandler());
 			completed.add(newEmptyHandler());
@@ -112,7 +109,7 @@ package org.osflash.signals
 
 		//////
 		[Test]
-		public function add_2_listeners_then_remove_1_should_yield_length_of_1():void
+		public function add_2_listeners_then_remove_1_should_yield_numListeners_of_1():void
 		{
 			var firstFunc:Function = newEmptyHandler();
 			completed.add(firstFunc);
@@ -124,7 +121,7 @@ package org.osflash.signals
 		}
 		
 		[Test]
-		public function add_2_listeners_then_removeAll_should_yield_length_of_0():void
+		public function add_2_listeners_then_removeAll_should_yield_numListeners_of_0():void
 		{
 			completed.add(newEmptyHandler());
 			completed.add(newEmptyHandler());
@@ -144,7 +141,7 @@ package org.osflash.signals
 		}
 		//////
 		[Test]
-		public function dispatch_object_that_isnt_an_IEvent_should_dispatch_without_error():void
+		public function dispatch_non_IEvent_without_error():void
 		{
 			completed.addOnce(checkSprite);
 			// Sprite doesn't have a target property,

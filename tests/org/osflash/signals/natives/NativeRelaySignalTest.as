@@ -1,14 +1,13 @@
 package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
-	import flash.events.EventDispatcher;
 
 	import asunit4.async.addAsync;
 
-	import org.osflash.signals.DeluxeSignal;
 	import org.osflash.signals.ISignal;
 
 	import flash.display.Sprite;
+	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
 
 	public class NativeRelaySignalTest

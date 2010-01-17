@@ -6,9 +6,9 @@ package org.osflash.signals
 
 	public class SignalSplitInterfacesTest
 	{
-		// Notice the use of the smaller ISimpleListeners interface, rather than ISignal.
-		// This makes dispatch() inaccessible unless the SimpleSignal is typed to IDispatcher.
-		public var completed:Signal;
+		// Notice the use of the ISignal interface, rather than Signal.
+		// This makes dispatch() inaccessible unless the ISignal is cast to IDispatcher or Signal.
+		public var completed:ISignal;
 
 		[Before]
 		public function setUp():void
@@ -22,9 +22,9 @@ package org.osflash.signals
 			completed.removeAll();
 			completed = null;
 		}
-		//////
+		
 		[Test(async)]
-		public function cast_to_IDispatcher_and_dispatch_should_work():void
+		public function cast_ISignal_to_IDispatcher_and_dispatch():void
 		{
 			completed.addOnce( addAsync(onCompleted, 10) );
 			IDispatcher(completed).dispatch();
@@ -35,5 +35,11 @@ package org.osflash.signals
 			assertEquals(0, arguments.length);
 		}
 		
+		[Test(async)]
+		public function cast_ISignal_to_Signal_and_dispatch():void
+		{
+			completed.addOnce( addAsync(onCompleted, 10) );
+			Signal(completed).dispatch();
+		}
 	}
 }

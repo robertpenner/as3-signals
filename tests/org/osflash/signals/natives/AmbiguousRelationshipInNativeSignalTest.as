@@ -3,7 +3,6 @@ package org.osflash.signals.natives
 	import asunit.asserts.*;
 
 	import flash.display.Sprite;
-	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
 
 	public class AmbiguousRelationshipInNativeSignalTest
