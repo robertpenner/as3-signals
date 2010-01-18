@@ -65,6 +65,8 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function addOnce(listener:Function):void
 		{
+			// If the listener has been added as once, don't do anything.
+			if (onceListeners[listener]) return;
 			if (listeners.indexOf(listener) >= 0 && !onceListeners[listener])
 				throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 			
