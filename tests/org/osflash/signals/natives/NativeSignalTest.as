@@ -26,9 +26,8 @@ package org.osflash.signals.natives
 		[After]
 		public function tearDown():void
 		{
-			// tearDown() is getting called too early for some reason, so commenting out for now.
-			//clicked.removeAll();
-			//clicked = null;
+			clicked.removeAll();
+			clicked = null;
 		}
 		
 		protected function verifyNoListeners():void
