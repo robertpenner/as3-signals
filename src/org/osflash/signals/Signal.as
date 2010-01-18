@@ -27,21 +27,18 @@ package org.osflash.signals
 		 * would allow: signal.dispatch("the Answer", 42)
 		 * but not: signal.dispatch(true, 42.5)
 		 * nor: signal.dispatch()
+		 *
+		 * NOTE: Subclasses cannot call super.apply(null, valueClasses),
+		 * but this constructor has logic to support super(valueClasses).
 		 */
 		public function Signal(...valueClasses)
 		{
 			listeners = [];
 			onceListeners = new Dictionary();
-			_valueClasses = valueClasses;
-			
-			for (var i:int = _valueClasses.length; i--; )
-			{
-				if (!(_valueClasses[i] is Class))
-				{
-					throw new ArgumentError('Invalid valueClasses argument: item at index ' + i
-						+ ' should be a Class but was:<' + _valueClasses[i] + '>.');
-				}
-			}
+			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
+			if (valueClasses.length == 1 && valueClasses[0] is Array)
+				valueClasses = valueClasses[0];
+			setValueClasses(valueClasses);
 		}
 		
 		/** @inheritDoc */
@@ -128,6 +125,20 @@ package org.osflash.signals
 						if (onceListeners[listener]) remove(listener);
 						listener.apply(null, valueObjects);
 					}
+			}
+		}
+		
+		protected function setValueClasses(valueClasses:Array):void
+		{
+			_valueClasses = valueClasses || [];
+			
+			for (var i:int = _valueClasses.length; i--; )
+			{
+				if (!(_valueClasses[i] is Class))
+				{
+					throw new ArgumentError('Invalid valueClasses argument: item at index ' + i
+						+ ' should be a Class but was:<' + _valueClasses[i] + '>.');
+				}
 			}
 		}
 		
