@@ -14,7 +14,7 @@ package org.osflash.signals.natives
 	 */
 	public class NativeRelaySignal extends DeluxeSignal
 	{
-		protected var _name:String;
+		protected var _eventType:String;
 
 		/**
 		 * Creates a new NativeRelaySignal instance to relay events from an IEventDispatcher.
@@ -24,10 +24,10 @@ package org.osflash.signals.natives
 		 * Because the target is an IEventDispatcher,
 		 * eventClass needs to be flash.events.Event or a subclass of it.
 		 */
-		public function NativeRelaySignal(target:IEventDispatcher, name:String, eventClass:Class = null)
+		public function NativeRelaySignal(target:IEventDispatcher, eventType:String, eventClass:Class = null)
 		{
 			super(target, eventClass || Event);
-			_name = name;
+			_eventType = eventType;
 		}
 		
 		/** @inheritDoc */
@@ -38,7 +38,7 @@ package org.osflash.signals.natives
 			super.add(listener);
 			// Account for cases where the same listener is added twice.
 			if (prevListenerCount == 0 && listenerBoxes.length == 1)
-				IEventDispatcher(target).addEventListener(_name, dispatch, false, priority);
+				IEventDispatcher(target).addEventListener(_eventType, dispatch, false, priority);
 		}
 		
 		/** @inheritDoc */
@@ -49,7 +49,7 @@ package org.osflash.signals.natives
 			super.addOnce(listener);
 			// Account for cases where the same listener is added twice.
 			if (prevListenerCount == 0 && listenerBoxes.length == 1)
-				IEventDispatcher(target).addEventListener(_name, dispatch, false, priority);
+				IEventDispatcher(target).addEventListener(_eventType, dispatch, false, priority);
 		}
 		
 		/** @inheritDoc */
@@ -58,7 +58,7 @@ package org.osflash.signals.natives
 			var prevListenerCount:uint = listenerBoxes.length;
 			super.remove(listener);
 			if (prevListenerCount == 1 && listenerBoxes.length == 0)
-				IEventDispatcher(target).removeEventListener(_name, dispatch);
+				IEventDispatcher(target).removeEventListener(_eventType, dispatch);
 		}
 		
 	}
