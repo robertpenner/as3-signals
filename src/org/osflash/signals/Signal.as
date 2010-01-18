@@ -32,10 +32,8 @@ package org.osflash.signals
 		{
 			listeners = [];
 			onceListeners = new Dictionary();
-			if (!valueClasses) return;
+			_valueClasses = valueClasses;
 			
-			_valueClasses = valueClasses.concat();
-			// loop backwards
 			for (var i:int = _valueClasses.length; i--; )
 			{
 				if (!(_valueClasses[i] is Class))
