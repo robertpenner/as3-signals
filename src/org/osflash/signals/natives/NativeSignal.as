@@ -73,6 +73,7 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		public function remove(listener:Function):void
 		{
+			if (indexOfListener(listener) == -1) return;
 			listenerCmds.splice(indexOfListener(listener), 1);
 			_target.removeEventListener(_eventType, listener);
 			delete onceListeners[listener];

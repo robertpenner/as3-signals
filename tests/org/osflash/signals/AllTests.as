@@ -14,6 +14,7 @@ package org.osflash.signals
 		public var _NativeSignalTest:NativeSignalTest;
 		public var _PriorityListenersTest:PriorityListenersTest;
 		public var _RedispatchedEventTest:RedispatchedEventTest;
+		public var _DeluxeSignalTest:DeluxeSignalTest;
 		public var _DeluxeSignalDispatchExtraArgsTest:DeluxeSignalDispatchExtraArgsTest;
 		public var _DeluxeSignalDispatchNoArgsTest:DeluxeSignalDispatchNoArgsTest;
 		public var _DeluxeSignalDispatchNonEventTest:DeluxeSignalDispatchNonEventTest;

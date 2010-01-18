@@ -83,6 +83,16 @@ package org.osflash.signals
 		}
 		
 		//////
+		
+		[Test]
+		public function add_listener_then_remove_function_not_in_listeners_should_do_nothing():void
+		{
+			completed.add(newEmptyHandler());
+			completed.remove(newEmptyHandler());
+			assertEquals(1, completed.numListeners);
+		}
+		
+		//////
 
 		[Test(async)]
 		public function add_2_listeners_remove_2nd_then_dispatch_should_call_1st_not_2nd_listener():void

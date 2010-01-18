@@ -94,6 +94,21 @@ package org.osflash.signals.natives
 			verifyNoListeners();
 		}
 		//////
+		
+		[Test]
+		public function add_listener_then_remove_function_not_in_listeners_should_do_nothing():void
+		{
+			clicked.add(newEmptyHandler());
+			clicked.remove(newEmptyHandler());
+			assertEquals(1, clicked.numListeners);
+		}
+		
+		private function newEmptyHandler():Function
+		{
+			return function(e:*):void {};
+		}
+		
+		//////
 		[Test(async)]
 		public function addOnce_and_dispatch_from_signal_should_remove_listener_automatically():void
 		{
