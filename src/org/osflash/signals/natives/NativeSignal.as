@@ -63,6 +63,8 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		public function addOnce(listener:Function, priority:int = 0):void
 		{
+			// If the listener has been added as once, don't do anything.
+			if (onceListeners[listener]) return;
 			if (indexOfListener(listener) >= 0 && !onceListeners[listener])
 				throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 			
@@ -84,10 +86,8 @@ package org.osflash.signals.natives
 		{
 			for (var i:int = listenerCmds.length; i--; )
 			{
-				_target.removeEventListener(_eventType, listenerCmds[i].execute);
+				remove(listenerCmds[i].execute as Function);
 			}
-			listenerCmds.length = 0;
-			onceListeners = new Dictionary();
 		}
 		
 		/** @inheritDoc */
@@ -136,7 +136,7 @@ package org.osflash.signals.natives
 		{
 			for (var i:int = listenerCmds.length; i--; )
 			{
-				if (listenerCmds[i].listener == listener) return i;
+				if (listenerCmds[i].execute == listener) return i;
 			}
 			return -1;
 		}
