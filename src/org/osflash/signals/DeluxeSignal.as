@@ -24,29 +24,26 @@ package org.osflash.signals
 		protected var onceListeners:Dictionary;
 		
 		/**
-		 * Creates a Signal instance to dispatch events on behalf of a target object.
+		 * Creates a DeluxeSignal instance to dispatch events on behalf of a target object.
 		 * @param	target The object the signal is dispatching events on behalf of.
 		 * @param	valueClasses Any number of class references that enable type checks in dispatch().
 		 * For example, new DeluxeSignal(this, String, uint)
 		 * would allow: signal.dispatch("the Answer", 42)
 		 * but not: signal.dispatch(true, 42.5)
 		 * nor: signal.dispatch()
+		 *
+		 * NOTE: Subclasses cannot call super.apply(null, valueClasses),
+		 * but this constructor has logic to support super(valueClasses).
 		 */
 		public function DeluxeSignal(target:Object, ...valueClasses)
 		{
 			_target = target;
 			listenerBoxes = [];
 			onceListeners = new Dictionary();
-			_valueClasses = valueClasses;
-			
-			for (var i:int = _valueClasses.length; i--; )
-			{
-				if (!(_valueClasses[i] is Class))
-				{
-					throw new ArgumentError('Invalid valueClasses argument: item at index ' + i
-						+ ' should be a Class but was:<' + _valueClasses[i] + '>.');
-				}
-			}
+			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
+			if (valueClasses.length == 1 && valueClasses[0] is Array)
+				valueClasses = valueClasses[0];
+			setValueClasses(valueClasses);
 		}
 		
 		/** @inheritDoc */
@@ -169,6 +166,20 @@ package org.osflash.signals
 			return -1;
 		}
 				
+		protected function setValueClasses(valueClasses:Array):void
+		{
+			_valueClasses = valueClasses || [];
+			
+			for (var i:int = _valueClasses.length; i--; )
+			{
+				if (!(_valueClasses[i] is Class))
+				{
+					throw new ArgumentError('Invalid valueClasses argument: item at index ' + i
+						+ ' should be a Class but was:<' + _valueClasses[i] + '>.');
+				}
+			}
+		}
+		
 		protected function createListenerRelationship(listener:Function, priority:int):void
 		{
 			// function.length is the number of arguments.
