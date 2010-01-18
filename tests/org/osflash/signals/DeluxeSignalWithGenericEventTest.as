@@ -11,10 +11,9 @@ package org.osflash.signals
 
 	public class DeluxeSignalWithGenericEventTest
 	{
-		public var completed:DeluxeSignal;
+		protected var completed:DeluxeSignal;
+		protected var delegate:Function;
 		
-		public function DeluxeSignalWithGenericEventTest() {}
-
 		[Before]
 		public function setUp():void
 		{
@@ -26,6 +25,7 @@ package org.osflash.signals
 		{
 			completed.removeAll();
 			completed = null;
+			delegate = null;
 		}
 
 		[Test]
@@ -78,7 +78,8 @@ package org.osflash.signals
 		[Test(async)]
 		public function add_one_listener_and_dispatch_then_listener_remove_itself_using_event_signal():void
 		{
-			completed.add(addAsync(remove_myself_from_signal, 10));
+			delegate = addAsync(remove_myself_from_signal, 10);
+			completed.add(delegate);
 			completed.dispatch(new GenericEvent());
 		}
 		
@@ -86,7 +87,8 @@ package org.osflash.signals
 		{
 			assertEquals('listener still in signal', 1, e.signal.numListeners);
 			
-			e.signal.remove(arguments.callee);
+			// Can't remove(arguments.callee) because it's wrapped with delegate created by addAsync().
+			e.signal.remove(delegate);
 			
 			assertEquals('listener removed from signal', 0, e.signal.numListeners);
 		}
