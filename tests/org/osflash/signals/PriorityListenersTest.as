@@ -1,41 +1,34 @@
 package org.osflash.signals
 {
-	import asunit.framework.TestCase;
-	import flash.display.Sprite;
-	import org.osflash.signals.GenericEvent;
+	import asunit.asserts.*;
 
-	public class PriorityListenersTest extends TestCase
+	import asunit4.async.addAsync;
+
+	public class PriorityListenersTest
 	{
-		public var completed:ISignal;
+		public var completed:DeluxeSignal;
 		private var listenersCalled:Array;
 
-		public function PriorityListenersTest(testMethod:String = null)
+		[Before]
+		public function setUp():void
 		{
-			super(testMethod);
-		}
-
-		protected override function setUp():void
-		{
-			completed = new Signal(this);
+			completed = new DeluxeSignal(this);
 			listenersCalled = [];
 		}
 
-		protected override function tearDown():void
+		[After]
+		public function tearDown():void
 		{
 			completed.removeAll();
 			completed = null;
 			listenersCalled = null;
 		}
-		// This is a convenience override to set the async timeout really low, so failures happen more quickly.
-		override protected function addAsync(handler:Function = null, duration:Number = 10, failureHandler:Function=null):Function
-		{
-			return super.addAsync(handler, duration, failureHandler);
-		}
 		//////
-		public function test_listener_added_second_with_higher_priority_should_be_called_first():void
+		[Test(async)]
+		public function listener_added_second_with_higher_priority_should_be_called_first():void
 		{
-			completed.add( addAsync(listener1) );
-			completed.add( addAsync(listener0), 10 );
+			completed.add( addAsync(listener1, 5) );
+			completed.add( addAsync(listener0, 5), 10 );
 			
 			completed.dispatch();
 		}
@@ -58,11 +51,12 @@ package org.osflash.signals
 			assertSame('this should be the third listener called', arguments.callee, listenersCalled[2]);
 		}
 		//////
-		public function test_listeners_added_with_same_priority_should_be_called_in_order_added():void
+		[Test(async)]
+		public function listeners_added_with_same_priority_should_be_called_in_order_added():void
 		{
-			completed.add( addAsync(listener0), 10 );
-			completed.add( addAsync(listener1), 10 );
-			completed.add( addAsync(listener2), 10 );
+			completed.add( addAsync(listener0, 5), 10 );
+			completed.add( addAsync(listener1, 5), 10 );
+			completed.add( addAsync(listener2, 5), 10 );
 			
 			completed.dispatch();
 		}

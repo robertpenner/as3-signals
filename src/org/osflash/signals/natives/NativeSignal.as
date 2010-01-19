@@ -1,34 +1,42 @@
-package org.osflash.signals
+package org.osflash.signals.natives
 {
+	import org.osflash.signals.IDeluxeSignal;
+
+	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	import flash.utils.Dictionary;
-	import org.osflash.signals.error.AmbiguousRelationshipError;
 
 	/**
-	 * The NativeSignal class uses an ISignal interface as a facade for an IEventDispatcher.
+	 * The NativeSignal class provides a strongly-typed facade for an IEventDispatcher.
+	 * A NativeSignal is essentially a mini-dispatcher locked to a specific event type and class.
+	 * It can become part of an interface.
 	 */
-	public class NativeSignal implements INativeSignal
+	public class NativeSignal implements IDeluxeSignal, INativeDispatcher
 	{
 		protected var _target:IEventDispatcher;
-		protected var _name:String;
+		protected var _eventType:String;
 		protected var _eventClass:Class;
 		protected var listenerCmds:Array;
 		protected var onceListeners:Dictionary;
 				
 		/**
-		 * Creates a Signal instance to dispatch events on behalf of a target object.
-		 * @param	target The object the signal is dispatching events on behalf of.
-		 * @param	eventClass An optional class reference that enables an event type check in dispatch().
+		 * Creates a NativeSignal instance to dispatch events on behalf of a target object.
+		 * @param	target The object on whose behalf the signal is dispatching events.
+		 * @param	eventType The type of Event permitted to be dispatched from this signal. Corresponds to Event.type.
+		 * @param	eventClass An optional class reference that enables an event type check in dispatch(). Defaults to flash.events.Event if omitted.
 		 */
-		public function NativeSignal(target:IEventDispatcher, name:String, eventClass:Class = null)
+		public function NativeSignal(target:IEventDispatcher, eventType:String, eventClass:Class = null)
 		{
-			_target = IEventDispatcher(target);
-			_name = name;
+			_target = target;
+			_eventType = eventType;
 			_eventClass = eventClass || Event;
 			listenerCmds = [];
 			onceListeners = new Dictionary();
 		}
+		
+		/** @inheritDoc */
+		public function get eventType():String { return _eventType; }
 		
 		/** @inheritDoc */
 		public function get eventClass():Class { return _eventClass; }
@@ -40,11 +48,14 @@ package org.osflash.signals
 		public function get target():IEventDispatcher { return _target; }
 		
 		/** @inheritDoc */
+		public function set target(value:IEventDispatcher):void { _target = value; }
+		
+		/** @inheritDoc */
 		//TODO: @throws
 		public function add(listener:Function, priority:int = 0):void
 		{
 			if (onceListeners[listener])
-				throw new AmbiguousRelationshipError('You cannot addOnce() then add() the same listener without removing the relationship first.');
+				throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 		
 			createListenerRelationship(listener, false, priority);
 		}
@@ -52,8 +63,10 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function addOnce(listener:Function, priority:int = 0):void
 		{
+			// If the listener has been added as once, don't do anything.
+			if (onceListeners[listener]) return;
 			if (indexOfListener(listener) >= 0 && !onceListeners[listener])
-				throw new AmbiguousRelationshipError('You cannot add() then addOnce() the same listener without removing the relationship first.');
+				throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 			
 			createListenerRelationship(listener, true, priority);
 			onceListeners[listener] = true;
@@ -62,8 +75,9 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function remove(listener:Function):void
 		{
+			if (indexOfListener(listener) == -1) return;
 			listenerCmds.splice(indexOfListener(listener), 1);
-			_target.removeEventListener(_name, listener);
+			_target.removeEventListener(_eventType, listener);
 			delete onceListeners[listener];
 		}
 		
@@ -72,10 +86,8 @@ package org.osflash.signals
 		{
 			for (var i:int = listenerCmds.length; i--; )
 			{
-				_target.removeEventListener(_name, listenerCmds[i].execute);
+				remove(listenerCmds[i].execute as Function);
 			}
-			listenerCmds.length = 0;
-			onceListeners = new Dictionary();
 		}
 		
 		/** @inheritDoc */
@@ -84,8 +96,8 @@ package org.osflash.signals
 			if (!(event is _eventClass))
 				throw new ArgumentError('Event object '+event+' is not an instance of '+_eventClass+'.');
 				
-			if (event.type != _name)
-				throw new ArgumentError('Event object has incorrect type. Expected <'+_name+'> but was <'+event.type+'>.');
+			if (event.type != _eventType)
+				throw new ArgumentError('Event object has incorrect type. Expected <'+_eventType+'> but was <'+event.type+'>.');
 
 			return _target.dispatchEvent(event);
 		}
@@ -104,11 +116,11 @@ package org.osflash.signals
 			
 			if (once)
 			{
-				var signal:INativeSignal = this;
+				var signal:NativeSignal = this;
 				listenerCmd.execute = function(event:Event):void
 				{
-					listener(event);
 					signal.remove(arguments.callee);
+					listener(event);
 				};
 			}
 			else
@@ -117,14 +129,14 @@ package org.osflash.signals
 			}
 				
 			listenerCmds[listenerCmds.length] = listenerCmd;
-			_target.addEventListener(_name, listenerCmd.execute, false, priority);
+			_target.addEventListener(_eventType, listenerCmd.execute, false, priority);
 		}
 		
 		protected function indexOfListener(listener:Function):int
 		{
 			for (var i:int = listenerCmds.length; i--; )
 			{
-				if (listenerCmds[i].listener == listener) return i;
+				if (listenerCmds[i].execute == listener) return i;
 			}
 			return -1;
 		}

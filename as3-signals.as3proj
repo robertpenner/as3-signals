@@ -4,7 +4,7 @@
   <output>
     <movie disabled="False" />
     <movie input="" />
-    <movie path="bin\TestRunner.swf" />
+    <movie path="bin\AllTestsRunner.swf" />
     <movie fps="30" />
     <movie width="1000" />
     <movie height="600" />
@@ -64,11 +64,13 @@
   </library>
   <!-- Class files to compile (other referenced classes will automatically be included) -->
   <compileTargets>
-    <compile path="tests\TestRunner.as" />
+    <compile path="tests\org\osflash\signals\AllTestsRunner.as" />
   </compileTargets>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
-    <!-- example: <hidden path="..." /> -->
+    <hidden path=".git" />
+    <hidden path="bin" />
+    <hidden path="libs" />
   </hiddenPaths>
   <!-- Executed before build -->
   <preBuildCommand />
@@ -76,7 +78,7 @@
   <postBuildCommand alwaysRun="False" />
   <!-- Other project options -->
   <options>
-    <option showHiddenPaths="False" />
+    <option showHiddenPaths="True" />
     <option testMovie="NewTab" />
   </options>
 </project>

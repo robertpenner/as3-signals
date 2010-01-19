@@ -6,14 +6,14 @@ package org.osflash.signals
 
 	import org.osflash.signals.events.GenericEvent;
 
-	public class SignalWithCustomEventTest
+	public class DeluxeSignalWithCustomEventTest
 	{
-		public var messaged:Signal;
+		public var messaged:DeluxeSignal;
 
 		[Before]
 		public function setUp():void
 		{
-			messaged = new Signal(MessageEvent);
+			messaged = new DeluxeSignal(this, MessageEvent);
 		}
 
 		[After]
@@ -38,6 +38,8 @@ package org.osflash.signals
 		
 		protected function onMessage(e:MessageEvent):void
 		{
+			assertEquals('source of the event', messaged, e.signal);
+			assertEquals('target of the event', this, e.target);
 			assertEquals('message value in the event', 'ok', e.message);
 		}
 		//////
@@ -51,52 +53,6 @@ package org.osflash.signals
 		public function signal_with_eventClass_adding_listener_without_args_should_throw_ArgumentError():void
 		{
 			messaged.add(function():void {});
-		}
-
-		[Test(expects="ArgumentError")]
-		public function constructing_signal_with_non_class_should_throw_ArgumentError():void
-		{
-			new Signal(new Date());
-		}
-		
-		[Test(expects="ArgumentError")]
-		public function constructing_signal_with_two_nulls_should_throw_ArgumentError():void
-		{
-			new Signal(null, null);
-		}
-		
-		[Test(expects="ArgumentError")]
-		public function constructing_signal_with_class_and_non_class_should_throw_ArgumentError():void
-		{
-			new Signal(Date, 42);
-		}
-
-		[Test(expects="ArgumentError")]
-		public function add_listener_with_fewer_args_than_valueClasses_should_throw_ArgumentError():void
-		{
-			var signal:Signal = new Signal(Date, Array);
-			signal.add( function(date:Date):void { } );
-		}
-
-		[Test]
-		public function dispatch_two_correct_value_objects_should_succeed():void
-		{
-			var signal:Signal = new Signal(String, uint);
-			signal.dispatch("the Answer", 42);
-		}
-
-		[Test]
-		public function dispatch_more_value_objects_than_value_classes_should_succeed():void
-		{
-			var signal:Signal = new Signal(Date, Array);
-			signal.dispatch(new Date(), new Array(), "extra value object");
-		}
-
-		[Test(expects="ArgumentError")]
-		public function dispatch_one_correct_and_one_incorrect_value_object_should_throw_ArgumentError():void
-		{
-			var signal:Signal = new Signal(Date, Array);
-			signal.dispatch(new Date(), "wrong value type");
 		}
 	}
 }

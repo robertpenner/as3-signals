@@ -1,7 +1,8 @@
-package org.osflash.signals
+package org.osflash.signals.natives
 {
+	import org.osflash.signals.DeluxeSignal;
+
 	import flash.events.Event;
-	import org.osflash.signals.Signal;
 	import flash.events.IEventDispatcher;
 
 	/**
@@ -11,9 +12,9 @@ package org.osflash.signals
 	 * NativeRelaySignal has its own dispatching code,
 	 * whereas NativeSignal uses the IEventDispatcher to dispatch.
 	 */
-	public class NativeRelaySignal extends Signal implements ISignal
+	public class NativeRelaySignal extends DeluxeSignal
 	{
-		protected var _name:String;
+		protected var _eventType:String;
 
 		/**
 		 * Creates a new NativeRelaySignal instance to relay events from an IEventDispatcher.
@@ -23,30 +24,41 @@ package org.osflash.signals
 		 * Because the target is an IEventDispatcher,
 		 * eventClass needs to be flash.events.Event or a subclass of it.
 		 */
-		public function NativeRelaySignal(target:IEventDispatcher, name:String, eventClass:Class = null)
+		public function NativeRelaySignal(target:IEventDispatcher, eventType:String, eventClass:Class = null)
 		{
 			super(target, eventClass || Event);
-			_name = name;
+			_eventType = eventType;
 		}
 		
 		/** @inheritDoc */
 		override public function add(listener:Function, priority:int = 0):void
 		{
-			var prevListenerCount:uint = listeners.length;
+			var prevListenerCount:uint = listenerBoxes.length;
 			// Try to add first because it may throw an exception.
 			super.add(listener);
 			// Account for cases where the same listener is added twice.
-			if (prevListenerCount == 0 && listeners.length == 1)
-				IEventDispatcher(target).addEventListener(_name, dispatch, false, priority);
+			if (prevListenerCount == 0 && listenerBoxes.length == 1)
+				IEventDispatcher(target).addEventListener(_eventType, dispatch, false, priority);
+		}
+		
+		/** @inheritDoc */
+		override public function addOnce(listener:Function, priority:int = 0):void
+		{
+			var prevListenerCount:uint = listenerBoxes.length;
+			// Try to add first because it may throw an exception.
+			super.addOnce(listener);
+			// Account for cases where the same listener is added twice.
+			if (prevListenerCount == 0 && listenerBoxes.length == 1)
+				IEventDispatcher(target).addEventListener(_eventType, dispatch, false, priority);
 		}
 		
 		/** @inheritDoc */
 		override public function remove(listener:Function):void
 		{
-			var prevListenerCount:uint = listeners.length;
+			var prevListenerCount:uint = listenerBoxes.length;
 			super.remove(listener);
-			if (prevListenerCount == 1 && listeners.length == 0)
-				IEventDispatcher(target).removeEventListener(_name, dispatch);
+			if (prevListenerCount == 1 && listenerBoxes.length == 0)
+				IEventDispatcher(target).removeEventListener(_eventType, dispatch);
 		}
 		
 	}

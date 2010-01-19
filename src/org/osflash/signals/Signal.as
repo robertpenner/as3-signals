@@ -1,9 +1,8 @@
 package org.osflash.signals
 {
+	import flash.errors.IllegalOperationError;
 	import flash.utils.Dictionary;
-	
-	import org.osflash.signals.error.AmbiguousRelationshipError;
-	
+
 	/**
 	 * Signal dispatches events to multiple listeners.
 	 * It is inspired by C# events and delegates, and by
@@ -14,59 +13,67 @@ package org.osflash.signals
 	 * <br/><br/>
 	 * Project home: <a target="_top" href="http://github.com/robertpenner/as3-signals/">http://github.com/robertpenner/as3-signals/</a>
 	 */
-	public class Signal implements ISignal
+	public class Signal implements ISignal, IDispatcher
 	{
-		protected var _target:Object;
-		protected var _eventClass:Class;
-		protected var listeners:Array;
-		protected var onceListeners:Dictionary;
+		protected var _valueClasses:Array;		// of Class
+		protected var listeners:Array;			// of Function
+		protected var onceListeners:Dictionary;	// of Function
 		
 		/**
 		 * Creates a Signal instance to dispatch events on behalf of a target object.
 		 * @param	target The object the signal is dispatching events on behalf of.
-		 * @param	eventClass An optional class reference that enables an event type check in dispatch().
+		 * @param	valueClasses Any number of class references that enable type checks in dispatch().
+		 * For example, new Signal(String, uint)
+		 * would allow: signal.dispatch("the Answer", 42)
+		 * but not: signal.dispatch(true, 42.5)
+		 * nor: signal.dispatch()
+		 *
+		 * NOTE: Subclasses cannot call super.apply(null, valueClasses),
+		 * but this constructor has logic to support super(valueClasses).
 		 */
-		public function Signal(target:Object, eventClass:Class = null)
+		public function Signal(...valueClasses)
 		{
-			_target = target;
-			_eventClass = eventClass;
 			listeners = [];
 			onceListeners = new Dictionary();
+			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
+			if (valueClasses.length == 1 && valueClasses[0] is Array)
+				valueClasses = valueClasses[0];
+			setValueClasses(valueClasses);
 		}
 		
 		/** @inheritDoc */
-		public function get eventClass():Class { return _eventClass; }
+		public function get valueClasses():Array { return _valueClasses; }
 		
 		/** @inheritDoc */
 		public function get numListeners():uint { return listeners.length; }
 		
 		/** @inheritDoc */
-		public function get target():Object { return _target; }
-		
-		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function, priority:int = 0):void
+		public function add(listener:Function):void
 		{
 			if (onceListeners[listener])
-				throw new AmbiguousRelationshipError('You cannot addOnce() then add() the same listener without removing the relationship first.');
-			
-			createListenerRelationship(listener, priority);
+				throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
+		
+			createListenerRelationship(listener);
 		}
 		
 		/** @inheritDoc */
-		public function addOnce(listener:Function, priority:int = 0):void
+		public function addOnce(listener:Function):void
 		{
-			if (indexOfListener(listener) >= 0 && !onceListeners[listener])
-				throw new AmbiguousRelationshipError('You cannot add() then addOnce() the same listener without removing the relationship first.');
+			// If the listener has been added as once, don't do anything.
+			if (onceListeners[listener]) return;
+			if (listeners.indexOf(listener) >= 0 && !onceListeners[listener])
+				throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 			
-			createListenerRelationship(listener, priority);
+			createListenerRelationship(listener);
 			onceListeners[listener] = true;
 		}
 		
 		/** @inheritDoc */
 		public function remove(listener:Function):void
 		{
-			listeners.splice(indexOfListener(listener), 1);
+			if (listeners.indexOf(listener) == -1) return;
+			listeners.splice(listeners.indexOf(listener), 1);
 			delete onceListeners[listener];
 		}
 		
@@ -78,115 +85,85 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function dispatch(eventObject:Object = null, ...args):void
+		public function dispatch(...valueObjects):void
 		{
-			if (_eventClass && !(eventObject is _eventClass))
-				throw new ArgumentError('Event object '+eventObject+' is not an instance of '+_eventClass+'.');
-			
-			var event:IEvent = eventObject as IEvent;
-			if (event)
+			var len:int = _valueClasses.length;
+			for (var i:int = 0; i < len; i++)
 			{
-				// clone re-dispatched event
-				if (event.target)
-				{
-					eventObject = event = event.clone();
-				}
-				event.target = this.target;
-				event.currentTarget = this.target;
-				event.signal = this;
+				if (!(valueObjects[i] is _valueClasses[i]))
+					throw new ArgumentError('Value object <'+valueObjects[i]+'> is not an instance of <'+_valueClasses[i]+'>.');
 			}
+
+			//// Call listeners.
+			if (!listeners.length) return;
 			
-			//// Send eventObject to each listener.
-			if (listeners.length)
+			//TODO: investigate performance of various approaches
+			
+			var listener:Function;
+			switch (valueObjects.length)
 			{
-				if (args.length && eventObject)
-				{
-					args.unshift(eventObject);
-				}
-				
-				//TODO: investigate performance of various approaches
-				// Clone listeners array because add/remove may occur during the dispatch.
-				for each (var listenerBox:Object in listeners.concat())
-				{
-					var listener:Function = listenerBox.listener;
-					//TODO: Maybe put this conditional outside the loop.
-					if (eventObject == null)
+				case 0:
+					// Clone listeners array because add/remove may occur during the dispatch.
+					for each (listener in listeners.concat())
+					{
+						if (onceListeners[listener]) remove(listener);
 						listener();
-					else if (args.length)
-						listener.apply(null, args);
-					else
-						listener(eventObject);
-				}
-			}
-			
-			for (var onceListener:Object in onceListeners)
-			{
-				remove(onceListener as Function);
-			}
-			
-			if (!event || !event.bubbles) return;
-			
-			//// Bubble the event as far as possible.
-			var currentTarget:Object = this.target;
-			while ( currentTarget && 
-				(currentTarget is IBubbler || currentTarget.hasOwnProperty("parent")) &&
-				(currentTarget = currentTarget.parent))
-			{
-				if (currentTarget is IBubbleEventHandler)
-				{
-					if (IBubbleEventHandler(event.currentTarget = currentTarget).onEventBubbled(event)) {
-						continue;
-					} else {
-						break;
 					}
+					break;
+					
+				case 1:
+					for each (listener in listeners.concat())
+					{
+						if (onceListeners[listener]) remove(listener);
+						listener(valueObjects[0]);
+					}
+					break;
+					
+				default:
+					for each (listener in listeners.concat())
+					{
+						if (onceListeners[listener]) remove(listener);
+						listener.apply(null, valueObjects);
+					}
+			}
+		}
+		
+		protected function setValueClasses(valueClasses:Array):void
+		{
+			_valueClasses = valueClasses || [];
+			
+			for (var i:int = _valueClasses.length; i--; )
+			{
+				if (!(_valueClasses[i] is Class))
+				{
+					throw new ArgumentError('Invalid valueClasses argument: item at index ' + i
+						+ ' should be a Class but was:<' + _valueClasses[i] + '>.');
 				}
 			}
 		}
 		
-		protected function indexOfListener(listener:Object):int
-		{
-			for (var i:int = listeners.length; i--; )
-			{
-				if (listeners[i].listener == listener) return i;
-			}
-			return -1;
-		}
-		
-		protected function createListenerRelationship(listener:Function, priority:int):void
+		protected function createListenerRelationship(listener:Function):void
 		{
 			// function.length is the number of arguments.
-			if (eventClass && !listener.length)
-				throw new ArgumentError('Listener must declare at least 1 argument when eventClass is specified.');
+			if (listener.length < _valueClasses.length)
+			{
+				var argumentString:String = (listener.length == 1) ? 'argument' : 'arguments';
+				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
+			}
 			
-			var listenerBox:Object = {listener:listener, priority:priority};
-			// Process the first listener as quickly as possible.
+			// If there are no previous listeners, add the first one as quickly as possible.
 			if (!listeners.length)
 			{
-				listeners[0] = listenerBox;
+				listeners[0] = listener;
 				return;
 			}
 			
 			// Don't add the same listener twice.
-			if (indexOfListener(listener) >= 0)
+			if (listeners.indexOf(listener) >= 0)
 				return;
-			
-			// Assume the listeners are already sorted by priority
-			// and insert in the right spot. For listeners with the same priority,
-			// we must preserve the order in which they were added.
-			var len:int = listeners.length;
-			for (var i:int = 0; i < len; i++)
-			{
-				// As soon as a lower-priority listener is found, go in front of it.
-				if (priority > listeners[i].priority)
-				{
-					listeners.splice(i, 0, listenerBox);
-					return;
-				}
-			}
-			
-			// If we made it this far, the new listener has lowest priority, so put it last.
-			listeners[listeners.length] = listenerBox;
+				
+			// Faster than push().
+			listeners[listeners.length] = listener;
 		}
-		
 	}
 }

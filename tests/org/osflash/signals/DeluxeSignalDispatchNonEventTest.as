@@ -4,14 +4,14 @@ package org.osflash.signals
 
 	import asunit4.async.addAsync;
 
-	public class SignalDispatchNonEventTest
+	public class DeluxeSignalDispatchNonEventTest
 	{
-		public var completed:Signal;
+		public var completed:DeluxeSignal;
 
 		[Before]
 		public function setUp():void
 		{
-			completed = new Signal();
+			completed = new DeluxeSignal(this);
 		}
 
 		[After]
@@ -24,7 +24,7 @@ package org.osflash.signals
 		/**
 		 * Captures bug where dispatching 0 was considered null.
 		 */
-		[Test(async)]
+		[Test]
 		public function dispatch_zero_should_call_listener_with_zero():void
 		{
 			completed.add( addAsync(onZero, 10) );
@@ -34,20 +34,6 @@ package org.osflash.signals
 		private function onZero(num:Number):void
 		{
 			assertEquals(0, num);
-		}
-		//////
-		[Test(async)]
-		public function dispatch_2_zeroes_should_call_listener_with_2_zeroes():void
-		{
-			completed = new Signal(Number, Number);
-			completed.add( addAsync(onZeroZero, 10) );
-			completed.dispatch(0, 0);
-		}
-		
-		private function onZeroZero(a:Object, b:Object):void
-		{
-			assertEquals(0, a);
-			assertEquals(0, b);
 		}
 		//////
 		[Test(async)]
@@ -61,5 +47,6 @@ package org.osflash.signals
 		{
 			assertNull(signalValue);
 		}
+		
 	}
 }

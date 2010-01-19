@@ -1,18 +1,21 @@
-package org.osflash.signals
+package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
 
-	public class AmbiguousRelationshipTest
+	import flash.display.Sprite;
+	import flash.events.Event;
+
+	public class AmbiguousRelationshipInNativeSignalTest
 	{
-		private var target:Object;
+		private var target:Sprite;
 		
-		private var instance:DeluxeSignal;
+		private var instance:NativeSignal;
 
 		[Before]
 		public function setUp():void
 		{
-			target = {};
-			instance = new DeluxeSignal(target);
+			target = new Sprite();
+			instance = new NativeSignal(target, Event.CHANGE);
 		}
 
 		[After]
@@ -51,7 +54,7 @@ package org.osflash.signals
 			assertEquals(1, instance.numListeners);
 		}
 		
-		private function failIfCalled():void
+		private function failIfCalled(event:Event):void
 		{
 			fail("if this listener is called, something horrible is going on");
 		}

@@ -1,36 +1,33 @@
-package org.osflash.signals {
-	import asunit.framework.TestCase;
-	import org.osflash.signals.GenericEvent;
+package org.osflash.signals 
+{
+	import asunit.asserts.*;
 
-	public class RedispatchedEventTest extends TestCase
+	import asunit4.async.addAsync;
+
+	import org.osflash.signals.events.GenericEvent;
+
+	public class RedispatchedEventTest
 	{
-		public var completed:ISignal;
+		public var completed:DeluxeSignal;
 		protected var originalEvent:GenericEvent;
 
-		public function RedispatchedEventTest(testMethod:String = null)
+		[Before]
+		public function setUp():void
 		{
-			super(testMethod);
+			completed = new DeluxeSignal(this);
 		}
 
-		protected override function setUp():void
-		{
-			completed = new Signal(this);
-		}
-
-		protected override function tearDown():void
+		[After]
+		public function tearDown():void
 		{
 			completed.removeAll();
 			completed = null;
 		}
-		// This is a convenience override to set the async timeout really low, so failures happen more quickly.
-		override protected function addAsync(handler:Function = null, duration:Number = 10, failureHandler:Function=null):Function
-		{
-			return super.addAsync(handler, duration, failureHandler);
-		}
 		//////
-		public function test_dispatch_event_already_dispatched_should_clone_it():void
+		[Test(async)]
+		public function dispatch_event_already_dispatched_should_clone_it():void
 		{
-			completed.add(addAsync(redispatchEvent));
+			completed.add(addAsync(redispatchEvent, 10));
 			originalEvent = new GenericEvent();
 			completed.dispatch(originalEvent);
 		}
@@ -39,7 +36,7 @@ package org.osflash.signals {
 		{
 			e.signal.removeAll();
 			assertSame(originalEvent, e);
-			completed.add(addAsync(check_redispatched_event_is_not_original));
+			completed.add(addAsync(check_redispatched_event_is_not_original, 10));
 			
 			completed.dispatch(originalEvent);
 		}

@@ -3,7 +3,7 @@ package org.osflash.signals
 	/**
 	 *
 	 */
-	public interface IListeners
+	public interface IDeluxeSignal
 	{
 		/** The current number of listeners for the signal. */
 		function get numListeners():uint;

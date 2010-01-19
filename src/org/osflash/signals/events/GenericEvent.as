@@ -1,18 +1,18 @@
-package org.osflash.signals
+package org.osflash.signals.events
 {
-	import org.osflash.signals.IEvent;
-	
+	import org.osflash.signals.IDeluxeSignal;
+
 	/**
 	 *
-	 * @copy org.osflash.signals.IEvent
-	 * 
+	 * @see org.osflash.signals.events.IEvent
+	 * Documentation for the event interface being maintained in IEvent to avoid duplication for now.
 	 */
 	public class GenericEvent implements IEvent
 	{
 		protected var _bubbles:Boolean;
 		protected var _target:Object;
 		protected var _currentTarget:Object;
-		protected var _signal:ISignal;
+		protected var _signal:IDeluxeSignal;
 		
 		public function GenericEvent(bubbles:Boolean = false)
 		{
@@ -20,8 +20,8 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function get signal():ISignal { return _signal; }
-		public function set signal(value:ISignal):void { _signal = value; }
+		public function get signal():IDeluxeSignal { return _signal; }
+		public function set signal(value:IDeluxeSignal):void { _signal = value; }
 		
 		/** @inheritDoc */
 		public function get target():Object { return _target; }

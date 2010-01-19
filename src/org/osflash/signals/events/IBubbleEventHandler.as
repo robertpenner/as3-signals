@@ -1,5 +1,6 @@
-﻿package org.osflash.signals
+package org.osflash.signals.events
 {
+
 	public interface IBubbleEventHandler
 	{
 		/**

@@ -1,34 +1,30 @@
 package org.osflash.signals
 {
-	import asunit.framework.TestCase;
-	import org.osflash.signals.ISignal;
-	import org.osflash.signals.IDispatcher;
-	import org.osflash.signals.IListeners;
-	import org.osflash.signals.Signal;
+	import asunit.asserts.*;
 
-	public class SignalSplitInterfacesTest extends TestCase
+	import asunit4.async.addAsync;
+
+	public class SignalSplitInterfacesTest
 	{
-		// Notice the use of the smaller ISubscriber interface, rather than ISignal.
-		// This makes dispatch() inaccessible unless the Signal is cast to IDispatcher.
-		public var completed:IListeners;
+		// Notice the use of the ISignal interface, rather than Signal.
+		// This makes dispatch() inaccessible unless the ISignal is cast to IDispatcher or Signal.
+		public var completed:ISignal;
 
-		public function SignalSplitInterfacesTest(testMethod:String = null)
+		[Before]
+		public function setUp():void
 		{
-			super(testMethod);
+			completed = new Signal();
 		}
 
-		protected override function setUp():void
-		{
-			completed = new Signal(this);
-		}
-
-		protected override function tearDown():void
+		[After]
+		public function tearDown():void
 		{
 			completed.removeAll();
 			completed = null;
 		}
-		//////
-		public function test_cast_to_IDispatcher_and_dispatch_should_work():void
+		
+		[Test(async)]
+		public function cast_ISignal_to_IDispatcher_and_dispatch():void
 		{
 			completed.addOnce( addAsync(onCompleted, 10) );
 			IDispatcher(completed).dispatch();
@@ -39,5 +35,11 @@ package org.osflash.signals
 			assertEquals(0, arguments.length);
 		}
 		
+		[Test(async)]
+		public function cast_ISignal_to_Signal_and_dispatch():void
+		{
+			completed.addOnce( addAsync(onCompleted, 10) );
+			Signal(completed).dispatch();
+		}
 	}
 }

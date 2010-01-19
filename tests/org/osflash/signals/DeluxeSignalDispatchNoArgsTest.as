@@ -4,14 +4,14 @@ package org.osflash.signals
 
 	import asunit4.async.addAsync;
 
-	public class SignalDispatchNoArgsTest
+	public class DeluxeSignalDispatchNoArgsTest
 	{
-		public var completed:Signal;
+		public var completed:DeluxeSignal;
 
 		[Before]
 		public function setUp():void
 		{
-			completed = new Signal();
+			completed = new DeluxeSignal(this);
 		}
 
 		[After]
