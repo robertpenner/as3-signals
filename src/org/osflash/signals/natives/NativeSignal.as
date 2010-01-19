@@ -90,7 +90,11 @@ package org.osflash.signals.natives
 			}
 		}
 		
-		/** @inheritDoc */
+		/**
+		 * Unlike other signals, NativeSignal does not dispatch null
+		 * because it causes an exception in EventDispatcher.
+		 * @inheritDoc
+		 */
 		public function dispatch(event:Event):Boolean
 		{
 			if (!(event is _eventClass))

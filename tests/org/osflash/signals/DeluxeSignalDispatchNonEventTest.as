@@ -11,7 +11,7 @@ package org.osflash.signals
 		[Before]
 		public function setUp():void
 		{
-			completed = new DeluxeSignal(this);
+			completed = new DeluxeSignal(this, Date);
 		}
 
 		[After]
@@ -27,6 +27,7 @@ package org.osflash.signals
 		[Test]
 		public function dispatch_zero_should_call_listener_with_zero():void
 		{
+			completed = new DeluxeSignal(this, Number);
 			completed.add( addAsync(onZero, 10) );
 			completed.dispatch(0);
 		}
@@ -39,14 +40,26 @@ package org.osflash.signals
 		[Test(async)]
 		public function dispatch_null_should_call_listener_with_null():void
 		{
-			completed.addOnce( addAsync(checkNull, 10) );
+			completed.addOnce( addAsync(checkNullDate, 10) );
 			completed.dispatch(null);
 		}
 		
-		private function checkNull(signalValue:Object):void
+		private function checkNullDate(date:Date):void
 		{
-			assertNull(signalValue);
+			assertNull(date);
+		}
+		//////
+		[Test(async)]
+		public function dispatch_null_through_int_DeluxeSignal_should_be_autoconverted_to_zero():void
+		{
+			completed = new DeluxeSignal(int);
+			completed.addOnce( addAsync(checkNullConvertedToZero, 10) );
+			completed.dispatch(null);
 		}
 		
+		private function checkNullConvertedToZero(intValue:int):void
+		{
+			assertEquals('null was converted to 0', 0, intValue);
+		}
 	}
 }
