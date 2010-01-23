@@ -20,8 +20,7 @@ package org.osflash.signals
 		protected var onceListeners:Dictionary;	// of Function
 		
 		/**
-		 * Creates a Signal instance to dispatch events on behalf of a target object.
-		 * @param	target The object the signal is dispatching events on behalf of.
+		 * Creates a Signal instance to dispatch value objects.
 		 * @param	valueClasses Any number of class references that enable type checks in dispatch().
 		 * For example, new Signal(String, uint)
 		 * would allow: signal.dispatch("the Answer", 42)
