@@ -106,11 +106,19 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function dispatch(...valueObjects):void
 		{
+			// Validate value objects against pre-defined value classes.
+			var valueObject:Object;
+			var valueClass:Class;
 			var len:int = _valueClasses.length;
 			for (var i:int = 0; i < len; i++)
 			{
-				if (!(valueObjects[i] is _valueClasses[i]))
-					throw new ArgumentError('Value object <'+valueObjects[i]+'> is not an instance of <'+_valueClasses[i]+'>.');
+				// null is allowed to pass through.
+				if ( (valueObject = valueObjects[i]) === null
+					|| valueObject is (valueClass = _valueClasses[i]) )
+					continue;
+					
+				throw new ArgumentError('Value object <' + valueObject
+					+ '> is not an instance of <' + valueClass + '>.');
 			}
 
 			var event:IEvent = valueObjects[0] as IEvent;

@@ -20,8 +20,7 @@ package org.osflash.signals
 		protected var onceListeners:Dictionary;	// of Function
 		
 		/**
-		 * Creates a Signal instance to dispatch events on behalf of a target object.
-		 * @param	target The object the signal is dispatching events on behalf of.
+		 * Creates a Signal instance to dispatch value objects.
 		 * @param	valueClasses Any number of class references that enable type checks in dispatch().
 		 * For example, new Signal(String, uint)
 		 * would allow: signal.dispatch("the Answer", 42)
@@ -87,18 +86,25 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function dispatch(...valueObjects):void
 		{
+			// Validate value objects against pre-defined value classes.
+			var valueObject:Object;
+			var valueClass:Class;
 			var len:int = _valueClasses.length;
 			for (var i:int = 0; i < len; i++)
 			{
-				if (!(valueObjects[i] is _valueClasses[i]))
-					throw new ArgumentError('Value object <'+valueObjects[i]+'> is not an instance of <'+_valueClasses[i]+'>.');
+				// null is allowed to pass through.
+				if ( (valueObject = valueObjects[i]) === null
+					|| valueObject is (valueClass = _valueClasses[i]) )
+					continue;
+					
+				throw new ArgumentError('Value object <' + valueObject
+					+ '> is not an instance of <' + valueClass + '>.');
 			}
 
-			//// Call listeners.
 			if (!listeners.length) return;
 			
 			//TODO: investigate performance of various approaches
-			
+			//// Call listeners.
 			var listener:Function;
 			switch (valueObjects.length)
 			{

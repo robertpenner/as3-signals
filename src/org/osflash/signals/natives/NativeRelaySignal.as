@@ -38,7 +38,7 @@ package org.osflash.signals.natives
 			super.add(listener);
 			// Account for cases where the same listener is added twice.
 			if (prevListenerCount == 0 && listenerBoxes.length == 1)
-				IEventDispatcher(target).addEventListener(_eventType, dispatch, false, priority);
+				IEventDispatcher(_target).addEventListener(_eventType, dispatch, false, priority);
 		}
 		
 		/** @inheritDoc */
@@ -49,7 +49,7 @@ package org.osflash.signals.natives
 			super.addOnce(listener);
 			// Account for cases where the same listener is added twice.
 			if (prevListenerCount == 0 && listenerBoxes.length == 1)
-				IEventDispatcher(target).addEventListener(_eventType, dispatch, false, priority);
+				IEventDispatcher(_target).addEventListener(_eventType, dispatch, false, priority);
 		}
 		
 		/** @inheritDoc */
@@ -58,7 +58,7 @@ package org.osflash.signals.natives
 			var prevListenerCount:uint = listenerBoxes.length;
 			super.remove(listener);
 			if (prevListenerCount == 1 && listenerBoxes.length == 0)
-				IEventDispatcher(target).removeEventListener(_eventType, dispatch);
+				IEventDispatcher(_target).removeEventListener(_eventType, dispatch);
 		}
 		
 	}
