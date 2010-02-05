@@ -164,5 +164,19 @@ package org.osflash.signals
 		{
 			assertTrue(sprite is Sprite);
 		}
+		//////
+		[Test]
+		public function add_2_listeners_first_listener_removes_itself_should_call_2nd_listener():void
+		{
+			completed.add(selfRemover);
+			completed.add(addAsync(newEmptyHandler(), 10));
+			completed.dispatch();
+		}
+		
+		private function selfRemover():void
+		{
+			completed.remove(selfRemover);
+		}
+		
 	}
 }
