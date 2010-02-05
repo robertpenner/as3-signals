@@ -12,6 +12,7 @@
 	<property name="test.dir" location="${root.dir}/test"/>
 	<!--<property name="libs.dir" location="${root.dir}/lib"/>-->
 	<property name="output.dir" location="${root.dir}/bin"/>
+	<property name="docs.dir" location="${root.dir}/docs"/>
 	<property name="output.swc" location="${output.dir}/as3-signals.swc"/>
 			
 	<target name="swc" depends="" description="Compile AS3 code into a SWC">
@@ -33,5 +34,16 @@
 		</java>
 			
 	</target>
-		
+    <target name="clean-docs">
+        <delete dir="${docs.dir}" failOnError="false" includeEmptyDirs="true"/>
+        <mkdir dir="${docs.dir}"/>
+    </target>
+    <target name="asdoc" depends="swc,clean-docs" description="Create API docs for Signals">
+        <exec executable="${FLEX_HOME}/bin/asdoc.exe" failonerror="true">
+            <arg line="-doc-sources ${src.dir}"/>
+            <arg line="-window-title 'AS3 Signals Documentation'"/>
+            <arg line="-main-title 'AS3 Signals - Think Outside the Event'"/>
+            <arg line="-output ${docs.dir}"/>
+        </exec>
+    </target>		
 </project>
