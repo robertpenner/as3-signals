@@ -110,7 +110,7 @@ package org.osflash.signals
 			{
 				case 0:
 					// Clone listeners array because add/remove may occur during the dispatch.
-					for each (listener in listeners.concat())
+					for each (listener in listeners.slice())
 					{
 						if (onceListeners[listener]) remove(listener);
 						listener();
