@@ -71,8 +71,9 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function remove(listener:Function):void
 		{
-			if (listeners.indexOf(listener) == -1) return;
-			listeners.splice(listeners.indexOf(listener), 1);
+			var index:int = listeners.indexOf(listener);
+			if (index == -1) return;
+			listeners.splice(index, 1);
 			delete onceListeners[listener];
 		}
 		
