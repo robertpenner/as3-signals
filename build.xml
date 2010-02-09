@@ -33,7 +33,7 @@
 	</target>
 	
 	<!-- Build Documentation -->
-	<target name="asdoc" depends="swc,clean-asdoc" description="Create API docs for Signals">
+	<target name="asdoc" depends="swc,clean-asdoc" description="Create API docs for ${project.title}">
 		<echo>Generating ASDOC documentation...</echo>
 		<tstamp>
 			<format property="docgen.time" pattern="MM/dd/yyyy hh:mm aa" unit="hour"/>
@@ -43,9 +43,9 @@
 			<arg line="-doc-sources ${src.dir}/${package.dir}"/>
 			<arg line="-source-path ${src.dir}"/>
 			<arg line="-output ${docs.dir}"/>
-			<arg line="-window-title 'AS3 Signals ${ver.num}'"/>
-			<arg line="-main-title 'AS3 Signals ${ver.num}'"/>
-			<arg line="-footer 'AS3 Signals - Documentation generated at: ${docgen.time}'"/>
+			<arg line="-window-title '${project.title} ${ver.num}'"/>
+			<arg line="-main-title '${project.title} ${ver.num}'"/>
+			<arg line="-footer '${project.title} - Documentation generated at: ${docgen.time}'"/>
 		</java>
 		<echo>ASDOC documentation generated successfully</echo>
 	</target>
