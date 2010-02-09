@@ -26,16 +26,28 @@
 		</java>
 			
 	</target>
-    <target name="clean-docs">
-        <delete dir="${docs.dir}" failOnError="false" includeEmptyDirs="true"/>
-        <mkdir dir="${docs.dir}"/>
-    </target>
-    <target name="asdoc" depends="swc,clean-docs" description="Create API docs for Signals">
-        <exec executable="${FLEX_HOME}/bin/asdoc.exe" failonerror="true">
-            <arg line="-doc-sources ${src.dir}"/>
-            <arg line="-window-title 'AS3 Signals Documentation'"/>
-            <arg line="-main-title 'AS3 Signals - Think Outside the Event'"/>
-            <arg line="-output ${docs.dir}"/>
-        </exec>
-    </target>
+	
+	<target name="clean-asdoc">
+		<delete dir="${docs.dir}" failOnError="false" includeEmptyDirs="true"/>
+		<mkdir dir="${docs.dir}"/>
+	</target>
+	
+	<!-- Build Documentation -->
+	<target name="asdoc" depends="swc,clean-asdoc" description="Create API docs for Signals">
+		<echo>[asdoc] Generating ASDOC documentation</echo>
+		<tstamp>
+			<format property="docgen.time" pattern="MM/dd/yyyy hh:mm aa" unit="hour"/>
+		</tstamp>
+		<java jar="${FLEX_HOME}/lib/asdoc.jar" dir="${FLEX_HOME}/frameworks" fork="true" failonerror="true">
+			<!--<arg line="-external-library-path ${libs.dir}"/>-->
+			<arg line="-doc-sources ${src.dir}"/>
+			<!--<arg line="-source-path ${src.dir}"/>-->
+			<arg line="-output ${docs.dir}"/>
+			<arg line="-window-title 'AS3 Signals ${ver.num}'"/>
+			<arg line="-main-title 'AS3 Signals ${ver.num}'"/>
+			<arg line="-footer 'AS3 Signals - Documentation generated at: ${docgen.time}'"/>
+		</java>
+		<echo>[asdoc] ASDOC documentation generated successfully</echo>
+	</target>
+	
 </project>
