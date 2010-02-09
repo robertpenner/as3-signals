@@ -119,7 +119,7 @@ package org.osflash.signals
 					break;
 					
 				case 1:
-					for each (listener in listeners.concat())
+					for each (listener in listeners.slice())
 					{
 						if (onceListeners[listener]) remove(listener);
 						listener(valueObjects[0]);
@@ -127,7 +127,7 @@ package org.osflash.signals
 					break;
 					
 				default:
-					for each (listener in listeners.concat())
+					for each (listener in listeners.slice())
 					{
 						if (onceListeners[listener]) remove(listener);
 						listener.apply(null, valueObjects);

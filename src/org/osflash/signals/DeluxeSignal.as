@@ -141,7 +141,7 @@ package org.osflash.signals
 				//TODO: investigate performance of various approaches
 				
 				// Clone listeners array because add/remove may occur during the dispatch.
-				for each (var listenerBox:Object in listenerBoxes.concat())
+				for each (var listenerBox:Object in listenerBoxes.slice())
 				{
 					listener = listenerBox.listener;
 					if (onceListeners[listener]) remove(listener);
