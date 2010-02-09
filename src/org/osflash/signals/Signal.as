@@ -18,6 +18,7 @@ package org.osflash.signals
 		protected var _valueClasses:Array;		// of Class
 		protected var listeners:Array;			// of Function
 		protected var onceListeners:Dictionary;	// of Function
+		protected var dispatching:Boolean = false;;
 		
 		/**
 		 * Creates a Signal instance to dispatch value objects.
@@ -73,6 +74,7 @@ package org.osflash.signals
 		{
 			var index:int = listeners.indexOf(listener);
 			if (index == -1) return;
+			if (dispatching) listeners = listeners.slice();
 			listeners.splice(index, 1);
 			delete onceListeners[listener];
 		}
@@ -80,7 +82,7 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			listeners.length = 0;
+			listeners = [];
 			onceListeners = new Dictionary();
 		}
 		
@@ -104,14 +106,15 @@ package org.osflash.signals
 
 			if (!listeners.length) return;
 			
+			dispatching = true;
+			
 			//TODO: investigate performance of various approaches
 			//// Call listeners.
 			var listener:Function;
 			switch (valueObjects.length)
 			{
 				case 0:
-					// Clone listeners array because add/remove may occur during the dispatch.
-					for each (listener in listeners.slice())
+					for each (listener in listeners)
 					{
 						if (onceListeners[listener]) remove(listener);
 						listener();
@@ -119,7 +122,7 @@ package org.osflash.signals
 					break;
 					
 				case 1:
-					for each (listener in listeners.slice())
+					for each (listener in listeners)
 					{
 						if (onceListeners[listener]) remove(listener);
 						listener(valueObjects[0]);
@@ -127,12 +130,13 @@ package org.osflash.signals
 					break;
 					
 				default:
-					for each (listener in listeners.slice())
+					for each (listener in listeners)
 					{
 						if (onceListeners[listener]) remove(listener);
 						listener.apply(null, valueObjects);
 					}
 			}
+			dispatching = false;
 		}
 		
 		protected function setValueClasses(valueClasses:Array):void
@@ -164,6 +168,8 @@ package org.osflash.signals
 				listeners[0] = listener;
 				return;
 			}
+			
+			if (dispatching) listeners = listeners.slice();
 			
 			// Don't add the same listener twice.
 			if (listeners.indexOf(listener) >= 0)

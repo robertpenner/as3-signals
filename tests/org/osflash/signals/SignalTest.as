@@ -166,9 +166,10 @@ package org.osflash.signals
 		}
 		//////
 		[Test]
-		public function add_2_listeners_first_listener_removes_itself_should_call_2nd_listener():void
+		public function dispatch_2_listeners_1st_listener_removes_itself_then_2nd_listener_is_still_called():void
 		{
 			completed.add(selfRemover);
+			// addAsync verifies the second listener is called
 			completed.add(addAsync(newEmptyHandler(), 10));
 			completed.dispatch();
 		}
@@ -177,6 +178,18 @@ package org.osflash.signals
 		{
 			completed.remove(selfRemover);
 		}
+		//////
+		[Test]
+		public function dispatch_2_listeners_1st_listener_removes_all_then_2nd_listener_is_still_called():void
+		{
+			completed.add(addAsync(allRemover, 10));
+			completed.add(addAsync(newEmptyHandler(), 10));
+			completed.dispatch();
+		}
 		
+		private function allRemover():void
+		{
+			completed.removeAll();
+		}
 	}
 }
