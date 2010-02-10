@@ -57,7 +57,7 @@ package org.osflash.signals.natives
 			if (onceListeners[listener])
 				throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 		
-			createListenerRelationship(listener, false, priority);
+			registerListener(listener, false, priority);
 		}
 		
 		/** @inheritDoc */
@@ -68,7 +68,7 @@ package org.osflash.signals.natives
 			if (indexOfListener(listener) >= 0 && !onceListeners[listener])
 				throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 			
-			createListenerRelationship(listener, true, priority);
+			registerListener(listener, true, priority);
 			onceListeners[listener] = true;
 		}
 		
@@ -106,7 +106,7 @@ package org.osflash.signals.natives
 			return _target.dispatchEvent(event);
 		}
 		
-		protected function createListenerRelationship(listener:Function, once:Boolean = false, priority:int = 0):void
+		protected function registerListener(listener:Function, once:Boolean = false, priority:int = 0):void
 		{
 			// function.length is the number of arguments.
 			if (listener.length != 1)
