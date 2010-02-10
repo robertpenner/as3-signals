@@ -19,7 +19,7 @@ package org.osflash.signals
 		[After]
 		public function tearDown():void
 		{
-			completed.removeAll();
+			DeluxeSignal(completed).removeAll();
 			completed = null;
 		}
 		//////

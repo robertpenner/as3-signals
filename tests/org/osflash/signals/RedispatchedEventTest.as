@@ -1,4 +1,4 @@
-package org.osflash.signals 
+package org.osflash.signals
 {
 	import asunit.asserts.*;
 
@@ -34,7 +34,7 @@ package org.osflash.signals
 		
 		private function redispatchEvent(e:GenericEvent):void
 		{
-			e.signal.removeAll();
+			DeluxeSignal(e.signal).removeAll();
 			assertSame(originalEvent, e);
 			completed.add(addAsync(check_redispatched_event_is_not_original, 10));
 			
