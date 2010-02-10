@@ -82,7 +82,10 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			listeners = [];
+			if (dispatching)
+				listeners = [];
+			else
+				listeners.length = 0;
 			onceListeners = new Dictionary();
 		}
 		
