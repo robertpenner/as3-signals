@@ -18,7 +18,7 @@ package org.osflash.signals
 		protected var _valueClasses:Array;		// of Class
 		protected var listeners:Array;			// of Function
 		protected var onceListeners:Dictionary;	// of Function
-		protected var dispatching:Boolean = false;;
+		protected var dispatching:Boolean = false;
 		
 		/**
 		 * Creates a Signal instance to dispatch value objects.
