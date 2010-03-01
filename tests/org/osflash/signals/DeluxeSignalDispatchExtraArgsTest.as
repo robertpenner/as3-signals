@@ -21,7 +21,7 @@ package org.osflash.signals
 			completed = null;
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function dispatch_extra_args_should_call_listener_with_extra_args():void
 		{
 			completed.add( addAsync(onCompleted, 10) );

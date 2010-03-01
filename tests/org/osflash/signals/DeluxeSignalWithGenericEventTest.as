@@ -36,7 +36,7 @@ package org.osflash.signals
 		
 		//////
 		
-		[Test(async)]
+		[Test]
 		public function add_listener_and_dispatch_event_should_pass_event_to_listener():void
 		{
 			completed.add(addAsync(checkGenericEvent, 10));
@@ -55,7 +55,7 @@ package org.osflash.signals
 		//////
 
 		
-		[Test(async)]
+		[Test]
 		public function add_two_listeners_and_dispatch_should_call_both():void
 		{
 			completed.add(addAsync(checkGenericEvent, 10));
@@ -75,7 +75,7 @@ package org.osflash.signals
 		
 		//////
 
-		[Test(async)]
+		[Test]
 		public function add_one_listener_and_dispatch_then_listener_remove_itself_using_event_signal():void
 		{
 			delegate = addAsync(remove_myself_from_signal, 10);
@@ -111,7 +111,7 @@ package org.osflash.signals
 		
 		//////
 
-		[Test(async)]
+		[Test]
 		public function add_2_listeners_remove_2nd_then_dispatch_should_call_1st_not_2nd_listener():void
 		{
 			completed.add(addAsync(checkGenericEvent, 10));

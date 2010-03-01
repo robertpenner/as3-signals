@@ -24,7 +24,7 @@ package org.osflash.signals
 		/**
 		 * Captures bug where dispatching 0 was considered null.
 		 */
-		[Test(async)]
+		[Test]
 		public function dispatch_zero_should_call_listener_with_zero():void
 		{
 			completed = new Signal(Number);
@@ -37,7 +37,7 @@ package org.osflash.signals
 			assertEquals(0, num);
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function dispatch_2_zeroes_should_call_listener_with_2_zeroes():void
 		{
 			completed = new Signal(Number, Number);
@@ -51,7 +51,7 @@ package org.osflash.signals
 			assertEquals(0, b);
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function dispatch_null_should_call_listener_with_null():void
 		{
 			completed.addOnce( addAsync(checkNullDate, 10) );
@@ -63,7 +63,7 @@ package org.osflash.signals
 			assertNull(date);
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function dispatch_null_through_int_Signal_should_be_autoconverted_to_zero():void
 		{
 			completed = new Signal(int);

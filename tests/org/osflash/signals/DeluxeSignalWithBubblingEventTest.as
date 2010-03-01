@@ -34,7 +34,7 @@ package org.osflash.signals
 			assertTrue("this can handle bubbling events", this is IBubbleEventHandler);
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function dispatch_bubbling_event_from_theGrandChild_should_bubble_to_IBubbleHandler():void
 		{
 			cancelTimeout = addAsync(null, 10);

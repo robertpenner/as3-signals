@@ -24,7 +24,7 @@ package org.osflash.signals
 			completed = null;
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function dispatch_event_already_dispatched_should_clone_it():void
 		{
 			completed.add(addAsync(redispatchEvent, 10));

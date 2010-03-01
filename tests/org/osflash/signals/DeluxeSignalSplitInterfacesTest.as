@@ -23,7 +23,7 @@ package org.osflash.signals
 			completed = null;
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function cast_to_IDispatcher_and_dispatch_should_work():void
 		{
 			completed.addOnce( addAsync(onCompleted, 10) );

@@ -37,7 +37,7 @@ package org.osflash.signals
 			assertEquals(0, num);
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function dispatch_null_should_call_listener_with_null():void
 		{
 			completed.addOnce( addAsync(checkNullDate, 10) );
@@ -49,7 +49,7 @@ package org.osflash.signals
 			assertNull(date);
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function dispatch_null_through_int_DeluxeSignal_should_be_autoconverted_to_zero():void
 		{
 			completed = new DeluxeSignal(int);

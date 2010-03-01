@@ -45,7 +45,7 @@ package org.osflash.signals.natives
 			assertSame('target round-trips through constructor', sprite, clicked.target);
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function signal_add_then_EventDispatcher_dispatch_should_call_signal_listener():void
 		{
 			clicked.add( addAsync(onClicked) );
@@ -108,7 +108,7 @@ package org.osflash.signals.natives
 		}
 		
 		//////
-		[Test(async)]
+		[Test]
 		public function addOnce_and_dispatch_from_signal_should_remove_listener_automatically():void
 		{
 			clicked.addOnce( addAsync(emptyHandler) );
@@ -116,7 +116,7 @@ package org.osflash.signals.natives
 			verifyNoListeners();
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function addOnce_normal_priority_and_dispatch_from_EventDispatcher_should_remove_listener_automatically():void
 		{
 			var normalPriority:int = 0;
@@ -125,7 +125,7 @@ package org.osflash.signals.natives
 			verifyNoListeners();
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function addOnce_lowest_priority_and_dispatch_from_EventDispatcher_should_remove_listener_automatically():void
 		{
 			var lowestPriority:int = int.MIN_VALUE;
@@ -134,7 +134,7 @@ package org.osflash.signals.natives
 			verifyNoListeners();
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function addOnce_highest_priority_and_dispatch_from_EventDispatcher_should_remove_listener_automatically():void
 		{
 			var highestPriority:int = int.MAX_VALUE;
@@ -198,7 +198,7 @@ package org.osflash.signals.natives
 		}
 		//////
 		// Captures Issue #5 - You can't addOnce to a signal from a function called by the same signal.
-		[Test(async)]
+		[Test]
 		public function addOnce_in_handler_and_dispatch_should_call_new_listener():void
 		{
 			clicked.addOnce( addAsync(addOnceInHandler, 10) );

@@ -23,7 +23,7 @@ package org.osflash.signals
 			completed = null;
 		}
 		
-		[Test(async)]
+		[Test]
 		public function cast_ISignal_to_IDispatcher_and_dispatch():void
 		{
 			completed.addOnce( addAsync(onCompleted, 10) );
@@ -35,7 +35,7 @@ package org.osflash.signals
 			assertEquals(0, arguments.length);
 		}
 		
-		[Test(async)]
+		[Test]
 		public function cast_ISignal_to_Signal_and_dispatch():void
 		{
 			completed.addOnce( addAsync(onCompleted, 10) );
