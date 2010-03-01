@@ -177,8 +177,24 @@ package org.osflash.signals.natives
 		[Test]
 		public function eventClass_defaults_to_native_Event_class():void
 		{
-			var added:NativeSignal = new NativeSignal(sprite, 'added');
+			var added:NativeSignal = new NativeSignal(sprite, Event.ADDED);
 			assertSame(Event, added.eventClass);
+		}
+		
+		[Test]
+		public function eventClass_roundtrips_through_constructor():void
+		{
+			var clicked:NativeSignal = new NativeSignal(sprite, MouseEvent.CLICK, MouseEvent);
+			assertSame(MouseEvent, clicked.eventClass);
+		}
+		
+		[Test]
+		public function valueClasses_contains_only_eventClass():void
+		{
+			var clicked:NativeSignal = new NativeSignal(sprite, MouseEvent.CLICK, MouseEvent);
+			assertEquals(1, clicked.valueClasses.length);
+			assertSame(MouseEvent, clicked.valueClasses[0]);
+			assertSame(clicked.eventClass, clicked.valueClasses[0]);
 		}
 		//////
 		// Captures Issue #5 - You can't addOnce to a signal from a function called by the same signal.

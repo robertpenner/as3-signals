@@ -42,6 +42,9 @@ package org.osflash.signals.natives
 		public function get eventClass():Class { return _eventClass; }
 		
 		/** @inheritDoc */
+		public function get valueClasses():Array { return [_eventClass]; }
+		
+		/** @inheritDoc */
 		public function get numListeners():uint { return listenerCmds.length; }
 		
 		/** @inheritDoc */
