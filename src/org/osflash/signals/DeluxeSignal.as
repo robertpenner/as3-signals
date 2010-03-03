@@ -20,42 +20,37 @@ package org.osflash.signals
 	{
 		protected var _target:Object;
 		protected var _valueClasses:Array;
-		protected var listeners:Array;
+		protected var listenerBoxes:Array;
 		protected var onceListeners:Dictionary;
 		
 		/**
-		 * Creates a Signal instance to dispatch events on behalf of a target object.
+		 * Creates a DeluxeSignal instance to dispatch events on behalf of a target object.
 		 * @param	target The object the signal is dispatching events on behalf of.
 		 * @param	valueClasses Any number of class references that enable type checks in dispatch().
 		 * For example, new DeluxeSignal(this, String, uint)
 		 * would allow: signal.dispatch("the Answer", 42)
 		 * but not: signal.dispatch(true, 42.5)
 		 * nor: signal.dispatch()
+		 *
+		 * NOTE: Subclasses cannot call super.apply(null, valueClasses),
+		 * but this constructor has logic to support super(valueClasses).
 		 */
 		public function DeluxeSignal(target:Object, ...valueClasses)
 		{
 			_target = target;
-			listeners = [];
+			listenerBoxes = [];
 			onceListeners = new Dictionary();
-			if (!valueClasses) return;
-			
-			_valueClasses = valueClasses.concat();
-			// loop backwards
-			for (var i:int = _valueClasses.length; i--; )
-			{
-				if (!(_valueClasses[i] is Class))
-				{
-					throw new ArgumentError('Invalid valueClasses argument: item at index ' + i
-						+ ' should be a Class but was:<' + _valueClasses[i] + '>.');
-				}
-			}
+			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
+			if (valueClasses.length == 1 && valueClasses[0] is Array)
+				valueClasses = valueClasses[0];
+			setValueClasses(valueClasses);
 		}
 		
 		/** @inheritDoc */
 		public function get valueClasses():Array { return _valueClasses; }
 		
 		/** @inheritDoc */
-		public function get numListeners():uint { return listeners.length; }
+		public function get numListeners():uint { return listenerBoxes.length; }
 		
 		/** @inheritDoc */
 		public function get target():Object { return _target; }
@@ -75,23 +70,26 @@ package org.osflash.signals
 			if (onceListeners[listener])
 				throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 		
-			createListenerRelationship(listener, priority);
+			registerListener(listener, priority);
 		}
 		
 		/** @inheritDoc */
 		public function addOnce(listener:Function, priority:int = 0):void
 		{
+			// If the listener has been added as once, don't do anything.
+			if (onceListeners[listener]) return;
 			if (indexOfListener(listener) >= 0 && !onceListeners[listener])
 				throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 			
-			createListenerRelationship(listener, priority);
+			registerListener(listener, priority);
 			onceListeners[listener] = true;
 		}
 		
 		/** @inheritDoc */
 		public function remove(listener:Function):void
 		{
-			listeners.splice(indexOfListener(listener), 1);
+			if (indexOfListener(listener) == -1) return;
+			listenerBoxes.splice(indexOfListener(listener), 1);
 			delete onceListeners[listener];
 		}
 		
@@ -99,20 +97,28 @@ package org.osflash.signals
 		public function removeAll():void
 		{
 			// Looping backwards is more efficient when removing array items.
-			for (var i:uint = listeners.length; i--; )
+			for (var i:uint = listenerBoxes.length; i--; )
 			{
-				remove(listeners[i] as Function);
+				remove(listenerBoxes[i].listener as Function);
 			}
 		}
 		
 		/** @inheritDoc */
 		public function dispatch(...valueObjects):void
 		{
+			// Validate value objects against pre-defined value classes.
+			var valueObject:Object;
+			var valueClass:Class;
 			var len:int = _valueClasses.length;
 			for (var i:int = 0; i < len; i++)
 			{
-				if (!(valueObjects[i] is _valueClasses[i]))
-					throw new ArgumentError('Value object <'+valueObjects[i]+'> is not an instance of <'+_valueClasses[i]+'>.');
+				// null is allowed to pass through.
+				if ( (valueObject = valueObjects[i]) === null
+					|| valueObject is (valueClass = _valueClasses[i]) )
+					continue;
+					
+				throw new ArgumentError('Value object <' + valueObject
+					+ '> is not an instance of <' + valueClass + '>.');
 			}
 
 			var event:IEvent = valueObjects[0] as IEvent;
@@ -130,12 +136,12 @@ package org.osflash.signals
 			
 			//// Call listeners.
 			var listener:Function;
-			if (listeners.length)
+			if (listenerBoxes.length)
 			{
 				//TODO: investigate performance of various approaches
 				
 				// Clone listeners array because add/remove may occur during the dispatch.
-				for each (var listenerBox:Object in listeners.concat())
+				for each (var listenerBox:Object in listenerBoxes.slice())
 				{
 					listener = listenerBox.listener;
 					if (onceListeners[listener]) remove(listener);
@@ -159,16 +165,30 @@ package org.osflash.signals
 			}
 		}
 		
-		protected function indexOfListener(listener:Object):int
+		protected function indexOfListener(listener:Function):int
 		{
-			for (var i:int = listeners.length; i--; )
+			for (var i:int = listenerBoxes.length; i--; )
 			{
-				if (listeners[i].listener == listener) return i;
+				if (listenerBoxes[i].listener == listener) return i;
 			}
 			return -1;
 		}
 				
-		protected function createListenerRelationship(listener:Function, priority:int):void
+		protected function setValueClasses(valueClasses:Array):void
+		{
+			_valueClasses = valueClasses || [];
+			
+			for (var i:int = _valueClasses.length; i--; )
+			{
+				if (!(_valueClasses[i] is Class))
+				{
+					throw new ArgumentError('Invalid valueClasses argument: item at index ' + i
+						+ ' should be a Class but was:<' + _valueClasses[i] + '>.');
+				}
+			}
+		}
+		
+		protected function registerListener(listener:Function, priority:int):void
 		{
 			// function.length is the number of arguments.
 			if (listener.length < _valueClasses.length)
@@ -179,9 +199,9 @@ package org.osflash.signals
 			
 			var listenerBox:Object = {listener:listener, priority:priority};
 			// Process the first listener as quickly as possible.
-			if (!listeners.length)
+			if (!listenerBoxes.length)
 			{
-				listeners[0] = listenerBox;
+				listenerBoxes[0] = listenerBox;
 				return;
 			}
 			
@@ -192,19 +212,19 @@ package org.osflash.signals
 			// Assume the listeners are already sorted by priority
 			// and insert in the right spot. For listeners with the same priority,
 			// we must preserve the order in which they were added.
-			var len:int = listeners.length;
+			var len:int = listenerBoxes.length;
 			for (var i:int = 0; i < len; i++)
 			{
 				// As soon as a lower-priority listener is found, go in front of it.
-				if (priority > listeners[i].priority)
+				if (priority > listenerBoxes[i].priority)
 				{
-					listeners.splice(i, 0, listenerBox);
+					listenerBoxes.splice(i, 0, listenerBox);
 					return;
 				}
 			}
 			
 			// If we made it this far, the new listener has lowest priority, so put it last.
-			listeners[listeners.length] = listenerBox;
+			listenerBoxes[listenerBoxes.length] = listenerBox;
 		}
 		
 	}

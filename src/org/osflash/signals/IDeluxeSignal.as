@@ -5,6 +5,11 @@ package org.osflash.signals
 	 */
 	public interface IDeluxeSignal
 	{
+		/**
+		 * An optional array of classes defining the types of parameters sent to listeners.
+		 */
+		function get valueClasses():Array;
+		
 		/** The current number of listeners for the signal. */
 		function get numListeners():uint;
 		
@@ -39,9 +44,6 @@ package org.osflash.signals
 		 * @param	listener
 		 */
 		function remove(listener:Function):void;
-		
-		/** Unsubscribes all listeners from the signal. */
-		function removeAll():void;
 		
 	}
 }

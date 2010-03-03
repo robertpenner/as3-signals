@@ -1,19 +1,12 @@
-<project name="as3-signals" default="swc">
+<project name="as3-signals" basedir="." default="swc">
 
 	<!-- Set up a prefix for all environment variables. -->
 	<property environment="env."/>
 	<fail unless="env.FLEX_HOME" message="FLEX_HOME needs to be defined as an environment variable or in the Ant build." />
 	<!-- Copy Flex SDK location from environment variable. This can be set manually instead. -->
 	<property name="FLEX_HOME" value="${env.FLEX_HOME}" />
+	<property file="build.properties"/>
 
-	<!-- project paths -->
-	<property name="root.dir" location="."/>
-	<property name="src.dir" location="${root.dir}/src"/>
-	<property name="test.dir" location="${root.dir}/test"/>
-	<!--<property name="libs.dir" location="${root.dir}/lib"/>-->
-	<property name="output.dir" location="${root.dir}/bin"/>
-	<property name="output.swc" location="${output.dir}/as3-signals.swc"/>
-			
 	<target name="swc" depends="" description="Compile AS3 code into a SWC">
 		<echo>Using Flex SDK at: ${FLEX_HOME}</echo>
 			
@@ -24,7 +17,7 @@
 			<arg value="-source-path+=${src.dir}" />
 			
 			<!-- Include all classes in this path. -->
-			<arg value="-include-sources=${src.dir}" />
+			<arg value="-include-sources=${src.dir}/${package.dir}" />
 			
 			<!-- Link in classes from swc library (only those used). -->
 			<!--<arg value="-library-path+=${libs.dir}" />-->
@@ -33,5 +26,28 @@
 		</java>
 			
 	</target>
-		
+	
+	<target name="clean-asdoc">
+		<delete dir="${docs.dir}" failOnError="false" includeEmptyDirs="true"/>
+		<mkdir dir="${docs.dir}"/>
+	</target>
+	
+	<!-- Build Documentation -->
+	<target name="asdoc" depends="swc,clean-asdoc" description="Create API docs for ${project.title}">
+		<echo>Generating ASDOC documentation...</echo>
+		<tstamp>
+			<format property="docgen.time" pattern="MM/dd/yyyy hh:mm aa" unit="hour"/>
+		</tstamp>
+		<java jar="${FLEX_HOME}/lib/asdoc.jar" dir="${FLEX_HOME}/frameworks" fork="true" failonerror="true">
+			<!--<arg line="-external-library-path ${libs.dir}"/>-->
+			<arg line="-doc-sources ${src.dir}/${package.dir}"/>
+			<arg line="-source-path ${src.dir}"/>
+			<arg line="-output ${docs.dir}"/>
+			<arg line="-window-title '${project.title} ${ver.num}'"/>
+			<arg line="-main-title '${project.title} ${ver.num}'"/>
+			<arg line="-footer '${project.title} - Documentation generated at: ${docgen.time}'"/>
+		</java>
+		<echo>ASDOC documentation generated successfully</echo>
+	</target>
+	
 </project>

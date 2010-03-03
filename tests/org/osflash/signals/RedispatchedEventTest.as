@@ -1,4 +1,4 @@
-package org.osflash.signals 
+package org.osflash.signals
 {
 	import asunit.asserts.*;
 
@@ -24,7 +24,7 @@ package org.osflash.signals
 			completed = null;
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function dispatch_event_already_dispatched_should_clone_it():void
 		{
 			completed.add(addAsync(redispatchEvent, 10));
@@ -34,7 +34,7 @@ package org.osflash.signals
 		
 		private function redispatchEvent(e:GenericEvent):void
 		{
-			e.signal.removeAll();
+			DeluxeSignal(e.signal).removeAll();
 			assertSame(originalEvent, e);
 			completed.add(addAsync(check_redispatched_event_is_not_original, 10));
 			

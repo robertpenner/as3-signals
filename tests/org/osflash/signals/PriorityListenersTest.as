@@ -24,7 +24,7 @@ package org.osflash.signals
 			listenersCalled = null;
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function listener_added_second_with_higher_priority_should_be_called_first():void
 		{
 			completed.add( addAsync(listener1, 5) );
@@ -51,7 +51,7 @@ package org.osflash.signals
 			assertSame('this should be the third listener called', arguments.callee, listenersCalled[2]);
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function listeners_added_with_same_priority_should_be_called_in_order_added():void
 		{
 			completed.add( addAsync(listener0, 5), 10 );

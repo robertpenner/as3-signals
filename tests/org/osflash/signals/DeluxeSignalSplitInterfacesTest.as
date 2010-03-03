@@ -19,11 +19,11 @@ package org.osflash.signals
 		[After]
 		public function tearDown():void
 		{
-			completed.removeAll();
+			DeluxeSignal(completed).removeAll();
 			completed = null;
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function cast_to_IDispatcher_and_dispatch_should_work():void
 		{
 			completed.addOnce( addAsync(onCompleted, 10) );

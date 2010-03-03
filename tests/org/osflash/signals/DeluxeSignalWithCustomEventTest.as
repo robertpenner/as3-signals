@@ -29,7 +29,7 @@ package org.osflash.signals
 			assertSame(MessageEvent, messaged.valueClasses[0]);
 		}
 		
-		[Test(async)]
+		[Test]
 		public function add_one_listener_and_dispatch():void
 		{
 			messaged.add(addAsync(onMessage, 50));

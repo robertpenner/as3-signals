@@ -1,0 +1,5 @@
+h2. AS3 Signals Changelog:
+
+h3. v0.5
+
+Added versioning to the Ant build, starting at 0.5.

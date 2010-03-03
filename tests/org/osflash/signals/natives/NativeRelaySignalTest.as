@@ -36,7 +36,7 @@ package org.osflash.signals.natives
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener('click'));
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function signal_add_then_EventDispatcher_dispatch_should_call_signal_listener():void
 		{
 			clicked.add( addAsync(checkSpriteAsCurrentTarget, 10) );
@@ -48,7 +48,7 @@ package org.osflash.signals.natives
 			assertSame(sprite, e.currentTarget);
 		}
 		//////
-		[Test(async)]
+		[Test]
 		public function signal_addOnce_then_EventDispatcher_dispatch_should_call_signal_listener():void
 		{
 			clicked.addOnce( addAsync(checkSpriteAsCurrentTarget, 10) );

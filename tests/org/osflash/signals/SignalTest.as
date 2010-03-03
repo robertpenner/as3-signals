@@ -34,7 +34,7 @@ package org.osflash.signals
 		
 		//////
 		
-		[Test(async)]
+		[Test]
 		public function dispatch_should_pass_event_to_listener_but_not_set_signal_or_target_properties():void
 		{
 			completed.add(addAsync(checkGenericEvent, 10));
@@ -49,7 +49,7 @@ package org.osflash.signals
 		
 		//////
 		
-		[Test(async)]
+		[Test]
 		public function add_two_listeners_and_dispatch_should_call_both():void
 		{
 			completed.add(addAsync(checkGenericEvent, 10));
@@ -83,8 +83,18 @@ package org.osflash.signals
 		}
 		
 		//////
+		
+		[Test]
+		public function add_listener_then_remove_function_not_in_listeners_should_do_nothing():void
+		{
+			completed.add(newEmptyHandler());
+			completed.remove(newEmptyHandler());
+			assertEquals(1, completed.numListeners);
+		}
+		
+		//////
 
-		[Test(async)]
+		[Test]
 		public function add_2_listeners_remove_2nd_then_dispatch_should_call_1st_not_2nd_listener():void
 		{
 			completed.add(addAsync(checkGenericEvent, 10));
@@ -153,6 +163,33 @@ package org.osflash.signals
 		private function checkSprite(sprite:Sprite):void
 		{
 			assertTrue(sprite is Sprite);
+		}
+		//////
+		[Test]
+		public function dispatch_2_listeners_1st_listener_removes_itself_then_2nd_listener_is_still_called():void
+		{
+			completed.add(selfRemover);
+			// addAsync verifies the second listener is called
+			completed.add(addAsync(newEmptyHandler(), 10));
+			completed.dispatch();
+		}
+		
+		private function selfRemover():void
+		{
+			completed.remove(selfRemover);
+		}
+		//////
+		[Test]
+		public function dispatch_2_listeners_1st_listener_removes_all_then_2nd_listener_is_still_called():void
+		{
+			completed.add(addAsync(allRemover, 10));
+			completed.add(addAsync(newEmptyHandler(), 10));
+			completed.dispatch();
+		}
+		
+		private function allRemover():void
+		{
+			completed.removeAll();
 		}
 	}
 }
