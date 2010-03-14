@@ -1,13 +1,13 @@
 package org.osflash.signals
 {
 	import asunit.asserts.*;
-
+	
 	import asunit4.async.addAsync;
-
+	
+	import flash.display.Sprite;
+	
 	import org.osflash.signals.events.GenericEvent;
 	import org.osflash.signals.events.IEvent;
-
-	import flash.display.Sprite;
 
 	public class SignalTest
 	{
@@ -186,6 +186,26 @@ package org.osflash.signals
 			completed.add(addAsync(newEmptyHandler(), 10));
 			completed.dispatch();
 		}
+    
+    //////
+    [Test]
+    public function can_use_anonymous_listeners():void
+    {
+      var listeners:Array = [];
+      
+      for ( var i:int = 0; i < 100;  i++ )
+      {
+        listeners.push(completed.add(function():void{}));
+      }
+      
+      assertTrue("there should be 100 listeners", completed.numListeners == 100);
+      
+      for each( var fnt:Function in listeners )
+      {
+        completed.remove(fnt);
+      }
+      assertTrue("all anonymous listeners removed", completed.numListeners == 0);
+    }
 		
 		private function allRemover():void
 		{

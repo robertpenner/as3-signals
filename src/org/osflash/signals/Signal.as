@@ -49,12 +49,14 @@ package org.osflash.signals
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function):void
+		public function add(listener:Function):Function
 		{
 			if (onceListeners[listener])
 				throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 		
 			registerListener(listener);
+      
+      return listener;
 		}
 		
 		/** @inheritDoc */

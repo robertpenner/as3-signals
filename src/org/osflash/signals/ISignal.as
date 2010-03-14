@@ -19,7 +19,7 @@ package org.osflash.signals
 		 * that matches the value classes dispatched by the signal.
 		 * If value classes are not specified (e.g. via Signal constructor), dispatch() can be called without arguments.
 		 */
-		function add(listener:Function):void;
+		function add(listener:Function):Function;
 		
 		/**
 		 * Subscribes a one-time listener for this signal.
