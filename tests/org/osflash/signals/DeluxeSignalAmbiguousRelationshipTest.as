@@ -2,17 +2,17 @@ package org.osflash.signals
 {
 	import asunit.asserts.*;
 
-	public class AmbiguousRelationshipTest
+	public class DeluxeSignalAmbiguousRelationshipTest
 	{
 		private var target:Object;
 		
-		private var instance:Signal;
+		private var instance:DeluxeSignal;
 
 		[Before]
 		public function setUp():void
 		{
 			target = {};
-			instance = new Signal();
+			instance = new DeluxeSignal(target);
 		}
 
 		[After]
