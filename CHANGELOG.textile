@@ -1,13 +1,12 @@
 h2. AS3 Signals Changelog:
 
-h3. v0.6 - GreenDay
-2010-03-17
+h3. v0.6 - GreenDay - 2010-03-17
 
 h4. API Changes
 * "#15 - IDeluxeSignal and NativeSignal now have valueClasses property":http://github.com/robertpenner/as3-signals/issues/closed#issue/15
 
 h4. Fixes
-* "#14 - NativeSignal.addOnce() can't reuse after native event dispatched":http://github.com/robertpenner/as3-signals/issues/closed#issue/14
+* "#14 - NativeSignal.addOnce() can't be reused after native event dispatched":http://github.com/robertpenner/as3-signals/issues/closed#issue/14
 
 h4. Implementation Changes
 * Optimized listeners array cloning to use slice(), which is faster than concat().
@@ -17,6 +16,7 @@ h4. Implementation Changes
 * Consolidated add() and addOnce() logic in registerListener().
 * Removed onceListeners Dictionary from DeluxeSignal and NativeSignal.
 * DeluxeSignal and NativeSignal are now more unified in their "once listeners" internal implementations.
+* Removed an extra semicolon which made FDT cry (thanks "vitch":http://github.com/vitch).
 
 h4. Test Changes
 * Removed async [Test] metadata because AsUnit 4 no longer uses it.
@@ -24,7 +24,6 @@ h4. Test Changes
 * Added tests for ambiguous relationships in Signal.
 * Added tests for adding a listener during a dispatch().
 
+h3. v0.5 - GlassHalfFull - 2010-02-08
 
-h3. v0.5 - GlassHalfFull
-2010-02-08
 * Added versioning to the Ant build, starting at 0.5.
