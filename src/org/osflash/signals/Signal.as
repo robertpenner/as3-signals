@@ -18,7 +18,7 @@ package org.osflash.signals
 		protected var _valueClasses:Array;		// of Class
 		protected var listeners:Array;			// of Function
 		protected var onceListeners:Dictionary;	// of Function
-		protected var dispatching:Boolean = false;
+		protected var listenersNeedCloning:Boolean = false;
 		
 		/**
 		 * Creates a Signal instance to dispatch value objects.
@@ -65,7 +65,11 @@ package org.osflash.signals
 		{
 			var index:int = listeners.indexOf(listener);
 			if (index == -1) return;
-			if (dispatching) listeners = listeners.slice();
+			if (listenersNeedCloning)
+			{
+				listeners = listeners.slice();
+				listenersNeedCloning = false;
+			}
 			listeners.splice(index, 1);
 			delete onceListeners[listener];
 		}
@@ -73,11 +77,11 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			if (dispatching)
-				listeners = [];
-			else
-				listeners.length = 0;
-			onceListeners = new Dictionary();
+			// Looping backwards is more efficient when removing array items.
+			for (var i:uint = listeners.length; i--; )
+			{
+				remove(listeners[i] as Function);
+			}
 		}
 		
 		/** @inheritDoc */
@@ -103,7 +107,7 @@ package org.osflash.signals
 			//// Call listeners.
 			
 			// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
-			dispatching = true;
+			listenersNeedCloning = true;
 			var listener:Function;
 			switch (valueObjects.length)
 			{
@@ -130,7 +134,7 @@ package org.osflash.signals
 						listener.apply(null, valueObjects);
 					}
 			}
-			dispatching = false;
+			listenersNeedCloning = false;
 		}
 		
 		protected function setValueClasses(valueClasses:Array):void
@@ -163,9 +167,7 @@ package org.osflash.signals
 				if (once) onceListeners[listener] = true;
 				return;
 			}
-			
-			if (dispatching) listeners = listeners.slice();
-			
+						
 			if (listeners.indexOf(listener) >= 0)
 			{
 				// If the listener was previously added, definitely don't add it again.
@@ -180,6 +182,12 @@ package org.osflash.signals
 				}
 				// Listener was already added, so do nothing.
 				return;
+			}
+			
+			if (listenersNeedCloning)
+			{
+				listeners = listeners.slice();
+				listenersNeedCloning = false;
 			}
 				
 			// Faster than push().

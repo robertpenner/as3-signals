@@ -22,6 +22,7 @@ package org.osflash.signals
 		protected var _valueClasses:Array;
 		protected var listenerBoxes:Array;
 		protected var onceListeners:Dictionary;
+		protected var listenersNeedCloning:Boolean = false;
 		
 		/**
 		 * Creates a DeluxeSignal instance to dispatch events on behalf of a target object.
@@ -80,6 +81,11 @@ package org.osflash.signals
 		public function remove(listener:Function):void
 		{
 			if (indexOfListener(listener) == -1) return;
+			if (listenersNeedCloning)
+			{
+				listenerBoxes = listenerBoxes.slice();
+				listenersNeedCloning = false;
+			}
 			listenerBoxes.splice(indexOfListener(listener), 1);
 			delete onceListeners[listener];
 		}
@@ -125,6 +131,8 @@ package org.osflash.signals
 				event.signal = this;
 			}
 			
+			listenersNeedCloning = true;
+			
 			//// Call listeners.
 			var listener:Function;
 			if (listenerBoxes.length)
@@ -132,13 +140,15 @@ package org.osflash.signals
 				//TODO: investigate performance of various approaches
 				
 				// Clone listeners array because add/remove may occur during the dispatch.
-				for each (var listenerBox:Object in listenerBoxes.slice())
+				for each (var listenerBox:Object in listenerBoxes)
 				{
 					listener = listenerBox.listener;
 					if (onceListeners[listener]) remove(listener);
 					listener.apply(null, valueObjects);
 				}
 			}
+			
+			listenersNeedCloning = false;
 			
 			if (!event || !event.bubbles) return;
 
@@ -214,6 +224,12 @@ package org.osflash.signals
 				return;
 			}
 			
+			if (listenersNeedCloning)
+			{
+				listenerBoxes = listenerBoxes.slice();
+				listenersNeedCloning = false;
+			}
+		
 			// Assume the listeners are already sorted by priority
 			// and insert in the right spot. For listeners with the same priority,
 			// we must preserve the order in which they were added.
