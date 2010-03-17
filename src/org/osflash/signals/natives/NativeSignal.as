@@ -18,7 +18,6 @@ package org.osflash.signals.natives
 		protected var _eventType:String;
 		protected var _eventClass:Class;
 		protected var listenerCmds:Array;
-		protected var onceListeners:Dictionary;
 				
 		/**
 		 * Creates a NativeSignal instance to dispatch events on behalf of a target object.
@@ -32,7 +31,6 @@ package org.osflash.signals.natives
 			_eventType = eventType;
 			_eventClass = eventClass || Event;
 			listenerCmds = [];
-			onceListeners = new Dictionary();
 		}
 		
 		/** @inheritDoc */
@@ -57,8 +55,13 @@ package org.osflash.signals.natives
 		//TODO: @throws
 		public function add(listener:Function, priority:int = 0):void
 		{
-			if (onceListeners[listener])
-				throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
+			var listenerIndex:int = indexOfListener(listener);
+			if (listenerIndex >= 0)
+			{
+				var listenerCmd:Object = listenerCmds[listenerIndex];
+				if (listenerCmd.once)
+					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
+			}
 		
 			registerListener(listener, false, priority);
 		}
@@ -66,22 +69,28 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		public function addOnce(listener:Function, priority:int = 0):void
 		{
-			// If the listener has been added as once, don't do anything.
-			if (onceListeners[listener]) return;
-			if (indexOfListener(listener) >= 0 && !onceListeners[listener])
+			// Check if this listener has been added already.
+			var listenerIndex:int = indexOfListener(listener);
+			if (listenerIndex >= 0)
+			{
+				var listenerCmd:Object = listenerCmds[listenerIndex];
+				// If the listener already has been added as once, don't do anything.
+				if (listenerCmd.once) return;
+				
 				throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
+			}
 			
 			registerListener(listener, true, priority);
-			onceListeners[listener] = true;
 		}
 		
 		/** @inheritDoc */
 		public function remove(listener:Function):void
 		{
-			if (indexOfListener(listener) == -1) return;
-			listenerCmds.splice(indexOfListener(listener), 1);
-			_target.removeEventListener(_eventType, listener);
-			delete onceListeners[listener];
+			var listenerIndex:int = indexOfListener(listener);
+			if (listenerIndex == -1) return;
+			var listenerCmd:Object = listenerCmds.splice(listenerIndex, 1)[0];
+			// For once listeners, execute is a wrapper function around the listener.
+			_target.removeEventListener(_eventType, listenerCmd.execute);
 		}
 		
 		/** @inheritDoc */
@@ -89,7 +98,7 @@ package org.osflash.signals.natives
 		{
 			for (var i:int = listenerCmds.length; i--; )
 			{
-				remove(listenerCmds[i].execute as Function);
+				remove(listenerCmds[i].listener as Function);
 			}
 		}
 		
@@ -119,31 +128,33 @@ package org.osflash.signals.natives
 			if (indexOfListener(listener) >= 0)
 				return;
 			
-			var listenerCmd:Object = { listener:listener };
+			var listenerCmd:Object = { listener:listener, once:once, execute:listener };
 			
 			if (once)
 			{
 				var signal:NativeSignal = this;
+				// For once listeners, create a wrapper function to automatically remove the listener.
 				listenerCmd.execute = function(event:Event):void
 				{
-					signal.remove(arguments.callee);
+					signal.remove(listener);
 					listener(event);
 				};
 			}
-			else
-			{
-				listenerCmd.execute = listener;
-			}
-				
+			
 			listenerCmds[listenerCmds.length] = listenerCmd;
 			_target.addEventListener(_eventType, listenerCmd.execute, false, priority);
 		}
 		
+		/**
+		 *
+		 * @param	listener	A handler function that may have been added previously.
+		 * @return	The index of the listener in the listenerCmds array, or -1 if not found.
+		 */
 		protected function indexOfListener(listener:Function):int
 		{
 			for (var i:int = listenerCmds.length; i--; )
 			{
-				if (listenerCmds[i].execute == listener) return i;
+				if (listenerCmds[i].listener == listener) return i;
 			}
 			return -1;
 		}
