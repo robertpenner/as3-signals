@@ -1,4 +1,4 @@
-package org.osflash.signals 
+package org.osflash.signals
 {
 	import asunit.asserts.*;
 
@@ -25,6 +25,7 @@ package org.osflash.signals
 		public function tearDown():void
 		{
 			theChild = null;
+			theGrandChild = null;
 		}
 		
 		[Test]

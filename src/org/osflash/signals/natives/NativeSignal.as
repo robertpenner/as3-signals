@@ -55,31 +55,12 @@ package org.osflash.signals.natives
 		//TODO: @throws
 		public function add(listener:Function, priority:int = 0):void
 		{
-			var listenerIndex:int = indexOfListener(listener);
-			if (listenerIndex >= 0)
-			{
-				var listenerCmd:Object = listenerCmds[listenerIndex];
-				if (listenerCmd.once)
-					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
-			}
-		
 			registerListener(listener, false, priority);
 		}
 		
 		/** @inheritDoc */
 		public function addOnce(listener:Function, priority:int = 0):void
 		{
-			// Check if this listener has been added already.
-			var listenerIndex:int = indexOfListener(listener);
-			if (listenerIndex >= 0)
-			{
-				var listenerCmd:Object = listenerCmds[listenerIndex];
-				// If the listener already has been added as once, don't do anything.
-				if (listenerCmd.once) return;
-				
-				throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
-			}
-			
 			registerListener(listener, true, priority);
 		}
 		
@@ -124,9 +105,23 @@ package org.osflash.signals.natives
 			if (listener.length != 1)
 				throw new ArgumentError('Listener for native event must declare exactly 1 argument.');
 				
-			// Don't add same listener twice.
-			if (indexOfListener(listener) >= 0)
+			var prevListenerIndex:int = indexOfListener(listener);
+			if (prevListenerIndex >= 0)
+			{
+				// If the listener was previously added, definitely don't add it again.
+				// But throw an exception in some cases, as the error messages explain.
+				var prevlistenerCmd:Object = listenerCmds[prevListenerIndex];
+				if (prevlistenerCmd.once && !once)
+				{
+					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
+				}
+				else if (!prevlistenerCmd.once && once)
+				{
+					throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
+				}
+				// Listener was already added, so do nothing.
 				return;
+			}
 			
 			var listenerCmd:Object = { listener:listener, once:once, execute:listener };
 			
