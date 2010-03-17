@@ -52,8 +52,8 @@ package org.osflash.signals
 		public function add(listener:Function):Function
 		{
 			registerListener(listener);
-      
-      return listener;
+
+			return listener;
 		}
 		
 		/** @inheritDoc */
