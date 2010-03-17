@@ -17,7 +17,7 @@ package org.osflash.signals.natives
 		protected var _target:IEventDispatcher;
 		protected var _eventType:String;
 		protected var _eventClass:Class;
-		protected var listenerCmds:Array;
+		protected var listenerBoxes:Array;
 				
 		/**
 		 * Creates a NativeSignal instance to dispatch events on behalf of a target object.
@@ -30,7 +30,7 @@ package org.osflash.signals.natives
 			_target = target;
 			_eventType = eventType;
 			_eventClass = eventClass || Event;
-			listenerCmds = [];
+			listenerBoxes = [];
 		}
 		
 		/** @inheritDoc */
@@ -43,7 +43,7 @@ package org.osflash.signals.natives
 		public function get valueClasses():Array { return [_eventClass]; }
 		
 		/** @inheritDoc */
-		public function get numListeners():uint { return listenerCmds.length; }
+		public function get numListeners():uint { return listenerBoxes.length; }
 		
 		/** @inheritDoc */
 		public function get target():IEventDispatcher { return _target; }
@@ -69,17 +69,17 @@ package org.osflash.signals.natives
 		{
 			var listenerIndex:int = indexOfListener(listener);
 			if (listenerIndex == -1) return;
-			var listenerCmd:Object = listenerCmds.splice(listenerIndex, 1)[0];
+			var listenerBox:Object = listenerBoxes.splice(listenerIndex, 1)[0];
 			// For once listeners, execute is a wrapper function around the listener.
-			_target.removeEventListener(_eventType, listenerCmd.execute);
+			_target.removeEventListener(_eventType, listenerBox.execute);
 		}
 		
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			for (var i:int = listenerCmds.length; i--; )
+			for (var i:int = listenerBoxes.length; i--; )
 			{
-				remove(listenerCmds[i].listener as Function);
+				remove(listenerBoxes[i].listener as Function);
 			}
 		}
 		
@@ -110,12 +110,12 @@ package org.osflash.signals.natives
 			{
 				// If the listener was previously added, definitely don't add it again.
 				// But throw an exception in some cases, as the error messages explain.
-				var prevlistenerCmd:Object = listenerCmds[prevListenerIndex];
-				if (prevlistenerCmd.once && !once)
+				var prevlistenerBox:Object = listenerBoxes[prevListenerIndex];
+				if (prevlistenerBox.once && !once)
 				{
 					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 				}
-				else if (!prevlistenerCmd.once && once)
+				else if (!prevlistenerBox.once && once)
 				{
 					throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 				}
@@ -123,33 +123,33 @@ package org.osflash.signals.natives
 				return;
 			}
 			
-			var listenerCmd:Object = { listener:listener, once:once, execute:listener };
+			var listenerBox:Object = { listener:listener, once:once, execute:listener };
 			
 			if (once)
 			{
 				var signal:NativeSignal = this;
 				// For once listeners, create a wrapper function to automatically remove the listener.
-				listenerCmd.execute = function(event:Event):void
+				listenerBox.execute = function(event:Event):void
 				{
 					signal.remove(listener);
 					listener(event);
 				};
 			}
 			
-			listenerCmds[listenerCmds.length] = listenerCmd;
-			_target.addEventListener(_eventType, listenerCmd.execute, false, priority);
+			listenerBoxes[listenerBoxes.length] = listenerBox;
+			_target.addEventListener(_eventType, listenerBox.execute, false, priority);
 		}
 		
 		/**
 		 *
 		 * @param	listener	A handler function that may have been added previously.
-		 * @return	The index of the listener in the listenerCmds array, or -1 if not found.
+		 * @return	The index of the listener in the listenerBoxes array, or -1 if not found.
 		 */
 		protected function indexOfListener(listener:Function):int
 		{
-			for (var i:int = listenerCmds.length; i--; )
+			for (var i:int = listenerBoxes.length; i--; )
 			{
-				if (listenerCmds[i].listener == listener) return i;
+				if (listenerBoxes[i].listener == listener) return i;
 			}
 			return -1;
 		}

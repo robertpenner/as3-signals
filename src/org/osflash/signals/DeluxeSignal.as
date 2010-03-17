@@ -21,7 +21,6 @@ package org.osflash.signals
 		protected var _target:Object;
 		protected var _valueClasses:Array;
 		protected var listenerBoxes:Array;
-		protected var onceListeners:Dictionary;
 		protected var listenersNeedCloning:Boolean = false;
 		
 		/**
@@ -40,7 +39,6 @@ package org.osflash.signals
 		{
 			_target = target;
 			listenerBoxes = [];
-			onceListeners = new Dictionary();
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
 			if (valueClasses.length == 1 && valueClasses[0] is Array)
 				valueClasses = valueClasses[0];
@@ -87,7 +85,6 @@ package org.osflash.signals
 				listenersNeedCloning = false;
 			}
 			listenerBoxes.splice(indexOfListener(listener), 1);
-			delete onceListeners[listener];
 		}
 		
 		/** @inheritDoc */
@@ -142,7 +139,7 @@ package org.osflash.signals
 				for each (var listenerBox:Object in listenerBoxes)
 				{
 					listener = listenerBox.listener;
-					if (onceListeners[listener]) remove(listener);
+					if (listenerBox.once) remove(listener);
 					listener.apply(null, valueObjects);
 				}
 			}
@@ -197,12 +194,11 @@ package org.osflash.signals
 				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
 			}
 			
-			var listenerBox:Object = {listener:listener, priority:priority};
+			var listenerBox:Object = { listener:listener, once:once, priority:priority };
 			// Process the first listener as quickly as possible.
 			if (!listenerBoxes.length)
 			{
 				listenerBoxes[0] = listenerBox;
-				if (once) onceListeners[listener] = true;
 				return;
 			}
 			
@@ -211,11 +207,12 @@ package org.osflash.signals
 			{
 				// If the listener was previously added, definitely don't add it again.
 				// But throw an exception in some cases, as the error messages explain.
-				if (onceListeners[listener] && !once)
+				var prevListenerBox:Object = listenerBoxes[prevListenerIndex];
+				if (prevListenerBox.once && !once)
 				{
 					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 				}
-				else if (!onceListeners[listener] && once)
+				else if (!prevListenerBox.once && once)
 				{
 					throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 				}
@@ -245,7 +242,6 @@ package org.osflash.signals
 			
 			// If we made it this far, the new listener has lowest priority, so put it last.
 			listenerBoxes[listenerBoxes.length] = listenerBox;
-			if (once) onceListeners[listener] = true;
 		}
 		
 	}
