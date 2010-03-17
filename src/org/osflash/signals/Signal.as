@@ -51,22 +51,13 @@ package org.osflash.signals
 		//TODO: @throws
 		public function add(listener:Function):void
 		{
-			if (onceListeners[listener])
-				throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
-		
 			registerListener(listener);
 		}
 		
 		/** @inheritDoc */
 		public function addOnce(listener:Function):void
 		{
-			// If the listener has been added as once, don't do anything.
-			if (onceListeners[listener]) return;
-			if (listeners.indexOf(listener) >= 0 && !onceListeners[listener])
-				throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
-			
-			registerListener(listener);
-			onceListeners[listener] = true;
+			registerListener(listener, true);
 		}
 		
 		/** @inheritDoc */
@@ -156,7 +147,7 @@ package org.osflash.signals
 			}
 		}
 		
-		protected function registerListener(listener:Function):void
+		protected function registerListener(listener:Function, once:Boolean = false):void
 		{
 			// function.length is the number of arguments.
 			if (listener.length < _valueClasses.length)
@@ -169,17 +160,31 @@ package org.osflash.signals
 			if (!listeners.length)
 			{
 				listeners[0] = listener;
+				if (once) onceListeners[listener] = true;
 				return;
 			}
 			
 			if (dispatching) listeners = listeners.slice();
 			
-			// Don't add the same listener twice.
 			if (listeners.indexOf(listener) >= 0)
+			{
+				// If the listener was previously added, definitely don't add it again.
+				// But throw an exception in some cases, as the error messages explain.
+				if (onceListeners[listener] && !once)
+				{
+					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
+				}
+				else if (!onceListeners[listener] && once)
+				{
+					throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
+				}
+				// Listener was already added, so do nothing.
 				return;
+			}
 				
 			// Faster than push().
 			listeners[listeners.length] = listener;
+			if (once) onceListeners[listener] = true;
 		}
 	}
 }
