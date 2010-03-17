@@ -131,15 +131,14 @@ package org.osflash.signals
 				event.signal = this;
 			}
 			
+			// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
 			listenersNeedCloning = true;
-			
 			//// Call listeners.
 			var listener:Function;
 			if (listenerBoxes.length)
 			{
 				//TODO: investigate performance of various approaches
 				
-				// Clone listeners array because add/remove may occur during the dispatch.
 				for each (var listenerBox:Object in listenerBoxes)
 				{
 					listener = listenerBox.listener;
