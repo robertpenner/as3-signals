@@ -196,6 +196,7 @@ package org.osflash.signals.natives
 			assertSame(MouseEvent, clicked.valueClasses[0]);
 			assertSame(clicked.eventClass, clicked.valueClasses[0]);
 		}
+		
 		//////
 		// Captures Issue #5 - You can't addOnce to a signal from a function called by the same signal.
 		[Test]
@@ -214,5 +215,29 @@ package org.osflash.signals.natives
 		protected function secondAddOnceListener(e:MouseEvent):void
 		{
 		}
+		
+		//////
+		// Captures Issue #14
+		[Test]
+		public function addOnce_same_handler_in_handler_and_dispatch_should_call_it_again():void
+		{
+			assertEquals(0, clicked.numListeners);
+			
+			clicked.addOnce( onClickAddOnceAgain );
+			
+			assertEquals(1, clicked.numListeners);
+			
+			clicked.dispatch(new MouseEvent('click'));
+		}
+		
+		protected function onClickAddOnceAgain(e:MouseEvent):void
+		{
+			assertEquals(0, clicked.numListeners);
+			
+			clicked.addOnce( onClickAddOnceAgain );
+			
+			assertEquals(1, clicked.numListeners);
+		}
+		
 	}
 }

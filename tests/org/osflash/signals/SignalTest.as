@@ -211,5 +211,17 @@ package org.osflash.signals
 		{
 			completed.removeAll();
 		}
+		//////
+		[Test]
+		public function adding_a_listener_during_dispatch_should_not_call_it():void
+		{
+			completed.add(addAsync(addListenerDuringDispatch, 10));
+			completed.dispatch(new GenericEvent());
+		}
+		
+		private function addListenerDuringDispatch():void
+		{
+			completed.add(failIfCalled);
+		}
 	}
 }

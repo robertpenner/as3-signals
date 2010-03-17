@@ -22,6 +22,7 @@ package org.osflash.signals
 		protected var _valueClasses:Array;
 		protected var listenerBoxes:Array;
 		protected var onceListeners:Dictionary;
+		protected var listenersNeedCloning:Boolean = false;
 		
 		/**
 		 * Creates a DeluxeSignal instance to dispatch events on behalf of a target object.
@@ -67,28 +68,24 @@ package org.osflash.signals
 		//TODO: @throws
 		public function add(listener:Function, priority:int = 0):void
 		{
-			if (onceListeners[listener])
-				throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
-		
-			registerListener(listener, priority);
+			registerListener(listener, false, priority);
 		}
 		
 		/** @inheritDoc */
 		public function addOnce(listener:Function, priority:int = 0):void
 		{
-			// If the listener has been added as once, don't do anything.
-			if (onceListeners[listener]) return;
-			if (indexOfListener(listener) >= 0 && !onceListeners[listener])
-				throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
-			
-			registerListener(listener, priority);
-			onceListeners[listener] = true;
+			registerListener(listener, true, priority);
 		}
 		
 		/** @inheritDoc */
 		public function remove(listener:Function):void
 		{
 			if (indexOfListener(listener) == -1) return;
+			if (listenersNeedCloning)
+			{
+				listenerBoxes = listenerBoxes.slice();
+				listenersNeedCloning = false;
+			}
 			listenerBoxes.splice(indexOfListener(listener), 1);
 			delete onceListeners[listener];
 		}
@@ -134,20 +131,23 @@ package org.osflash.signals
 				event.signal = this;
 			}
 			
+			// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
+			listenersNeedCloning = true;
 			//// Call listeners.
 			var listener:Function;
 			if (listenerBoxes.length)
 			{
 				//TODO: investigate performance of various approaches
 				
-				// Clone listeners array because add/remove may occur during the dispatch.
-				for each (var listenerBox:Object in listenerBoxes.slice())
+				for each (var listenerBox:Object in listenerBoxes)
 				{
 					listener = listenerBox.listener;
 					if (onceListeners[listener]) remove(listener);
 					listener.apply(null, valueObjects);
 				}
 			}
+			
+			listenersNeedCloning = false;
 			
 			if (!event || !event.bubbles) return;
 
@@ -188,7 +188,7 @@ package org.osflash.signals
 			}
 		}
 		
-		protected function registerListener(listener:Function, priority:int):void
+		protected function registerListener(listener:Function, once:Boolean = false, priority:int = 0):void
 		{
 			// function.length is the number of arguments.
 			if (listener.length < _valueClasses.length)
@@ -202,13 +202,33 @@ package org.osflash.signals
 			if (!listenerBoxes.length)
 			{
 				listenerBoxes[0] = listenerBox;
+				if (once) onceListeners[listener] = true;
 				return;
 			}
 			
-			// Don't add the same listener twice.
-			if (indexOfListener(listener) >= 0)
+			var prevListenerIndex:int = indexOfListener(listener);
+			if (prevListenerIndex >= 0)
+			{
+				// If the listener was previously added, definitely don't add it again.
+				// But throw an exception in some cases, as the error messages explain.
+				if (onceListeners[listener] && !once)
+				{
+					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
+				}
+				else if (!onceListeners[listener] && once)
+				{
+					throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
+				}
+				// Listener was already added, so do nothing.
 				return;
+			}
 			
+			if (listenersNeedCloning)
+			{
+				listenerBoxes = listenerBoxes.slice();
+				listenersNeedCloning = false;
+			}
+		
 			// Assume the listeners are already sorted by priority
 			// and insert in the right spot. For listeners with the same priority,
 			// we must preserve the order in which they were added.
@@ -225,6 +245,7 @@ package org.osflash.signals
 			
 			// If we made it this far, the new listener has lowest priority, so put it last.
 			listenerBoxes[listenerBoxes.length] = listenerBox;
+			if (once) onceListeners[listener] = true;
 		}
 		
 	}

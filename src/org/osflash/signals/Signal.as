@@ -18,7 +18,7 @@ package org.osflash.signals
 		protected var _valueClasses:Array;		// of Class
 		protected var listeners:Array;			// of Function
 		protected var onceListeners:Dictionary;	// of Function
-		protected var dispatching:Boolean = false;;
+		protected var listenersNeedCloning:Boolean = false;
 		
 		/**
 		 * Creates a Signal instance to dispatch value objects.
@@ -51,9 +51,6 @@ package org.osflash.signals
 		//TODO: @throws
 		public function add(listener:Function):Function
 		{
-			if (onceListeners[listener])
-				throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
-		
 			registerListener(listener);
       
       return listener;
@@ -62,13 +59,7 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function addOnce(listener:Function):void
 		{
-			// If the listener has been added as once, don't do anything.
-			if (onceListeners[listener]) return;
-			if (listeners.indexOf(listener) >= 0 && !onceListeners[listener])
-				throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
-			
-			registerListener(listener);
-			onceListeners[listener] = true;
+			registerListener(listener, true);
 		}
 		
 		/** @inheritDoc */
@@ -76,7 +67,11 @@ package org.osflash.signals
 		{
 			var index:int = listeners.indexOf(listener);
 			if (index == -1) return;
-			if (dispatching) listeners = listeners.slice();
+			if (listenersNeedCloning)
+			{
+				listeners = listeners.slice();
+				listenersNeedCloning = false;
+			}
 			listeners.splice(index, 1);
 			delete onceListeners[listener];
 		}
@@ -84,11 +79,11 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			if (dispatching)
-				listeners = [];
-			else
-				listeners.length = 0;
-			onceListeners = new Dictionary();
+			// Looping backwards is more efficient when removing array items.
+			for (var i:uint = listeners.length; i--; )
+			{
+				remove(listeners[i] as Function);
+			}
 		}
 		
 		/** @inheritDoc */
@@ -114,7 +109,7 @@ package org.osflash.signals
 			//// Call listeners.
 			
 			// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
-			dispatching = true;
+			listenersNeedCloning = true;
 			var listener:Function;
 			switch (valueObjects.length)
 			{
@@ -141,7 +136,7 @@ package org.osflash.signals
 						listener.apply(null, valueObjects);
 					}
 			}
-			dispatching = false;
+			listenersNeedCloning = false;
 		}
 		
 		protected function setValueClasses(valueClasses:Array):void
@@ -158,7 +153,7 @@ package org.osflash.signals
 			}
 		}
 		
-		protected function registerListener(listener:Function):void
+		protected function registerListener(listener:Function, once:Boolean = false):void
 		{
 			// function.length is the number of arguments.
 			if (listener.length < _valueClasses.length)
@@ -171,17 +166,35 @@ package org.osflash.signals
 			if (!listeners.length)
 			{
 				listeners[0] = listener;
+				if (once) onceListeners[listener] = true;
+				return;
+			}
+						
+			if (listeners.indexOf(listener) >= 0)
+			{
+				// If the listener was previously added, definitely don't add it again.
+				// But throw an exception in some cases, as the error messages explain.
+				if (onceListeners[listener] && !once)
+				{
+					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
+				}
+				else if (!onceListeners[listener] && once)
+				{
+					throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
+				}
+				// Listener was already added, so do nothing.
 				return;
 			}
 			
-			if (dispatching) listeners = listeners.slice();
-			
-			// Don't add the same listener twice.
-			if (listeners.indexOf(listener) >= 0)
-				return;
+			if (listenersNeedCloning)
+			{
+				listeners = listeners.slice();
+				listenersNeedCloning = false;
+			}
 				
 			// Faster than push().
 			listeners[listeners.length] = listener;
+			if (once) onceListeners[listener] = true;
 		}
 	}
 }

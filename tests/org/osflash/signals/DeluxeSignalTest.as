@@ -1,7 +1,10 @@
-package org.osflash.signals {
-	import asunit.asserts.assertEquals;
+package org.osflash.signals
+{
+	import asunit.asserts.*;
+	import asunit4.async.addAsync;
 
-	public class DeluxeSignalTest {
+	public class DeluxeSignalTest
+	{
 		private var completed:DeluxeSignal;
 		
 		[Before]
@@ -27,7 +30,52 @@ package org.osflash.signals {
 		
 		private function newEmptyHandler():Function
 		{
-			return function(e:*):void {};
+			return function():void {};
+		}
+		
+		//////
+		[Test]
+		public function dispatch_2_listeners_1st_listener_removes_itself_then_2nd_listener_is_still_called():void
+		{
+			completed.add(selfRemover);
+			// addAsync verifies the second listener is called
+			completed.add(addAsync(newEmptyHandler(), 10));
+			completed.dispatch();
+		}
+		
+		private function selfRemover():void
+		{
+			completed.remove(selfRemover);
+		}
+		//////
+		[Test]
+		public function dispatch_2_listeners_1st_listener_removes_all_then_2nd_listener_is_still_called():void
+		{
+			completed.add(addAsync(allRemover, 10));
+			completed.add(addAsync(newEmptyHandler(), 10));
+			completed.dispatch();
+		}
+		
+		private function allRemover():void
+		{
+			completed.removeAll();
+		}
+		//////
+		[Test]
+		public function adding_a_listener_during_dispatch_should_not_call_it():void
+		{
+			completed.add(addAsync(addListenerDuringDispatch, 10));
+			completed.dispatch();
+		}
+		
+		private function addListenerDuringDispatch():void
+		{
+			completed.add(failIfCalled);
+		}
+		
+		private function failIfCalled():void
+		{
+			fail("This listener should not be called.");
 		}
 	}
 }
