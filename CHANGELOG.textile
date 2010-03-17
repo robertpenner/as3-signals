@@ -1,5 +1,6 @@
 h2. AS3 Signals Changelog:
 
+
 h3. v0.6 - GreenDay - 2010-03-17
 
 h4. API Changes
