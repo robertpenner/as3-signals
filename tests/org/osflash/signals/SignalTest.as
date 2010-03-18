@@ -199,7 +199,7 @@ package org.osflash.signals
 			}
 
 			assertTrue("there should be 100 listeners", completed.numListeners == 100);
-      
+
 			for each( var fnt:Function in listeners )
 			{
 				completed.remove(fnt);
@@ -219,7 +219,7 @@ package org.osflash.signals
 			}
 
 			assertTrue("there should be 100 listeners", completed.numListeners == 100);
-      
+
 			for each( var fnt:Function in listeners )
 			{
 				completed.remove(fnt);
