@@ -52,14 +52,14 @@ package org.osflash.signals
 		public function add(listener:Function):Function
 		{
 			registerListener(listener);
-
 			return listener;
 		}
 		
 		/** @inheritDoc */
-		public function addOnce(listener:Function):void
+		public function addOnce(listener:Function):Function
 		{
 			registerListener(listener, true);
+			return listener;
 		}
 		
 		/** @inheritDoc */
