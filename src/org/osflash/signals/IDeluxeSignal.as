@@ -42,6 +42,7 @@ package org.osflash.signals
 		/**
 		 * Unsubscribes a listener from the signal.
 		 * @param	listener
+		 * @return the listener Function passed as the parameter
 		 */
 		function remove(listener:Function):Function;
 		
