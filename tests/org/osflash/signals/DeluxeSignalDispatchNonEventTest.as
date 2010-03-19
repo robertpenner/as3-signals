@@ -1,11 +1,13 @@
 package org.osflash.signals
 {
+    import asunit4.async.IAsync;
 	import asunit.asserts.*;
 
-	import asunit4.async.addAsync;
-
 	public class DeluxeSignalDispatchNonEventTest
-	{
+	{	
+	    [Async]
+	    public var async:IAsync;
+	    
 		public var completed:DeluxeSignal;
 
 		[Before]
@@ -28,7 +30,7 @@ package org.osflash.signals
 		public function dispatch_zero_should_call_listener_with_zero():void
 		{
 			completed = new DeluxeSignal(this, Number);
-			completed.add( addAsync(onZero, 10) );
+			completed.add( async.add(onZero, 10) );
 			completed.dispatch(0);
 		}
 		
@@ -40,7 +42,7 @@ package org.osflash.signals
 		[Test]
 		public function dispatch_null_should_call_listener_with_null():void
 		{
-			completed.addOnce( addAsync(checkNullDate, 10) );
+			completed.addOnce( async.add(checkNullDate, 10) );
 			completed.dispatch(null);
 		}
 		
@@ -53,7 +55,7 @@ package org.osflash.signals
 		public function dispatch_null_through_int_DeluxeSignal_should_be_autoconverted_to_zero():void
 		{
 			completed = new DeluxeSignal(int);
-			completed.addOnce( addAsync(checkNullConvertedToZero, 10) );
+			completed.addOnce( async.add(checkNullConvertedToZero, 10) );
 			completed.dispatch(null);
 		}
 		

@@ -1,13 +1,15 @@
 package org.osflash.signals
 {
+    import asunit4.async.IAsync;
 	import asunit.asserts.*;
-
-	import asunit4.async.addAsync;
 
 	import org.osflash.signals.events.GenericEvent;
 
 	public class DeluxeSignalWithCustomEventTest
-	{
+	{	
+	    [Async]
+	    public var async:IAsync;
+	    
 		public var messaged:DeluxeSignal;
 
 		[Before]
@@ -32,7 +34,7 @@ package org.osflash.signals
 		[Test]
 		public function add_one_listener_and_dispatch():void
 		{
-			messaged.add(addAsync(onMessage, 50));
+			messaged.add(async.add(onMessage, 50));
 			messaged.dispatch(new MessageEvent('ok'));
 		}
 		

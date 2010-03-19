@@ -1,8 +1,7 @@
 package org.osflash.signals
 {
+    import asunit4.async.IAsync;
 	import asunit.asserts.*;
-
-	import asunit4.async.addAsync;
 
 	import org.osflash.signals.events.GenericEvent;
 	import org.osflash.signals.events.IEvent;
@@ -10,7 +9,10 @@ package org.osflash.signals
 	import flash.display.Sprite;
 
 	public class SignalTest
-	{
+	{	
+	    [Async]
+	    public var async:IAsync;
+	    
 		public var completed:Signal;
 		
 		[Before]
@@ -37,7 +39,7 @@ package org.osflash.signals
 		[Test]
 		public function dispatch_should_pass_event_to_listener_but_not_set_signal_or_target_properties():void
 		{
-			completed.add(addAsync(checkGenericEvent, 10));
+			completed.add(async.add(checkGenericEvent, 10));
 			completed.dispatch(new GenericEvent());
 		}
 		
@@ -52,8 +54,8 @@ package org.osflash.signals
 		[Test]
 		public function add_two_listeners_and_dispatch_should_call_both():void
 		{
-			completed.add(addAsync(checkGenericEvent, 10));
-			completed.add(addAsync(checkGenericEvent, 10));
+			completed.add(async.add(checkGenericEvent, 10));
+			completed.add(async.add(checkGenericEvent, 10));
 			completed.dispatch(new GenericEvent());
 		}
 
@@ -97,7 +99,7 @@ package org.osflash.signals
 		[Test]
 		public function add_2_listeners_remove_2nd_then_dispatch_should_call_1st_not_2nd_listener():void
 		{
-			completed.add(addAsync(checkGenericEvent, 10));
+			completed.add(async.add(checkGenericEvent, 10));
 			completed.add(failIfCalled);
 			completed.remove(failIfCalled);
 			completed.dispatch(new GenericEvent());
@@ -179,8 +181,8 @@ package org.osflash.signals
 		public function dispatch_2_listeners_1st_listener_removes_itself_then_2nd_listener_is_still_called():void
 		{
 			completed.add(selfRemover);
-			// addAsync verifies the second listener is called
-			completed.add(addAsync(newEmptyHandler(), 10));
+			// async.add verifies the second listener is called
+			completed.add(async.add(newEmptyHandler(), 10));
 			completed.dispatch();
 		}
 		
@@ -192,8 +194,8 @@ package org.osflash.signals
 		[Test]
 		public function dispatch_2_listeners_1st_listener_removes_all_then_2nd_listener_is_still_called():void
 		{
-			completed.add(addAsync(allRemover, 10));
-			completed.add(addAsync(newEmptyHandler(), 10));
+			completed.add(async.add(allRemover, 10));
+			completed.add(async.add(newEmptyHandler(), 10));
 			completed.dispatch();
 		}
 		
@@ -205,7 +207,7 @@ package org.osflash.signals
 		[Test]
 		public function adding_a_listener_during_dispatch_should_not_call_it():void
 		{
-			completed.add(addAsync(addListenerDuringDispatch, 10));
+			completed.add(async.add(addListenerDuringDispatch, 10));
 			completed.dispatch(new GenericEvent());
 		}
 		

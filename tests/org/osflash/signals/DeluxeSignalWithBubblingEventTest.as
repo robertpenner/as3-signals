@@ -1,15 +1,17 @@
 package org.osflash.signals
 {
+    import asunit4.async.IAsync;
 	import asunit.asserts.*;
-
-	import asunit4.async.addAsync;
 
 	import org.osflash.signals.events.GenericEvent;
 	import org.osflash.signals.events.IBubbleEventHandler;
 	import org.osflash.signals.events.IEvent;
 
 	public class DeluxeSignalWithBubblingEventTest implements IBubbleEventHandler
-	{
+	{	
+	    [Async]
+	    public var async:IAsync;
+	    
 		protected var theChild:Child;
 		protected var theGrandChild:Child;
 		protected var cancelTimeout:Function;
@@ -38,7 +40,7 @@ package org.osflash.signals
 		[Test]
 		public function dispatch_bubbling_event_from_theGrandChild_should_bubble_to_IBubbleHandler():void
 		{
-			cancelTimeout = addAsync(null, 10);
+			cancelTimeout = async.add(null, 10);
 			var event:IEvent = new GenericEvent();
 			event.bubbles = true;
 			

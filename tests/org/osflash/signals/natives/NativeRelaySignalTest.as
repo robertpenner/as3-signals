@@ -1,8 +1,7 @@
 package org.osflash.signals.natives
 {
+    import asunit4.async.IAsync;
 	import asunit.asserts.*;
-
-	import asunit4.async.addAsync;
 
 	import org.osflash.signals.ISignal;
 
@@ -11,7 +10,10 @@ package org.osflash.signals.natives
 	import flash.events.MouseEvent;
 
 	public class NativeRelaySignalTest
-	{
+	{	
+	    [Async]
+	    public var async:IAsync;
+	    
 		private var clicked:NativeRelaySignal;
 		private var sprite:Sprite;
 
@@ -39,7 +41,7 @@ package org.osflash.signals.natives
 		[Test]
 		public function signal_add_then_EventDispatcher_dispatch_should_call_signal_listener():void
 		{
-			clicked.add( addAsync(checkSpriteAsCurrentTarget, 10) );
+			clicked.add( async.add(checkSpriteAsCurrentTarget, 10) );
 			sprite.dispatchEvent(new MouseEvent('click'));
 		}
 		
@@ -51,7 +53,7 @@ package org.osflash.signals.natives
 		[Test]
 		public function signal_addOnce_then_EventDispatcher_dispatch_should_call_signal_listener():void
 		{
-			clicked.addOnce( addAsync(checkSpriteAsCurrentTarget, 10) );
+			clicked.addOnce( async.add(checkSpriteAsCurrentTarget, 10) );
 			sprite.dispatchEvent(new MouseEvent('click'));
 		}
 		//////

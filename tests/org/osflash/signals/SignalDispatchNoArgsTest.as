@@ -1,11 +1,13 @@
 package org.osflash.signals
 {
+    import asunit4.async.IAsync;
 	import asunit.asserts.*;
 
-	import asunit4.async.addAsync;
-
 	public class SignalDispatchNoArgsTest
-	{
+	{	
+	    [Async]
+	    public var async:IAsync;
+	    
 		public var completed:Signal;
 
 		[Before]
@@ -24,7 +26,7 @@ package org.osflash.signals
 		[Test]
 		public function dispatch_no_args_should_call_listener_with_no_args():void
 		{
-			completed.add( addAsync(onCompleted, 10) );
+			completed.add( async.add(onCompleted, 10) );
 			completed.dispatch();
 		}
 		
@@ -36,13 +38,13 @@ package org.osflash.signals
 		[Test]
 		public function addOnce_in_handler_and_dispatch_should_call_new_listener():void
 		{
-			completed.addOnce( addAsync(addOnceInHandler, 10) );
+			completed.addOnce( async.add(addOnceInHandler, 10) );
 			completed.dispatch();
 		}
 		
 		protected function addOnceInHandler():void
 		{
-			completed.addOnce( addAsync(secondAddOnceListener, 10) );
+			completed.addOnce( async.add(secondAddOnceListener, 10) );
 			completed.dispatch();
 		}
 		

@@ -1,11 +1,13 @@
 package org.osflash.signals
 {
+    import asunit4.async.IAsync;
 	import asunit.asserts.*;
-
-	import asunit4.async.addAsync;
 
 	public class DeluxeSignalDispatchExtraArgsTest
 	{
+	    [Async]
+	    public var async:IAsync;
+	    
 		public var completed:DeluxeSignal;
 
 		[Before]
@@ -24,7 +26,7 @@ package org.osflash.signals
 		[Test]
 		public function dispatch_extra_args_should_call_listener_with_extra_args():void
 		{
-			completed.add( addAsync(onCompleted, 10) );
+			completed.add( async.add(onCompleted, 10) );
 			completed.dispatch(22, 'done', new Date());
 		}
 		

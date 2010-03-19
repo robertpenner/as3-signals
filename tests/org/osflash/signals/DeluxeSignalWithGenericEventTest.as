@@ -1,8 +1,7 @@
 package org.osflash.signals
 {
+    import asunit4.async.IAsync;
 	import asunit.asserts.*;
-
-	import asunit4.async.addAsync;
 
 	import org.osflash.signals.events.GenericEvent;
 	import org.osflash.signals.events.IEvent;
@@ -10,7 +9,10 @@ package org.osflash.signals
 	import flash.display.Sprite;
 
 	public class DeluxeSignalWithGenericEventTest
-	{
+	{	
+	    [Async]
+	    public var async:IAsync;
+	    
 		protected var completed:DeluxeSignal;
 		protected var delegate:Function;
 		
@@ -39,7 +41,7 @@ package org.osflash.signals
 		[Test]
 		public function add_listener_and_dispatch_event_should_pass_event_to_listener():void
 		{
-			completed.add(addAsync(checkGenericEvent, 10));
+			completed.add(async.add(checkGenericEvent, 10));
 			completed.dispatch(new GenericEvent());
 		}
 		
@@ -58,8 +60,8 @@ package org.osflash.signals
 		[Test]
 		public function add_two_listeners_and_dispatch_should_call_both():void
 		{
-			completed.add(addAsync(checkGenericEvent, 10));
-			completed.add(addAsync(checkGenericEvent, 10));
+			completed.add(async.add(checkGenericEvent, 10));
+			completed.add(async.add(checkGenericEvent, 10));
 			completed.dispatch(new GenericEvent());
 		}
 
@@ -78,7 +80,7 @@ package org.osflash.signals
 		[Test]
 		public function add_one_listener_and_dispatch_then_listener_remove_itself_using_event_signal():void
 		{
-			delegate = addAsync(remove_myself_from_signal, 10);
+			delegate = async.add(remove_myself_from_signal, 10);
 			completed.add(delegate);
 			completed.dispatch(new GenericEvent());
 		}
@@ -87,7 +89,7 @@ package org.osflash.signals
 		{
 			assertEquals('listener still in signal', 1, e.signal.numListeners);
 			
-			// Can't remove(arguments.callee) because it's wrapped with delegate created by addAsync().
+			// Can't remove(arguments.callee) because it's wrapped with delegate created by async.add().
 			e.signal.remove(delegate);
 			
 			assertEquals('listener removed from signal', 0, e.signal.numListeners);
@@ -114,7 +116,7 @@ package org.osflash.signals
 		[Test]
 		public function add_2_listeners_remove_2nd_then_dispatch_should_call_1st_not_2nd_listener():void
 		{
-			completed.add(addAsync(checkGenericEvent, 10));
+			completed.add(async.add(checkGenericEvent, 10));
 			var delegate:Function = failIfCalled;
 			completed.add(delegate);
 			completed.remove(delegate);

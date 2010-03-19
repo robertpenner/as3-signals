@@ -1,10 +1,13 @@
 package org.osflash.signals
 {
+    import asunit4.async.IAsync;
 	import asunit.asserts.*;
-	import asunit4.async.addAsync;
 
 	public class DeluxeSignalTest
-	{
+	{	
+	    [Async]
+	    public var async:IAsync;
+	    
 		private var completed:DeluxeSignal;
 		
 		[Before]
@@ -38,8 +41,8 @@ package org.osflash.signals
 		public function dispatch_2_listeners_1st_listener_removes_itself_then_2nd_listener_is_still_called():void
 		{
 			completed.add(selfRemover);
-			// addAsync verifies the second listener is called
-			completed.add(addAsync(newEmptyHandler(), 10));
+			// async.add verifies the second listener is called
+			completed.add(async.add(newEmptyHandler(), 10));
 			completed.dispatch();
 		}
 		
@@ -51,8 +54,8 @@ package org.osflash.signals
 		[Test]
 		public function dispatch_2_listeners_1st_listener_removes_all_then_2nd_listener_is_still_called():void
 		{
-			completed.add(addAsync(allRemover, 10));
-			completed.add(addAsync(newEmptyHandler(), 10));
+			completed.add(async.add(allRemover, 10));
+			completed.add(async.add(newEmptyHandler(), 10));
 			completed.dispatch();
 		}
 		
@@ -64,7 +67,7 @@ package org.osflash.signals
 		[Test]
 		public function adding_a_listener_during_dispatch_should_not_call_it():void
 		{
-			completed.add(addAsync(addListenerDuringDispatch, 10));
+			completed.add(async.add(addListenerDuringDispatch, 10));
 			completed.dispatch();
 		}
 		

@@ -1,13 +1,15 @@
 package org.osflash.signals
 {
+    import asunit4.async.IAsync;
 	import asunit.asserts.*;
-
-	import asunit4.async.addAsync;
 
 	import org.osflash.signals.events.GenericEvent;
 
 	public class RedispatchedEventTest
-	{
+	{	
+	    [Async]
+	    public var async:IAsync;
+	    
 		public var completed:DeluxeSignal;
 		protected var originalEvent:GenericEvent;
 
@@ -27,7 +29,7 @@ package org.osflash.signals
 		[Test]
 		public function dispatch_event_already_dispatched_should_clone_it():void
 		{
-			completed.add(addAsync(redispatchEvent, 10));
+			completed.add(async.add(redispatchEvent, 10));
 			originalEvent = new GenericEvent();
 			completed.dispatch(originalEvent);
 		}
@@ -36,7 +38,7 @@ package org.osflash.signals
 		{
 			DeluxeSignal(e.signal).removeAll();
 			assertSame(originalEvent, e);
-			completed.add(addAsync(check_redispatched_event_is_not_original, 10));
+			completed.add(async.add(check_redispatched_event_is_not_original, 10));
 			
 			completed.dispatch(originalEvent);
 		}
