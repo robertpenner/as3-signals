@@ -67,13 +67,14 @@ package org.osflash.signals.natives
 		}
 		
 		/** @inheritDoc */
-		public function remove(listener:Function):void
+		public function remove(listener:Function):Function
 		{
 			var listenerIndex:int = indexOfListener(listener);
-			if (listenerIndex == -1) return;
+			if (listenerIndex == -1) return listener;
 			var listenerBox:Object = listenerBoxes.splice(listenerIndex, 1)[0];
 			// For once listeners, execute is a wrapper function around the listener.
 			_target.removeEventListener(_eventType, listenerBox.execute);
+			return listener
 		}
 		
 		/** @inheritDoc */

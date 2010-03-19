@@ -57,12 +57,14 @@ package org.osflash.signals.natives
 		}
 		
 		/** @inheritDoc */
-		override public function remove(listener:Function):void
+		override public function remove(listener:Function):Function
 		{
 			var prevListenerCount:uint = listenerBoxes.length;
 			super.remove(listener);
 			if (prevListenerCount == 1 && listenerBoxes.length == 0)
 				IEventDispatcher(_target).removeEventListener(_eventType, dispatch);
+			
+			return listener;
 		}
 		
 	}

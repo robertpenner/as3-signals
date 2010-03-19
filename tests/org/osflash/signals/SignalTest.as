@@ -243,5 +243,13 @@ package org.osflash.signals
 		{
 			completed.add(failIfCalled);
 		}
+		//////
+		[Test]
+		public function removed_listener_should_be_returned():void
+		{
+			var listener:Function = completed.add(function():void{});
+			
+			assertTrue("Listener is returned", listener == completed.remove(listener))
+		}
 	}
 }

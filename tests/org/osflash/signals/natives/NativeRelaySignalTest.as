@@ -159,5 +159,14 @@ package org.osflash.signals.natives
 			}
 			assertTrue("all anonymous listeners removed", clicked.numListeners == 0);
 		}
+		
+		//////
+		[Test]
+		public function removed_listener_should_be_returned():void
+		{
+			var listener:Function = clicked.add(function(e:MouseEvent):void{});
+			
+			assertTrue("Listener is returned", listener == clicked.remove(listener))
+		}
 	}
 }

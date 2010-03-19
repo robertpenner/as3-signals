@@ -118,5 +118,14 @@ package org.osflash.signals
 			}
 			assertTrue("all anonymous listeners removed", completed.numListeners == 0);
 		}
+		
+		//////
+		[Test]
+		public function removed_listener_should_be_returned():void
+		{
+			var listener:Function = completed.add(function():void{});
+			
+			assertTrue("Listener is returned", listener == completed.remove(listener))
+		}
 	}
 }

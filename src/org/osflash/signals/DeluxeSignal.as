@@ -78,15 +78,16 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function remove(listener:Function):void
+		public function remove(listener:Function):Function
 		{
-			if (indexOfListener(listener) == -1) return;
+			if (indexOfListener(listener) == -1) return listener;
 			if (listenersNeedCloning)
 			{
 				listenerBoxes = listenerBoxes.slice();
 				listenersNeedCloning = false;
 			}
 			listenerBoxes.splice(indexOfListener(listener), 1);
+			return listener;
 		}
 		
 		/** @inheritDoc */

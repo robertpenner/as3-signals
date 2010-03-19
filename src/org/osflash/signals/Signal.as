@@ -63,10 +63,10 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function remove(listener:Function):void
+		public function remove(listener:Function):Function
 		{
 			var index:int = listeners.indexOf(listener);
-			if (index == -1) return;
+			if (index == -1) return listener;
 			if (listenersNeedCloning)
 			{
 				listeners = listeners.slice();
@@ -74,6 +74,7 @@ package org.osflash.signals
 			}
 			listeners.splice(index, 1);
 			delete onceListeners[listener];
+			return listener;
 		}
 		
 		/** @inheritDoc */
