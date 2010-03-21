@@ -11,7 +11,7 @@ package org.osflash.signals.natives
 
 	public class NativeRelaySignalTest
 	{	
-	    [Async]
+	    [Inject]
 	    public var async:IAsync;
 	    
 		private var clicked:NativeRelaySignal;

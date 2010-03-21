@@ -9,7 +9,7 @@ package org.osflash.signals
 
 	public class DeluxeSignalWithBubblingEventTest implements IBubbleEventHandler
 	{	
-	    [Async]
+	    [Inject]
 	    public var async:IAsync;
 	    
 		protected var theChild:Child;

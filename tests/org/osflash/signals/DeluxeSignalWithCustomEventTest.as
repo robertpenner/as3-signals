@@ -7,7 +7,7 @@ package org.osflash.signals
 
 	public class DeluxeSignalWithCustomEventTest
 	{	
-	    [Async]
+	    [Inject]
 	    public var async:IAsync;
 	    
 		public var messaged:DeluxeSignal;

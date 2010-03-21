@@ -5,7 +5,7 @@ package org.osflash.signals
 
 	public class DeluxeSignalTest
 	{	
-	    [Async]
+	    [Inject]
 	    public var async:IAsync;
 	    
 		private var completed:DeluxeSignal;

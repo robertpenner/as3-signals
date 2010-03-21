@@ -12,7 +12,7 @@ package org.osflash.signals.natives
 
 	public class NativeSignalTest
 	{	
-	    [Async]
+	    [Inject]
 	    public var async:IAsync;
 	    
 		private var clicked:NativeSignal;
