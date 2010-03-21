@@ -12,7 +12,7 @@ package org.osflash.signals.natives
 	
 	public class NativeMappedSignalFunctionArgTest
 	{
-		private var clicked:NativeMappedSignal;
+		private var signal:NativeMappedSignal;
 		private var sprite:Sprite;
 		private const EventType:String = MouseEvent.CLICK;
 		private const MappedObject:String = "mapped " + EventType;
@@ -21,9 +21,11 @@ package org.osflash.signals.natives
 		public function setUp():void
 		{
 			sprite = new Sprite();
-			clicked = new NativeMappedSignal(sprite, EventType, String, function ():String {
-				return MappedObject
-			});
+			signal = new NativeMappedSignal(sprite, EventType, String, 
+				function ():String {
+					return MappedObject
+				}
+			);
 		}
 		
 		[After]
@@ -35,11 +37,11 @@ package org.osflash.signals.natives
 		
 		public function testInstantiated():void
 		{
-			assertTrue("NativeMappedSignal instantiated", clicked is NativeMappedSignal);
-			assertTrue('implements ISignal', clicked is ISignal);
+			assertTrue("NativeMappedSignal instantiated", signal is NativeMappedSignal);
+			assertTrue('implements ISignal', signal is ISignal);
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener(EventType));
-			assertSame('has only one value class', 1, clicked.valueClasses.length);
-			assertSame('single value class is of type String', String, clicked.valueClasses[0]);
+			assertSame('has only one value class', 1, signal.valueClasses.length);
+			assertSame('single value class is of type String', String, signal.valueClasses[0]);
 		}
 		//////
 		[Test]

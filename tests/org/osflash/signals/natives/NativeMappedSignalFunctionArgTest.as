@@ -4,15 +4,17 @@ package org.osflash.signals.natives
 	
 	import asunit4.async.addAsync;
 	
-	import org.osflash.signals.ISignal;
-	
 	import flash.display.Sprite;
-	import flash.events.EventDispatcher;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
+	
+	import org.osflash.signals.ISignal;
 	
 	public class NativeMappedSignalFunctionArgTest
 	{
-		private var clicked:NativeMappedSignal;
+		private var signal:NativeMappedSignal;
+		private var signalMappingToEventType:NativeMappedSignal;
+		private var signalMappingToIncorrectEventType:NativeMappedSignal;
 		private var sprite:Sprite;
 		private const EventType:String = MouseEvent.CLICK;
 		private const MappedObject:String = "mapped " + EventType;
@@ -21,32 +23,61 @@ package org.osflash.signals.natives
 		public function setUp():void
 		{
 			sprite = new Sprite();
-			clicked = new NativeMappedSignal(sprite, EventType, String, function ():String {
-				return MappedObject
-			});
+			signal = new NativeMappedSignal(sprite, EventType, String, 
+				function ():String {
+					return MappedObject
+				}
+			);
+			
+			signalMappingToEventType = new NativeMappedSignal(sprite, EventType, String, 
+				function (event:MouseEvent):String {
+					return event.type;
+				}
+			);
+			
+			signalMappingToIncorrectEventType = new NativeMappedSignal(sprite, EventType, String,
+				function (event:MouseEvent):int {
+					return event.delta
+				}
+			);
 		}
 		
 		[After]
 		public function tearDown():void
 		{
-			clicked.removeAll();
-			clicked = null;
+			signal.removeAll();
+			signal = null;
 		}
 		
 		public function testInstantiated():void
 		{
-			assertTrue("NativeMappedSignal instantiated", clicked is NativeMappedSignal);
-			assertTrue('implements ISignal', clicked is ISignal);
+			assertTrue("NativeMappedSignal instantiated", signal is NativeMappedSignal);
+			assertTrue('implements ISignal', signal is ISignal);
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener(EventType));
-			assertSame('has only one value class', 1, clicked.valueClasses.length);
-			assertSame('single value class is of type String', String, clicked.valueClasses[0]);
+			assertSame('has only one value class', 1, signal.valueClasses.length);
+			assertSame('single value class is of type String', String, signal.valueClasses[0]);
+			assertSame('has only one value class', 1, signalMappingToEventType.valueClasses.length);
+			assertSame('single value class is of type String', String, signalMappingToEventType.valueClasses[0]);
+			assertSame('has only one value class', 1, signalMappingToIncorrectEventType.valueClasses.length);
+			assertSame('single value class is of type String', String, signalMappingToIncorrectEventType.valueClasses[0]);
 		}
+		
+		private function dispatchTestEvent():void
+		{
+			sprite.dispatchEvent(buildTestEvent());
+		}
+		
+		private function buildTestEvent():Event
+		{
+			return new MouseEvent(EventType);
+		}
+		
 		//////
 		[Test]
 		public function signal_add_then_mapped_object_should_be_callback_argument():void
 		{
-			clicked.add( addAsync(checkMappedArgument, 10) );
-			sprite.dispatchEvent(new MouseEvent(EventType));
+			signal.add( addAsync(checkMappedArgument, 10) );
+			dispatchTestEvent();
 		}
 		
 		private function checkMappedArgument(argument:String):void
@@ -57,13 +88,38 @@ package org.osflash.signals.natives
 		[Test]
 		public function mapping_function_should_receive_event_as_argument():void
 		{
-			clicked = new NativeMappedSignal(sprite, EventType, String, checkMappingFunctionArguments);
-			clicked.add( addAsync(checkMappedArgument, 10) );
-			sprite.dispatchEvent(new MouseEvent(EventType));
+			signalMappingToEventType.add( addAsync(checkMappedEventTypeArgument, 10) );
+			dispatchTestEvent();
 		}
 		
-		private function checkMappingFunctionArguments(event:MouseEvent):String {
-			return MappedObject
+		private function checkMappedEventTypeArgument(argument:String):void
+		{
+			assertSame(EventType, argument);
 		}
+		
+		[Test(expects="ArgumentError")]
+		public function mapping_function_has_to_many_arguments_should_throw_ArgumentError():void
+		{
+			var signal:NativeMappedSignal = new NativeMappedSignal(sprite, EventType, String, 
+				function (event:MouseEvent, extraArg:Object):String {
+					return event.type;
+				}
+			);
+			dispatchTestEvent();
+		}
+		
+		[Test(expects="Error")]
+		public function mapping_function_returns_incorrectly_typed_argument_should_throw_Error():void
+		{
+			signalMappingToIncorrectEventType.dispatch(buildTestEvent());
+		}
+		
+		[Test(expects="ArgumentError")]
+		public function dispatching_non_event_should_throw_ArgumentError():void
+		{
+			signal.dispatch("non-event argument");
+		}
+		
+		private function emptyHandler(argument:String):void {}
 	}		
 }
