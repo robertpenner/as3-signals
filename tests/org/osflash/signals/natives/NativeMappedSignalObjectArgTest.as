@@ -10,16 +10,18 @@ package org.osflash.signals.natives
 	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
 	
-	public class NativeMappedSignalTest
+	public class NativeMappedSignalObjectArgTest
 	{
 		private var clicked:NativeMappedSignal;
 		private var sprite:Sprite;
+		private const EventType:String = MouseEvent.CLICK;
+		private const MappedObject:String = "mapped " + EventType;
 		
 		[Before]
 		public function setUp():void
 		{
 			sprite = new Sprite();
-			clicked = new NativeMappedSignal(sprite, 'click', 'mapped click');
+			clicked = new NativeMappedSignal(sprite, EventType, String, MappedObject);
 		}
 		
 		[After]
@@ -33,19 +35,21 @@ package org.osflash.signals.natives
 		{
 			assertTrue("NativeMappedSignal instantiated", clicked is NativeMappedSignal);
 			assertTrue('implements ISignal', clicked is ISignal);
-			assertFalse('sprite has no click event listener to start', sprite.hasEventListener('click'));
+			assertFalse('sprite has no click event listener to start', sprite.hasEventListener(EventType));
+			assertSame('has only one value class', 1, clicked.valueClasses.length);
+			assertSame('single value class is of type String', String, clicked.valueClasses[0]);
 		}
 		//////
 		[Test]
-		public function signal_add_then_EventDispatcher_dispatch_should_call_signal_listener():void
+		public function signal_add_then_mapped_object_should_be_callback_argument():void
 		{
 			clicked.add( addAsync(checkMappedArgument, 10) );
-			sprite.dispatchEvent(new MouseEvent('click'));
+			sprite.dispatchEvent(new MouseEvent(EventType));
 		}
 		
 		private function checkMappedArgument(argument:String):void
 		{
-			assertSame("mapped click", argument);
+			assertSame(MappedObject, argument);
 		}
 	}		
 }

@@ -1,7 +1,8 @@
 package org.osflash.signals
 {
 	import org.osflash.signals.natives.AmbiguousRelationshipInNativeSignalTest;
-	import org.osflash.signals.natives.NativeMappedSignalTest;
+	import org.osflash.signals.natives.NativeMappedSignalObjectArgTest;
+	import org.osflash.signals.natives.NativeMappedSignalFunctionArgTest;
 	import org.osflash.signals.natives.NativeRelaySignalTest;
 	import org.osflash.signals.natives.NativeSignalTest;
 
@@ -13,7 +14,8 @@ package org.osflash.signals
 		public var _GenericEventTest:GenericEventTest;
 		public var _NativeRelaySignalTest:NativeRelaySignalTest;
 		public var _NativeSignalTest:NativeSignalTest;
-		public var _NativeMappedSignalTest:NativeMappedSignalTest;
+		public var _NativeMappedSignalObjectArgTest:NativeMappedSignalObjectArgTest;
+		public var _NativeMappedSignalFunctionArgTest:NativeMappedSignalFunctionArgTest;
 		public var _PriorityListenersTest:PriorityListenersTest;
 		public var _RedispatchedEventTest:RedispatchedEventTest;
 		public var _DeluxeSignalAmbiguousRelationshipTest:DeluxeSignalAmbiguousRelationshipTest;
