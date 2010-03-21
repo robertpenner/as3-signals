@@ -3,6 +3,10 @@ package org.osflash.signals.natives
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	
+	/**
+	 * The NativeMappedSignal class is used to map/transform an event into another type of data 
+	 * that is sent along with the dispatch call as an argument.
+	 */
 	public class NativeMappedSignal extends NativeRelaySignal
 	{
 		private var _mapTo:Function;
@@ -17,8 +21,9 @@ package org.osflash.signals.natives
 		 * @param 	valueClass The Class that the eventType will be mapped to
 		 * @param	mapToObjectOrFunction an object or a Function that should return an object of the same type as the valueClass argument. 
 		 * If mapTo is an Object then this is what will be sent along with the signal as a value class. 
-		 * If mapTo is a function then the function is called each time the event is dispatched and the resulting 
-		 * Object returned from the function is passed along as the argument with the signal.  
+		 * If mapTo is a function the Object returned from the function is passed along as the argument with the signal. 
+		 * If the mapping function can have zero or one argument. In the case of a single argument it should be of type Event. 
+		 * If the mapping function does not need to know about the event then implement it with zero arguments are no Event will passed to it.  
 		 */
 		public function NativeMappedSignal(target:IEventDispatcher, eventType:String, valueClass:Class, mapToObjectOrFunction:Object)
 		{
@@ -39,6 +44,7 @@ package org.osflash.signals.natives
 			}
 		}
 		
+		/** @inheritDoc */
 		override public function dispatch(...valueObjects):void
 		{
 			validateValueObjects(valueObjects);
