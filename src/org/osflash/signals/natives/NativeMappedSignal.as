@@ -9,7 +9,7 @@ package org.osflash.signals.natives
 	 */
 	public class NativeMappedSignal extends NativeRelaySignal
 	{
-		private var _mapTo:Function;
+		protected var _mapTo:Function;
 		
 		/**
 		 * Creates a new NativeMappedSignal instance to map events from an IEventDispatcher to another object.
