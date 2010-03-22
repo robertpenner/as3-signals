@@ -23,19 +23,19 @@ package org.osflash.signals.natives
 		public function setUp():void
 		{
 			sprite = new Sprite();
-			signal = new NativeMappedSignal(sprite, EventType, String, 
+			signal = new NativeMappedSignal(sprite, EventType, MouseEvent, String).mapTo(
 				function ():String {
 					return MappedObject
 				}
 			);
 			
-			signalMappingToEventType = new NativeMappedSignal(sprite, EventType, String, 
+			signalMappingToEventType = new NativeMappedSignal(sprite, EventType, MouseEvent, String).mapTo( 
 				function (event:MouseEvent):String {
 					return event.type;
 				}
 			);
 			
-			signalMappingToIncorrectEventType = new NativeMappedSignal(sprite, EventType, String,
+			signalMappingToIncorrectEventType = new NativeMappedSignal(sprite, EventType, MouseEvent, String).mapTo(
 				function (event:MouseEvent):int {
 					return event.delta
 				}
@@ -100,7 +100,7 @@ package org.osflash.signals.natives
 		[Test(expects="ArgumentError")]
 		public function mapping_function_has_to_many_arguments_should_throw_ArgumentError():void
 		{
-			var signal:NativeMappedSignal = new NativeMappedSignal(sprite, EventType, String, 
+			var signal:NativeMappedSignal = new NativeMappedSignal(sprite, EventType, MouseEvent, String).mapTo( 
 				function (event:MouseEvent, extraArg:Object):String {
 					return event.type;
 				}
@@ -112,12 +112,6 @@ package org.osflash.signals.natives
 		public function mapping_function_returns_incorrectly_typed_argument_should_throw_Error():void
 		{
 			signalMappingToIncorrectEventType.dispatch(buildTestEvent());
-		}
-		
-		[Test(expects="ArgumentError")]
-		public function dispatching_non_event_should_throw_ArgumentError():void
-		{
-			signal.dispatch("non-event argument");
 		}
 		
 		private function emptyHandler(argument:String):void {}
