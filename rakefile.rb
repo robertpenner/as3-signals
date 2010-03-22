@@ -2,7 +2,7 @@ require 'rubygems'
 require 'sprout'
 sprout 'as3'
 
-asunit_home = ENV['ASUNIT_HOME'] || File.dirname(__FILE__) + '/../AsUnit4/as3'
+asunit_home = ENV['ASUNIT_HOME'] || File.dirname(__FILE__) + '/../AsUnit4/asunit-4.0'
 
 def apply_as3_meta_data_args(t)
   [
