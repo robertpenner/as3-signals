@@ -31,7 +31,7 @@ package org.osflash.signals.natives
 		}
 		
 		/** @inheritDoc */
-		override public function add(listener:Function, priority:int = 0):void
+		override public function add(listener:Function, priority:int = 0):Function
 		{
 			var prevListenerCount:uint = listenerBoxes.length;
 			// Try to add first because it may throw an exception.
@@ -39,10 +39,12 @@ package org.osflash.signals.natives
 			// Account for cases where the same listener is added twice.
 			if (prevListenerCount == 0 && listenerBoxes.length == 1)
 				IEventDispatcher(_target).addEventListener(_eventType, dispatch, false, priority);
+			
+			return listener;
 		}
 		
 		/** @inheritDoc */
-		override public function addOnce(listener:Function, priority:int = 0):void
+		override public function addOnce(listener:Function, priority:int = 0):Function
 		{
 			var prevListenerCount:uint = listenerBoxes.length;
 			// Try to add first because it may throw an exception.
@@ -50,15 +52,19 @@ package org.osflash.signals.natives
 			// Account for cases where the same listener is added twice.
 			if (prevListenerCount == 0 && listenerBoxes.length == 1)
 				IEventDispatcher(_target).addEventListener(_eventType, dispatch, false, priority);
+			
+			return listener;
 		}
 		
 		/** @inheritDoc */
-		override public function remove(listener:Function):void
+		override public function remove(listener:Function):Function
 		{
 			var prevListenerCount:uint = listenerBoxes.length;
 			super.remove(listener);
 			if (prevListenerCount == 1 && listenerBoxes.length == 0)
 				IEventDispatcher(_target).removeEventListener(_eventType, dispatch);
+			
+			return listener;
 		}
 		
 	}

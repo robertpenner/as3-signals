@@ -49,22 +49,24 @@ package org.osflash.signals
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function):void
+		public function add(listener:Function):Function
 		{
 			registerListener(listener);
+			return listener;
 		}
 		
 		/** @inheritDoc */
-		public function addOnce(listener:Function):void
+		public function addOnce(listener:Function):Function
 		{
 			registerListener(listener, true);
+			return listener;
 		}
 		
 		/** @inheritDoc */
-		public function remove(listener:Function):void
+		public function remove(listener:Function):Function
 		{
 			var index:int = listeners.indexOf(listener);
-			if (index == -1) return;
+			if (index == -1) return listener;
 			if (listenersNeedCloning)
 			{
 				listeners = listeners.slice();
@@ -72,6 +74,7 @@ package org.osflash.signals
 			}
 			listeners.splice(index, 1);
 			delete onceListeners[listener];
+			return listener;
 		}
 		
 		/** @inheritDoc */
