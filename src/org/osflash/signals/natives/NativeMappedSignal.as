@@ -139,10 +139,17 @@ package org.osflash.signals.natives
 			if (valueObjects.length == 1 && valueObjects[0] is _eventClass) 
 			{
 				var mappedData:Object = filterPropertyArguments(valueObjects[0] as Event)
-					
+				
 				if (mappedData is Array)
 				{
-					super.dispatch.apply(null, mappedData);
+					if (_valueClasses.length == 1 && _valueClasses[0] == Array)
+					{
+						super.dispatch.call(null, mappedData);
+					}
+					else
+					{
+						super.dispatch.apply(null, mappedData);
+					}
 				}
 				else
 				{
