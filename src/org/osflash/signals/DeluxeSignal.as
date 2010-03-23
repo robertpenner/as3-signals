@@ -64,27 +64,30 @@ package org.osflash.signals
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function, priority:int = 0):void
+		public function add(listener:Function, priority:int = 0):Function
 		{
 			registerListener(listener, false, priority);
+			return listener;
 		}
 		
 		/** @inheritDoc */
-		public function addOnce(listener:Function, priority:int = 0):void
+		public function addOnce(listener:Function, priority:int = 0):Function
 		{
 			registerListener(listener, true, priority);
+			return listener;
 		}
 		
 		/** @inheritDoc */
-		public function remove(listener:Function):void
+		public function remove(listener:Function):Function
 		{
-			if (indexOfListener(listener) == -1) return;
+			if (indexOfListener(listener) == -1) return listener;
 			if (listenersNeedCloning)
 			{
 				listenerBoxes = listenerBoxes.slice();
 				listenersNeedCloning = false;
 			}
 			listenerBoxes.splice(indexOfListener(listener), 1);
+			return listener;
 		}
 		
 		/** @inheritDoc */

@@ -80,5 +80,55 @@ package org.osflash.signals
 		{
 			fail("This listener should not be called.");
 		}
+		
+		
+		//////
+		[Test]
+		public function can_use_anonymous_listeners():void
+		{
+			var listeners:Array = [];
+			
+			for ( var i:int = 0; i < 100;  i++ )
+			{
+				listeners.push(completed.add(function():void{}));
+			}
+			
+			assertTrue("there should be 100 listeners", completed.numListeners == 100);
+			
+			for each( var fnt:Function in listeners )
+			{
+				completed.remove(fnt);
+			}
+			assertTrue("all anonymous listeners removed", completed.numListeners == 0);
+		}
+		
+		//////
+		[Test]
+		public function can_use_anonymous_listeners_in_addOnce():void
+		{
+			var listeners:Array = [];
+			
+			for ( var i:int = 0; i < 100;  i++ )
+			{
+				listeners.push(completed.addOnce(function():void{}));
+			}
+			
+			assertTrue("there should be 100 listeners", completed.numListeners == 100);
+			
+			for each( var fnt:Function in listeners )
+			{
+				completed.remove(fnt);
+			}
+			assertTrue("all anonymous listeners removed", completed.numListeners == 0);
+		}
+		
+		//////
+		[Test]
+		public function removed_listener_should_be_returned():void
+		{
+			var listener:Function = completed.add(function():void{});
+			
+			assertTrue("Listener is returned", listener == completed.remove(listener))
+		}
 	}
 }
