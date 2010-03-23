@@ -6,6 +6,8 @@ package org.osflash.signals.natives
 	/**
 	 * The NativeMappedSignal class is used to map/transform an event into another type of data 
 	 * that is sent along with the dispatch call as an argument.
+	 * 
+	 * This is used to form a border where flash native Events do not cross.
 	 */
 	public class NativeMappedSignal extends NativeRelaySignal
 	{
@@ -53,20 +55,69 @@ package org.osflash.signals.natives
 			setValueClasses(propertyTypes);
 		}
 		
-		public function mapTo(objectOrFunction:Object):NativeMappedSignal
+		/**
+		 * @param objectOrFunction This can either be a list of object literals or a function that returns list of objects. 
+		 * If the argument is a list of object literals <code>mapTo()</code>: then this list is passed along with the Signal dispatch.
+		 * 
+		 * Here's an example passing an object literal:
+		 * 
+		 * <code>
+		 * 	signal = new NativeMappedSignal(button, MouseEvent.CLICK, MouseEvent, String).mapTo("ping")
+		 * 	signal.add(function(arg:String):void { trace(arg) }) // prints "ping"
+		 * </code>
+		 * 
+		 * And an example passing a list of literals:
+		 * 
+		 * <code>
+		 * 	signal = new NativeMappedSignal(button, MouseEvent.CLICK, MouseEvent, String, int, Number).mapTo("ping", 3, 3.1415)
+		 * 	signal.add(function(arg1:String, arg2:int, arg3:Number):void { trace(arg1, arg2, arg3) }) // prints "ping", 3, 3.1415
+		 * </code>
+		 * 
+		 * If the argument is a function then it is called when the event this NativeMappedSignal is listeneing for is dispatched.
+		 * The function should return an Array or a single object. The data returned from the function is passed along as arguemnts in the Signal dispatch.
+		 * Lets look at some examples of mapping functions and the function that is called back:
+		 * 
+		 * <code>
+		 *  signal = new NativeMappedSignal(button, MouseEvent.CLICK, MouseEvent, String).mapTo(function():void { 
+		 * 		return "ping"
+		 * 	})
+		 * 	signal.add(function(arg:String):void { trace(arg) }) // prints "ping"
+		 * </code>
+		 * 
+		 * and here's an example using a list of arguments:
+		 * 
+		 * <code>
+		 *  signal = new NativeMappedSignal(button, MouseEvent.CLICK, MouseEvent, String, int, Number).mapTo(function():void { 
+		 * 		return ["ping", 3, 3.1415] 
+		 * 	})
+		 * 	signal.add(function(arg1:String, arg2:int, arg3:Number):void { trace(arg1, arg2, arg3) }) // prints "ping", 3, 3.1415
+		 * </code>
+		 * 
+		 * You can also state your wish to receive the native Event in th mapping function by simply including an argument of type Event:
+		 * 
+		 * <code>
+		 *  signal = new NativeMappedSignal(button, MouseEvent.CLICK, MouseEvent, Point).mapTo(function(event:MouseEvent):void { 
+		 * 		return new Point(event.localX, event.localY)
+		 * 	})
+		 * 	signal.add(function(arg:Point):void { trace(arg) }) // prints "(x=128, y=256)"
+		 * </code>
+		 * 
+		 * @return The NativeMappedSignal object this method was called on. This allows the Signal to be defined and mapped in one statement.
+		 */		
+		public function mapTo(...objectListOrFunction):NativeMappedSignal
 		{
-			if (objectOrFunction is Function)
+			if (objectListOrFunction.length == 1 && objectListOrFunction[0] is Function)
 			{
-				if (objectOrFunction.length > 1)
-				{	
-					throw new ArgumentError('Mapping function has ' + objectOrFunction.length + ' arguments but it needs zero or one of type Event');
-				}
+				_propertyFilterFunction = objectListOrFunction[0] as Function;
 				
-				_propertyFilterFunction = objectOrFunction as Function;
+				if (_propertyFilterFunction.length > 1)
+				{	
+					throw new ArgumentError('Mapping function has ' + _propertyFilterFunction.length + ' arguments but it needs zero or one of type Event');
+				}
 			}
 			else
 			{
-				_propertyFilterFunction = function ():Object { return objectOrFunction; };
+				_propertyFilterFunction = function ():Object { return objectListOrFunction; };
 			}
 			
 			return this
@@ -111,7 +162,7 @@ package org.osflash.signals.natives
 		}
 		
 		/**
-		 * For usage without extension, instances of <code>PropertyRelaySignal</code> that are dispatching any values ( <code>valueClasses.length > 0</code> ),
+		 * For usage without extension, instances of <code>NativeMappedSignal</code> that are dispatching any values ( <code>valueClasses.length > 0</code> ),
 		 * needs to be provided with a function with the follwing syntax:
 		 * <code>function [name] (event:[eventClass provided in constructor or flash.events.Event]):Array</code>
 		 * See <code>setPropertyFilterFunction</code> for more infos.
@@ -136,7 +187,7 @@ package org.osflash.signals.natives
 			{
 				if (propertyFilterFunctionWantsEvent)
 				{
-					return _propertyFilterFunction.call(null, eventFromTarget);
+					return _propertyFilterFunction(eventFromTarget);
 				}
 				else
 				{

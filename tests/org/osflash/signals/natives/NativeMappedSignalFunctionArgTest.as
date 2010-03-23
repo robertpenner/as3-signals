@@ -47,17 +47,28 @@ package org.osflash.signals.natives
 		{
 			signal.removeAll();
 			signal = null;
+			signalMappingToEventType.removeAll()
+			signalMappingToEventType = null
+			signalMappingToIncorrectEventType.removeAll()
+			signalMappingToIncorrectEventType = null
 		}
 		
 		public function testInstantiated():void
 		{
+			assertFalse('sprite has no click event listener to start', sprite.hasEventListener(EventType));
+			
 			assertTrue("NativeMappedSignal instantiated", signal is NativeMappedSignal);
 			assertTrue('implements ISignal', signal is ISignal);
-			assertFalse('sprite has no click event listener to start', sprite.hasEventListener(EventType));
 			assertSame('has only one value class', 1, signal.valueClasses.length);
 			assertSame('single value class is of type String', String, signal.valueClasses[0]);
+			
+			assertTrue("NativeMappedSignal instantiated", signalMappingToEventType is NativeMappedSignal);
+			assertTrue('implements ISignal', signalMappingToEventType is ISignal);
 			assertSame('has only one value class', 1, signalMappingToEventType.valueClasses.length);
 			assertSame('single value class is of type String', String, signalMappingToEventType.valueClasses[0]);
+			
+			assertTrue("NativeMappedSignal instantiated", signalMappingToIncorrectEventType is NativeMappedSignal);
+			assertTrue('implements ISignal', signalMappingToIncorrectEventType is ISignal);
 			assertSame('has only one value class', 1, signalMappingToIncorrectEventType.valueClasses.length);
 			assertSame('single value class is of type String', String, signalMappingToIncorrectEventType.valueClasses[0]);
 		}

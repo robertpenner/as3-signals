@@ -8,47 +8,75 @@ package org.osflash.signals.natives
 	import flash.events.MouseEvent;
 	
 	import org.osflash.signals.ISignal;
-	
+		
 	public class NativeMappedSignalObjectArgTest
 	{
-		private var signal:NativeMappedSignal;
+		private var signalSingle:NativeMappedSignal;
+		private var signalList:NativeMappedSignal;
 		private var sprite:Sprite;
 		private const EventType:String = MouseEvent.CLICK;
 		private const MappedObject:String = "mapped " + EventType;
+		private const MappedObject2:int = 3;
+		private const MappedObject3:Number = 3.1415;
 		
 		[Before]
 		public function setUp():void
 		{
 			sprite = new Sprite();
-			signal = new NativeMappedSignal(sprite, EventType, MouseEvent, String).mapTo(MappedObject)
+			signalSingle = new NativeMappedSignal(sprite, EventType, MouseEvent, String).mapTo(MappedObject);
+			signalList = new NativeMappedSignal(sprite, EventType, MouseEvent, String).mapTo(MappedObject, MappedObject2, MappedObject3);
 		}
 		
 		[After]
 		public function tearDown():void
 		{
-			signal.removeAll();
-			signal = null;
+			signalSingle.removeAll();
+			signalSingle = null;
+			signalList.removeAll()
+			signalList = null
 		}
 		
 		public function testInstantiated():void
 		{
-			assertTrue("NativeMappedSignal instantiated", signal is NativeMappedSignal);
-			assertTrue('implements ISignal', signal is ISignal);
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener(EventType));
-			assertSame('has only one value class', 1, signal.valueClasses.length);
-			assertSame('single value class is of type String', String, signal.valueClasses[0]);
+			
+			assertTrue("NativeMappedSignal instantiated", signalSingle is NativeMappedSignal);
+			assertTrue('implements ISignal', signalSingle is ISignal);
+			assertSame('has only one value class', 1, signalSingle.valueClasses.length);
+			assertSame('single value class is of type String', String, signalSingle.valueClasses[0]);
+			
+			assertTrue("NativeMappedSignal instantiated", signalList is NativeMappedSignal);
+			assertTrue('implements ISignal', signalList is ISignal);
+			assertSame('has three value classes', 3, signalList.valueClasses.length);
+			assertSame('first value class is of type String', String, signalList.valueClasses[0]);
+			assertSame('second value class is of type int', int, signalList.valueClasses[1]);
+			assertSame('third value class is of type Number', Number, signalList.valueClasses[2]);
 		}
 		//////
 		[Test]
-		public function signal_add_then_mapped_object_should_be_callback_argument():void
+		public function signal_single_add_then_mapped_object_should_be_callback_argument():void
 		{
-			signal.add( addAsync(checkMappedArgument, 10) );
+			signalSingle.add( addAsync(checkMappedArgumentSingle, 10) );
 			sprite.dispatchEvent(new MouseEvent(EventType));
 		}
 		
-		private function checkMappedArgument(argument:String):void
+		private function checkMappedArgumentSingle(argument:String):void
 		{
 			assertSame(MappedObject, argument);
+		}
+		//////
+		[Test]
+		public function signal_list_add_then_mapped_object_should_be_callback_argument():void
+		{
+			signalList.add( addAsync(checkMappedArgumentList, 10) );
+			sprite.dispatchEvent(new MouseEvent(EventType));
+		}
+		
+		private function checkMappedArgumentList(argument1:String, argument2:int, argument3:Number):void
+		{
+			assertSame(MappedObject, argument1);
+			assertSame(MappedObject2, argument2);
+			assertSame(MappedObject3, argument3);
 		}
 	}		
 }
