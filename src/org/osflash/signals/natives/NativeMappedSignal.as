@@ -4,14 +4,17 @@ package org.osflash.signals.natives
 	import flash.events.IEventDispatcher;
 	
 	/**
-	 * The NativeMappedSignal class is used to map/transform an event other forms of data. 
-	 * The transformed data is then sent along with the dispatched Signal.
-	 * This can be used to form a border where native flash Events do not cross. 
+	 * <p>
+	 * The NativeMappedSignal class is used to map/transform a native Event, 
+	 * relayed from an IEventDispatcher, into other forms of data, 
+	 * which are dispatched to all listeners.
+	 * </p>
+	 * <p>This can be used to form a border where native flash Events do not cross.</p>
 	 */
 	public class NativeMappedSignal extends NativeRelaySignal
 	{
 		/**
-		 * @default is initialized to flash.events.Event in constructor if omitted as parameter.
+		 * @default is initialized to flash.events.Event in constructor if omitted as parameter
 		 */
 		protected var _eventClass:Class;
 		
@@ -20,6 +23,9 @@ package org.osflash.signals.natives
 			return _eventClass;
 		}
 		
+		/**
+		 * @default is null, no mapping will occur 
+		 */		
 		private var _mappingFunction:Function = null;
 		
 		/*open for extension but closed for modifications*/
@@ -29,9 +35,9 @@ package org.osflash.signals.natives
 		}
 		
 		/**
-		 * Creates a new NativeMappedSignal instance to map events from an IEventDispatcher to another object.
-		 * For instance each time a certain button is clicked you can translate the MouseEvent.CLICKED into a
-		 * value class ButtonClicked or maybe send the name of the button.
+		 * Creates a new NativeMappedSignal instance to map/transform a native Event, 
+	 	 * relayed from an IEventDispatcher, into other forms of data, 
+	 	 * which are dispatched to all listeners.
 		 * 
 		 * @param	target	An object that implements the flash.events.IEventDispatcher interface.
 		 * @param	eventType The event string name that would normally be passed to IEventDispatcher.addEventListener().
@@ -46,52 +52,51 @@ package org.osflash.signals.natives
 		}
 		
 		/**
-		 * @param objectListOrFunction This can either be a list of object literals or a function that returns list of objects. 
-		 * If the argument is a list of object literals <code>mapTo()</code>: then this list is passed along with the Signal dispatch.
+		 * Sets the mapping function or literal object list.
+		 * If the argument is a list of object literals then this list is dispatched to listeners.
 		 * 
-		 * Here's an example passing an object literal:
-		 * 
-		 * <code>
-		 * 	signal = new NativeMappedSignal(button, MouseEvent.CLICK, MouseEvent, String).mapTo("ping")
-		 * 	signal.add(function(arg:String):void { trace(arg) }) // prints "ping"
-		 * </code>
+		 * <listing version="3.0">
+		 *  signal = new NativeMappedSignal(button, MouseEvent.CLICK, MouseEvent, String).mapTo("ping")
+		 *  signal.add(function(arg:String):void { trace(arg) }) // prints "ping"
+		 * </listing>
 		 * 
 		 * And an example passing a list of literals:
 		 * 
-		 * <code>
-		 * 	signal = new NativeMappedSignal(button, MouseEvent.CLICK, MouseEvent, String, int, Number).mapTo("ping", 3, 3.1415)
-		 * 	signal.add(function(arg1:String, arg2:int, arg3:Number):void { trace(arg1, arg2, arg3) }) // prints "ping", 3, 3.1415
-		 * </code>
+		 * <listing version="3.0">
+		 *  signal = new NativeMappedSignal(button, MouseEvent.CLICK, MouseEvent, String, int, Number).mapTo("ping", 3, 3.1415)
+		 *  signal.add(function(arg1:String, arg2:int, arg3:Number):void { trace(arg1, arg2, arg3) }) // prints "ping", 3, 3.1415
+		 * </listing>
 		 * 
 		 * If the argument is a function then it is called when the event this NativeMappedSignal is listeneing for is dispatched.
 		 * The function should return an Array or a single object. The data returned from the function is passed along as arguemnts in the Signal dispatch.
 		 * Lets look at some examples of mapping functions and the function that is called back:
 		 * 
-		 * <code>
+		 * <listing version="3.0">
 		 *  signal = new NativeMappedSignal(button, MouseEvent.CLICK, MouseEvent, String).mapTo(function():void { 
-		 * 		return "ping"
-		 * 	})
-		 * 	signal.add(function(arg:String):void { trace(arg) }) // prints "ping"
-		 * </code>
+		 *    return "ping"
+		 *  })
+		 *  signal.add(function(arg:String):void { trace(arg) }) // prints "ping"
+		 * </listing>
 		 * 
 		 * and here's an example using a list of arguments:
 		 * 
-		 * <code>
+		 * <listing version="3.0">
 		 *  signal = new NativeMappedSignal(button, MouseEvent.CLICK, MouseEvent, String, int, Number).mapTo(function():void { 
-		 * 		return ["ping", 3, 3.1415] 
-		 * 	})
+		 *    return ["ping", 3, 3.1415] 
+		 *  })
 		 * 	signal.add(function(arg1:String, arg2:int, arg3:Number):void { trace(arg1, arg2, arg3) }) // prints "ping", 3, 3.1415
-		 * </code>
+		 * </listing>
 		 * 
 		 * You can also state your wish to receive the native Event in th mapping function by simply including an argument of type Event:
 		 * 
-		 * <code>
+		 * <listing version="3.0">
 		 *  signal = new NativeMappedSignal(button, MouseEvent.CLICK, MouseEvent, Point).mapTo(function(event:MouseEvent):void { 
-		 * 		return new Point(event.localX, event.localY)
-		 * 	})
-		 * 	signal.add(function(arg:Point):void { trace(arg) }) // prints "(x=128, y=256)"
-		 * </code>
+		 *    return new Point(event.localX, event.localY)
+		 *  })
+		 *  signal.add(function(arg:Point):void { trace(arg) }) // prints "(x=128, y=256)"
+		 * </listing> 
 		 * 
+		 * @param objectListOrFunction This can either be a list of object literals or a function that returns list of objects. 
 		 * @return The NativeMappedSignal object this method was called on. This allows the Signal to be defined and mapped in one statement.
 		 */		
 		public function mapTo(...objectListOrFunction):NativeMappedSignal
@@ -126,13 +131,11 @@ package org.osflash.signals.natives
 		
 		/**
 		 * This is used as eventHandler for target or can be called directly with the parameters specified by valueClasses.
-		 * <p>If used as eventHandler this uses PropertyRelaySignal's (or an extensions) property-filter-mechanism to only
-		 * dispatch the required values from the Event instead of the event itself.</p>
+		 * <p>If used as eventHandler the data mapping system is used to supply the super.dispatch with alternative data to dispatch.</p>
 		 *
-		 * @see #filterPropertyArguments()
-		 * @see #setPropertyFilterFunction()
+		 * @see #mapEvent()
+		 * @see #mapTo()
 		 * @see org.osflash.signals.NativeRelaySignal#dispatch()
-		 *
 		 */
 		override public function dispatch (... valueObjects):void 
 		{
@@ -188,20 +191,20 @@ package org.osflash.signals.natives
 		
 		/**
 		 * For usage without extension, instances of <code>NativeMappedSignal</code> that are dispatching any values ( <code>valueClasses.length > 0</code> ),
-		 * needs to be provided with a function with the follwing syntax:
-		 * <code>function [name] (event:[eventClass provided in constructor or flash.events.Event]):Array</code>
-		 * See <code>setPropertyFilterFunction</code> for more infos.
-		 * Subcclasses could override this one instead of letting the environment set the propertyFilterFunction,
-		 * MAKE SURE to also override <code>setPropertyFilterFunction(...)</code> if it should not be allowed.
+		 * needs to be provided with a either a mapping function or a list of object literals.
+		 * See <code>mapTo</code> for more info.
+		 * 
+		 * Subcclasses could override this one instead of letting the environment set the mapTo,
+		 * MAKE SURE to also override <code>mapTo(...)</code> if it should not be allowed.
 		 *
 		 * @parameter eventFromTarget the event that was dispatched from target.
-		 * @return An object or Array of objects mapped from an Event. The mapping will be performed by the mapping function
-		 * if it is set (using mapTo). A list of object literals can also be supplied.
-		 * If no mapping function or object literals are supplied then an empty Array is returned.
-		 * if <code>valueClasses.length > 0</code> or throws an ArgumentError.
+		 * @return An object or Array of objects mapped from an Event. The mapping of Event to data will be performed by the mapping function
+		 * if it is set. A list of object literals can also be supplied in place of the mapping function.
+		 * If no mapping function or object literals are supplied then an empty Array is returned or
+		 * if <code>valueClasses.length > 0</code> an ArgumentError is thrown.
 		 *
 		 * @see #mapTo()
-		 * */
+		 */
 		protected function mapEvent (eventFromTarget:Event):Object 
 		{
 			if (propertyFilterFunctionExists) 
