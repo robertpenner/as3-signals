@@ -1,6 +1,6 @@
 package org.osflash.signals
 {
-    import asunit4.async.IAsync;
+    import asunit.framework.IAsync;
 	import asunit.asserts.*;
 
 	import org.osflash.signals.events.GenericEvent;
