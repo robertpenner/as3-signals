@@ -179,12 +179,12 @@ package org.osflash.signals.natives
 			return _valueClasses.length == 1 && _valueClasses[0] == Array;
 		}
 		
-		protected function get propertyFilterFunctionWantsEvent():Boolean
+		protected function get mappingFunctionWantsEvent():Boolean
 		{
 			return _mappingFunction.length == 1;
 		}
 		
-		protected function get propertyFilterFunctionExists():Boolean
+		protected function get mappingFunctionExists():Boolean
 		{
 			return _mappingFunction != null
 		}
@@ -207,9 +207,9 @@ package org.osflash.signals.natives
 		 */
 		protected function mapEvent (eventFromTarget:Event):Object 
 		{
-			if (propertyFilterFunctionExists) 
+			if (mappingFunctionExists) 
 			{
-				if (propertyFilterFunctionWantsEvent)
+				if (mappingFunctionWantsEvent)
 				{
 					return _mappingFunction(eventFromTarget);
 				}
@@ -224,7 +224,7 @@ package org.osflash.signals.natives
 			}
 			
 			throw new ArgumentError("There are valueClasses set to be dispatched <" + valueClasses 
-				+ "> but propertyFilterFunction is null.");
+				+ "> but mappingFunction is null.");
 		}
 	}
 }
