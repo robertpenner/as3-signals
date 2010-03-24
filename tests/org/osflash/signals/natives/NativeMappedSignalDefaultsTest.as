@@ -7,13 +7,12 @@ package org.osflash.signals.natives
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	
-	import org.osflash.signals.ISignal;
-	
 	public class NativeMappedSignalDefaultsTest
 	{
 		private var signalDefault:NativeMappedSignal;
 		private var signalDefaultWithMappingObject:NativeMappedSignal;
 		private var signalDefaultWithMappingFunction:NativeMappedSignal;
+		private var signalWithValueClassesWithoutMappingFunction:NativeMappedSignal
 		private var sprite:Sprite;
 		private const EventType:String = MouseEvent.CLICK;
 		private const MappedObject:String = "mapped " + EventType;
@@ -29,6 +28,7 @@ package org.osflash.signals.natives
 					return MappedObject;
 				}
 			);
+			signalWithValueClassesWithoutMappingFunction = new NativeMappedSignal(sprite, EventType, MouseEvent, String)
 		}
 		
 		[After]
@@ -40,27 +40,10 @@ package org.osflash.signals.natives
 			signalDefaultWithMappingObject = null
 			signalDefaultWithMappingFunction.removeAll()
 			signalDefaultWithMappingFunction = null
+			signalWithValueClassesWithoutMappingFunction.removeAll()
+			signalWithValueClassesWithoutMappingFunction = null
 		}
 		
-		public function testInstantiated():void
-		{
-			assertFalse('sprite has no click event listener to start', sprite.hasEventListener(EventType));
-			
-			assertTrue("NativeMappedSignal instantiated", signalDefault is NativeMappedSignal);
-			assertTrue('implements ISignal', signalDefault is ISignal);
-			assertSame('has only one value class', 1, signalDefault.valueClasses.length);
-			assertSame('single value class is of type String', String, signalDefault.valueClasses[0]);
-			
-			assertTrue("NativeMappedSignal instantiated", signalDefaultWithMappingObject is NativeMappedSignal);
-			assertTrue('implements ISignal', signalDefaultWithMappingObject is ISignal);
-			assertSame('has only one value class', 1, signalDefaultWithMappingObject.valueClasses.length);
-			assertSame('single value class is of type String', String, signalDefaultWithMappingObject.valueClasses[0]);
-			
-			assertTrue("NativeMappedSignal instantiated", signalDefaultWithMappingFunction is NativeMappedSignal);
-			assertTrue('implements ISignal', signalDefaultWithMappingFunction is ISignal);
-			assertSame('has only one value class', 1, signalDefaultWithMappingFunction.valueClasses.length);
-			assertSame('single value class is of type String', signalDefaultWithMappingFunction, signalDefault.valueClasses[0]);
-		}
 		//////
 		[Test]
 		public function signal_default_add_then_emptyCallback_should_be_called():void
@@ -83,6 +66,12 @@ package org.osflash.signals.natives
 		{
 			signalDefaultWithMappingFunction.add( addAsync(emptyCallback, 10) );
 			sprite.dispatchEvent(new MouseEvent(EventType));
+		}
+		
+		[Test(expects="ArgumentError")]
+		public function signal_with_value_classes_without_mapping_function():void
+		{
+			signalWithValueClassesWithoutMappingFunction.dispatch(new MouseEvent(EventType))
 		}
 	}		
 }
