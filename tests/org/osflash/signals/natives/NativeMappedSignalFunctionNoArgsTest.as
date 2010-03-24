@@ -7,13 +7,13 @@ package org.osflash.signals.natives
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	
+	import org.osflash.signals.IDeluxeSignal;
 	import org.osflash.signals.ISignal;
 	
 	public class NativeMappedSignalFunctionNoArgsTest
 	{
 		private var signalSingle:NativeMappedSignal;
 		private var signalList:NativeMappedSignal;
-		private var signalListWrongValueClasses:NativeMappedSignal;
 		private var sprite:Sprite;
 		private const EventType:String = MouseEvent.CLICK;
 		private const MappedObject:String = "mapped " + EventType;
@@ -36,13 +36,6 @@ package org.osflash.signals.natives
 					return [MappedObject, MappedObject2, MappedObject3]
 				}
 			);
-			
-			signalListWrongValueClasses = new NativeMappedSignal(sprite, EventType, MouseEvent, String, int).mapTo(
-				function ():Array
-				{
-					return [MappedObject, MappedObject2, MappedObject3]
-				}
-			);
 		}
 		
 		[After]
@@ -54,17 +47,18 @@ package org.osflash.signals.natives
 			signalList = null
 		}
 		
+		[Test]
 		public function testInstantiated():void
 		{
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener(EventType));
 			
 			assertTrue("NativeMappedSignal instantiated", signalSingle is NativeMappedSignal);
-			assertTrue('implements ISignal', signalSingle is ISignal);
+			assertTrue('implements IDeluxeSignal', signalSingle is IDeluxeSignal);
 			assertSame('has only one value class', 1, signalSingle.valueClasses.length);
 			assertSame('single value class is of type String', String, signalSingle.valueClasses[0]);
 			
 			assertTrue("NativeMappedSignal instantiated", signalList is NativeMappedSignal);
-			assertTrue('implements ISignal', signalList is ISignal);
+			assertTrue('implements IDeluxeSignal', signalList is IDeluxeSignal);
 			assertSame('has three value classes', 3, signalList.valueClasses.length);
 			assertSame('first value class is of type String', String, signalList.valueClasses[0]);
 			assertSame('second value class is of type int', int, signalList.valueClasses[1]);
@@ -96,13 +90,5 @@ package org.osflash.signals.natives
 			assertSame(MappedObject2, argument2);
 			assertSame(MappedObject3, argument3);
 		}
-		
-		//////
-//		[Test(expects="ArgumentError")]
-//		public function signal_list_wrong_value_classes_add_then_mapped_object_should_throw_ArgumentError():void
-//		{
-//			signalListWrongValueClasses.add( addAsync(checkMappedArgumentList, 10) );
-//			signalListWrongValueClasses.dispatch.apply(null, [MappedObject, MappedObject2, MappedObject3])
-//		}
 	}		
 }

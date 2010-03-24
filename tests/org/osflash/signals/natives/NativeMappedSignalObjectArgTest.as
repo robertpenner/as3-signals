@@ -7,7 +7,7 @@ package org.osflash.signals.natives
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	
-	import org.osflash.signals.ISignal;
+	import org.osflash.signals.IDeluxeSignal;
 		
 	public class NativeMappedSignalObjectArgTest
 	{
@@ -24,7 +24,7 @@ package org.osflash.signals.natives
 		{
 			sprite = new Sprite();
 			signalSingle = new NativeMappedSignal(sprite, EventType, MouseEvent, String).mapTo(MappedObject);
-			signalList = new NativeMappedSignal(sprite, EventType, MouseEvent, String).mapTo(MappedObject, MappedObject2, MappedObject3);
+			signalList = new NativeMappedSignal(sprite, EventType, MouseEvent, String, int, Number).mapTo(MappedObject, MappedObject2, MappedObject3);
 		}
 		
 		[After]
@@ -36,17 +36,18 @@ package org.osflash.signals.natives
 			signalList = null
 		}
 		
+		[Test]
 		public function testInstantiated():void
 		{
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener(EventType));
 			
 			assertTrue("NativeMappedSignal instantiated", signalSingle is NativeMappedSignal);
-			assertTrue('implements ISignal', signalSingle is ISignal);
+			assertTrue('implements ISignal', signalSingle is IDeluxeSignal);
 			assertSame('has only one value class', 1, signalSingle.valueClasses.length);
 			assertSame('single value class is of type String', String, signalSingle.valueClasses[0]);
 			
 			assertTrue("NativeMappedSignal instantiated", signalList is NativeMappedSignal);
-			assertTrue('implements ISignal', signalList is ISignal);
+			assertTrue('implements IDeluxeSignal', signalList is IDeluxeSignal);
 			assertSame('has three value classes', 3, signalList.valueClasses.length);
 			assertSame('first value class is of type String', String, signalList.valueClasses[0]);
 			assertSame('second value class is of type int', int, signalList.valueClasses[1]);

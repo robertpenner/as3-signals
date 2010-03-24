@@ -7,7 +7,7 @@ package org.osflash.signals.natives
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 	
-	import org.osflash.signals.ISignal;
+	import org.osflash.signals.IDeluxeSignal;
 	
 	public class NativeMappedSignalBoundaryUseTest
 	{
@@ -44,24 +44,23 @@ package org.osflash.signals.natives
 			signalPassArrayThroughFunction = null
 		}
 		
+		[Test]
 		public function testInstantiated():void
 		{
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener(EventType));
 			
 			assertTrue("NativeMappedSignal instantiated", signalArrayOfFunctions is NativeMappedSignal);
-			assertTrue('implements ISignal', signalArrayOfFunctions is ISignal);
-			assertSame('has only one value class', 1, signalArrayOfFunctions.valueClasses.length);
-			assertSame('single value class is of type String', String, signalArrayOfFunctions.valueClasses[0]);
+			assertTrue('implements ISignal', signalArrayOfFunctions is IDeluxeSignal);
+			assertSame('has no value classes', 0, signalArrayOfFunctions.valueClasses.length);
 			
 			assertTrue("NativeMappedSignal instantiated", signalPassArray is NativeMappedSignal);
-			assertTrue('implements ISignal', signalPassArray is ISignal);
-			assertSame('has only one value class', 1, signalPassArray.valueClasses.length);
-			assertSame('single value class is of type String', String, signalPassArray.valueClasses[0]);
+			assertTrue('implements IDeluxeSignal', signalPassArray is IDeluxeSignal);
+			assertSame('has no value classed', 0, signalPassArray.valueClasses.length);
 			
 			assertTrue("NativeMappedSignal instantiated", signalPassArrayThroughFunction is NativeMappedSignal);
-			assertTrue('implements ISignal', signalPassArrayThroughFunction is ISignal);
+			assertTrue('implements IDeluxeSignal', signalPassArrayThroughFunction is IDeluxeSignal);
 			assertSame('has only one value class', 1, signalPassArrayThroughFunction.valueClasses.length);
-			assertSame('single value class is of type String', String, signalPassArrayThroughFunction.valueClasses[0]);
+			assertSame('single value class is of type Array', Array, signalPassArrayThroughFunction.valueClasses[0]);
 		}
 		//////
 		[Test]

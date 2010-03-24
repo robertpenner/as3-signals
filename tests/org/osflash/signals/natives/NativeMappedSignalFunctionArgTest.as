@@ -8,6 +8,7 @@ package org.osflash.signals.natives
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
+	import org.osflash.signals.IDeluxeSignal;
 	import org.osflash.signals.ISignal;
 	
 	public class NativeMappedSignalFunctionArgTest
@@ -15,6 +16,7 @@ package org.osflash.signals.natives
 		private var signal:NativeMappedSignal;
 		private var signalMappingToEventType:NativeMappedSignal;
 		private var signalMappingToIncorrectEventType:NativeMappedSignal;
+		private var signalMappingToVoid:NativeMappedSignal;
 		private var sprite:Sprite;
 		private const EventType:String = MouseEvent.CLICK;
 		private const MappedObject:String = "mapped " + EventType;
@@ -40,6 +42,8 @@ package org.osflash.signals.natives
 					return event.delta
 				}
 			);
+			
+			signalMappingToVoid = new NativeMappedSignal(sprite, EventType).mapTo(function ():void {});
 		}
 		
 		[After]
@@ -51,26 +55,33 @@ package org.osflash.signals.natives
 			signalMappingToEventType = null
 			signalMappingToIncorrectEventType.removeAll()
 			signalMappingToIncorrectEventType = null
+			signalMappingToVoid.removeAll()
+			signalMappingToVoid = null
 		}
 		
+		[Test]
 		public function testInstantiated():void
 		{
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener(EventType));
 			
 			assertTrue("NativeMappedSignal instantiated", signal is NativeMappedSignal);
-			assertTrue('implements ISignal', signal is ISignal);
+			assertTrue('implements IDeluxeSignal', signal is IDeluxeSignal);
 			assertSame('has only one value class', 1, signal.valueClasses.length);
 			assertSame('single value class is of type String', String, signal.valueClasses[0]);
 			
 			assertTrue("NativeMappedSignal instantiated", signalMappingToEventType is NativeMappedSignal);
-			assertTrue('implements ISignal', signalMappingToEventType is ISignal);
+			assertTrue('implements IDeluxeSignal', signalMappingToEventType is IDeluxeSignal);
 			assertSame('has only one value class', 1, signalMappingToEventType.valueClasses.length);
 			assertSame('single value class is of type String', String, signalMappingToEventType.valueClasses[0]);
 			
 			assertTrue("NativeMappedSignal instantiated", signalMappingToIncorrectEventType is NativeMappedSignal);
-			assertTrue('implements ISignal', signalMappingToIncorrectEventType is ISignal);
+			assertTrue('implements IDeluxeSignal', signalMappingToIncorrectEventType is IDeluxeSignal);
 			assertSame('has only one value class', 1, signalMappingToIncorrectEventType.valueClasses.length);
 			assertSame('single value class is of type String', String, signalMappingToIncorrectEventType.valueClasses[0]);
+			
+			assertTrue("NativeMappedSignal instantiated", signalMappingToVoid is NativeMappedSignal);
+			assertTrue('implements IDeluxeSignal', signalMappingToVoid is IDeluxeSignal);
+			assertSame('has no value classes', 0, signalMappingToVoid.valueClasses.length);
 		}
 		
 		private function dispatchTestEvent():void
@@ -126,5 +137,12 @@ package org.osflash.signals.natives
 		}
 		
 		private function emptyHandler(argument:String):void {}
+		
+		[Test]
+		public function mapping_to_void():void
+		{
+			signalMappingToVoid.add(addAsync(emptyHandler, 10))
+			dispatchTestEvent()
+		}
 	}		
 }
