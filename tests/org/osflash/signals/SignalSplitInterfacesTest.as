@@ -5,7 +5,7 @@ package org.osflash.signals
 
 	public class SignalSplitInterfacesTest
 	{	
-	    [Async]
+	    [Inject]
 	    public var async:IAsync;
 	    
 		// Notice the use of the ISignal interface, rather than Signal.

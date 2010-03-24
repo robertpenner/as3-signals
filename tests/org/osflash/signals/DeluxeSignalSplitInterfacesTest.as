@@ -5,7 +5,7 @@ package org.osflash.signals
 
 	public class DeluxeSignalSplitInterfacesTest
 	{	
-	    [Async]
+	    [Inject]
 	    public var async:IAsync;
 	    
 		// Notice the use of the smaller IListeners interface, rather than ISignal.

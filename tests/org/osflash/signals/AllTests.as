@@ -7,8 +7,8 @@ package org.osflash.signals
 	[Suite]
 	public class AllTests
 	{
-		public var _AmbiguousRelationshipInNativeSignalTest:AmbiguousRelationshipInNativeSignalTest;
 		public var _AmbiguousRelationshipTest:AmbiguousRelationshipTest;
+		public var _AmbiguousRelationshipInNativeSignalTest:AmbiguousRelationshipInNativeSignalTest;
 		public var _GenericEventTest:GenericEventTest;
 		public var _NativeRelaySignalTest:NativeRelaySignalTest;
 		public var _NativeSignalTest:NativeSignalTest;

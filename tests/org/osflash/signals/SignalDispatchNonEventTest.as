@@ -5,7 +5,7 @@ package org.osflash.signals
 
 	public class SignalDispatchNonEventTest
 	{	
-	    [Async]
+	    [Inject]
 	    public var async:IAsync;
 	    
 		public var completed:Signal;

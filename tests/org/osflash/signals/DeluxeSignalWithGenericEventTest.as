@@ -10,7 +10,7 @@ package org.osflash.signals
 
 	public class DeluxeSignalWithGenericEventTest
 	{	
-	    [Async]
+	    [Inject]
 	    public var async:IAsync;
 	    
 		protected var completed:DeluxeSignal;

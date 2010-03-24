@@ -53,25 +53,28 @@ package org.osflash.signals.natives
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function, priority:int = 0):void
+		public function add(listener:Function, priority:int = 0):Function
 		{
 			registerListener(listener, false, priority);
+			return listener;
 		}
 		
 		/** @inheritDoc */
-		public function addOnce(listener:Function, priority:int = 0):void
+		public function addOnce(listener:Function, priority:int = 0):Function
 		{
 			registerListener(listener, true, priority);
+			return listener;
 		}
 		
 		/** @inheritDoc */
-		public function remove(listener:Function):void
+		public function remove(listener:Function):Function
 		{
 			var listenerIndex:int = indexOfListener(listener);
-			if (listenerIndex == -1) return;
+			if (listenerIndex == -1) return listener;
 			var listenerBox:Object = listenerBoxes.splice(listenerIndex, 1)[0];
 			// For once listeners, execute is a wrapper function around the listener.
 			_target.removeEventListener(_eventType, listenerBox.execute);
+			return listener
 		}
 		
 		/** @inheritDoc */

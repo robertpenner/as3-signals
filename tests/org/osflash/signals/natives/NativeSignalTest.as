@@ -12,7 +12,7 @@ package org.osflash.signals.natives
 
 	public class NativeSignalTest
 	{	
-	    [Async]
+	    [Inject]
 	    public var async:IAsync;
 	    
 		private var clicked:NativeSignal;
@@ -239,6 +239,56 @@ package org.osflash.signals.natives
 			clicked.addOnce( onClickAddOnceAgain );
 			
 			assertEquals(1, clicked.numListeners);
+		}
+		
+		
+		//////
+		[Test]
+		public function can_use_anonymous_listeners():void
+		{
+			var listeners:Array = [];
+			
+			for ( var i:int = 0; i < 100;  i++ )
+			{
+				listeners.push(clicked.add(function(e:MouseEvent):void{}));
+			}
+			
+			assertTrue("there should be 100 listeners", clicked.numListeners == 100);
+			
+			for each( var fnt:Function in listeners )
+			{
+				clicked.remove(fnt);
+			}
+			assertTrue("all anonymous listeners removed", clicked.numListeners == 0);
+		}
+		
+		//////
+		[Test]
+		public function can_use_anonymous_listeners_in_addOnce():void
+		{
+			var listeners:Array = [];
+			
+			for ( var i:int = 0; i < 100;  i++ )
+			{
+				listeners.push(clicked.addOnce(function(e:MouseEvent):void{}));
+			}
+			
+			assertTrue("there should be 100 listeners", clicked.numListeners == 100);
+			
+			for each( var fnt:Function in listeners )
+			{
+				clicked.remove(fnt);
+			}
+			assertTrue("all anonymous listeners removed", clicked.numListeners == 0);
+		}
+		
+		//////
+		[Test]
+		public function removed_listener_should_be_returned():void
+		{
+			var listener:Function = clicked.add(function(e:MouseEvent):void{});
+			
+			assertTrue("Listener is returned", listener == clicked.remove(listener))
 		}
 		
 	}
