@@ -4,10 +4,9 @@ package org.osflash.signals.natives
 	import flash.events.IEventDispatcher;
 	
 	/**
-	 * The NativeMappedSignal class is used to map/transform an event into another type of data 
-	 * that is sent along with the dispatch call as an argument.
-	 * 
-	 * This is used to form a border where flash native Events do not cross.
+	 * The NativeMappedSignal class is used to map/transform an event other forms of data. 
+	 * The transformed data is then sent along with the dispatched Signal.
+	 * This can be used to form a border where native flash Events do not cross. 
 	 */
 	public class NativeMappedSignal extends NativeRelaySignal
 	{
@@ -16,15 +15,17 @@ package org.osflash.signals.natives
 		 */
 		protected var _eventClass:Class;
 		
-		public function get eventClass ():Class {
+		public function get eventClass ():Class 
+		{
 			return _eventClass;
 		}
 		
-		private var _propertyFilterFunction:Function = null;
+		private var _mappingFunction:Function = null;
 		
 		/*open for extension but closed for modifications*/
-		protected function get propertyFilterFunction ():Function {
-			return _propertyFilterFunction;
+		protected function get mappingFunction ():Function 
+		{
+			return _mappingFunction;
 		}
 		
 		/**
@@ -34,29 +35,18 @@ package org.osflash.signals.natives
 		 * 
 		 * @param	target	An object that implements the flash.events.IEventDispatcher interface.
 		 * @param	eventType The event string name that would normally be passed to IEventDispatcher.addEventListener().
-		 * @param 	valueClass The Class that the eventType will be mapped to
-		 * @param	mapToObjectOrFunction an object or a Function that should return an object of the same type as the valueClass argument. 
-		 * If mapTo is an Object then this is what will be sent along with the signal as a value class. 
-		 * If mapTo is a function the Object returned from the function is passed along as the argument with the signal. 
-		 * If the mapping function can have zero or one argument. In the case of a single argument it should be of type Event. 
-		 * If the mapping function does not need to know about the event then implement it with zero arguments are no Event will passed to it.  
+		 * @param 	eventClass An optional class reference that enables an event type check in dispatch().
+		 * @param	mappedTypes an optional list of types that enables the checking of the types mapped from an Event. 
 		 */
-		public function NativeMappedSignal(target:IEventDispatcher, eventType:String, eventClass:Class=null, ... propertyTypes)
+		public function NativeMappedSignal(target:IEventDispatcher, eventType:String, eventClass:Class=null, ... mappedTypes)
 		{
-			/*We keep this class but it is not our valueClass.*/
 			_eventClass = eventClass || Event;
-			
-			/*I want to use the super-contructor,
-			but the implicit call of setValueClasses(Event) will only be temporarily,
-			instead we want the valueClasses given as parameter in this constructor*/
 			super(target, eventType);
-			
-			/*if valueClasses are not provided this will call the listeners with no parameter*/
-			setValueClasses(propertyTypes);
+			setValueClasses(mappedTypes);
 		}
 		
 		/**
-		 * @param objectOrFunction This can either be a list of object literals or a function that returns list of objects. 
+		 * @param objectListOrFunction This can either be a list of object literals or a function that returns list of objects. 
 		 * If the argument is a list of object literals <code>mapTo()</code>: then this list is passed along with the Signal dispatch.
 		 * 
 		 * Here's an example passing an object literal:
@@ -106,21 +96,32 @@ package org.osflash.signals.natives
 		 */		
 		public function mapTo(...objectListOrFunction):NativeMappedSignal
 		{
-			if (objectListOrFunction.length == 1 && objectListOrFunction[0] is Function)
+			if (isArgumentListAFunction(objectListOrFunction))
 			{
-				_propertyFilterFunction = objectListOrFunction[0] as Function;
+				_mappingFunction = objectListOrFunction[0] as Function;
 				
-				if (_propertyFilterFunction.length > 1)
+				if (hasFunctionMoreThanOneArgument(_mappingFunction))
 				{	
-					throw new ArgumentError('Mapping function has ' + _propertyFilterFunction.length + ' arguments but it needs zero or one of type Event');
+					throw new ArgumentError('Mapping function has ' + _mappingFunction.length 
+						+ ' arguments but it needs zero or one of type Event');
 				}
 			}
 			else
 			{
-				_propertyFilterFunction = function ():Object { return objectListOrFunction; };
+				_mappingFunction = function ():Object { return objectListOrFunction; };
 			}
 			
 			return this
+		}
+		
+		private function isArgumentListAFunction(argList:Array):Boolean
+		{
+			return argList.length == 1 && argList[0] is Function
+		}
+		
+		private function hasFunctionMoreThanOneArgument(f:Function):Boolean
+		{
+			return f.length > 1
 		}
 		
 		/**
@@ -135,26 +136,10 @@ package org.osflash.signals.natives
 		 */
 		override public function dispatch (... valueObjects):void 
 		{
-			/*_target will call this with the dispatched Event as the only parameter*/
-			if (valueObjects.length == 1 && valueObjects[0] is _eventClass) 
+			if (areValueObjectValidForMapping(valueObjects)) 
 			{
-				var mappedData:Object = filterPropertyArguments(valueObjects[0] as Event)
-				
-				if (mappedData is Array)
-				{
-					if (_valueClasses.length == 1 && _valueClasses[0] == Array)
-					{
-						super.dispatch.call(null, mappedData);
-					}
-					else
-					{
-						super.dispatch.apply(null, mappedData);
-					}
-				}
-				else
-				{
-					super.dispatch.call(null, mappedData);
-				}
+				var mappedData:Object = mapEvent(valueObjects[0] as Event)
+				dispatchMappedData(mappedData)
 			} 
 			else 
 			{
@@ -162,10 +147,43 @@ package org.osflash.signals.natives
 			}
 		}
 
+		private function areValueObjectValidForMapping(valueObjects:Array):Boolean
+		{
+			return valueObjects.length == 1 && valueObjects[0] is _eventClass;
+		}
+		
+		private function dispatchMappedData(mappedData:Object):void
+		{
+			if (mappedData is Array)
+			{
+				if (shouldArrayBePassedWithoutUnrolling)
+				{
+					super.dispatch.call(null, mappedData);
+				}
+				else
+				{
+					super.dispatch.apply(null, mappedData);
+				}
+			}
+			else
+			{
+				super.dispatch.call(null, mappedData);
+			}
+		}
+		
+		private function get shouldArrayBePassedWithoutUnrolling():Boolean
+		{
+			return _valueClasses.length == 1 && _valueClasses[0] == Array;
+		}
 		
 		protected function get propertyFilterFunctionWantsEvent():Boolean
 		{
-			return _propertyFilterFunction.length == 1;
+			return _mappingFunction.length == 1;
+		}
+		
+		protected function get propertyFilterFunctionExists():Boolean
+		{
+			return _mappingFunction != null
 		}
 		
 		/**
@@ -177,28 +195,24 @@ package org.osflash.signals.natives
 		 * MAKE SURE to also override <code>setPropertyFilterFunction(...)</code> if it should not be allowed.
 		 *
 		 * @parameter eventFromTarget the event that was dispatched from target.
-		 * @return An array with value gathered from <code>eventFromTarget</code>.
-		 * 				The default implemetation uses <code>propertyFilterFunction</code> if it is set.
-		 * 				Otherwise it returns [] if <code>valueClasses.length > 0</code> or throws an ArgumentError.
+		 * @return An object or Array of objects mapped from an Event. The mapping will be performed by the mapping function
+		 * if it is set (using mapTo). A list of object literals can also be supplied.
+		 * If no mapping function or object literals are supplied then an empty Array is returned.
+		 * if <code>valueClasses.length > 0</code> or throws an ArgumentError.
 		 *
-		 *
-		 * @see #setPropertyFilterFunction()
-		 *
-		 * @internal
-		 * This function gets called by dispatch to recieve the needed property-values from <code>eventFromTarget</code>.
-		 * It has to return an array that matches length and types of valueClasses, wich is checked by super.dispatch.apply(null,[returned array]) afterwards.
+		 * @see #mapTo()
 		 * */
-		protected function filterPropertyArguments (eventFromTarget:Event):Object 
+		protected function mapEvent (eventFromTarget:Event):Object 
 		{
-			if (_propertyFilterFunction != null) 
+			if (propertyFilterFunctionExists) 
 			{
 				if (propertyFilterFunctionWantsEvent)
 				{
-					return _propertyFilterFunction(eventFromTarget);
+					return _mappingFunction(eventFromTarget);
 				}
 				else
 				{
-					return _propertyFilterFunction();
+					return _mappingFunction();
 				}
 			} 
 			else if (valueClasses.length == 0) 
@@ -206,7 +220,8 @@ package org.osflash.signals.natives
 				return [];
 			}
 			
-			throw new ArgumentError("There are valueClasses set to be dispatched <" + valueClasses + "> but propertyFilterFunction is null.");
+			throw new ArgumentError("There are valueClasses set to be dispatched <" + valueClasses 
+				+ "> but propertyFilterFunction is null.");
 		}
 	}
 }
