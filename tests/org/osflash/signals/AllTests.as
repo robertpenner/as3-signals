@@ -24,7 +24,7 @@ package org.osflash.signals
 		public var _DeluxeSignalWithCustomEventTest:DeluxeSignalWithCustomEventTest;
 		public var _DeluxeSignalWithGenericEventTest:DeluxeSignalWithGenericEventTest;
 		
-		public var _SignalDispatchExtraArgsTest:SignalDispatchExtraArgsTest;
+		public var _SignalDispatchExtraArgsTest:SignalDispatchArgsTest;
 		public var _SignalDispatchNoArgsTest:SignalDispatchNoArgsTest;
 		public var _SignalDispatchNonEventTest:SignalDispatchNonEventTest;
 		public var _SignalSplitInterfacesTest:SignalSplitInterfacesTest;

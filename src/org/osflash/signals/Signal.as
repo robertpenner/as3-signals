@@ -93,8 +93,13 @@ package org.osflash.signals
 			// Validate value objects against pre-defined value classes.
 			var valueObject:Object;
 			var valueClass:Class;
-			var len:int = _valueClasses.length;
-			for (var i:int = 0; i < len; i++)
+			var numValueClasses:int = _valueClasses.length;
+			if (valueObjects.length < numValueClasses)
+			{
+				throw new ArgumentError('Incorrect number of arguments. Expected at least ' + numValueClasses + ' but received ' + valueObjects.length + '.');
+			}
+			
+			for (var i:int = 0; i < numValueClasses; i++)
 			{
 				// null is allowed to pass through.
 				if ( (valueObject = valueObjects[i]) === null
