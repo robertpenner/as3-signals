@@ -1,8 +1,7 @@
 package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
-	
-	import asunit4.async.addAsync;
+	import asunit.framework.IAsync;
 	
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
@@ -11,6 +10,9 @@ package org.osflash.signals.natives
 	
 	public class NativeMappedSignalBoundaryUseTest
 	{
+	    [Inject]
+	    public var async:IAsync;
+		
 		private var signalArrayOfFunctions:NativeMappedSignal;
 		private var signalPassArray:NativeMappedSignal;
 		private var signalPassArrayThroughFunction:NativeMappedSignal;
@@ -66,11 +68,11 @@ package org.osflash.signals.natives
 		[Test]
 		public function signal_array_of_functions_add_then_callback_called():void
 		{
-			signalArrayOfFunctions.add( addAsync(callbackTwoFunctions, 10) );
+			signalArrayOfFunctions.add( async.add(callbackTwoFunctions, 10) );
 			sprite.dispatchEvent(new MouseEvent(EventType));
 		}
 		
-		private function callbackTwoFunctions(argFunc1:Function, argFunc2:Function):void 
+		private function callbackTwoFunctions(argFunc1:Function, argFunc2:Function):void
 		{
 			assertSame(func1, argFunc1)
 			assertSame(func2, argFunc2)
@@ -79,11 +81,11 @@ package org.osflash.signals.natives
 		[Test]
 		public function signal_pass_array_add_then_array_callback_should_be_called():void
 		{
-			signalPassArray.add( addAsync(callbackArrayAsArg, 10) );
+			signalPassArray.add( async.add(callbackArrayAsArg, 10) );
 			sprite.dispatchEvent(new MouseEvent(EventType));
 		}
 		
-		private function callbackArrayAsArg(argArray:Array):void 
+		private function callbackArrayAsArg(argArray:Array):void
 		{
 			assertSame(MappedArray, argArray)
 		}
@@ -91,8 +93,8 @@ package org.osflash.signals.natives
 		[Test]
 		public function signal_pass_array_through_function_add_then_array_callback_should_be_called():void
 		{
-			signalPassArrayThroughFunction.add( addAsync(callbackArrayAsArg, 10) );
+			signalPassArrayThroughFunction.add( async.add(callbackArrayAsArg, 10) );
 			sprite.dispatchEvent(new MouseEvent(EventType));
 		}
-	}		
+	}
 }

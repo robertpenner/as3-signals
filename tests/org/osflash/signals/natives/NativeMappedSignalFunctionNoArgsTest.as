@@ -1,8 +1,7 @@
 package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
-	
-	import asunit4.async.addAsync;
+	import asunit.framework.IAsync;
 	
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
@@ -12,6 +11,9 @@ package org.osflash.signals.natives
 	
 	public class NativeMappedSignalFunctionNoArgsTest
 	{
+	    [Inject]
+	    public var async:IAsync;
+		
 		private var signalSingle:NativeMappedSignal;
 		private var signalList:NativeMappedSignal;
 		private var sprite:Sprite;
@@ -68,7 +70,7 @@ package org.osflash.signals.natives
 		[Test]
 		public function signal_add_then_mapped_object_should_be_callback_argument():void
 		{
-			signalSingle.add( addAsync(checkMappedArgumentSingle, 10) );
+			signalSingle.add( async.add(checkMappedArgumentSingle, 10) );
 			sprite.dispatchEvent(new MouseEvent(EventType));
 		}
 		
@@ -80,7 +82,7 @@ package org.osflash.signals.natives
 		[Test]
 		public function signal_list_add_then_mapped_object_should_be_callback_argument():void
 		{
-			signalList.add( addAsync(checkMappedArgumentList, 10) );
+			signalList.add( async.add(checkMappedArgumentList, 10) );
 			sprite.dispatchEvent(new MouseEvent(EventType));
 		}
 		
@@ -90,5 +92,5 @@ package org.osflash.signals.natives
 			assertSame(MappedObject2, argument2);
 			assertSame(MappedObject3, argument3);
 		}
-	}		
+	}
 }

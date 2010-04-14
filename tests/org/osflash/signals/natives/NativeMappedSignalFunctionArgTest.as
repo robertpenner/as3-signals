@@ -1,8 +1,7 @@
 package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
-	
-	import asunit4.async.addAsync;
+	import asunit.framework.IAsync;
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -13,6 +12,9 @@ package org.osflash.signals.natives
 	
 	public class NativeMappedSignalFunctionArgTest
 	{
+	    [Inject]
+	    public var async:IAsync;
+		
 		private var signal:NativeMappedSignal;
 		private var signalMappingToEventType:NativeMappedSignal;
 		private var signalMappingToIncorrectEventType:NativeMappedSignal;
@@ -31,7 +33,7 @@ package org.osflash.signals.natives
 				}
 			);
 			
-			signalMappingToEventType = new NativeMappedSignal(sprite, EventType, MouseEvent, String).mapTo( 
+			signalMappingToEventType = new NativeMappedSignal(sprite, EventType, MouseEvent, String).mapTo(
 				function (event:MouseEvent):String {
 					return event.type;
 				}
@@ -98,7 +100,7 @@ package org.osflash.signals.natives
 		[Test]
 		public function signal_add_then_mapped_object_should_be_callback_argument():void
 		{
-			signal.add( addAsync(checkMappedArgument, 10) );
+			signal.add( async.add(checkMappedArgument, 10) );
 			dispatchTestEvent();
 		}
 		
@@ -110,7 +112,7 @@ package org.osflash.signals.natives
 		[Test]
 		public function mapping_function_should_receive_event_as_argument():void
 		{
-			signalMappingToEventType.add( addAsync(checkMappedEventTypeArgument, 10) );
+			signalMappingToEventType.add( async.add(checkMappedEventTypeArgument, 10) );
 			dispatchTestEvent();
 		}
 		
@@ -122,7 +124,7 @@ package org.osflash.signals.natives
 		[Test(expects="ArgumentError")]
 		public function mapping_function_has_to_many_arguments_should_throw_ArgumentError():void
 		{
-			var signal:NativeMappedSignal = new NativeMappedSignal(sprite, EventType, MouseEvent, String).mapTo( 
+			var signal:NativeMappedSignal = new NativeMappedSignal(sprite, EventType, MouseEvent, String).mapTo(
 				function (event:MouseEvent, extraArg:Object):String {
 					return event.type;
 				}
@@ -141,8 +143,8 @@ package org.osflash.signals.natives
 		[Test]
 		public function mapping_to_void():void
 		{
-			signalMappingToVoid.add(addAsync(emptyHandler, 10))
+			signalMappingToVoid.add(async.add(emptyHandler, 10))
 			dispatchTestEvent()
 		}
-	}		
+	}
 }
