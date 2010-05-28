@@ -1,5 +1,26 @@
 h2. AS3 Signals Changelog:
 
+h3. v0.7 - Bubblap - 2010-05-27
+
+h4. API Changes
+* Added NativeMappedSignal class from "Brian Heylin":http://github.com/brianheylin, with great "test coverage":http://github.com/brianheylin/as3-signals/tree/master/tests/org/osflash/signals/natives/.
+** Addresses "#16 - Add ability to map native events to signals":http://github.com/robertpenner/as3-signals/issues/closed#issue/15
+* DeluxeSignal has a simpler way to continue bubbling without re-dispatching the event.
+** IBubbleEventHandler.onEventBubbled() now returns true/false to continue/cancel bubbling.
+** Thanks to "secoif":http://github.com/secoif for the original code and "dehash":http://www.dehash.com/?p=241h for helping with the merge.
+* ISignal and IDeluxeSignal: add(), addOnce() and remove() now return the listener.
+** Thanks to "sammyt":http://github.com/sammyt for the contribution with unit tests.
+
+h4. Fixes
+* Improved error message for Signal.dispatch() with too few arguments.
+
+h4. Test Changes
+* The test suite is migrated to a newer version of AsUnit 4.
+** Tests now receive an IAsync using [Inject]. No more Asyncleton!
+** The migration pattern can be seen in "commit f6878.":http://github.com/robertpenner/as3-signals/commit/f6878dbbff95e0bd7832cc2d1cc2e7d55fb18098
+** AllTestsRunner uses a "new composition pattern":http://github.com/robertpenner/as3-signals/commit/866a99570152b7399aa34839fd5c30789db67f3c instead of inheritance.
+** Many thanks to "Luke Bayes":http://github.com/lukebayes and the "Bay Area Computer Club":http://github.com/bayareacomputerclub.
+* Added more tests for argument dispatching and consolidated in SignalDispatchArgsTest.
 
 h3. v0.6 - GreenDay - 2010-03-17
 
