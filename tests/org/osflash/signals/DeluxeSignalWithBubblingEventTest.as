@@ -41,14 +41,14 @@ package org.osflash.signals
 		}
 
 		[Test]
-		public function dispatch_bubbling_event_from_theGrandChild_should_bubble_to_IBubbleHandler():void
+		public function dispatch_bubbling_event_from_theGrandChild_should_bubble_to_parent_IBubbleHandler():void
 		{
 			// If cancelTimeout() isn't called, this test will fail.
 			cancelTimeout = async.add(null, 10);
 			var event:IEvent = new GenericEvent();
 			event.bubbles = true;
 			
-			theGrandChild.completed.dispatch(event); // event.target will be child
+			theGrandChild.completed.dispatch(event);
 		}
 		
 		public function onEventBubbled(e:IEvent):Boolean
