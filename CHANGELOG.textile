@@ -4,7 +4,7 @@ h3. v0.7 - Bubblap - 2010-05-27
 
 h4. API Changes
 * Added NativeMappedSignal class from "Brian Heylin":http://github.com/brianheylin, with great "test coverage":http://github.com/brianheylin/as3-signals/tree/master/tests/org/osflash/signals/natives/.
-** Addresses "#16 - Add ability to map native events to signals":http://github.com/robertpenner/as3-signals/issues/closed#issue/15
+** Addresses "#16 - Add ability to map native events to signals":http://github.com/robertpenner/as3-signals/issues/closed#issue/16
 * DeluxeSignal has a simpler way to continue bubbling without re-dispatching the event.
 ** IBubbleEventHandler.onEventBubbled() now returns true/false to continue/cancel bubbling.
 ** Thanks to "secoif":http://github.com/secoif for the original code and "dehash":http://www.dehash.com/?p=241h for helping with the merge.
