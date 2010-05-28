@@ -158,9 +158,9 @@ package org.osflash.signals
 			{
 				if (currentTarget is IBubbleEventHandler)
 				{
-					//TODO: incorporate secoif's Boolean return to check whether to continue.
-					IBubbleEventHandler(event.currentTarget = currentTarget).onEventBubbled(event);
-					break;
+					// onEventBubbled() can stop the bubbling by returning false.
+					if (!IBubbleEventHandler(event.currentTarget = currentTarget).onEventBubbled(event))
+						break;
 				}
 			}
 		}
