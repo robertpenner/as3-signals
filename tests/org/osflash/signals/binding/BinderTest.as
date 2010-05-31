@@ -37,7 +37,7 @@ package org.osflash.signals.binding
 			// when
 			source[sourceProperty] = newValue;
 			// then
-			assertEquals('target updated', newValue, target[targetProperty]);
+			assertEquals('target updated from source', newValue, target[targetProperty]);
 		}
 		
 		[Test]
@@ -68,8 +68,7 @@ package org.osflash.signals.binding
 			// then
 			assertEquals('source unchanged', oldValue, source[sourceProperty]);
 		}
-		
-		
+				
 		[Test]
 		public function doubleBind_should_enable_updates_in_opposite_direction():void
 		{
@@ -82,8 +81,27 @@ package org.osflash.signals.binding
 			// when
 			bindableTarget[targetProperty] = newValue;
 			// then
-			assertEquals('source updated', newValue, source[sourceProperty]);			
+			assertEquals('source updated from target', newValue, source[sourceProperty]);			
 		}
+		
+		[Test]
+		public function doubleBind_should_enable_updates_in_normal_direction():void
+		{
+			var bindableTarget:IBindable = new BindableThing();
+			var targetProperty:String = 'text';
+			var sourceProperty:String = 'status';
+			binder.doubleBind(bindableTarget, targetProperty, source, sourceProperty);
+			
+			var newValue:String = 'changed';
+			// when
+			source[sourceProperty] = newValue;
+			// then
+			assertEquals('target updated from source', newValue, bindableTarget[targetProperty]);			
+		}
+		
+		//TODO: test that updating one property calls listeners for that property only
+		//TODO: test that setting a property to its existing value doesn't do extra work
+		
 	}
 }
 
