@@ -4,11 +4,11 @@ package org.osflash.signals.binding
 
 	public class ChangeSignal extends Signal implements IChangeSignal
 	{
-		protected var source:IBindable;
+		protected var source:Object;
 
-		public function ChangeSignal(source:IBindable)
+		public function ChangeSignal(source:Object)
 		{
-			super(IBindable, String, Object);
+			super(Object, String, Object);
 			this.source = source;
 		}
 		

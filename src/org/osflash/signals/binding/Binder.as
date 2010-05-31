@@ -10,22 +10,26 @@ package org.osflash.signals.binding
 		{
 			bindMap = new Dictionary(true);
 		}
-
 		
-		public function bind(source:IBindable, sourceProperty:String, target:Object, targetProperty:String):void 
+		public function bind(target:Object, targetProperty:String, source:IBindable, sourceProperty:String):void 
 		{
 			var binding:Binding = new Binding(source, sourceProperty, target, targetProperty);
-			bindMap[source] ||= {};
-			bindMap[source][sourceProperty] = binding;
-			
-			source.propertyChanged.add(onChanged);
+			(bindMap[target] ||= {})[targetProperty] = binding;
+			source.propertyChanged.add(binding.onChange);
+		}
+
+		public function doubleBind(target:IBindable, targetProperty:String, source:IBindable, sourceProperty:String):void 
+		{
+			var binding:Binding = new Binding(source, sourceProperty, target, targetProperty, true);
+			(bindMap[target] ||= {})[targetProperty] = binding;
+			source.propertyChanged.add(binding.onChange);
+			target.propertyChanged.add(binding.onChange);
 		}
 		
-		protected function onChanged(source:IBindable, sourceProperty:String, newValue:Object):void
+		public function unbind(target:Object, targetProperty:String):void 
 		{
-			var binding:Binding = bindMap[source][sourceProperty];
-			
-			binding.target[binding.targetProperty] = newValue;
+			var binding:Binding = Binding( bindMap[target][targetProperty] );
+			binding.source.propertyChanged.remove(binding.onChange);
 		}
 	}
 }

@@ -8,7 +8,7 @@ package org.osflash.signals.binding
 		 * 
 		 * @param	
 		 */
-		function dispatchChange(property:String, newValue:Object):void;
+		function dispatchChange(sourceProperty:String, newValue:Object):void;
 		
 	}
 }
