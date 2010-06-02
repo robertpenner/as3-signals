@@ -6,9 +6,9 @@ package org.osflash.signals.binding
 	{
 		protected var bindMap:Dictionary;
 
-		public function Binder() 
+		public function Binder(useWeakReferences:Boolean = true) 
 		{
-			bindMap = new Dictionary(true);
+			bindMap = new Dictionary(useWeakReferences);
 		}
 		
 		public function bind(target:Object, targetProperty:String, source:IBindable, sourceProperty:String):void 
