@@ -10,12 +10,15 @@ package org.osflash.signals.binding
 		private var target:Object;	
 		private var source:BindableThing;
 		private var binder:Binder;
+		private var targetProperty:String;		private var sourceProperty:String;
 
 		[Before]
 		public function setUp():void
 		{
 			target = { text: 'default' };
+			targetProperty = 'text';
 			source = new BindableThing();
+			sourceProperty = 'status';
 			binder = new Binder();
 		}
 
@@ -27,10 +30,29 @@ package org.osflash.signals.binding
 		}
 		
 		[Test]
+		public function bind_can_hasBinding():void
+		{
+			binder.bind(target, targetProperty, source, sourceProperty);
+			assertTrue(binder.hasBinding(target, targetProperty));
+		}
+		
+		[Test]
+		public function didnt_bind_cant_hasBinding():void
+		{
+			assertFalse(binder.hasBinding(target, targetProperty));
+		}
+		
+		[Test]
+		public function bind_then_unbind_cant_hasBinding():void
+		{
+			binder.bind(target, targetProperty, source, sourceProperty);
+			binder.unbind(target, targetProperty);
+			assertFalse(binder.hasBinding(target, targetProperty));
+		}
+		
+		[Test]
 		public function bind_should_update_from_source_to_target():void
 		{
-			var targetProperty:String = 'text';
-			var sourceProperty:String = 'status';
 			binder.bind(target, targetProperty, source, sourceProperty);
 			
 			var newValue:String = 'changed';
@@ -41,10 +63,8 @@ package org.osflash.signals.binding
 		}
 		
 		[Test]
-		public function unbind_should_prevent_updates_from_source_to_target():void
+		public function unbind_should_disable_updates_from_source_to_target():void
 		{
-			var targetProperty:String = 'text';
-			var sourceProperty:String = 'status';
 			binder.bind(target, targetProperty, source, sourceProperty);			binder.unbind(target, targetProperty);			
 			var oldValue:String = target[targetProperty];
 			var newValue:String = 'changed';
@@ -57,8 +77,6 @@ package org.osflash.signals.binding
 		[Test]
 		public function bind_should_be_one_way_only():void
 		{
-			var targetProperty:String = 'text';
-			var sourceProperty:String = 'status';
 			binder.bind(target, targetProperty, source, sourceProperty);
 			
 			var oldValue:String = source[sourceProperty];
@@ -73,8 +91,6 @@ package org.osflash.signals.binding
 		public function doubleBind_should_enable_updates_in_opposite_direction():void
 		{
 			var bindableTarget:IBindable = new BindableThing();
-			var targetProperty:String = 'text';
-			var sourceProperty:String = 'status';
 			binder.doubleBind(bindableTarget, targetProperty, source, sourceProperty);
 			
 			var newValue:String = 'changedFromOppositeEnd';
@@ -88,8 +104,6 @@ package org.osflash.signals.binding
 		public function doubleBind_should_enable_updates_in_normal_direction():void
 		{
 			var bindableTarget:IBindable = new BindableThing();
-			var targetProperty:String = 'text';
-			var sourceProperty:String = 'status';
 			binder.doubleBind(bindableTarget, targetProperty, source, sourceProperty);
 			
 			var newValue:String = 'changed';

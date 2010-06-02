@@ -20,16 +20,19 @@ package org.osflash.signals.binding
 
 		public function doubleBind(target:IBindable, targetProperty:String, source:IBindable, sourceProperty:String):void 
 		{
-			var binding:Binding = new Binding(source, sourceProperty, target, targetProperty, true);
-			(bindMap[target] ||= {})[targetProperty] = binding;
-			source.propertyChanged.add(binding.onChange);
-			target.propertyChanged.add(binding.onChange);
+			bind(target, targetProperty, source, sourceProperty);			bind(source, sourceProperty, target, targetProperty);
 		}
 		
 		public function unbind(target:Object, targetProperty:String):void 
 		{
 			var binding:Binding = Binding( bindMap[target][targetProperty] );
 			binding.source.propertyChanged.remove(binding.onChange);
+			delete bindMap[target][targetProperty];
+		}
+
+		public function hasBinding(target:Object, targetProperty:String):Boolean 
+		{
+			return Boolean( bindMap[target] && bindMap[target][targetProperty] );
 		}
 	}
 }
