@@ -26,12 +26,12 @@ package org.osflash.signals.binding
 			if (target[targetProperty] != source[sourceProperty])
 				target[targetProperty]  = source[sourceProperty];
 			// Listen for future changes
-			source.propertyChanged.add(onChange);
+			source.changeSignal.addSlot(this);
 		}
 
 		public function unbind():void 
 		{
-			source.propertyChanged.remove(onChange);
+			source.changeSignal.removeSlot(this);
 		}
 		
 		public function onChange(fromObject:Object, property:String, newValue:Object):void
@@ -46,5 +46,12 @@ package org.osflash.signals.binding
 			}
 		}
 		
+		public function update(newValue:Object):void
+		{
+			//TODO: check against old value
+			if (target[targetProperty] != newValue)
+				target[targetProperty]  = newValue;
+			
+		}		
 	}
 }

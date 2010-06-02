@@ -153,7 +153,7 @@ package org.osflash.signals.binding
 		}
 		
 		[Test]
-		public function changing_an_unbound_source_property_should_not_update_target():void
+		public function changing_an_unbound_source_property_should_not_update_bound_target_property():void
 		{
 			binder.bind(target, targetProperty, source, sourceProperty);
 			var oldTargetValue:String = target[targetProperty];
@@ -164,7 +164,6 @@ package org.osflash.signals.binding
 			assertEquals('target unchanged', oldTargetValue, target[targetProperty]);			
 		}
 		
-		//TODO: test that updating one property calls listeners for that property only
 		//TODO: test that setting a property to its existing value doesn't do extra work
 		
 	}
@@ -176,16 +175,16 @@ import org.osflash.signals.binding.IChangeSignal;
 
 class BindableThing implements IBindable
 {
-	protected var _propertyChanged:ChangeSignal;
+	protected var _changeSignal:ChangeSignal;
 
 	public function BindableThing() 
 	{
-		_propertyChanged = new ChangeSignal(this);
+		_changeSignal = new ChangeSignal(this);
 	}
 
-	public function get propertyChanged():IChangeSignal
+	public function get changeSignal():IChangeSignal
 	{
-		return _propertyChanged;
+		return _changeSignal;
 	}
 	
 	protected var _status:String = 'defaultStatus';
@@ -194,7 +193,7 @@ class BindableThing implements IBindable
 	public function set status(value:String):void
 	{
 		if (value == _status) return;
-		_propertyChanged.dispatchChange('status', _status = value);	}
+		_changeSignal.dispatch('status', _status = value);	}
 	
 	protected var _text:String = 'defaultText';
 	public function get text():String { return _text; }
@@ -202,6 +201,6 @@ class BindableThing implements IBindable
 	public function set text(value:String):void
 	{
 		if (value == _text) return;
-		_propertyChanged.dispatchChange('text', _text = value);
+		_changeSignal.dispatch('text', _text = value);
 	}	
 }

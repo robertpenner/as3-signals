@@ -2,6 +2,6 @@ package org.osflash.signals.binding
 {
 	public interface IBindable 
 	{
-		function get propertyChanged():IChangeSignal;
+		function get changeSignal():IChangeSignal;
 	}
 }

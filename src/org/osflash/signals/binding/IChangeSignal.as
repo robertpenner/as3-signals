@@ -1,14 +1,18 @@
 package org.osflash.signals.binding 
 {
-	import org.osflash.signals.ISignal;
-
-	public interface IChangeSignal extends ISignal
+	public interface IChangeSignal
 	{
-		/**
-		 * 
-		 * @param	
-		 */
-		function dispatchChange(sourceProperty:String, newValue:Object):void;
+		function get source():Object;
+		
+		function addSlot(slot:IChangeSlot):IChangeSlot;
+				function removeSlot(slot:IChangeSlot):IChangeSlot;
+				function removeAll():void;
+		
+		function hasSlot(slot:IChangeSlot):Boolean;
+		
+		function get numSlots():uint;
+		
+		function dispatch(changedProperty:String, newValue:Object):void;
 		
 	}
 }
