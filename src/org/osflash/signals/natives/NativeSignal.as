@@ -5,7 +5,6 @@ package org.osflash.signals.natives
 	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
-	import flash.utils.Dictionary;
 
 	/**
 	 * The NativeSignal class provides a strongly-typed facade for an IEventDispatcher.
@@ -74,7 +73,7 @@ package org.osflash.signals.natives
 			var listenerBox:Object = listenerBoxes.splice(listenerIndex, 1)[0];
 			// For once listeners, execute is a wrapper function around the listener.
 			_target.removeEventListener(_eventType, listenerBox.execute);
-			return listener
+			return listener;
 		}
 		
 		/** @inheritDoc */

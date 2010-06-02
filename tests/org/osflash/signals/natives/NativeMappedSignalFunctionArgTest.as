@@ -2,14 +2,13 @@ package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
 	import asunit.framework.IAsync;
-	
+
+	import org.osflash.signals.IDeluxeSignal;
+
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	
-	import org.osflash.signals.IDeluxeSignal;
-	import org.osflash.signals.ISignal;
-	
+
 	public class NativeMappedSignalFunctionArgTest
 	{
 	    [Inject]
@@ -29,7 +28,7 @@ package org.osflash.signals.natives
 			sprite = new Sprite();
 			signal = new NativeMappedSignal(sprite, EventType, MouseEvent, String).mapTo(
 				function ():String {
-					return MappedObject
+					return MappedObject;
 				}
 			);
 			
@@ -41,7 +40,7 @@ package org.osflash.signals.natives
 			
 			signalMappingToIncorrectEventType = new NativeMappedSignal(sprite, EventType, MouseEvent, String).mapTo(
 				function (event:MouseEvent):int {
-					return event.delta
+					return event.delta;
 				}
 			);
 			
@@ -53,12 +52,12 @@ package org.osflash.signals.natives
 		{
 			signal.removeAll();
 			signal = null;
-			signalMappingToEventType.removeAll()
-			signalMappingToEventType = null
-			signalMappingToIncorrectEventType.removeAll()
-			signalMappingToIncorrectEventType = null
-			signalMappingToVoid.removeAll()
-			signalMappingToVoid = null
+			signalMappingToEventType.removeAll();
+			signalMappingToEventType = null;
+			signalMappingToIncorrectEventType.removeAll();
+			signalMappingToIncorrectEventType = null;
+			signalMappingToVoid.removeAll();
+			signalMappingToVoid = null;
 		}
 		
 		[Test]
@@ -129,7 +128,6 @@ package org.osflash.signals.natives
 					return event.type;
 				}
 			);
-			dispatchTestEvent();
 		}
 		
 		[Test(expects="Error")]
@@ -143,8 +141,8 @@ package org.osflash.signals.natives
 		[Test]
 		public function mapping_to_void():void
 		{
-			signalMappingToVoid.add(async.add(emptyHandler, 10))
-			dispatchTestEvent()
+			signalMappingToVoid.add(async.add(emptyHandler, 10));
+			dispatchTestEvent();
 		}
 	}
 }

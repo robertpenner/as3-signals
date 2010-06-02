@@ -2,7 +2,7 @@ package org.osflash.signals.natives
 {
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
-	
+
 	/**
 	 * <p>
 	 * The NativeMappedSignal class is used to map/transform a native Event, 
@@ -116,17 +116,17 @@ package org.osflash.signals.natives
 				_mappingFunction = function ():Object { return objectListOrFunction; };
 			}
 			
-			return this
+			return this;
 		}
 		
 		private function isArgumentListAFunction(argList:Array):Boolean
 		{
-			return argList.length == 1 && argList[0] is Function
+			return argList.length == 1 && argList[0] is Function;
 		}
 		
 		private function hasFunctionMoreThanOneArgument(f:Function):Boolean
 		{
-			return f.length > 1
+			return f.length > 1;
 		}
 		
 		/**
@@ -141,8 +141,8 @@ package org.osflash.signals.natives
 		{
 			if (areValueObjectValidForMapping(valueObjects)) 
 			{
-				var mappedData:Object = mapEvent(valueObjects[0] as Event)
-				dispatchMappedData(mappedData)
+				var mappedData:Object = mapEvent(valueObjects[0] as Event);
+				dispatchMappedData(mappedData);
 			} 
 			else 
 			{
@@ -186,7 +186,7 @@ package org.osflash.signals.natives
 		
 		protected function get mappingFunctionExists():Boolean
 		{
-			return _mappingFunction != null
+			return _mappingFunction != null;
 		}
 		
 		/**

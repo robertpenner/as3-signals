@@ -1,7 +1,7 @@
 package org.osflash.signals
 {
-    import asunit.framework.IAsync;
 	import asunit.asserts.*;
+	import asunit.framework.IAsync;
 
 	import org.osflash.signals.events.GenericEvent;
 
@@ -79,7 +79,6 @@ package org.osflash.signals
 			var signal:Signal = new Signal(Date, Array);
 			signal.add( function(date:Date):void { } );
 		}
-
 	}
 }
 

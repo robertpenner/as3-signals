@@ -1,7 +1,7 @@
 package org.osflash.signals
 {
-    import asunit.framework.IAsync;
 	import asunit.asserts.*;
+	import asunit.framework.IAsync;
 
 	public class DeluxeSignalDispatchNoArgsTest
 	{	

@@ -2,12 +2,12 @@ package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
 	import asunit.framework.IAsync;
-	
+
+	import org.osflash.signals.IDeluxeSignal;
+
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
-	
-	import org.osflash.signals.IDeluxeSignal;
-		
+
 	public class NativeMappedSignalObjectArgTest
 	{
 	    [Inject]
@@ -34,8 +34,8 @@ package org.osflash.signals.natives
 		{
 			signalSingle.removeAll();
 			signalSingle = null;
-			signalList.removeAll()
-			signalList = null
+			signalList.removeAll();
+			signalList = null;
 		}
 		
 		[Test]

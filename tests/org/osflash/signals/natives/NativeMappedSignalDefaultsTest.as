@@ -1,11 +1,10 @@
 package org.osflash.signals.natives
 {
-	import asunit.asserts.*;
 	import asunit.framework.IAsync;
-	
+
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
-	
+
 	public class NativeMappedSignalDefaultsTest
 	{
 	    [Inject]
@@ -14,7 +13,7 @@ package org.osflash.signals.natives
 		private var signalDefault:NativeMappedSignal;
 		private var signalDefaultWithMappingObject:NativeMappedSignal;
 		private var signalDefaultWithMappingFunction:NativeMappedSignal;
-		private var signalWithValueClassesWithoutMappingFunction:NativeMappedSignal
+		private var signalWithValueClassesWithoutMappingFunction:NativeMappedSignal;
 		private var sprite:Sprite;
 		private const EventType:String = MouseEvent.CLICK;
 		private const MappedObject:String = "mapped " + EventType;
@@ -30,7 +29,7 @@ package org.osflash.signals.natives
 					return MappedObject;
 				}
 			);
-			signalWithValueClassesWithoutMappingFunction = new NativeMappedSignal(sprite, EventType, MouseEvent, String)
+			signalWithValueClassesWithoutMappingFunction = new NativeMappedSignal(sprite, EventType, MouseEvent, String);
 		}
 		
 		[After]
@@ -38,12 +37,12 @@ package org.osflash.signals.natives
 		{
 			signalDefault.removeAll();
 			signalDefault = null;
-			signalDefaultWithMappingObject.removeAll()
-			signalDefaultWithMappingObject = null
-			signalDefaultWithMappingFunction.removeAll()
-			signalDefaultWithMappingFunction = null
-			signalWithValueClassesWithoutMappingFunction.removeAll()
-			signalWithValueClassesWithoutMappingFunction = null
+			signalDefaultWithMappingObject.removeAll();
+			signalDefaultWithMappingObject = null;
+			signalDefaultWithMappingFunction.removeAll();
+			signalDefaultWithMappingFunction = null;
+			signalWithValueClassesWithoutMappingFunction.removeAll();
+			signalWithValueClassesWithoutMappingFunction = null;
 		}
 		
 		//////

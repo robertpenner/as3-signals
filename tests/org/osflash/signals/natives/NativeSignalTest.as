@@ -1,7 +1,7 @@
 package org.osflash.signals.natives
 {
-    import asunit.framework.IAsync;
 	import asunit.asserts.*;
+	import asunit.framework.IAsync;
 
 	import org.osflash.signals.IDeluxeSignal;
 
@@ -288,7 +288,7 @@ package org.osflash.signals.natives
 		{
 			var listener:Function = clicked.add(function(e:MouseEvent):void{});
 			
-			assertTrue("Listener is returned", listener == clicked.remove(listener))
+			assertTrue("Listener is returned", listener == clicked.remove(listener));
 		}
 		
 	}

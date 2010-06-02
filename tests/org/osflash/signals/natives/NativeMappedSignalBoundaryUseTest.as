@@ -2,12 +2,12 @@ package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
 	import asunit.framework.IAsync;
-	
+
+	import org.osflash.signals.IDeluxeSignal;
+
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
-	
-	import org.osflash.signals.IDeluxeSignal;
-	
+
 	public class NativeMappedSignalBoundaryUseTest
 	{
 	    [Inject]
@@ -18,8 +18,8 @@ package org.osflash.signals.natives
 		private var signalPassArrayThroughFunction:NativeMappedSignal;
 		private var sprite:Sprite;
 		private const EventType:String = MouseEvent.CLICK;
-		private const func1:Function = function ():String { return 'mapped arg 1'; }
-		private const func2:Function = function ():String { return 'mapped arg 2'; }
+		private const func1:Function = function ():String { return 'mapped arg 1'; };
+		private const func2:Function = function ():String { return 'mapped arg 2'; };
 		private const MappedArray:Array = [0, 1];
 		
 		[Before]
@@ -30,7 +30,7 @@ package org.osflash.signals.natives
 			signalPassArray = new NativeMappedSignal(sprite, EventType).mapTo(MappedArray);
 			signalPassArrayThroughFunction = new NativeMappedSignal(sprite, EventType, MouseEvent, Array).mapTo(
 				function ():Array {
-					return MappedArray
+					return MappedArray;
 				}
 			);
 		}
@@ -40,10 +40,10 @@ package org.osflash.signals.natives
 		{
 			signalArrayOfFunctions.removeAll();
 			signalArrayOfFunctions = null;
-			signalPassArray.removeAll()
-			signalPassArray = null
-			signalPassArrayThroughFunction.removeAll()
-			signalPassArrayThroughFunction = null
+			signalPassArray.removeAll();
+			signalPassArray = null;
+			signalPassArrayThroughFunction.removeAll();
+			signalPassArrayThroughFunction = null;
 		}
 		
 		[Test]
@@ -74,8 +74,8 @@ package org.osflash.signals.natives
 		
 		private function callbackTwoFunctions(argFunc1:Function, argFunc2:Function):void
 		{
-			assertSame(func1, argFunc1)
-			assertSame(func2, argFunc2)
+			assertSame(func1, argFunc1);
+			assertSame(func2, argFunc2);
 		}
 		
 		[Test]
@@ -87,7 +87,7 @@ package org.osflash.signals.natives
 		
 		private function callbackArrayAsArg(argArray:Array):void
 		{
-			assertSame(MappedArray, argArray)
+			assertSame(MappedArray, argArray);
 		}
 		
 		[Test]

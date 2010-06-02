@@ -4,7 +4,6 @@ package org.osflash.signals
 	import org.osflash.signals.events.IEvent;
 
 	import flash.errors.IllegalOperationError;
-	import flash.utils.Dictionary;
 
 	/**
 	 * Signal dispatches events to multiple listeners.

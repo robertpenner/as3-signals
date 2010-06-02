@@ -2,13 +2,12 @@ package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
 	import asunit.framework.IAsync;
-	
+
+	import org.osflash.signals.IDeluxeSignal;
+
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
-	
-	import org.osflash.signals.IDeluxeSignal;
-	import org.osflash.signals.ISignal;
-	
+
 	public class NativeMappedSignalFunctionNoArgsTest
 	{
 	    [Inject]
@@ -28,14 +27,14 @@ package org.osflash.signals.natives
 			sprite = new Sprite();
 			signalSingle = new NativeMappedSignal(sprite, EventType, MouseEvent, String).mapTo(
 				function ():String {
-					return MappedObject
+					return MappedObject;
 				}
 			);
 			
 			signalList = new NativeMappedSignal(sprite, EventType, MouseEvent, String, int, Number).mapTo(
 				function ():Array
 				{
-					return [MappedObject, MappedObject2, MappedObject3]
+					return [MappedObject, MappedObject2, MappedObject3];
 				}
 			);
 		}
@@ -45,8 +44,8 @@ package org.osflash.signals.natives
 		{
 			signalSingle.removeAll();
 			signalSingle = null;
-			signalList.removeAll()
-			signalList = null
+			signalList.removeAll();
+			signalList = null;
 		}
 		
 		[Test]

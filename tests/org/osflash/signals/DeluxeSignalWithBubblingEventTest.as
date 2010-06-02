@@ -1,7 +1,7 @@
 package org.osflash.signals
 {
-    import asunit.framework.IAsync;
 	import asunit.asserts.*;
+	import asunit.framework.IAsync;
 
 	import org.osflash.signals.events.GenericEvent;
 	import org.osflash.signals.events.IBubbleEventHandler;
@@ -85,16 +85,14 @@ package org.osflash.signals
 			// Because theChild didn't pop the bubble, this causes bubbleHater to throw an error.
 			theGrandChild.completed.dispatch(bubblingEvent);
 		}
-		
 	}
 }
 
-////// PRIVATE CLASSES //////
-
-import flash.errors.IllegalOperationError;
 import org.osflash.signals.DeluxeSignal;
 import org.osflash.signals.events.IBubbleEventHandler;
 import org.osflash.signals.events.IEvent;
+
+import flash.errors.IllegalOperationError;
 
 class Child implements IBubbleEventHandler
 {
