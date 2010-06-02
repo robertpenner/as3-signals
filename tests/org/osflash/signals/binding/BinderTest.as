@@ -7,15 +7,17 @@ package org.osflash.signals.binding
 	{
 	    [Inject]
 	    public var async:IAsync;
+	    
 		private var target:Object;	
+		private var targetProperty:String;
 		private var source:BindableThing;
+		private var sourceProperty:String;
 		private var binder:Binder;
-		private var targetProperty:String;		private var sourceProperty:String;
 
 		[Before]
 		public function setUp():void
 		{
-			target = { text: 'default' };
+			target = { text: 'defaultText' };
 			targetProperty = 'text';
 			source = new BindableThing();
 			sourceProperty = 'status';
@@ -51,7 +53,18 @@ package org.osflash.signals.binding
 		}
 		
 		[Test]
-		public function bind_should_update_from_source_to_target():void
+		public function bind_should_immediately_sync_target_to_source():void
+		{
+			var currentSourceValue:String = source[sourceProperty];
+			assertNotSame('target different from source before bind', currentSourceValue, target[targetProperty]);
+			// when
+			binder.bind(target, targetProperty, source, sourceProperty);
+			// then
+			assertEquals('target synced to source', currentSourceValue, target[targetProperty]);
+		}
+		
+		[Test]
+		public function bind_should_update_from_source_to_target_on_change():void
 		{
 			binder.bind(target, targetProperty, source, sourceProperty);
 			
@@ -75,6 +88,20 @@ package org.osflash.signals.binding
 		}
 		
 		[Test]
+		public function unbindAll_should_disable_updates_from_source_to_target():void
+		{
+			binder.bind(target, targetProperty, source, sourceProperty);
+			binder.unbindAll();
+			
+			var oldValue:String = target[targetProperty];
+			var newValue:String = 'changed';
+			// when
+			source[sourceProperty] = newValue;
+			// then
+			assertEquals('target unchanged', oldValue, target[targetProperty]);
+		}
+		
+		[Test]
 		public function bind_should_be_one_way_only():void
 		{
 			binder.bind(target, targetProperty, source, sourceProperty);
@@ -85,6 +112,19 @@ package org.osflash.signals.binding
 			target[targetProperty] = newValue;
 			// then
 			assertEquals('source unchanged', oldValue, source[sourceProperty]);
+		}
+		
+		[Test]
+		public function doubleBind_should_enable_updates_in_normal_direction():void
+		{
+			var bindableTarget:IBindable = new BindableThing();
+			binder.doubleBind(bindableTarget, targetProperty, source, sourceProperty);
+			
+			var newValue:String = 'changed';
+			// when
+			source[sourceProperty] = newValue;
+			// then
+			assertEquals('target updated from source', newValue, bindableTarget[targetProperty]);			
 		}
 				
 		[Test]
@@ -101,16 +141,27 @@ package org.osflash.signals.binding
 		}
 		
 		[Test]
-		public function doubleBind_should_enable_updates_in_normal_direction():void
+		public function doubleBind_should_immediately_sync_both_sources_to_the_second_source():void
 		{
-			var bindableTarget:IBindable = new BindableThing();
-			binder.doubleBind(bindableTarget, targetProperty, source, sourceProperty);
-			
-			var newValue:String = 'changed';
+			var source2:IBindable = new BindableThing();
+			var source2Property:String = 'text';
+			var source2ValueBeforeBind:String = source2[source2Property];
 			// when
-			source[sourceProperty] = newValue;
+			binder.doubleBind(source, sourceProperty, source2, source2Property);
 			// then
-			assertEquals('target updated from source', newValue, bindableTarget[targetProperty]);			
+			assertEquals('second source is same as before bind', source2ValueBeforeBind, source2[source2Property]);						assertEquals('first source is synced to second source', source2ValueBeforeBind, source[sourceProperty]);			
+		}
+		
+		[Test]
+		public function changing_an_unbound_source_property_should_not_update_target():void
+		{
+			binder.bind(target, targetProperty, source, sourceProperty);
+			var oldTargetValue:String = target[targetProperty];
+			var unboundSourceProperty:String = 'text';			
+			// when
+			source[unboundSourceProperty] = 'dontMindMe';
+			// then
+			assertEquals('target unchanged', oldTargetValue, target[targetProperty]);			
 		}
 		
 		//TODO: test that updating one property calls listeners for that property only
@@ -126,12 +177,18 @@ import org.osflash.signals.binding.IChangeSignal;
 class BindableThing implements IBindable
 {
 	protected var _propertyChanged:ChangeSignal;
+
+	public function BindableThing() 
+	{
+		_propertyChanged = new ChangeSignal(this);
+	}
+
 	public function get propertyChanged():IChangeSignal
 	{
-		return _propertyChanged ||= new ChangeSignal(this);
+		return _propertyChanged;
 	}
 	
-	protected var _status:String = '';
+	protected var _status:String = 'defaultStatus';
 	public function get status():String { return _status; }
 	
 	public function set status(value:String):void
@@ -139,7 +196,7 @@ class BindableThing implements IBindable
 		if (value == _status) return;
 		_propertyChanged.dispatchChange('status', _status = value);	}
 	
-	protected var _text:String = 'default';
+	protected var _text:String = 'defaultText';
 	public function get text():String { return _text; }
 	
 	public function set text(value:String):void

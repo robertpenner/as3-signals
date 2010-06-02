@@ -13,26 +13,39 @@ package org.osflash.signals.binding
 		
 		public function bind(target:Object, targetProperty:String, source:IBindable, sourceProperty:String):void 
 		{
-			var binding:Binding = new Binding(source, sourceProperty, target, targetProperty);
+			var binding:Binding = new Binding(target, targetProperty, source, sourceProperty);
 			(bindMap[target] ||= {})[targetProperty] = binding;
-			source.propertyChanged.add(binding.onChange);
 		}
 
-		public function doubleBind(target:IBindable, targetProperty:String, source:IBindable, sourceProperty:String):void 
+		public function doubleBind(source1:IBindable, source1Property:String, source2:IBindable, source2Property:String):void 
 		{
-			bind(target, targetProperty, source, sourceProperty);			bind(source, sourceProperty, target, targetProperty);
+			bind(source1, source1Property, source2, source2Property);			bind(source2, source2Property, source1, source1Property);
 		}
+		
+		//TODO: doubleUnbind
 		
 		public function unbind(target:Object, targetProperty:String):void 
 		{
 			var binding:Binding = Binding( bindMap[target][targetProperty] );
-			binding.source.propertyChanged.remove(binding.onChange);
+			binding.unbind();
 			delete bindMap[target][targetProperty];
 		}
 
 		public function hasBinding(target:Object, targetProperty:String):Boolean 
 		{
 			return Boolean( bindMap[target] && bindMap[target][targetProperty] );
+		}
+
+		public function unbindAll():void 
+		{
+			for (var target:Object in bindMap)
+			{
+				for each (var binding:Binding in bindMap[target])
+				{
+					binding.unbind();
+				}
+				delete bindMap[target];
+			}
 		}
 	}
 }
