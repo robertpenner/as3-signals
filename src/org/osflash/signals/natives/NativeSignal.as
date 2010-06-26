@@ -53,13 +53,25 @@ package org.osflash.signals.natives
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function, priority:int = 0):void
+		public function add(listener:Function):void
+		{
+			addWithPriority(listener)
+		}
+		
+		/** @inheritDoc */
+		//TODO: @throws
+		public function addWithPriority(listener:Function, priority:int = 0):void
 		{
 			registerListener(listener, false, priority);
 		}
 		
+		public function addOnce(listener:Function):void
+		{
+			addOnceWithPriority(listener)
+		}
+		
 		/** @inheritDoc */
-		public function addOnce(listener:Function, priority:int = 0):void
+		public function addOnceWithPriority(listener:Function, priority:int = 0):void
 		{
 			registerListener(listener, true, priority);
 		}

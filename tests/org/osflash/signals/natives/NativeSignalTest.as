@@ -120,7 +120,7 @@ package org.osflash.signals.natives
 		public function addOnce_normal_priority_and_dispatch_from_EventDispatcher_should_remove_listener_automatically():void
 		{
 			var normalPriority:int = 0;
-			clicked.addOnce( addAsync(emptyHandler) , normalPriority);
+			clicked.addOnceWithPriority( addAsync(emptyHandler) , normalPriority);
 			sprite.dispatchEvent(new MouseEvent('click'));
 			verifyNoListeners();
 		}
@@ -129,7 +129,7 @@ package org.osflash.signals.natives
 		public function addOnce_lowest_priority_and_dispatch_from_EventDispatcher_should_remove_listener_automatically():void
 		{
 			var lowestPriority:int = int.MIN_VALUE;
-			clicked.addOnce( addAsync(emptyHandler) , lowestPriority);
+			clicked.addOnceWithPriority( addAsync(emptyHandler) , lowestPriority);
 			sprite.dispatchEvent(new MouseEvent('click'));
 			verifyNoListeners();
 		}
@@ -138,7 +138,7 @@ package org.osflash.signals.natives
 		public function addOnce_highest_priority_and_dispatch_from_EventDispatcher_should_remove_listener_automatically():void
 		{
 			var highestPriority:int = int.MAX_VALUE;
-			clicked.addOnce( addAsync(emptyHandler) , highestPriority);
+			clicked.addOnceWithPriority( addAsync(emptyHandler) , highestPriority);
 			sprite.dispatchEvent(new MouseEvent('click'));
 			verifyNoListeners();
 		}

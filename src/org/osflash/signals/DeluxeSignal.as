@@ -65,7 +65,12 @@ package org.osflash.signals
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function, priority:int = 0):void
+		public function add(listener:Function):void
+		{
+			addWithPriority(listener)
+		}
+		
+		public function addWithPriority(listener:Function, priority:int = 0):void
 		{
 			if (onceListeners[listener])
 				throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
@@ -73,8 +78,13 @@ package org.osflash.signals
 			registerListener(listener, priority);
 		}
 		
+		public function addOnce(listener:Function):void
+		{
+			addOnceWithPriority(listener)
+		}
+		
 		/** @inheritDoc */
-		public function addOnce(listener:Function, priority:int = 0):void
+		public function addOnceWithPriority(listener:Function, priority:int = 0):void
 		{
 			// If the listener has been added as once, don't do anything.
 			if (onceListeners[listener]) return;
