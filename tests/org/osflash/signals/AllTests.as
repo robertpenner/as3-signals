@@ -12,8 +12,8 @@ package org.osflash.signals
 	[Suite]
 	public class AllTests
 	{
-		public var _AmbiguousRelationshipInNativeSignalTest:AmbiguousRelationshipInNativeSignalTest;
 		public var _AmbiguousRelationshipTest:AmbiguousRelationshipTest;
+		public var _AmbiguousRelationshipInNativeSignalTest:AmbiguousRelationshipInNativeSignalTest;
 		public var _GenericEventTest:GenericEventTest;
 		public var _NativeRelaySignalTest:NativeRelaySignalTest;
 		public var _NativeSignalTest:NativeSignalTest;
@@ -34,7 +34,7 @@ package org.osflash.signals
 		public var _DeluxeSignalWithCustomEventTest:DeluxeSignalWithCustomEventTest;
 		public var _DeluxeSignalWithGenericEventTest:DeluxeSignalWithGenericEventTest;
 		
-		public var _SignalDispatchExtraArgsTest:SignalDispatchExtraArgsTest;
+		public var _SignalDispatchExtraArgsTest:SignalDispatchArgsTest;
 		public var _SignalDispatchNoArgsTest:SignalDispatchNoArgsTest;
 		public var _SignalDispatchNonEventTest:SignalDispatchNonEventTest;
 		public var _SignalSplitInterfacesTest:SignalSplitInterfacesTest;

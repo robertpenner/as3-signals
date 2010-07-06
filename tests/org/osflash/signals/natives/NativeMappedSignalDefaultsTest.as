@@ -1,18 +1,19 @@
 package org.osflash.signals.natives
 {
-	import asunit.asserts.*;
-	
-	import asunit4.async.addAsync;
-	
+	import asunit.framework.IAsync;
+
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
-	
+
 	public class NativeMappedSignalDefaultsTest
 	{
+	    [Inject]
+	    public var async:IAsync;
+		
 		private var signalDefault:NativeMappedSignal;
 		private var signalDefaultWithMappingObject:NativeMappedSignal;
 		private var signalDefaultWithMappingFunction:NativeMappedSignal;
-		private var signalWithValueClassesWithoutMappingFunction:NativeMappedSignal
+		private var signalWithValueClassesWithoutMappingFunction:NativeMappedSignal;
 		private var sprite:Sprite;
 		private const EventType:String = MouseEvent.CLICK;
 		private const MappedObject:String = "mapped " + EventType;
@@ -28,7 +29,7 @@ package org.osflash.signals.natives
 					return MappedObject;
 				}
 			);
-			signalWithValueClassesWithoutMappingFunction = new NativeMappedSignal(sprite, EventType, MouseEvent, String)
+			signalWithValueClassesWithoutMappingFunction = new NativeMappedSignal(sprite, EventType, MouseEvent, String);
 		}
 		
 		[After]
@@ -36,19 +37,19 @@ package org.osflash.signals.natives
 		{
 			signalDefault.removeAll();
 			signalDefault = null;
-			signalDefaultWithMappingObject.removeAll()
-			signalDefaultWithMappingObject = null
-			signalDefaultWithMappingFunction.removeAll()
-			signalDefaultWithMappingFunction = null
-			signalWithValueClassesWithoutMappingFunction.removeAll()
-			signalWithValueClassesWithoutMappingFunction = null
+			signalDefaultWithMappingObject.removeAll();
+			signalDefaultWithMappingObject = null;
+			signalDefaultWithMappingFunction.removeAll();
+			signalDefaultWithMappingFunction = null;
+			signalWithValueClassesWithoutMappingFunction.removeAll();
+			signalWithValueClassesWithoutMappingFunction = null;
 		}
 		
 		//////
 		[Test]
 		public function signal_default_add_then_emptyCallback_should_be_called():void
 		{
-			signalDefault.add( addAsync(emptyCallback, 10) );
+			signalDefault.add( async.add(emptyCallback, 10) );
 			sprite.dispatchEvent(new MouseEvent(EventType));
 		}
 		
@@ -57,21 +58,21 @@ package org.osflash.signals.natives
 		[Test]
 		public function signal_default_with_mapped_object_add_then_emptyCallback_should_be_called():void
 		{
-			signalDefaultWithMappingObject.add( addAsync(emptyCallback, 10) );
+			signalDefaultWithMappingObject.add( async.add(emptyCallback, 10) );
 			sprite.dispatchEvent(new MouseEvent(EventType));
 		}
 		
 		[Test]
 		public function signal_default_with_mapped_function_add_then_emptyCallback_should_be_called():void
 		{
-			signalDefaultWithMappingFunction.add( addAsync(emptyCallback, 10) );
+			signalDefaultWithMappingFunction.add( async.add(emptyCallback, 10) );
 			sprite.dispatchEvent(new MouseEvent(EventType));
 		}
 		
 		[Test(expects="ArgumentError")]
 		public function signal_with_value_classes_without_mapping_function():void
 		{
-			signalWithValueClassesWithoutMappingFunction.dispatch(new MouseEvent(EventType))
+			signalWithValueClassesWithoutMappingFunction.dispatch(new MouseEvent(EventType));
 		}
-	}		
+	}
 }

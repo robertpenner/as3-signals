@@ -1,11 +1,13 @@
 package org.osflash.signals
 {
 	import asunit.asserts.*;
-
-	import asunit4.async.addAsync;
+	import asunit.framework.IAsync;
 
 	public class SignalSplitInterfacesTest
-	{
+	{	
+	    [Inject]
+	    public var async:IAsync;
+	    
 		// Notice the use of the ISignal interface, rather than Signal.
 		// This makes dispatch() inaccessible unless the ISignal is cast to IDispatcher or Signal.
 		public var completed:ISignal;
@@ -26,7 +28,7 @@ package org.osflash.signals
 		[Test]
 		public function cast_ISignal_to_IDispatcher_and_dispatch():void
 		{
-			completed.addOnce( addAsync(onCompleted, 10) );
+			completed.addOnce( async.add(onCompleted, 10) );
 			IDispatcher(completed).dispatch();
 		}
 		
@@ -38,7 +40,7 @@ package org.osflash.signals
 		[Test]
 		public function cast_ISignal_to_Signal_and_dispatch():void
 		{
-			completed.addOnce( addAsync(onCompleted, 10) );
+			completed.addOnce( async.add(onCompleted, 10) );
 			Signal(completed).dispatch();
 		}
 	}

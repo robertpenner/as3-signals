@@ -1,11 +1,13 @@
 package org.osflash.signals
 {
 	import asunit.asserts.*;
-
-	import asunit4.async.addAsync;
+	import asunit.framework.IAsync;
 
 	public class DeluxeSignalSplitInterfacesTest
-	{
+	{	
+	    [Inject]
+	    public var async:IAsync;
+	    
 		// Notice the use of the smaller IListeners interface, rather than ISignal.
 		// This makes dispatch() inaccessible unless the Signal is typed to IDispatcher.
 		public var completed:IDeluxeSignal;
@@ -26,7 +28,7 @@ package org.osflash.signals
 		[Test]
 		public function cast_to_IDispatcher_and_dispatch_should_work():void
 		{
-			completed.addOnce( addAsync(onCompleted, 10) );
+			completed.addOnce( async.add(onCompleted, 10) );
 			IDispatcher(completed).dispatch();
 		}
 		

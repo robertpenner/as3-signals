@@ -1,5 +1,51 @@
 h2. AS3 Signals Changelog:
 
-h3. v0.5
+h3. v0.7 - Bubblap - 2010-05-27
 
-Added versioning to the Ant build, starting at 0.5.
+h4. API Changes
+* Added NativeMappedSignal class from "Brian Heylin":http://github.com/brianheylin, with great "test coverage":http://github.com/brianheylin/as3-signals/tree/master/tests/org/osflash/signals/natives/.
+** Addresses "#16 - Add ability to map native events to signals":http://github.com/robertpenner/as3-signals/issues/closed#issue/16
+* DeluxeSignal has a simpler way to continue bubbling without re-dispatching the event.
+** IBubbleEventHandler.onEventBubbled() now returns true/false to continue/cancel bubbling.
+** Thanks to "secoif":http://github.com/secoif for the original code and "dehash":http://www.dehash.com/?p=241h for helping with the merge.
+* ISignal and IDeluxeSignal: add(), addOnce() and remove() now return the listener.
+** Thanks to "sammyt":http://github.com/sammyt for the contribution with unit tests.
+
+h4. Fixes
+* Improved error message for Signal.dispatch() with too few arguments.
+
+h4. Test Changes
+* The test suite is migrated to a newer version of AsUnit 4.
+** Tests now receive an IAsync using [Inject]. No more Asyncleton!
+** The migration pattern can be seen in "commit f6878.":http://github.com/robertpenner/as3-signals/commit/f6878dbbff95e0bd7832cc2d1cc2e7d55fb18098
+** AllTestsRunner uses a "new composition pattern":http://github.com/robertpenner/as3-signals/commit/866a99570152b7399aa34839fd5c30789db67f3c instead of inheritance.
+** Many thanks to "Luke Bayes":http://github.com/lukebayes and the "Bay Area Computer Club":http://github.com/bayareacomputerclub.
+* Added more tests for argument dispatching and consolidated in SignalDispatchArgsTest.
+
+h3. v0.6 - GreenDay - 2010-03-17
+
+h4. API Changes
+* "#15 - IDeluxeSignal and NativeSignal now have valueClasses property":http://github.com/robertpenner/as3-signals/issues/closed#issue/15
+
+h4. Fixes
+* "#14 - NativeSignal.addOnce() can't be reused after native event dispatched":http://github.com/robertpenner/as3-signals/issues/closed#issue/14
+
+h4. Implementation Changes
+* Optimized listeners array cloning to use slice(), which is faster than concat().
+* Optimized dispatch() by moving the cloning of listeners to add(), addOnce(), and remove().
+* Signal.removeAll() now uses remove() on every listener, instead of fast array clearing. This is intended to avoid possible issues with subclass overrides (as happened before with NativeRelaySignal.remove()).
+* Renamed createListenerRelationship() to registerListener().
+* Consolidated add() and addOnce() logic in registerListener().
+* Removed onceListeners Dictionary from DeluxeSignal and NativeSignal.
+* DeluxeSignal and NativeSignal are now more unified in their "once listeners" internal implementations.
+* Removed an extra semicolon which made FDT cry (thanks "vitch":http://github.com/vitch).
+
+h4. Test Changes
+* Removed async [Test] metadata because AsUnit 4 no longer uses it.
+* Updated the AsUnit 4 SWC to newer version which avoids slowdown of Timers in Flash Player 10.1.
+* Added tests for ambiguous relationships in Signal.
+* Added tests for adding a listener during a dispatch().
+
+h3. v0.5 - GlassHalfFull - 2010-02-08
+
+* Added versioning to the Ant build, starting at 0.5.

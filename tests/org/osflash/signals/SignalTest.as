@@ -1,8 +1,7 @@
 package org.osflash.signals
 {
 	import asunit.asserts.*;
-
-	import asunit4.async.addAsync;
+	import asunit.framework.IAsync;
 
 	import org.osflash.signals.events.GenericEvent;
 	import org.osflash.signals.events.IEvent;
@@ -10,7 +9,10 @@ package org.osflash.signals
 	import flash.display.Sprite;
 
 	public class SignalTest
-	{
+	{	
+	    [Inject]
+	    public var async:IAsync;
+	    
 		public var completed:Signal;
 		
 		[Before]
@@ -37,7 +39,7 @@ package org.osflash.signals
 		[Test]
 		public function dispatch_should_pass_event_to_listener_but_not_set_signal_or_target_properties():void
 		{
-			completed.add(addAsync(checkGenericEvent, 10));
+			completed.add(async.add(checkGenericEvent, 10));
 			completed.dispatch(new GenericEvent());
 		}
 		
@@ -52,8 +54,8 @@ package org.osflash.signals
 		[Test]
 		public function add_two_listeners_and_dispatch_should_call_both():void
 		{
-			completed.add(addAsync(checkGenericEvent, 10));
-			completed.add(addAsync(checkGenericEvent, 10));
+			completed.add(async.add(checkGenericEvent, 10));
+			completed.add(async.add(checkGenericEvent, 10));
 			completed.dispatch(new GenericEvent());
 		}
 
@@ -97,7 +99,7 @@ package org.osflash.signals
 		[Test]
 		public function add_2_listeners_remove_2nd_then_dispatch_should_call_1st_not_2nd_listener():void
 		{
-			completed.add(addAsync(checkGenericEvent, 10));
+			completed.add(async.add(checkGenericEvent, 10));
 			completed.add(failIfCalled);
 			completed.remove(failIfCalled);
 			completed.dispatch(new GenericEvent());
@@ -149,6 +151,16 @@ package org.osflash.signals
 			completed.add(func);
 			assertEquals(1, completed.numListeners);
 		}
+		
+		[Test]
+		public function addOnce_same_listener_twice_should_only_add_it_once():void
+		{
+			var func:Function = newEmptyHandler();
+			completed.addOnce(func);
+			completed.addOnce(func);
+			assertEquals(1, completed.numListeners);
+		}
+		
 		//////
 		[Test]
 		public function dispatch_non_IEvent_without_error():void
@@ -169,8 +181,8 @@ package org.osflash.signals
 		public function dispatch_2_listeners_1st_listener_removes_itself_then_2nd_listener_is_still_called():void
 		{
 			completed.add(selfRemover);
-			// addAsync verifies the second listener is called
-			completed.add(addAsync(newEmptyHandler(), 10));
+			// async.add verifies the second listener is called
+			completed.add(async.add(newEmptyHandler(), 10));
 			completed.dispatch();
 		}
 		
@@ -182,14 +194,74 @@ package org.osflash.signals
 		[Test]
 		public function dispatch_2_listeners_1st_listener_removes_all_then_2nd_listener_is_still_called():void
 		{
-			completed.add(addAsync(allRemover, 10));
-			completed.add(addAsync(newEmptyHandler(), 10));
+			completed.add(async.add(allRemover, 10));
+			completed.add(async.add(newEmptyHandler(), 10));
 			completed.dispatch();
+		}
+		
+		//////
+		[Test]
+		public function can_use_anonymous_listeners():void
+		{
+			var listeners:Array = [];
+			
+			for ( var i:int = 0; i < 100;  i++ )
+			{
+				listeners.push(completed.add(function():void{}));
+			}
+
+			assertTrue("there should be 100 listeners", completed.numListeners == 100);
+
+			for each( var fnt:Function in listeners )
+			{
+				completed.remove(fnt);
+			}
+			assertTrue("all anonymous listeners removed", completed.numListeners == 0);
+		}
+		
+		//////
+		[Test]
+		public function can_use_anonymous_listeners_in_addOnce():void
+		{
+			var listeners:Array = [];
+			
+			for ( var i:int = 0; i < 100;  i++ )
+			{
+				listeners.push(completed.addOnce(function():void{}));
+			}
+
+			assertTrue("there should be 100 listeners", completed.numListeners == 100);
+
+			for each( var fnt:Function in listeners )
+			{
+				completed.remove(fnt);
+			}
+			assertTrue("all anonymous listeners removed", completed.numListeners == 0);
 		}
 		
 		private function allRemover():void
 		{
 			completed.removeAll();
 		}
+		//////
+		[Test]
+		public function adding_a_listener_during_dispatch_should_not_call_it():void
+		{
+			completed.add(async.add(addListenerDuringDispatch, 10));
+			completed.dispatch(new GenericEvent());
+		}
+		
+		private function addListenerDuringDispatch():void
+		{
+			completed.add(failIfCalled);
+		}
+		//////
+		[Test]
+		public function removed_listener_should_be_returned():void
+		{
+			var listener:Function = completed.add(function():void{});
+			
+			assertTrue("Listener is returned", listener == completed.remove(listener));
+	}
 	}
 }

@@ -15,7 +15,7 @@ package org.osflash.signals
 		 * that matches the type of event dispatched by the signal.
 		 * If eventClass is not specified, the listener and dispatch() can be called without an argument.
 		 */
-		function addWithPriority(listener:Function, priority:int = 0):void
+		function addWithPriority(listener:Function, priority:int = 0):Function
 		
 		/**
 		 * Subscribes a one-time listener for this signal.
@@ -29,7 +29,6 @@ package org.osflash.signals
 		 * The higher the number, the higher the priority.
 		 * All listeners with priority n are processed before listeners of priority n-1.
 		 */
-		function addOnceWithPriority(listener:Function, priority:int = 0):void
-		
+		function addOnceWithPriority(listener:Function, priority:int = 0):Function
 	}
 }
