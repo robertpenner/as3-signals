@@ -48,7 +48,12 @@ package org.osflash.signals.natives
 		public function get target():IEventDispatcher { return _target; }
 		
 		/** @inheritDoc */
-		public function set target(value:IEventDispatcher):void { _target = value; }
+		public function set target(value:IEventDispatcher):void
+		{
+			if (value == _target) return;
+			removeAll();
+			_target = value;
+		}
 		
 		/** @inheritDoc */
 		//TODO: @throws

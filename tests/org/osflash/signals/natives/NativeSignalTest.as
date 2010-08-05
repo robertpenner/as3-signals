@@ -2,6 +2,7 @@ package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
 	import asunit.framework.IAsync;
+	import flash.events.EventDispatcher;
 
 	import org.osflash.signals.IDeluxeSignal;
 
@@ -11,10 +12,10 @@ package org.osflash.signals.natives
 	import flash.events.MouseEvent;
 
 	public class NativeSignalTest
-	{	
+	{
 	    [Inject]
 	    public var async:IAsync;
-	    
+	
 		private var clicked:NativeSignal;
 		private var sprite:IEventDispatcher;
 
@@ -290,6 +291,22 @@ package org.osflash.signals.natives
 			
 			assertTrue("Listener is returned", listener == clicked.remove(listener));
 		}
-		
+		////// Captures Issue #24
+		[Test]
+		public function setting_target_to_a_different_object_should_remove_all_listeners_from_1st_target():void
+		{
+			clicked.add(emptyHandler);
+			clicked.target = new EventDispatcher();
+			assertFalse(sprite.hasEventListener('click'));
+		}
+		//////
+		[Test]
+		public function setting_target_to_the_same_object_should_not_remove_listeners():void
+		{
+			clicked.add(emptyHandler);
+			var numListenersBefore:uint = clicked.numListeners;
+			clicked.target = sprite;
+			assertEquals(numListenersBefore, clicked.numListeners);
+		}
 	}
 }
