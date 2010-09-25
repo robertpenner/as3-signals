@@ -1,9 +1,9 @@
 package org.osflash.signals
 {
+	import flash.errors.IllegalOperationError;
+	
 	import org.osflash.signals.events.IBubbleEventHandler;
 	import org.osflash.signals.events.IEvent;
-
-	import flash.errors.IllegalOperationError;
 
 	/**
 	 * Signal dispatches events to multiple listeners.
