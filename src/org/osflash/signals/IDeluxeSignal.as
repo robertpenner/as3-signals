@@ -3,7 +3,7 @@ package org.osflash.signals
 	/**
 	 *
 	 */
-	public interface IDeluxeSignal extends ISignalOwner
+	public interface IDeluxeSignal extends ISignal
 	{
 		/**
 		 * Subscribes a listener for the signal.
