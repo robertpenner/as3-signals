@@ -1,9 +1,9 @@
 package org.osflash.signals
 {
+	import flash.errors.IllegalOperationError;
+	
 	import org.osflash.signals.events.IBubbleEventHandler;
 	import org.osflash.signals.events.IEvent;
-
-	import flash.errors.IllegalOperationError;
 
 	/**
 	 * Signal dispatches events to multiple listeners.
@@ -15,7 +15,7 @@ package org.osflash.signals
 	 * <br/><br/>
 	 * Project home: <a target="_top" href="http://github.com/robertpenner/as3-signals/">http://github.com/robertpenner/as3-signals/</a>
 	 */
-	public class DeluxeSignal implements IDeluxeSignal, IDispatcher
+	public class DeluxeSignal implements IDeluxeSignal, ISignalOwner, IDispatcher
 	{
 		protected var _target:Object;
 		protected var _valueClasses:Array;
