@@ -1,8 +1,8 @@
 package org.osflash.signals.natives.sets {
 	import org.osflash.signals.natives.NativeSignal;
 
-	import flash.display.DisplayObject;
 	import flash.events.Event;
+	import flash.media.SoundChannel;
 
 	/**
 	 * @author Jon Adams
@@ -11,9 +11,9 @@ package org.osflash.signals.natives.sets {
 
 		public var soundComplete:NativeSignal;
 
-		public function SoundChannelSignalSet(target:DisplayObject) {
+		public function SoundChannelSignalSet(target:SoundChannel) {
 			super(target);
-			signals.push(soundComplete = new NativeSignal(target, Event.SOUND_COMPLETE, Event));
+			_signals.push(soundComplete = new NativeSignal(target, Event.SOUND_COMPLETE, Event));
 		}
 	}
 }

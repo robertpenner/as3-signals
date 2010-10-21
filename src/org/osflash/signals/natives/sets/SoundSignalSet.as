@@ -1,10 +1,10 @@
 package org.osflash.signals.natives.sets {
 	import org.osflash.signals.natives.NativeSignal;
 
-	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
+	import flash.media.Sound;
 
 	/**
 	 * @author Jon Adams
@@ -17,13 +17,13 @@ package org.osflash.signals.natives.sets {
 		public var open:NativeSignal;
 		public var progress:NativeSignal;
 		
-		public function SoundSignalSet(target:DisplayObject) {
+		public function SoundSignalSet(target:Sound) {
 			super(target);
-			signals.push(complete = new NativeSignal(target, Event.COMPLETE, Event));
-			signals.push(id3 = new NativeSignal(target, Event.ID3, Event));
-			signals.push(ioError = new NativeSignal(target, IOErrorEvent.IO_ERROR, IOErrorEvent));
-			signals.push(open = new NativeSignal(target, Event.OPEN, Event));
-			signals.push(progress = new NativeSignal(target, ProgressEvent.PROGRESS, ProgressEvent));
+			_signals.push(complete = new NativeSignal(target, Event.COMPLETE, Event));
+			_signals.push(id3 = new NativeSignal(target, Event.ID3, Event));
+			_signals.push(ioError = new NativeSignal(target, IOErrorEvent.IO_ERROR, IOErrorEvent));
+			_signals.push(open = new NativeSignal(target, Event.OPEN, Event));
+			_signals.push(progress = new NativeSignal(target, ProgressEvent.PROGRESS, ProgressEvent));
 		}
 	}
 }

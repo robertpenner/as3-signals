@@ -1,4 +1,5 @@
 package org.osflash.signals.natives.sets {
+	import org.osflash.signals.SignalSet;
 	import org.osflash.signals.natives.NativeSignal;
 
 	import flash.events.Event;
@@ -13,7 +14,7 @@ package org.osflash.signals.natives.sets {
 		public var deactivate:NativeSignal;
 
 		public function EventDispatcherSignalSet(target:IEventDispatcher) {
-			signals.push(activate = new NativeSignal(target, Event.ACTIVATE, Event));			signals.push(deactivate = new NativeSignal(target, Event.DEACTIVATE, Event));
+			_signals.push(activate = new NativeSignal(target, Event.ACTIVATE, Event));			_signals.push(deactivate = new NativeSignal(target, Event.DEACTIVATE, Event));
 		}
 	}
 }

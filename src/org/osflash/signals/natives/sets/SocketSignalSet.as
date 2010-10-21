@@ -1,11 +1,11 @@
 package org.osflash.signals.natives.sets {
 	import org.osflash.signals.natives.NativeSignal;
 
-	import flash.display.DisplayObject;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	import flash.events.ProgressEvent;
 	import flash.events.SecurityErrorEvent;
+	import flash.net.Socket;
 
 	/**
 	 * @author Jon Adams
@@ -19,13 +19,13 @@ package org.osflash.signals.natives.sets {
 		public var open:NativeSignal;
 		public var socketData:NativeSignal;
 
-		public function SocketSignalSet(target:DisplayObject) {
+		public function SocketSignalSet(target:Socket) {
 			super(target);
-			signals.push(close = new NativeSignal(target, Event.CLOSE, Event));
-			signals.push(connect = new NativeSignal(target, Event.CONNECT, Event));
-			signals.push(ioError = new NativeSignal(target, IOErrorEvent.IO_ERROR, IOErrorEvent));
-			signals.push(securityError = new NativeSignal(target, SecurityErrorEvent.SECURITY_ERROR, SecurityErrorEvent));
-			signals.push(socketData = new NativeSignal(target, ProgressEvent.SOCKET_DATA, ProgressEvent));
+			_signals.push(close = new NativeSignal(target, Event.CLOSE, Event));
+			_signals.push(connect = new NativeSignal(target, Event.CONNECT, Event));
+			_signals.push(ioError = new NativeSignal(target, IOErrorEvent.IO_ERROR, IOErrorEvent));
+			_signals.push(securityError = new NativeSignal(target, SecurityErrorEvent.SECURITY_ERROR, SecurityErrorEvent));
+			_signals.push(socketData = new NativeSignal(target, ProgressEvent.SOCKET_DATA, ProgressEvent));
 		}
 	}
 }

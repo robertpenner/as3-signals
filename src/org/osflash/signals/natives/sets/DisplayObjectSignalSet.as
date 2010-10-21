@@ -15,10 +15,10 @@ package org.osflash.signals.natives.sets {
 		public var removed:NativeSignal;
 		public var removedFromStage:NativeSignal;
 		public var render:NativeSignal;
-
+		
 		public function DisplayObjectSignalSet(target:DisplayObject) {
 			super(target);
-			signals.push(added = new NativeSignal(target, Event.ADDED, Event));			signals.push(addedToStage = new NativeSignal(target, Event.ADDED_TO_STAGE, Event));			signals.push(enterFrame = new NativeSignal(target, Event.ENTER_FRAME, Event));			signals.push(removed = new NativeSignal(target, Event.REMOVED, Event));			signals.push(removedFromStage = new NativeSignal(target, Event.REMOVED_FROM_STAGE, Event));			signals.push(render = new NativeSignal(target, Event.RENDER, Event));
+			_signals.push(added = new NativeSignal(target, Event.ADDED, Event));			_signals.push(addedToStage = new NativeSignal(target, Event.ADDED_TO_STAGE, Event));			_signals.push(enterFrame = new NativeSignal(target, Event.ENTER_FRAME, Event));			_signals.push(removed = new NativeSignal(target, Event.REMOVED, Event));			_signals.push(removedFromStage = new NativeSignal(target, Event.REMOVED_FROM_STAGE, Event));			_signals.push(render = new NativeSignal(target, Event.RENDER, Event));
 		}
 	}
 }

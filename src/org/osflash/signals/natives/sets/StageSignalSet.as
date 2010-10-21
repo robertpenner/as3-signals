@@ -1,7 +1,7 @@
 package org.osflash.signals.natives.sets {
 	import org.osflash.signals.natives.NativeSignal;
 
-	import flash.display.DisplayObject;
+	import flash.display.Stage;
 	import flash.events.Event;
 
 	/**
@@ -13,9 +13,9 @@ package org.osflash.signals.natives.sets {
 		public var mouseLeave:NativeSignal;
 		public var resize:NativeSignal;
 
-		public function StageSignalSet(target:DisplayObject) {
+		public function StageSignalSet(target:Stage) {
 			super(target);
-			signals.push(fullScreen = new NativeSignal(target, Event.FULLSCREEN, Event));			signals.push(mouseLeave = new NativeSignal(target, Event.MOUSE_LEAVE, Event));			signals.push(resize = new NativeSignal(target, Event.RESIZE, Event));
+			_signals.push(fullScreen = new NativeSignal(target, Event.FULLSCREEN, Event));			_signals.push(mouseLeave = new NativeSignal(target, Event.MOUSE_LEAVE, Event));			_signals.push(resize = new NativeSignal(target, Event.RESIZE, Event));
 		}
 	}
 }
