@@ -1,6 +1,8 @@
 package org.osflash.signals {
+	import asunit.asserts.assertEquals;
+	import asunit.asserts.assertSame;
+	import asunit.asserts.assertTrue;
 	import asunit.framework.IAsync;
-	import asunit.framework.TestCase;
 
 	import org.osflash.signals.natives.sets.EventDispatcherSignalSet;
 	import org.osflash.signals.natives.sets.InteractiveObjectSignalSet;
@@ -8,25 +10,24 @@ package org.osflash.signals {
 	import flash.display.Sprite;
 	import flash.events.Event;
 
-	public class SignalSetTest extends TestCase {	
+	public class SignalSetTest {	
 
 		[Inject]
 	    public var async:IAsync;
+	    public var context:Sprite;
 	
 		private var sprite:Sprite;
 		private var signalSet:InteractiveObjectSignalSet;
 
-		override protected function setUp():void {
-			super.setUp();
-			
+		[Before]
+		public function setUp():void {
 			sprite = new Sprite();
 			signalSet = new InteractiveObjectSignalSet(sprite);
-			
 		}
 
-		override protected function tearDown():void {
-			super.tearDown();
-						signalSet.removeAll();
+		[After]
+		public function tearDown():void {
+			signalSet.removeAll();
 			signalSet = null;
 			sprite = null;
 		}
@@ -54,7 +55,7 @@ package org.osflash.signals {
 		{
 			signalSet.added.addOnce(async.add(handleEvent));			signalSet.addedToStage.addOnce(async.add(handleEvent));			
 			signalSet.enterFrame.addOnce(async.add(handleEnterFrame));			signalSet.render.addOnce(async.add(handleRender));
-						addChild(sprite);
+						context.addChild(sprite);
 		}
 
 		private function handleEnterFrame(event:Event):void {
@@ -73,7 +74,7 @@ package org.osflash.signals {
 			signalSet.removed.addOnce(async.add(handleEvent));
 			signalSet.removedFromStage.addOnce(async.add(handleEvent));
 			
-			addChild(sprite);			removeChild(sprite);
+			context.addChild(sprite);			context.removeChild(sprite);
 		}
 
 		[Test]
