@@ -39,13 +39,6 @@ package org.osflash.signals {
 		{
 			assertEquals(signalSet.numListeners, 0);
 		}
-		
-		[Test]
-		public function signal_add_then_EventDispatcher_dispatch_should_call_signal_listener():void
-		{
-			signalSet.activate.add(handleEvent);
-			sprite.dispatchEvent(new Event(Event.ACTIVATE));
-		}
 
 		[Test]
 		public function add_listeners_to_two_different_signals():void {
