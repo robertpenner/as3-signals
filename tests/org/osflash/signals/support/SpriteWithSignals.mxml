@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<display:Sprite xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:display="flash.display.*"
+	xmlns:signals="org.osflash.signals.*">
+	
+	<signals:Signal id="numChildrenChanged">{uint}</signals:Signal>
+	<signals:Signal id="nameChanged">{[String, String]}</signals:Signal>
+	
+</display:Sprite>
