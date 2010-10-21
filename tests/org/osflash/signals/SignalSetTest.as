@@ -1,4 +1,5 @@
 package org.osflash.signals {
+	import asunit.framework.IAsync;
 	import asunit.framework.TestCase;
 
 	import org.osflash.signals.natives.sets.EventDispatcherSignalSet;
@@ -9,6 +10,9 @@ package org.osflash.signals {
 
 	public class SignalSetTest extends TestCase {	
 
+		[Inject]
+	    public var async:IAsync;
+	
 		private var sprite:Sprite;
 		private var signalSet:InteractiveObjectSignalSet;
 
@@ -24,8 +28,6 @@ package org.osflash.signals {
 			super.tearDown();
 						signalSet.removeAll();
 			signalSet = null;
-			
-			removeChild(sprite);
 			sprite = null;
 		}
 
@@ -38,6 +40,40 @@ package org.osflash.signals {
 		public function numListeners_is_0_after_creation():void
 		{
 			assertEquals(signalSet.numListeners, 0);
+		}
+		
+		[Test]
+		public function signal_add_then_EventDispatcher_dispatch_should_call_signal_listener():void
+		{
+			signalSet.activate.add(async.add(handleEvent));
+			sprite.dispatchEvent(new Event(Event.ACTIVATE));
+		}
+		
+		[Test]
+		public function stage_events_should_all_fire():void
+		{
+			signalSet.added.addOnce(async.add(handleEvent));			signalSet.addedToStage.addOnce(async.add(handleEvent));			
+			signalSet.enterFrame.addOnce(async.add(handleEnterFrame));			signalSet.render.addOnce(async.add(handleRender));
+						addChild(sprite);
+		}
+
+		private function handleEnterFrame(event:Event):void {
+			sprite.stage.invalidate();
+			
+			assertSame(sprite, event.target);
+		}
+
+		private function handleRender(event:Event):void {
+			assertSame(sprite, event.target);
+		}
+		
+		[Test]
+		public function should_fire_on_remove():void
+		{
+			signalSet.removed.addOnce(async.add(handleEvent));
+			signalSet.removedFromStage.addOnce(async.add(handleEvent));
+			
+			addChild(sprite);			removeChild(sprite);
 		}
 
 		[Test]
