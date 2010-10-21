@@ -14,6 +14,8 @@ package org.osflash.signals {
 
 		[Inject]
 	    public var async:IAsync;
+	    
+	    [Inject]
 	    public var context:Sprite;
 	
 		private var sprite:Sprite;
