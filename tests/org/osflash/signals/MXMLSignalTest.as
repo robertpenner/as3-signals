@@ -30,7 +30,7 @@ package org.osflash.signals
 		}
 		
 		[Test]
-		public function mxml_Signal_has_single_value_class_from_mxml_default_property():void
+		public function has_single_value_class_from_mxml_default_property():void
 		{
 			var valueClasses:Array = mxmlSprite.numChildrenChanged.valueClasses;
 			assertEquals(1, valueClasses.length);
@@ -38,16 +38,16 @@ package org.osflash.signals
 		}
 		
 		[Test]
-		public function mxml_Signal_has_multiple_value_classes_from_mxml_default_property():void
+		public function has_multiple_value_classes_from_mxml_default_property():void
 		{
 			var valueClasses:Array = mxmlSprite.nameChanged.valueClasses;
 			assertEquals(2, valueClasses.length);
 			assertEquals(String, valueClasses[0]);
-			assertEquals(String, valueClasses[1]);
+			assertEquals(uint, valueClasses[1]);
 		}
 		
 		[Test]
-		public function mxml_Signal_has_single_value_class_from_mxml_attribute():void
+		public function has_single_value_class_from_mxml_attribute():void
 		{
 			var valueClasses:Array = mxmlSprite.tabEnabledChanged.valueClasses;
 			assertEquals(1, valueClasses.length);
@@ -55,12 +55,12 @@ package org.osflash.signals
 		}
 		
 		[Test]
-		public function mxml_Signal_has_multiple_value_classes_from_mxml_attribute():void
+		public function has_multiple_value_classes_from_mxml_attribute():void
 		{
 			var valueClasses:Array = mxmlSprite.tabIndexChanged.valueClasses;
 			assertEquals(2, valueClasses.length);
 			assertEquals(int, valueClasses[0]);
-			assertEquals(int, valueClasses[1]);
+			assertEquals(Boolean, valueClasses[1]);
 		}
 		
 	}

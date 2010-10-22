@@ -7,12 +7,12 @@
 	<signals:Signal id="numChildrenChanged">{uint}</signals:Signal>
 	
 	<!-- Multiple value classes need to be wrapped in an array, then curly braces. -->
-	<signals:Signal id="nameChanged">{[String, String]}</signals:Signal>
+	<signals:Signal id="nameChanged">{[String, uint]}</signals:Signal>
 	
 	<!-- A single value class can go in the attribute, using only curly braces. -->
 	<signals:Signal id="tabEnabledChanged" valueClasses="{Boolean}"/>
 	
 	<!-- Multiple value classes need to be wrapped in an array, then curly braces. -->
-	<signals:Signal id="tabIndexChanged" valueClasses="{[int, int]}"/>
+	<signals:Signal id="tabIndexChanged" valueClasses="{[int, Boolean]}"/>
 	
 </display:Sprite>
