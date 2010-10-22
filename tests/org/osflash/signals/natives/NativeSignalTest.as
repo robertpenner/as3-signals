@@ -2,8 +2,9 @@ package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
 	import asunit.framework.IAsync;
+	import flash.events.EventDispatcher;
 
-	import org.osflash.signals.IDeluxeSignal;
+	import org.osflash.signals.IPrioritySignal;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -11,10 +12,10 @@ package org.osflash.signals.natives
 	import flash.events.MouseEvent;
 
 	public class NativeSignalTest
-	{	
+	{
 	    [Inject]
 	    public var async:IAsync;
-	    
+	
 		private var clicked:NativeSignal;
 		private var sprite:IEventDispatcher;
 
@@ -41,7 +42,7 @@ package org.osflash.signals.natives
 		public function testInstantiated():void
 		{
 			assertTrue("NativeSignal instantiated", clicked is NativeSignal);
-			assertTrue('implements IDeluxeSignal', clicked is IDeluxeSignal);
+			assertTrue('implements IPrioritySignal', clicked is IPrioritySignal);
 			assertTrue('implements INativeDispatcher', clicked is INativeDispatcher);
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener('click'));
 			assertSame('target round-trips through constructor', sprite, clicked.target);
@@ -122,7 +123,7 @@ package org.osflash.signals.natives
 		public function addOnce_normal_priority_and_dispatch_from_EventDispatcher_should_remove_listener_automatically():void
 		{
 			var normalPriority:int = 0;
-			clicked.addOnce( async.add(emptyHandler) , normalPriority);
+			clicked.addOnceWithPriority( async.add(emptyHandler) , normalPriority);
 			sprite.dispatchEvent(new MouseEvent('click'));
 			verifyNoListeners();
 		}
@@ -131,7 +132,7 @@ package org.osflash.signals.natives
 		public function addOnce_lowest_priority_and_dispatch_from_EventDispatcher_should_remove_listener_automatically():void
 		{
 			var lowestPriority:int = int.MIN_VALUE;
-			clicked.addOnce( async.add(emptyHandler) , lowestPriority);
+			clicked.addOnceWithPriority( async.add(emptyHandler) , lowestPriority);
 			sprite.dispatchEvent(new MouseEvent('click'));
 			verifyNoListeners();
 		}
@@ -140,7 +141,7 @@ package org.osflash.signals.natives
 		public function addOnce_highest_priority_and_dispatch_from_EventDispatcher_should_remove_listener_automatically():void
 		{
 			var highestPriority:int = int.MAX_VALUE;
-			clicked.addOnce( async.add(emptyHandler) , highestPriority);
+			clicked.addOnceWithPriority( async.add(emptyHandler) , highestPriority);
 			sprite.dispatchEvent(new MouseEvent('click'));
 			verifyNoListeners();
 		}
@@ -290,6 +291,22 @@ package org.osflash.signals.natives
 			
 			assertTrue("Listener is returned", listener == clicked.remove(listener));
 		}
-		
+		////// Captures Issue #24
+		[Test]
+		public function setting_target_to_a_different_object_should_remove_all_listeners_from_1st_target():void
+		{
+			clicked.add(emptyHandler);
+			clicked.target = new EventDispatcher();
+			assertFalse(sprite.hasEventListener('click'));
+		}
+		//////
+		[Test]
+		public function setting_target_to_the_same_object_should_not_remove_listeners():void
+		{
+			clicked.add(emptyHandler);
+			var numListenersBefore:uint = clicked.numListeners;
+			clicked.target = sprite;
+			assertEquals(numListenersBefore, clicked.numListeners);
+		}
 	}
 }

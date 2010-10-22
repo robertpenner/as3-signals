@@ -1,6 +1,6 @@
 package org.osflash.signals.events
 {
-	import org.osflash.signals.IDeluxeSignal;
+	import org.osflash.signals.IPrioritySignal;
 
 	public interface IEvent
 	{
@@ -14,8 +14,8 @@ package org.osflash.signals.events
 		function set currentTarget(value:Object):void;
 		
 		/** The signal that dispatched the event. */
-		function get signal():IDeluxeSignal;
-		function set signal(value:IDeluxeSignal):void;
+		function get signal():IPrioritySignal;
+		function set signal(value:IPrioritySignal):void;
 		
 		/** Indicates whether the event is a bubbling event. */
 		function get bubbles():Boolean;

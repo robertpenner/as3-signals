@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<display:Sprite xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:display="flash.display.*"
+	xmlns:natives="org.osflash.signals.natives.*">
+	
+	<!-- A NativeSignal has only one value class, i.e. eventClass. It can go in the default property. -->
+	<natives:NativeSignal id="clicked" eventType="click" target="{this}">{MouseEvent}</natives:NativeSignal>
+
+	<!-- The eventClass can go in the attribute. -->
+	<natives:NativeSignal id="doubleClicked" eventType="doubleClick" target="{this}" eventClass="{MouseEvent}"/>
+
+	<!-- The eventClass can be omitted for vanilla Events. -->
+	<natives:NativeSignal id="addedToStage" eventType="addedToStage" target="{this}"/>
+	
+</display:Sprite>

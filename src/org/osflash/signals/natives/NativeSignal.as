@@ -1,17 +1,17 @@
 package org.osflash.signals.natives
 {
-	import org.osflash.signals.IDeluxeSignal;
-
 	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 
+	[DefaultProperty("eventClass")]	
+	
 	/**
 	 * The NativeSignal class provides a strongly-typed facade for an IEventDispatcher.
 	 * A NativeSignal is essentially a mini-dispatcher locked to a specific event type and class.
 	 * It can become part of an interface.
 	 */
-	public class NativeSignal implements IDeluxeSignal, INativeDispatcher
+	public class NativeSignal implements INativeSignalOwner
 	{
 		protected var _target:IEventDispatcher;
 		protected var _eventType:String;
@@ -24,7 +24,7 @@ package org.osflash.signals.natives
 		 * @param	eventType The type of Event permitted to be dispatched from this signal. Corresponds to Event.type.
 		 * @param	eventClass An optional class reference that enables an event type check in dispatch(). Defaults to flash.events.Event if omitted.
 		 */
-		public function NativeSignal(target:IEventDispatcher, eventType:String, eventClass:Class = null)
+		public function NativeSignal(target:IEventDispatcher = null, eventType:String = "", eventClass:Class = null)
 		{
 			_target = target;
 			_eventType = eventType;
@@ -34,9 +34,13 @@ package org.osflash.signals.natives
 		
 		/** @inheritDoc */
 		public function get eventType():String { return _eventType; }
+		/** @inheritDoc */
+		public function set eventType(value:String):void { _eventType = value; }
 		
 		/** @inheritDoc */
 		public function get eventClass():Class { return _eventClass; }
+		/** @inheritDoc */
+		public function set eventClass(value:Class):void { _eventClass = value; }
 		
 		/** @inheritDoc */
 		public function get valueClasses():Array { return [_eventClass]; }
@@ -48,18 +52,36 @@ package org.osflash.signals.natives
 		public function get target():IEventDispatcher { return _target; }
 		
 		/** @inheritDoc */
-		public function set target(value:IEventDispatcher):void { _target = value; }
+		public function set target(value:IEventDispatcher):void
+		{
+			if (value == _target) return;
+			removeAll();
+			_target = value;
+		}
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function, priority:int = 0):Function
+		public function add(listener:Function):Function
+		{
+			return addWithPriority(listener)
+		}
+		
+		/** @inheritDoc */
+		//TODO: @throws
+		public function addWithPriority(listener:Function, priority:int = 0):Function
 		{
 			registerListener(listener, false, priority);
 			return listener;
 		}
 		
 		/** @inheritDoc */
-		public function addOnce(listener:Function, priority:int = 0):Function
+		public function addOnce(listener:Function):Function
+		{
+			return addOnceWithPriority(listener)
+		}
+		
+		/** @inheritDoc */
+		public function addOnceWithPriority(listener:Function, priority:int = 0):Function
 		{
 			registerListener(listener, true, priority);
 			return listener;

@@ -3,16 +3,8 @@ package org.osflash.signals
 	/**
 	 *
 	 */
-	public interface IDeluxeSignal
+	public interface IPrioritySignal extends ISignal
 	{
-		/**
-		 * An optional array of classes defining the types of parameters sent to listeners.
-		 */
-		function get valueClasses():Array;
-		
-		/** The current number of listeners for the signal. */
-		function get numListeners():uint;
-		
 		/**
 		 * Subscribes a listener for the signal.
 		 * After you successfully register an event listener,
@@ -23,7 +15,7 @@ package org.osflash.signals
 		 * that matches the type of event dispatched by the signal.
 		 * If eventClass is not specified, the listener and dispatch() can be called without an argument.
 		 */
-		function add(listener:Function, priority:int = 0):Function;
+		function addWithPriority(listener:Function, priority:int = 0):Function
 		
 		/**
 		 * Subscribes a one-time listener for this signal.
@@ -37,14 +29,6 @@ package org.osflash.signals
 		 * The higher the number, the higher the priority.
 		 * All listeners with priority n are processed before listeners of priority n-1.
 		 */
-		function addOnce(listener:Function, priority:int = 0):Function;
-		
-		/**
-		 * Unsubscribes a listener from the signal.
-		 * @param	listener
-		 * @return the listener Function passed as the parameter
-		 */
-		function remove(listener:Function):Function;
-		
+		function addOnceWithPriority(listener:Function, priority:int = 0):Function
 	}
 }

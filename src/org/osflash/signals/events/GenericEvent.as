@@ -1,6 +1,6 @@
 package org.osflash.signals.events
 {
-	import org.osflash.signals.IDeluxeSignal;
+	import org.osflash.signals.IPrioritySignal;
 
 	/**
 	 *
@@ -12,7 +12,7 @@ package org.osflash.signals.events
 		protected var _bubbles:Boolean;
 		protected var _target:Object;
 		protected var _currentTarget:Object;
-		protected var _signal:IDeluxeSignal;
+		protected var _signal:IPrioritySignal;
 		
 		public function GenericEvent(bubbles:Boolean = false)
 		{
@@ -20,8 +20,8 @@ package org.osflash.signals.events
 		}
 		
 		/** @inheritDoc */
-		public function get signal():IDeluxeSignal { return _signal; }
-		public function set signal(value:IDeluxeSignal):void { _signal = value; }
+		public function get signal():IPrioritySignal { return _signal; }
+		public function set signal(value:IPrioritySignal):void { _signal = value; }
 		
 		/** @inheritDoc */
 		public function get target():Object { return _target; }
