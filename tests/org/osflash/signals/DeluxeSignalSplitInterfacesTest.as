@@ -8,9 +8,9 @@ package org.osflash.signals
 	    [Inject]
 	    public var async:IAsync;
 	    
-		// Notice the use of the smaller IListeners interface, rather than ISignal.
+		// Notice the use of the smaller IPrioritySignal interface, rather than ISignalOwner.
 		// This makes dispatch() inaccessible unless the Signal is typed to IDispatcher.
-		public var completed:IDeluxeSignal;
+		public var completed:IPrioritySignal;
 
 		[Before]
 		public function setUp():void

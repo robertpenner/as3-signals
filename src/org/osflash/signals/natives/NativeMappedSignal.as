@@ -137,7 +137,7 @@ package org.osflash.signals.natives
 		 * @see #mapTo()
 		 * @see org.osflash.signals.NativeRelaySignal#dispatch()
 		 */
-		override public function dispatch (... valueObjects):void 
+		override public function dispatch(... valueObjects):void 
 		{
 			if (areValueObjectValidForMapping(valueObjects)) 
 			{

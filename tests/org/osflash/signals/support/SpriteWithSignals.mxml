@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<display:Sprite xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:display="flash.display.*"
+	xmlns:signals="org.osflash.signals.*">
+	
+	<!-- A single value class can go in the default property, using only curly braces. -->
+	<signals:Signal id="numChildrenChanged">{uint}</signals:Signal>
+	
+	<!-- Multiple value classes need to be wrapped in an array, then curly braces. -->
+	<signals:Signal id="nameChanged">{[String, uint]}</signals:Signal>
+	
+	<!-- A single value class can go in the attribute, using only curly braces. -->
+	<signals:Signal id="tabEnabledChanged" valueClasses="{Boolean}"/>
+	
+	<!-- Multiple value classes need to be wrapped in an array, then curly braces. -->
+	<signals:Signal id="tabIndexChanged" valueClasses="{[int, Boolean]}"/>
+	
+</display:Sprite>

@@ -4,7 +4,7 @@ package org.osflash.signals.natives
 	import asunit.framework.IAsync;
 	import flash.events.EventDispatcher;
 
-	import org.osflash.signals.IDeluxeSignal;
+	import org.osflash.signals.IPrioritySignal;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -42,7 +42,7 @@ package org.osflash.signals.natives
 		public function testInstantiated():void
 		{
 			assertTrue("NativeSignal instantiated", clicked is NativeSignal);
-			assertTrue('implements IDeluxeSignal', clicked is IDeluxeSignal);
+			assertTrue('implements IPrioritySignal', clicked is IPrioritySignal);
 			assertTrue('implements INativeDispatcher', clicked is INativeDispatcher);
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener('click'));
 			assertSame('target round-trips through constructor', sprite, clicked.target);

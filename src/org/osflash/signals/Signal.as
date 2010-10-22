@@ -2,7 +2,10 @@ package org.osflash.signals
 {
 	import flash.errors.IllegalOperationError;
 	import flash.utils.Dictionary;
+	import flash.utils.getQualifiedClassName;
 
+	[DefaultProperty("valueClasses")]	
+	
 	/**
 	 * Signal dispatches events to multiple listeners.
 	 * It is inspired by C# events and delegates, and by
@@ -38,11 +41,26 @@ package org.osflash.signals
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
 			if (valueClasses.length == 1 && valueClasses[0] is Array)
 				valueClasses = valueClasses[0];
-			setValueClasses(valueClasses);
+			this.valueClasses = valueClasses;
 		}
 		
 		/** @inheritDoc */
 		public function get valueClasses():Array { return _valueClasses; }
+		
+		/** @inheritDoc */
+		public function set valueClasses(value:Array):void
+		{
+			_valueClasses = value || [];
+			
+			for (var i:int = _valueClasses.length; i--; )
+			{
+				if (!(_valueClasses[i] is Class))
+				{
+					throw new ArgumentError('Invalid valueClasses argument: item at index ' + i
+						+ ' should be a Class but was:<' + _valueClasses[i] + '>.' + getQualifiedClassName(_valueClasses[i]));
+				}
+			}
+		}
 		
 		/** @inheritDoc */
 		public function get numListeners():uint { return listeners.length; }
@@ -143,20 +161,6 @@ package org.osflash.signals
 					}
 			}
 			listenersNeedCloning = false;
-		}
-		
-		protected function setValueClasses(valueClasses:Array):void
-		{
-			_valueClasses = valueClasses || [];
-			
-			for (var i:int = _valueClasses.length; i--; )
-			{
-				if (!(_valueClasses[i] is Class))
-				{
-					throw new ArgumentError('Invalid valueClasses argument: item at index ' + i
-						+ ' should be a Class but was:<' + _valueClasses[i] + '>.');
-				}
-			}
 		}
 		
 		protected function registerListener(listener:Function, once:Boolean = false):void
