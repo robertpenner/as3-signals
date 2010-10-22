@@ -3,7 +3,7 @@ package org.osflash.signals.natives
 	import asunit.asserts.*;
 	import asunit.framework.IAsync;
 
-	import org.osflash.signals.IDeluxeSignal;
+	import org.osflash.signals.IPrioritySignal;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -66,22 +66,22 @@ package org.osflash.signals.natives
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener(EventType));
 			
 			assertTrue("NativeMappedSignal instantiated", signal is NativeMappedSignal);
-			assertTrue('implements IDeluxeSignal', signal is IDeluxeSignal);
+			assertTrue('implements IPrioritySignal', signal is IPrioritySignal);
 			assertSame('has only one value class', 1, signal.valueClasses.length);
 			assertSame('single value class is of type String', String, signal.valueClasses[0]);
 			
 			assertTrue("NativeMappedSignal instantiated", signalMappingToEventType is NativeMappedSignal);
-			assertTrue('implements IDeluxeSignal', signalMappingToEventType is IDeluxeSignal);
+			assertTrue('implements IPrioritySignal', signalMappingToEventType is IPrioritySignal);
 			assertSame('has only one value class', 1, signalMappingToEventType.valueClasses.length);
 			assertSame('single value class is of type String', String, signalMappingToEventType.valueClasses[0]);
 			
 			assertTrue("NativeMappedSignal instantiated", signalMappingToIncorrectEventType is NativeMappedSignal);
-			assertTrue('implements IDeluxeSignal', signalMappingToIncorrectEventType is IDeluxeSignal);
+			assertTrue('implements IPrioritySignal', signalMappingToIncorrectEventType is IPrioritySignal);
 			assertSame('has only one value class', 1, signalMappingToIncorrectEventType.valueClasses.length);
 			assertSame('single value class is of type String', String, signalMappingToIncorrectEventType.valueClasses[0]);
 			
 			assertTrue("NativeMappedSignal instantiated", signalMappingToVoid is NativeMappedSignal);
-			assertTrue('implements IDeluxeSignal', signalMappingToVoid is IDeluxeSignal);
+			assertTrue('implements IPrioritySignal', signalMappingToVoid is IPrioritySignal);
 			assertSame('has no value classes', 0, signalMappingToVoid.valueClasses.length);
 		}
 		

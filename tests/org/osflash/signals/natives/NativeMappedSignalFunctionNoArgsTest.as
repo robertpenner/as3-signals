@@ -3,7 +3,7 @@ package org.osflash.signals.natives
 	import asunit.asserts.*;
 	import asunit.framework.IAsync;
 
-	import org.osflash.signals.IDeluxeSignal;
+	import org.osflash.signals.IPrioritySignal;
 
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
@@ -54,12 +54,12 @@ package org.osflash.signals.natives
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener(EventType));
 			
 			assertTrue("NativeMappedSignal instantiated", signalSingle is NativeMappedSignal);
-			assertTrue('implements IDeluxeSignal', signalSingle is IDeluxeSignal);
+			assertTrue('implements IPrioritySignal', signalSingle is IPrioritySignal);
 			assertSame('has only one value class', 1, signalSingle.valueClasses.length);
 			assertSame('single value class is of type String', String, signalSingle.valueClasses[0]);
 			
 			assertTrue("NativeMappedSignal instantiated", signalList is NativeMappedSignal);
-			assertTrue('implements IDeluxeSignal', signalList is IDeluxeSignal);
+			assertTrue('implements IPrioritySignal', signalList is IPrioritySignal);
 			assertSame('has three value classes', 3, signalList.valueClasses.length);
 			assertSame('first value class is of type String', String, signalList.valueClasses[0]);
 			assertSame('second value class is of type int', int, signalList.valueClasses[1]);

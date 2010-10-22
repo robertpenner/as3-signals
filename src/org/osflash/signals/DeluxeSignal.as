@@ -15,7 +15,7 @@ package org.osflash.signals
 	 * <br/><br/>
 	 * Project home: <a target="_top" href="http://github.com/robertpenner/as3-signals/">http://github.com/robertpenner/as3-signals/</a>
 	 */
-	public class DeluxeSignal implements IDeluxeSignal, ISignalOwner, IDispatcher
+	public class DeluxeSignal implements ISignalOwner, IPrioritySignal
 	{
 		protected var _target:Object;
 		protected var _valueClasses:Array;

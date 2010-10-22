@@ -1,7 +1,5 @@
 package org.osflash.signals.natives
 {
-	import org.osflash.signals.IDeluxeSignal;
-
 	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
@@ -13,7 +11,7 @@ package org.osflash.signals.natives
 	 * A NativeSignal is essentially a mini-dispatcher locked to a specific event type and class.
 	 * It can become part of an interface.
 	 */
-	public class NativeSignal implements IDeluxeSignal, INativeDispatcher
+	public class NativeSignal implements INativeSignalOwner
 	{
 		protected var _target:IEventDispatcher;
 		protected var _eventType:String;

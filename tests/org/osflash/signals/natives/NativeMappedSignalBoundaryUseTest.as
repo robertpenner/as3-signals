@@ -3,7 +3,7 @@ package org.osflash.signals.natives
 	import asunit.asserts.*;
 	import asunit.framework.IAsync;
 
-	import org.osflash.signals.IDeluxeSignal;
+	import org.osflash.signals.IPrioritySignal;
 
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
@@ -52,15 +52,15 @@ package org.osflash.signals.natives
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener(EventType));
 			
 			assertTrue("NativeMappedSignal instantiated", signalArrayOfFunctions is NativeMappedSignal);
-			assertTrue('implements ISignal', signalArrayOfFunctions is IDeluxeSignal);
+			assertTrue('implements ISignal', signalArrayOfFunctions is IPrioritySignal);
 			assertSame('has no value classes', 0, signalArrayOfFunctions.valueClasses.length);
 			
 			assertTrue("NativeMappedSignal instantiated", signalPassArray is NativeMappedSignal);
-			assertTrue('implements IDeluxeSignal', signalPassArray is IDeluxeSignal);
+			assertTrue('implements IPrioritySignal', signalPassArray is IPrioritySignal);
 			assertSame('has no value classed', 0, signalPassArray.valueClasses.length);
 			
 			assertTrue("NativeMappedSignal instantiated", signalPassArrayThroughFunction is NativeMappedSignal);
-			assertTrue('implements IDeluxeSignal', signalPassArrayThroughFunction is IDeluxeSignal);
+			assertTrue('implements IPrioritySignal', signalPassArrayThroughFunction is IPrioritySignal);
 			assertSame('has only one value class', 1, signalPassArrayThroughFunction.valueClasses.length);
 			assertSame('single value class is of type Array', Array, signalPassArrayThroughFunction.valueClasses[0]);
 		}
