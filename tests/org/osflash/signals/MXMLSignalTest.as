@@ -26,6 +26,7 @@ package org.osflash.signals
 		{
 			assertTrue(mxmlSprite.numChildrenChanged is Signal);
 			assertTrue(mxmlSprite.nameChanged is Signal);
+			assertTrue(mxmlSprite.tabEnabledChanged is Signal);
 		}
 		
 		[Test]
@@ -44,5 +45,23 @@ package org.osflash.signals
 			assertEquals(String, valueClasses[0]);
 			assertEquals(String, valueClasses[1]);
 		}
+		
+		[Test]
+		public function mxml_Signal_has_single_value_class_from_mxml_attribute():void
+		{
+			var valueClasses:Array = mxmlSprite.tabEnabledChanged.valueClasses;
+			assertEquals(1, valueClasses.length);
+			assertEquals(Boolean, valueClasses[0]);
+		}
+		
+		[Test]
+		public function mxml_Signal_has_multiple_value_classes_from_mxml_attribute():void
+		{
+			var valueClasses:Array = mxmlSprite.tabIndexChanged.valueClasses;
+			assertEquals(2, valueClasses.length);
+			assertEquals(int, valueClasses[0]);
+			assertEquals(int, valueClasses[1]);
+		}
+		
 	}
 }

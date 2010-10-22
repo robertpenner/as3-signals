@@ -3,7 +3,16 @@
 	xmlns:display="flash.display.*"
 	xmlns:signals="org.osflash.signals.*">
 	
+	<!-- A single value class can go in the default property, using only curly braces. -->
 	<signals:Signal id="numChildrenChanged">{uint}</signals:Signal>
+	
+	<!-- Multiple value classes need to be wrapped in an array, then curly braces. -->
 	<signals:Signal id="nameChanged">{[String, String]}</signals:Signal>
+	
+	<!-- A single value class can go in the attribute, using only curly braces. -->
+	<signals:Signal id="tabEnabledChanged" valueClasses="{Boolean}"/>
+	
+	<!-- Multiple value classes need to be wrapped in an array, then curly braces. -->
+	<signals:Signal id="tabIndexChanged" valueClasses="{[int, int]}"/>
 	
 </display:Sprite>
