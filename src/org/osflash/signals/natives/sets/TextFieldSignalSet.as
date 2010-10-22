@@ -10,13 +10,15 @@ package org.osflash.signals.natives.sets {
 	 */
 	public class TextFieldSignalSet extends InteractiveObjectSignalSet {
 
-		public var change:NativeSignal;
-		public var link:NativeSignal;
-		public var scroll:NativeSignal;
-
 		public function TextFieldSignalSet(target:TextField) {
 			super(target);
-			_signals.push(change = new NativeSignal(target, Event.CHANGE, Event));			_signals.push(link = new NativeSignal(target, TextEvent.LINK, TextEvent));
+		}
+
+		public function get change():NativeSignal {
+			return getNativeSignal(Event.CHANGE);
+		}
+		public function get link():NativeSignal {
+			return getNativeSignal(TextEvent.LINK, TextEvent);
 		}
 	}
 }

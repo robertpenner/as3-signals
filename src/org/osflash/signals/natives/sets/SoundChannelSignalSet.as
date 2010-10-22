@@ -9,11 +9,12 @@ package org.osflash.signals.natives.sets {
 	 */
 	public class SoundChannelSignalSet extends EventDispatcherSignalSet {
 
-		public var soundComplete:NativeSignal;
-
 		public function SoundChannelSignalSet(target:SoundChannel) {
 			super(target);
-			_signals.push(soundComplete = new NativeSignal(target, Event.SOUND_COMPLETE, Event));
+		}
+
+		public function get soundComplete():NativeSignal {
+			return getNativeSignal(Event.SOUND_COMPLETE);
 		}
 	}
 }

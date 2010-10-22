@@ -11,13 +11,18 @@ package org.osflash.signals.natives.sets {
 	 */
 	public class NetStreamSignalSet extends EventDispatcherSignalSet {
 
-		public var asyncError:NativeSignal;
-		public var ioError:NativeSignal;
-		public var netStatus:NativeSignal;
-
 		public function NetStreamSignalSet(target:NetStream) {
 			super(target);
-			_signals.push(asyncError = new NativeSignal(target, AsyncErrorEvent.ASYNC_ERROR, AsyncErrorEvent));			_signals.push(ioError = new NativeSignal(target, IOErrorEvent.IO_ERROR, IOErrorEvent));			_signals.push(netStatus = new NativeSignal(target, NetStatusEvent.NET_STATUS, NetStatusEvent));
+		}
+
+		public function get asyncError():NativeSignal {
+			return getNativeSignal(AsyncErrorEvent.ASYNC_ERROR, AsyncErrorEvent);
+		}
+		public function get ioError():NativeSignal {
+			return getNativeSignal(IOErrorEvent.IO_ERROR, IOErrorEvent);
+		}
+		public function get netStatus():NativeSignal {
+			return getNativeSignal(NetStatusEvent.NET_STATUS, NetStatusEvent);
 		}
 	}
 }

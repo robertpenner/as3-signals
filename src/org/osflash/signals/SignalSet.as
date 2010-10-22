@@ -70,5 +70,9 @@ package org.osflash.signals {
 		public function get signals():Array {
 			return _signals.concat();
 		}
+
+		protected function addSignal(iSignalOwner:ISignalOwner):void {
+			_signals.push(iSignalOwner);
+		}
 	}
 }

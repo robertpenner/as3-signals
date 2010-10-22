@@ -1,20 +1,29 @@
-package org.osflash.signals.natives.sets {
-	import org.osflash.signals.SignalSet;
+package org.osflash.signals.natives.sets 
+{
+	import flash.events.EventDispatcher;
+
 	import org.osflash.signals.natives.NativeSignal;
 
 	import flash.events.Event;
-	import flash.events.IEventDispatcher;
 
 	/**
 	 * @author Jon Adams
 	 */
-	public class EventDispatcherSignalSet extends SignalSet {
+	public class EventDispatcherSignalSet extends NativeSignalSet 
+	{
+		public function EventDispatcherSignalSet(target:EventDispatcher) 
+		{
+			super(target);
+		}
 
-		public var activate:NativeSignal;
-		public var deactivate:NativeSignal;
+		public function get activate():NativeSignal 
+		{
+			return getNativeSignal(Event.ACTIVATE);
+		}
 
-		public function EventDispatcherSignalSet(target:IEventDispatcher) {
-			_signals.push(activate = new NativeSignal(target, Event.ACTIVATE, Event));			_signals.push(deactivate = new NativeSignal(target, Event.DEACTIVATE, Event));
+		public function get deactivate():NativeSignal 
+		{	
+			return getNativeSignal(Event.DEACTIVATE);
 		}
 	}
 }

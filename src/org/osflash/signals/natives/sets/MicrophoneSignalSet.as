@@ -10,12 +10,15 @@ package org.osflash.signals.natives.sets {
 	 */
 	public class MicrophoneSignalSet extends EventDispatcherSignalSet {
 
-		private var activity:NativeSignal;
-		private var status:NativeSignal;
-
 		public function MicrophoneSignalSet(target:Microphone) {
 			super(target);
-			_signals.push(activity = new NativeSignal(target, ActivityEvent.ACTIVITY, ActivityEvent));			_signals.push(status = new NativeSignal(target, StatusEvent.STATUS, StatusEvent));
+		}
+
+		public function get activity():NativeSignal {
+			return getNativeSignal(ActivityEvent.ACTIVITY, ActivityEvent);
+		}
+		public function get status():NativeSignal {
+			return getNativeSignal(StatusEvent.STATUS, StatusEvent);
 		}
 	}
 }

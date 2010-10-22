@@ -11,13 +11,18 @@ package org.osflash.signals.natives.sets {
 	 */
 	public class SharedObjectSignalSet extends EventDispatcherSignalSet {
 
-		public var asyncError:NativeSignal;
-		public var netStatus:NativeSignal;
-		public var sync:NativeSignal;
-
 		public function SharedObjectSignalSet(target:SharedObject) {
 			super(target);
-			_signals.push(asyncError = new NativeSignal(target, AsyncErrorEvent.ASYNC_ERROR, AsyncErrorEvent));			_signals.push(netStatus = new NativeSignal(target, NetStatusEvent.NET_STATUS, NetStatusEvent));			_signals.push(sync = new NativeSignal(target, SyncEvent.SYNC, SyncEvent));
+		}
+
+		public function get asyncError():NativeSignal {
+			return getNativeSignal(AsyncErrorEvent.ASYNC_ERROR, AsyncErrorEvent);
+		}
+		public function get netStatus():NativeSignal {
+			return getNativeSignal(NetStatusEvent.NET_STATUS, NetStatusEvent);
+		}
+		public function get sync():NativeSignal {
+			return getNativeSignal(SyncEvent.SYNC, SyncEvent);
 		}
 	}
 }

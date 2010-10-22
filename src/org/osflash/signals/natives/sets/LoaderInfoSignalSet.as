@@ -12,21 +12,35 @@ package org.osflash.signals.natives.sets {
 	 */
 	public class LoaderInfoSignalSet extends EventDispatcherSignalSet {
 
-		public var complete:NativeSignal;
-		public var httpStatus:NativeSignal;		public var init:NativeSignal;
-		public var ioError:NativeSignal;
-		public var open:NativeSignal;
-		public var progress:NativeSignal;
-		public var unload:NativeSignal;
-
 		public function LoaderInfoSignalSet(target:LoaderInfo) {
 			super(target);
-			_signals.push(complete = new NativeSignal(target, Event.COMPLETE, Event));
-			_signals.push(httpStatus = new NativeSignal(target, HTTPStatusEvent.HTTP_STATUS, HTTPStatusEvent));
-			_signals.push(init = new NativeSignal(target, Event.INIT, Event));			_signals.push(ioError = new NativeSignal(target, IOErrorEvent.IO_ERROR, IOErrorEvent));
-			_signals.push(open = new NativeSignal(target, Event.OPEN, Event));
-			_signals.push(progress = new NativeSignal(target, ProgressEvent.PROGRESS, ProgressEvent));
-			_signals.push(unload = new NativeSignal(target, Event.UNLOAD, Event));
+		}
+
+		public function get complete():NativeSignal {
+			return getNativeSignal(Event.COMPLETE);
+		}
+
+		public function get httpStatus():NativeSignal {
+			return getNativeSignal(HTTPStatusEvent.HTTP_STATUS, HTTPStatusEvent);
+		}
+
+		public function get init():NativeSignal {
+			return getNativeSignal(Event.INIT);
+		}
+		public function get ioError():NativeSignal {
+			return getNativeSignal(IOErrorEvent.IO_ERROR, IOErrorEvent);
+		}
+
+		public function get open():NativeSignal {
+			return getNativeSignal(Event.OPEN);
+		}
+
+		public function get progress():NativeSignal {
+			return getNativeSignal(ProgressEvent.PROGRESS, ProgressEvent);
+		}
+
+		public function get unload():NativeSignal {
+			return getNativeSignal(Event.UNLOAD);
 		}
 	}
 }

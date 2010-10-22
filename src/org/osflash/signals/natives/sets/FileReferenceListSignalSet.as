@@ -9,13 +9,16 @@ package org.osflash.signals.natives.sets {
 	 */
 	public class FileReferenceListSignalSet extends EventDispatcherSignalSet {
 
-		public var cancel:NativeSignal;
-		public var select:NativeSignal;
-
 		public function FileReferenceListSignalSet(target:FileReference) {
 			super(target);
-			_signals.push(cancel = new NativeSignal(target, Event.CANCEL, Event));
-			_signals.push(select = new NativeSignal(target, Event.SELECT, Event));
+		}
+
+		public function get cancel():NativeSignal {
+			return getNativeSignal(Event.CANCEL);
+		}
+
+		public function get select():NativeSignal {
+			return getNativeSignal(Event.SELECT);
 		}
 	}
 }

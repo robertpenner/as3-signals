@@ -9,13 +9,18 @@ package org.osflash.signals.natives.sets {
 	 */
 	public class StageSignalSet extends InteractiveObjectSignalSet {
 
-		public var fullScreen:NativeSignal;
-		public var mouseLeave:NativeSignal;
-		public var resize:NativeSignal;
-
 		public function StageSignalSet(target:Stage) {
 			super(target);
-			_signals.push(fullScreen = new NativeSignal(target, Event.FULLSCREEN, Event));			_signals.push(mouseLeave = new NativeSignal(target, Event.MOUSE_LEAVE, Event));			_signals.push(resize = new NativeSignal(target, Event.RESIZE, Event));
+		}
+
+		public function get fullScreen():NativeSignal {
+			return getNativeSignal(Event.FULLSCREEN);
+		}
+		public function get mouseLeave():NativeSignal {
+			return getNativeSignal(Event.MOUSE_LEAVE);
+		}
+		public function get resize():NativeSignal {
+			return getNativeSignal(Event.RESIZE);
 		}
 	}
 }
