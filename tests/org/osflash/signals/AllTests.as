@@ -9,6 +9,7 @@ package org.osflash.signals
 	import org.osflash.signals.natives.NativeMappedSignalObjectArgTest;
 	import org.osflash.signals.natives.NativeRelaySignalTest;
 	import org.osflash.signals.natives.NativeSignalTest;
+	import org.osflash.signals.natives.sets.NativeSignalSetTest;
 
 	[Suite]
 	public class AllTests
@@ -43,7 +44,6 @@ package org.osflash.signals
 		public var _SignalSplitInterfacesTest:SignalSplitInterfacesTest;
 		public var _SignalTest:SignalTest;
 		public var _SignalWithCustomEventTest:SignalWithCustomEventTest;
-		
-		public var _SignalSetTest:SignalSetTest;
+				public var _NativeSignalSetTest:NativeSignalSetTest;
 	}
 }

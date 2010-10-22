@@ -1,19 +1,16 @@
-package org.osflash.signals 
+package org.osflash.signals.natives.sets 
 {
-	import org.osflash.signals.natives.NativeSignal;
-
 	import asunit.asserts.assertEquals;
 	import asunit.asserts.assertSame;
 	import asunit.asserts.assertTrue;
 	import asunit.framework.IAsync;
 
-	import org.osflash.signals.natives.sets.EventDispatcherSignalSet;
-	import org.osflash.signals.natives.sets.InteractiveObjectSignalSet;
+	import org.osflash.signals.natives.NativeSignal;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
 
-	public class SignalSetTest 
+	public class NativeSignalSetTest 
 	{	
 
 		[Inject]

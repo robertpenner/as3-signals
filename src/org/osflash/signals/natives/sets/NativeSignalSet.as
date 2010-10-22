@@ -1,6 +1,5 @@
 package org.osflash.signals.natives.sets 
 {
-	import org.osflash.signals.ISignalOwner;
 	import org.osflash.signals.natives.INativeSignalOwner;
 	import org.osflash.signals.natives.NativeSignal;
 
@@ -55,8 +54,8 @@ package org.osflash.signals.natives.sets
 		 */
 		public function get numListeners():int {
 			var count:int = 0;
-			for each (var iSignalOwner : ISignalOwner in _signals) {
-				count += iSignalOwner.numListeners;
+			for each (var iNativeSignalOwner : INativeSignalOwner in _signals) {
+				count += iNativeSignalOwner.numListeners;
 			}
 			return count;
 		}
@@ -73,8 +72,8 @@ package org.osflash.signals.natives.sets
 		 */
 		public function removeAll():void {
 			while(_signals.length) {
-				var iSignalOwner:ISignalOwner = _signals.pop();
-				iSignalOwner.removeAll();
+				var iNativeSignalOwner:INativeSignalOwner = _signals.pop();
+				iNativeSignalOwner.removeAll();
 			}
 		}
 	}
