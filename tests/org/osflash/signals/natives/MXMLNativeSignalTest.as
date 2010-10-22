@@ -9,6 +9,8 @@ package org.osflash.signals.natives
 
 	public class MXMLNativeSignalTest
 	{	
+		[Inject] public var context:Sprite;
+		
 		private var mxmlSprite:SpriteWithNativeSignals;
 		
 		[Before]
@@ -57,6 +59,19 @@ package org.osflash.signals.natives
 		public function omitted_eventClass_defaults_to_Event():void
 		{
 			assertEquals(Event, mxmlSprite.addedToStage.eventClass);
-		}			
+		}	
+		
+		[Test]
+		public function add_listener_then_dispatch_calls_listener():void
+		{
+			var called:Boolean = false;
+			var handler:Function = function(event:Event):void { called = true; };
+			mxmlSprite.addedToStage.addOnce(handler);
+			// when
+			context.addChild(mxmlSprite);
+			// then
+			assertTrue(called);
+			context.removeChild(mxmlSprite);
+		}
 	}
 }

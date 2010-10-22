@@ -62,6 +62,17 @@ package org.osflash.signals
 			assertEquals(int, valueClasses[0]);
 			assertEquals(Boolean, valueClasses[1]);
 		}
-		
+
+		[Test]
+		public function add_listener_then_dispatch_calls_listener():void
+		{
+			var called:Boolean = false;
+			var handler:Function = function(newValue:Boolean):void { called = true; };
+			mxmlSprite.tabEnabledChanged.addOnce(handler);
+			// when
+			mxmlSprite.tabEnabledChanged.dispatch(true);
+			// then
+			assertTrue(called);
+		}		
 	}
 }
