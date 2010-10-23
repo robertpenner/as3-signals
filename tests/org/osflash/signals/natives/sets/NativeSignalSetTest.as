@@ -64,9 +64,13 @@ package org.osflash.signals.natives.sets
 
 		public function stage_events_should_all_fire():void
 		{
-			signalSet.added.addOnce(async.add(handleEvent));			signalSet.addedToStage.addOnce(async.add(handleEvent));			
-			signalSet.enterFrame.addOnce(async.add(handleEnterFrame));			signalSet.render.addOnce(async.add(handleRender));
-						context.addChild(sprite);
+			signalSet.added.addOnce(async.add(handleEvent));
+			signalSet.addedToStage.addOnce(async.add(handleEvent));
+			
+			signalSet.enterFrame.addOnce(async.add(handleEnterFrame));
+			signalSet.render.addOnce(async.add(handleRender));
+			
+			context.addChild(sprite);
 		}
 
 		private function handleEnterFrame(event:Event):void 
@@ -88,7 +92,8 @@ package org.osflash.signals.natives.sets
 			signalSet.removed.addOnce(async.add(handleEvent));
 			signalSet.removedFromStage.addOnce(async.add(handleEvent));
 			
-			context.addChild(sprite);			context.removeChild(sprite);
+			context.addChild(sprite);
+			context.removeChild(sprite);
 		}
 
 		[Test]
@@ -138,13 +143,41 @@ package org.osflash.signals.natives.sets
 
 		public function lazily_instantiats_NativeSignal():void 
 		{
-			assertEquals(signalSet.signals.length, 0);			assertTrue(signalSet.activate is NativeSignal);
-			assertEquals(signalSet.signals.length, 1);		}
+			assertEquals(signalSet.signals.length, 0);
+			assertTrue(signalSet.activate is NativeSignal);
+			assertEquals(signalSet.signals.length, 1);
+		}
 
-		[Test]
+		[Test]
+
 		public function try_all_InteractiveObjectSignalSet_Events():void 
 		{
-			signalSet.activate.add(handleEvent);			signalSet.added.add(handleEvent);			signalSet.addedToStage.add(handleEvent);			signalSet.click.add(handleEvent);			signalSet.deactivate.add(handleEvent);			signalSet.doubleClick.add(handleEvent);			signalSet.enterFrame.add(handleEvent);			signalSet.focusIn.add(handleEvent);			signalSet.focusOut.add(handleEvent);			signalSet.keyDown.add(handleEvent);			signalSet.keyFocusChange.add(handleEvent);			signalSet.keyUp.add(handleEvent);			signalSet.mouseDown.add(handleEvent);			signalSet.mouseFocusChange.add(handleEvent);			signalSet.mouseMove.add(handleEvent);			signalSet.mouseOut.add(handleEvent);			signalSet.mouseOver.add(handleEvent);			signalSet.mouseUp.add(handleEvent);			signalSet.mouseWheel.add(handleEvent);			signalSet.removed.add(handleEvent);			signalSet.render.add(handleEvent);			signalSet.rollOut.add(handleEvent);			signalSet.rollOver.add(handleEvent);			signalSet.tabChildrenChange.add(handleEvent);			signalSet.tabEnabledChange.add(handleEvent);			signalSet.tabIndexChange.add(handleEvent);
+			signalSet.activate.add(handleEvent);
+			signalSet.added.add(handleEvent);
+			signalSet.addedToStage.add(handleEvent);
+			signalSet.click.add(handleEvent);
+			signalSet.deactivate.add(handleEvent);
+			signalSet.doubleClick.add(handleEvent);
+			signalSet.enterFrame.add(handleEvent);
+			signalSet.focusIn.add(handleEvent);
+			signalSet.focusOut.add(handleEvent);
+			signalSet.keyDown.add(handleEvent);
+			signalSet.keyFocusChange.add(handleEvent);
+			signalSet.keyUp.add(handleEvent);
+			signalSet.mouseDown.add(handleEvent);
+			signalSet.mouseFocusChange.add(handleEvent);
+			signalSet.mouseMove.add(handleEvent);
+			signalSet.mouseOut.add(handleEvent);
+			signalSet.mouseOver.add(handleEvent);
+			signalSet.mouseUp.add(handleEvent);
+			signalSet.mouseWheel.add(handleEvent);
+			signalSet.removed.add(handleEvent);
+			signalSet.render.add(handleEvent);
+			signalSet.rollOut.add(handleEvent);
+			signalSet.rollOver.add(handleEvent);
+			signalSet.tabChildrenChange.add(handleEvent);
+			signalSet.tabEnabledChange.add(handleEvent);
+			signalSet.tabIndexChange.add(handleEvent);
 			
 			assertSame(26, signalSet.numListeners);
 		}
