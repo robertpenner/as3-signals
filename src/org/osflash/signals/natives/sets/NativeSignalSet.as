@@ -88,8 +88,8 @@ package org.osflash.signals.natives.sets
 		/**
 		 * The current number of listeners for the signal.
 		 */
-		public function get numListeners():int {
-			var count:int = 0;
+		public function get numListeners():uint {
+			var count:uint = 0;
 			for each (var iNativeSignalOwner : INativeSignalOwner in _signals) {
 				count += iNativeSignalOwner.numListeners;
 			}
