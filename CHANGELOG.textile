@@ -1,5 +1,26 @@
 h2. AS3 Signals Changelog:
 
+h3. v0.8 - Maximilian - 2010-11-__
+
+h4. API Changes
+* Signals are now MXML-friendly! E.g:
+  signals:Signal id="nameChanged">{[String, uint]}</signals:Signal>
+  
+* Now writable:
+** valueClasses (Signal, DeluxeSignal)
+** eventClass (NativeSignal, NativeRelaySignal)
+* Renamed IDeluxeSignal to IPrioritySignal, a more functional name.
+* New interfaces to grant access to methods that affect all listeners:
+** ISignalOwner: extends ISignal, IDispatcher, adds removeAll().
+** INativeSignalOwner: IPrioritySignal, INativeDispatcher, adds removeAll().
+** Both these interfaces are needed because dispatch(event:Event) conflicts with dispatch(...valueObjects).
+** Thanks to "Brian Heylin":http://github.com/brianheylin for getting the ball rolling.
+
+h4. Fixes
+* Changing NativeSignal.target wasn't removing listeners from target.
+* "#24 - Changing NativeSignal.target wasn't removing listeners from target.":http://github.com/robertpenner/as3-signals/issues/closed#issue/24
+
+
 h3. v0.7 - Bubblap - 2010-05-27
 
 h4. API Changes
