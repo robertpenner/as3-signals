@@ -4,6 +4,10 @@ package org.osflash.signals.natives
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 
+	/** 
+	 * Allows the eventClass to be set in MXML, e.g.
+	 * <natives:NativeSignal id="clicked" eventType="click" target="{this}">{MouseEvent}</natives:NativeSignal>
+	 */
 	[DefaultProperty("eventClass")]	
 	
 	/**
