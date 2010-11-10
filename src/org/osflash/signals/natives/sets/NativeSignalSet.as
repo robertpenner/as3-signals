@@ -48,7 +48,7 @@ package org.osflash.signals.natives.sets
 	public class NativeSignalSet 
 	{
 		protected var target:IEventDispatcher;
-		protected var _signals:Array = [];
+		protected var _signals:Object = {};
 
 		public function NativeSignalSet(target:IEventDispatcher) 
 		{
@@ -56,42 +56,30 @@ package org.osflash.signals.natives.sets
 		}
 
 		/**
-		 * Lazily instantiats a NativeSignal
+		 * Lazily instantiates a NativeSignal
 		 */
 		protected function getNativeSignal(eventType:String, eventClass:Class = null):NativeSignal 
 		{
-			eventClass = eventClass || Event;
-			
-			var i:int = _signals.length; 
-			while(i--) 
-			{
-				var signal:NativeSignal = _signals[i] as NativeSignal;
-				if(signal.target == target && signal.eventType == eventType && signal.eventClass == eventClass) 
-				{
-					return signal;
-				}
-			}
-			
-			var nativeSignal:NativeSignal = new NativeSignal(target, eventType, eventClass);
-			addSignal(nativeSignal);
-			
-			return nativeSignal;
+			return _signals[eventType] ||= new NativeSignal(target, eventType, eventClass || Event);
 		}
 
 		/**
-		 * adds a INativeSignalOwner to the list of instantiated signals
+		 * adds a INativeSignalOwner (e.g. NativeSignal) to the list of instantiated signals
 		 */
-		protected function addSignal(iNativeSignalOwner :INativeSignalOwner ):void {
-			_signals.push(iNativeSignalOwner );
+		protected function addSignal(signal:INativeSignalOwner):void 
+		{
+			_signals[signal.eventType] = signal;
 		}
 
 		/**
 		 * The current number of listeners for the signal.
 		 */
-		public function get numListeners():uint {
+		public function get numListeners():uint 
+		{
 			var count:uint = 0;
-			for each (var iNativeSignalOwner : INativeSignalOwner in _signals) {
-				count += iNativeSignalOwner.numListeners;
+			for each (var signal:INativeSignalOwner in _signals) 
+			{
+				count += signal.numListeners;
 			}
 			return count;
 		}
@@ -99,17 +87,25 @@ package org.osflash.signals.natives.sets
 		/**
 		 * The signals in the SignalSet as an Array.
 		 */
-		public function get signals():Array {
-			return _signals.concat();
+		public function get signals():Array 
+		{
+			var result:Array = [];
+			for each (var signal:INativeSignalOwner in _signals) 
+			{
+				result[result.length] = signal;
+			}
+			return result;
 		}
 		
 		/**
 		 * Unsubscribes all listeners from all signals in the set.
 		 */
-		public function removeAll():void {
-			while(_signals.length) {
-				var iNativeSignalOwner:INativeSignalOwner = _signals.pop();
-				iNativeSignalOwner.removeAll();
+		public function removeAll():void 
+		{
+			for each (var signal:INativeSignalOwner in _signals) 
+			{
+				signal.removeAll();
+				delete _signals[signal.eventType];
 			}
 		}
 	}
