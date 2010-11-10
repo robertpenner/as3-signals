@@ -29,6 +29,8 @@ package org.osflash.signals.natives
 		public function mxml_object_has_NativeSignals_after_creation():void
 		{
 			assertTrue(mxmlSprite.clicked is NativeSignal);
+			assertTrue(mxmlSprite.doubleClicked is NativeSignal);
+			assertTrue(mxmlSprite.addedToStage is NativeSignal);
 		}
 		
 		[Test]

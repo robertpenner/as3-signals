@@ -6,13 +6,14 @@
 	<!-- A single value class can go in the default property, using only curly braces. -->
 	<signals:Signal id="numChildrenChanged">{uint}</signals:Signal>
 	
-	<!-- Multiple value classes need to be wrapped in an array, then curly braces. -->
+	<!-- Wrap multiple value classes in an array, then curly braces. -->
 	<signals:Signal id="nameChanged">{[String, uint]}</signals:Signal>
 	
-	<!-- A single value class can go in the attribute, using only curly braces. -->
+	<!-- With Flex SDK 4, a single value class can go in the attribute, using only curly braces. 
+		 With Flex SDK 3, it must be wrapped in an array: {[Boolean]} -->
 	<signals:Signal id="tabEnabledChanged" valueClasses="{Boolean}"/>
 	
-	<!-- Multiple value classes need to be wrapped in an array, then curly braces. -->
+	<!-- Wrap multiple value classes in an array, then curly braces. -->
 	<signals:Signal id="tabIndexChanged" valueClasses="{[int, Boolean]}"/>
 	
 </display:Sprite>

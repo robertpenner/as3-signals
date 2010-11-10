@@ -1,6 +1,5 @@
 package org.osflash.signals.natives
 {
-	import org.osflash.signals.ISignal;
 	import org.osflash.signals.IPrioritySignal;
 	
 	/**

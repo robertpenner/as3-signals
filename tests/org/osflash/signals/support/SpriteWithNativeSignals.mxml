@@ -3,10 +3,11 @@
 	xmlns:display="flash.display.*"
 	xmlns:natives="org.osflash.signals.natives.*">
 	
-	<!-- A NativeSignal has only one value class, i.e. eventClass. It can go in the default property. -->
+	<!-- A NativeSignal has only one value class, i.e. eventClass. It can go in the default property. 
+		 Requires Flex SDK 4. -->
 	<natives:NativeSignal id="clicked" eventType="click" target="{this}">{MouseEvent}</natives:NativeSignal>
 
-	<!-- The eventClass can go in the attribute. -->
+	<!-- The eventClass can go in the attribute instead. Works in Flex SDK 3. -->
 	<natives:NativeSignal id="doubleClicked" eventType="doubleClick" target="{this}" eventClass="{MouseEvent}"/>
 
 	<!-- The eventClass can be omitted for vanilla Events. -->
