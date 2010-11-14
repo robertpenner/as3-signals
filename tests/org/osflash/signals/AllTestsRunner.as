@@ -12,6 +12,7 @@ package org.osflash.signals
 		public function AllTestsRunner()
 		{
             core = new TextCore();
+			core.textPrinter.hideLocalPaths = true;
 			core.start(AllTests, null, this);
 		}
 	}
