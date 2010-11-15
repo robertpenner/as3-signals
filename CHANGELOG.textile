@@ -13,19 +13,18 @@ h4. API Changes
 * Renamed IDeluxeSignal to IPrioritySignal, a more functional name.
 * New interfaces to grant access to methods that affect all listeners:
 ** ISignalOwner: extends ISignal, IDispatcher, adds removeAll().
-** INativeSignalOwner: IPrioritySignal, INativeDispatcher, adds removeAll().
-** Both these interfaces are needed because dispatch(event:Event) conflicts with dispatch(...valueObjects).
+** INativeSignalOwner: extends IPrioritySignal, INativeDispatcher, adds removeAll().
+** These 2 interfaces cannot be merged because dispatch(event:Event) conflicts with dispatch(...valueObjects).
 ** Thanks to "Brian Heylin":http://github.com/brianheylin for getting the ball rolling.
 
 h4. Fixes
-* Changing NativeSignal.target wasn't removing listeners from target.
 * "#24 - Changing NativeSignal.target wasn't removing listeners from target.":http://github.com/robertpenner/as3-signals/issues/closed#issue/24
 * "#32 - FIX: Setting NativeSignal.eventClass to null and dispatching causes null exception.":http://github.com/robertpenner/as3-signals/issues/closed#issue/32
 
 h4. Build
-* Added Ant targets for running unit tests and continuous integration: "tests" and "ci".
-* Removed build-asunit.xml as its functionality has been merged into build.xml.
+* Added continuous integration and unit test execution Ant targets: "ci" and "test".
 * Updated AsUnit 4 SWC: test failure call stack is more concise and readable.
+* Removed build-asunit.xml as its functionality has been merged into build.xml.
 
 
 h3. v0.7 - Bubblap - 2010-05-27
