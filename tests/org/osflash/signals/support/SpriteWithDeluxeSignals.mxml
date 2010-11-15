@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<display:Sprite xmlns:mx="http://www.adobe.com/2006/mxml" 
+	xmlns:display="flash.display.*"
+	xmlns:signals="org.osflash.signals.*">
+	
+	<mx:Script>
+		<![CDATA[
+		import org.osflash.signals.events.IEvent;		
+		]]>
+	</mx:Script>
+	  
+	<!-- A single value class can go in the default property, using only curly braces. -->
+	<signals:DeluxeSignal id="numChildrenChanged" target="{this}">{IEvent}</signals:DeluxeSignal>
+	
+	<!-- Wrap multiple value classes in an array, then curly braces. -->
+	<signals:DeluxeSignal id="nameChanged" target="{this}">{[String, uint]}</signals:DeluxeSignal>
+	
+	<!-- With Flex SDK 4, a single value class can go in the attribute, using only curly braces. 
+		 With Flex SDK 3, it must be wrapped in an array: {[Boolean]} -->
+	<signals:DeluxeSignal id="tabEnabledChanged" target="{this}" valueClasses="{Boolean}"/>
+	
+	<!-- Wrap multiple value classes in an array, then curly braces. -->
+	<signals:DeluxeSignal id="tabIndexChanged" target="{this}" valueClasses="{[int, Boolean]}"/>
+	
+</display:Sprite>

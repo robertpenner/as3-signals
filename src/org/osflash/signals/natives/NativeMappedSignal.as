@@ -48,7 +48,7 @@ package org.osflash.signals.natives
 		{
 			_eventClass = eventClass || Event;
 			super(target, eventType);
-			setValueClasses(mappedTypes);
+			valueClasses = mappedTypes;
 		}
 		
 		/**

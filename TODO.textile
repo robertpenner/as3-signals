@@ -1,0 +1,10 @@
+h1. AS3 Signals TODO
+
+h2. v0.9
+* add MXML support for NativeMappedSignal, NativeRelaySignal
+* integrate native signal sets from jonopus
+* finish base classes using signal sets, e.g. SignalSprite
+* pull Project Sprouts integration from amoslanka
+* introduce listener class for speed and to remove onceListeners
+* fill in asdocs
+* use Hamcrest in tests

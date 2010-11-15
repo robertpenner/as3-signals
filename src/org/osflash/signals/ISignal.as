@@ -9,6 +9,7 @@ package org.osflash.signals
 		 * An optional array of classes defining the types of parameters sent to listeners.
 		 */
 		function get valueClasses():Array;
+		function set valueClasses(value:Array):void;
 		
 		/** The current number of listeners for the signal. */
 		function get numListeners():uint;

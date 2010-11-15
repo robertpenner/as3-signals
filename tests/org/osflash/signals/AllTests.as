@@ -36,6 +36,7 @@ package org.osflash.signals
 		public var _DeluxeSignalWithBubblingEventTest:DeluxeSignalWithBubblingEventTest;
 		public var _DeluxeSignalWithCustomEventTest:DeluxeSignalWithCustomEventTest;
 		public var _DeluxeSignalWithGenericEventTest:DeluxeSignalWithGenericEventTest;
+		public var _MXMLDeluxeSignalTest:MXMLDeluxeSignalTest;
 		public var _MXMLSignalTest:MXMLSignalTest;
 		public var _MXMLNativeSignalTest:MXMLNativeSignalTest;
 		

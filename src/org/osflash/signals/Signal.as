@@ -54,8 +54,8 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function set valueClasses(value:Array):void
 		{
-			_valueClasses = value || [];
-			
+			// Clone so the Array cannot be affected from outside.
+			_valueClasses = value ? value.slice() : [];
 			for (var i:int = _valueClasses.length; i--; )
 			{
 				if (!(_valueClasses[i] is Class))
