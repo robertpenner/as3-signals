@@ -29,6 +29,23 @@ package org.osflash.signals
 		public function valueClasses_roundtrip_through_constructor():void
 		{
 			assertSame(MessageEvent, messaged.valueClasses[0]);
+			assertEquals(1, messaged.valueClasses.length);
+		}
+
+		[Test]
+		public function valueClasses_roundtrip_through_setter():void
+		{
+			messaged.valueClasses = [GenericEvent];
+			assertSame(GenericEvent, messaged.valueClasses[0]);
+			assertEquals(1, messaged.valueClasses.length);
+		}
+
+		[Test]
+		public function valueClasses_setter_clones_the_array():void
+		{
+			var newValueClasses:Array = [GenericEvent];
+			messaged.valueClasses = newValueClasses;
+			assertNotSame(newValueClasses, messaged.valueClasses);
 		}
 		
 		[Test]

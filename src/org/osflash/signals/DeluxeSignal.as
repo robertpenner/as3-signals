@@ -5,6 +5,12 @@ package org.osflash.signals
 	import org.osflash.signals.events.IBubbleEventHandler;
 	import org.osflash.signals.events.IEvent;
 
+	/** 
+	 * Allows the valueClasses to be set in MXML, e.g.
+	 * <signals:Signal id="nameChanged">{[String, uint]}</signals:Signal>
+	 */
+	[DefaultProperty("valueClasses")]	
+	
 	/**
 	 * Signal dispatches events to multiple listeners.
 	 * It is inspired by C# events and delegates, and by
@@ -34,18 +40,33 @@ package org.osflash.signals
 		 * NOTE: Subclasses cannot call super.apply(null, valueClasses),
 		 * but this constructor has logic to support super(valueClasses).
 		 */
-		public function DeluxeSignal(target:Object, ...valueClasses)
+		public function DeluxeSignal(target:Object = null, ...valueClasses)
 		{
 			_target = target;
 			listenerBoxes = [];
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
 			if (valueClasses.length == 1 && valueClasses[0] is Array)
 				valueClasses = valueClasses[0];
-			setValueClasses(valueClasses);
+			this.valueClasses = valueClasses;
 		}
 		
 		/** @inheritDoc */
 		public function get valueClasses():Array { return _valueClasses; }
+
+		/** @inheritDoc */
+		public function set valueClasses(value:Array):void
+		{
+			// Clone so the Array cannot be affected from outside.
+			_valueClasses = value ? value.slice() : [];
+			for (var i:int = _valueClasses.length; i--; )
+			{
+				if (!(_valueClasses[i] is Class))
+				{
+					throw new ArgumentError('Invalid valueClasses argument: item at index ' + i
+						+ ' should be a Class but was:<' + _valueClasses[i] + '>.');
+				}
+			}
+		}
 		
 		/** @inheritDoc */
 		public function get numListeners():uint { return listenerBoxes.length; }
@@ -181,20 +202,6 @@ package org.osflash.signals
 				if (listenerBoxes[i].listener == listener) return i;
 			}
 			return -1;
-		}
-				
-		protected function setValueClasses(valueClasses:Array):void
-		{
-			_valueClasses = valueClasses || [];
-			
-			for (var i:int = _valueClasses.length; i--; )
-			{
-				if (!(_valueClasses[i] is Class))
-				{
-					throw new ArgumentError('Invalid valueClasses argument: item at index ' + i
-						+ ' should be a Class but was:<' + _valueClasses[i] + '>.');
-				}
-			}
 		}
 		
 		protected function registerListener(listener:Function, once:Boolean = false, priority:int = 0):void

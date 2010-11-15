@@ -4,6 +4,10 @@ package org.osflash.signals.natives
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 
+	/** 
+	 * Allows the eventClass to be set in MXML, e.g.
+	 * <natives:NativeSignal id="clicked" eventType="click" target="{this}">{MouseEvent}</natives:NativeSignal>
+	 */
 	[DefaultProperty("eventClass")]	
 	
 	/**
@@ -26,10 +30,10 @@ package org.osflash.signals.natives
 		 */
 		public function NativeSignal(target:IEventDispatcher = null, eventType:String = "", eventClass:Class = null)
 		{
-			_target = target;
-			_eventType = eventType;
-			_eventClass = eventClass || Event;
 			listenerBoxes = [];
+			this.target = target;
+			this.eventType = eventType;
+			this.eventClass = eventClass;
 		}
 		
 		/** @inheritDoc */
@@ -40,10 +44,16 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		public function get eventClass():Class { return _eventClass; }
 		/** @inheritDoc */
-		public function set eventClass(value:Class):void { _eventClass = value; }
+		public function set eventClass(value:Class):void { _eventClass = value || Event; }
 		
 		/** @inheritDoc */
 		public function get valueClasses():Array { return [_eventClass]; }
+
+		/** @inheritDoc */
+		public function set valueClasses(value:Array):void
+		{
+			eventClass = value ? value[0] : null;
+		}
 		
 		/** @inheritDoc */
 		public function get numListeners():uint { return listenerBoxes.length; }

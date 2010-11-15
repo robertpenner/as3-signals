@@ -18,7 +18,7 @@ package org.osflash.signals.natives
 		 */
 		protected var _eventClass:Class;
 		
-		public function get eventClass ():Class 
+		public function get eventClass():Class 
 		{
 			return _eventClass;
 		}
@@ -48,7 +48,7 @@ package org.osflash.signals.natives
 		{
 			_eventClass = eventClass || Event;
 			super(target, eventType);
-			setValueClasses(mappedTypes);
+			valueClasses = mappedTypes;
 		}
 		
 		/**

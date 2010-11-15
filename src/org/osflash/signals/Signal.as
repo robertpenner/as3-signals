@@ -4,6 +4,10 @@ package org.osflash.signals
 	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
 
+	/** 
+	 * Allows the valueClasses to be set in MXML, e.g.
+	 * <signals:Signal id="nameChanged">{[String, uint]}</signals:Signal>
+	 */
 	[DefaultProperty("valueClasses")]	
 	
 	/**
@@ -50,8 +54,8 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function set valueClasses(value:Array):void
 		{
-			_valueClasses = value || [];
-			
+			// Clone so the Array cannot be affected from outside.
+			_valueClasses = value ? value.slice() : [];
 			for (var i:int = _valueClasses.length; i--; )
 			{
 				if (!(_valueClasses[i] is Class))

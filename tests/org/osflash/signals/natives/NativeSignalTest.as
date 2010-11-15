@@ -3,6 +3,7 @@ package org.osflash.signals.natives
 	import asunit.asserts.*;
 	import asunit.framework.IAsync;
 	import flash.events.EventDispatcher;
+	import flash.events.TimerEvent;
 
 	import org.osflash.signals.IPrioritySignal;
 
@@ -199,6 +200,38 @@ package org.osflash.signals.natives
 			assertSame(MouseEvent, clicked.valueClasses[0]);
 			assertSame(clicked.eventClass, clicked.valueClasses[0]);
 		}
+		
+		[Test]
+		public function setting_eventClass_to_null_defaults_it_to_Event():void
+		{
+			clicked.eventClass = null;
+			// This was causing a null exception: Issue #32.
+			clicked.dispatch(new Event('click'));
+			assertSame(Event, clicked.eventClass);
+		}
+		
+		[Test]
+		public function setting_valueClasses_to_multiple_item_array_puts_the_first_item_in_eventClass():void
+		{
+			// You wouldn't actually do this; you'd set eventClass instead.
+			// But valueClasses is in the ISignal interface and thus needs to be tested.
+			clicked.valueClasses = [TimerEvent, MouseEvent];
+			assertSame(TimerEvent, clicked.eventClass);
+		}	
+		
+		[Test]
+		public function setting_valueClasses_to_empty_array_defaults_eventClass_to_Event():void
+		{
+			clicked.valueClasses = [];
+			assertSame(Event, clicked.eventClass);
+		}			
+
+		[Test]
+		public function setting_valueClasses_to_null_defaults_eventClass_to_Event():void
+		{
+			clicked.valueClasses = null;
+			assertSame(Event, clicked.eventClass);
+		}			
 		
 		//////
 		// Captures Issue #5 - You can't addOnce to a signal from a function called by the same signal.
