@@ -1,10 +1,10 @@
 AS3 Signals TODO
 
-v0.8
-- add MXML support for DeluxeSignal, NativeRelaySignal
-- merge build-asunit.xml into build.xml
-
 v0.9
-- pull native signal sets from jonopus
+- add MXML support for NativeMappedSignal, NativeRelaySignal
+- integrate native signal sets from jonopus
 - finish base classes using signal sets, e.g. SignalSprite
 - pull Project Sprouts integration from amoslanka
+- introduce listener class for speed and to remove onceListeners
+- fill in asdocs
+- use Hamcrest in tests
