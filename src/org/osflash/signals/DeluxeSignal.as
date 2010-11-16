@@ -23,6 +23,7 @@ package org.osflash.signals
 	 */
 	public class DeluxeSignal implements ISignalOwner, IPrioritySignal
 	{
+		//todo inconsistent naming
 		protected var _target:Object;
 		protected var _valueClasses:Array;
 		protected var listenerBoxes:Array;
@@ -44,7 +45,8 @@ package org.osflash.signals
 		{
 			_target = target;
 			listenerBoxes = [];
-			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
+			// Cannot use super.apply(null, valueClasses),
+			// so allow the subclass to call super(valueClasses).
 			if (valueClasses.length == 1 && valueClasses[0] is Array)
 				valueClasses = valueClasses[0];
 			this.valueClasses = valueClasses;
@@ -56,14 +58,19 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function set valueClasses(value:Array):void
 		{
+			//todo when setting null we create a new array, why?
+
 			// Clone so the Array cannot be affected from outside.
 			_valueClasses = value ? value.slice() : [];
-			for (var i:int = _valueClasses.length; i--; )
+
+			var i:int = _valueClasses.length;
+			while(--i > -1)
 			{
 				if (!(_valueClasses[i] is Class))
 				{
-					throw new ArgumentError('Invalid valueClasses argument: item at index ' + i
-						+ ' should be a Class but was:<' + _valueClasses[i] + '>.');
+					throw new ArgumentError('Invalid valueClasses argument: ' +
+						'item at index ' + i + ' should be a Class but was:<' +
+						_valueClasses[i] + '>.');
 				}
 			}
 		}
@@ -123,10 +130,13 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function removeAll():void
 		{
+			//todo see org.osflash.signals.Signal#removeAll
+
 			// Looping backwards is more efficient when removing array items.
-			for (var i:uint = listenerBoxes.length; i--; )
+			var i:int = listenerBoxes.length;
+			while(--i > -1)
 			{
-				remove(listenerBoxes[i].listener as Function);
+				remove(Function(listenerBoxes[i].listener));
 			}
 		}
 		
@@ -140,7 +150,7 @@ package org.osflash.signals
 			for (var i:int = 0; i < len; i++)
 			{
 				// null is allowed to pass through.
-				if ( (valueObject = valueObjects[i]) === null
+				if ( (valueObject = valueObjects[i]) === null//todo why strict equality?
 					|| valueObject is (valueClass = _valueClasses[i]) )
 					continue;
 					
@@ -154,6 +164,7 @@ package org.osflash.signals
 				// clone re-dispatched event
 				if (event.target)
 				{
+					//todo can we get rid of this somehow?
 					valueObjects[0] = event = event.clone();
 				}
 				event.target = this.target;
@@ -161,11 +172,12 @@ package org.osflash.signals
 				event.signal = this;
 			}
 			
-			// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
+			// During a dispatch, add() and remove() should clone listeners array
+			// instead of modifying it.
 			listenersNeedCloning = true;
 			//// Call listeners.
 			var listener:Function;
-			if (listenerBoxes.length)
+			if (listenerBoxes.length != 0)
 			{
 				//TODO: investigate performance of various approaches
 				
@@ -184,6 +196,7 @@ package org.osflash.signals
 			//// Bubble the event as far as possible.
 			var currentTarget:Object = this.target;
 			while ( currentTarget && currentTarget.hasOwnProperty("parent")
+				//todo check if we can optimize this and hasOwnProperty is needed
 					&& (currentTarget = currentTarget.parent) )
 			{
 				if (currentTarget is IBubbleEventHandler)
@@ -212,7 +225,9 @@ package org.osflash.signals
 				var argumentString:String = (listener.length == 1) ? 'argument' : 'arguments';
 				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
 			}
-			
+
+			//todo absolutely need to get rid of this
+			//todo replace with flyweight
 			var listenerBox:Object = { listener:listener, once:once, priority:priority };
 			// Process the first listener as quickly as possible.
 			if (!listenerBoxes.length)
