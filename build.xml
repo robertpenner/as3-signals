@@ -54,6 +54,9 @@
 		<exec executable="cmd.exe" osfamily="windows">
 			<arg line='/C start ${tests.swf}' />
 		</exec>		
+    <exec executable="flashplayer" os="Linux">
+      <arg line="${tests.swf}"/>
+    </exec>
 	</target>
 	
 	<target name="ci" depends="swc" description="Run unit tests and create JUnit-style reports for continuous integration.">
