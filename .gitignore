@@ -8,6 +8,10 @@ obj/*
 dist/*
 report/*
 
+.idea/dictionaries/*
+.idea/uiDesigner.xml
+.idea/workspace.xml
+
 .settings/*
 .actionScriptProperties
 .flexProperties
