@@ -22,8 +22,10 @@ package org.osflash.signals
 	 */
 	public class Signal implements ISignalOwner, IDispatcher
 	{
+		//todo consistent naming
 		protected var _valueClasses:Array;		// of Class
 		protected var listeners:Array;			// of Function
+		//todo lazy initialization
 		protected var onceListeners:Dictionary;	// of Function
 		protected var listenersNeedCloning:Boolean = false;
 		
@@ -42,7 +44,8 @@ package org.osflash.signals
 		{
 			listeners = [];
 			onceListeners = new Dictionary();
-			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
+			// Cannot use super.apply(null, valueClasses),
+			// so allow the subclass to call super(valueClasses).
 			if (valueClasses.length == 1 && valueClasses[0] is Array)
 				valueClasses = valueClasses[0];
 			this.valueClasses = valueClasses;
@@ -60,8 +63,9 @@ package org.osflash.signals
 			{
 				if (!(_valueClasses[i] is Class))
 				{
-					throw new ArgumentError('Invalid valueClasses argument: item at index ' + i
-						+ ' should be a Class but was:<' + _valueClasses[i] + '>.' + getQualifiedClassName(_valueClasses[i]));
+					throw new ArgumentError('Invalid valueClasses argument: ' +
+						'item at index ' + i + ' should be a Class but was:<' +
+						_valueClasses[i] + '>.' + getQualifiedClassName(_valueClasses[i]));
 				}
 			}
 		}
@@ -102,10 +106,14 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function removeAll():void
 		{
+			//todo optimize performance: why is remove called which will do indexOf
+			//we could do while(--i != 0) { listeners.pop() ... }
+
 			// Looping backwards is more efficient when removing array items.
-			for (var i:uint = listeners.length; i--; )
+			var i:int = listeners.length;
+			while(--i > -1)
 			{
-				remove(listeners[i] as Function);
+				remove(Function(listeners[i]));
 			}
 		}
 		
@@ -118,13 +126,15 @@ package org.osflash.signals
 			var numValueClasses:int = _valueClasses.length;
 			if (valueObjects.length < numValueClasses)
 			{
-				throw new ArgumentError('Incorrect number of arguments. Expected at least ' + numValueClasses + ' but received ' + valueObjects.length + '.');
+				throw new ArgumentError('Incorrect number of arguments. ' +
+					'Expected at least ' + numValueClasses + ' but received ' +
+					valueObjects.length + '.');
 			}
 			
 			for (var i:int = 0; i < numValueClasses; i++)
 			{
 				// null is allowed to pass through.
-				if ( (valueObject = valueObjects[i]) === null
+				if ( (valueObject = valueObjects[i]) === null//todo why strict equality?
 					|| valueObject is (valueClass = _valueClasses[i]) )
 					continue;
 					
@@ -132,13 +142,16 @@ package org.osflash.signals
 					+ '> is not an instance of <' + valueClass + '>.');
 			}
 
+			//todo get rid of implicit conversion
 			if (!listeners.length) return;
 			
 			//// Call listeners.
 			
-			// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
+			// During a dispatch, add() and remove() should clone listeners array
+			// instead of modifying it.
 			listenersNeedCloning = true;
 			var listener:Function;
+			//todo replace with if-else since we have only 3 cases
 			switch (valueObjects.length)
 			{
 				case 0:
@@ -153,7 +166,7 @@ package org.osflash.signals
 					for each (listener in listeners)
 					{
 						if (onceListeners[listener]) remove(listener);
-						listener(valueObjects[0]);
+						listener(valueObjects[0]);//todo factor valueObjects[0] out of loop
 					}
 					break;
 					
@@ -167,16 +180,22 @@ package org.osflash.signals
 			listenersNeedCloning = false;
 		}
 		
-		protected function registerListener(listener:Function, once:Boolean = false):void
+		protected function registerListener(
+			listener:Function, once:Boolean = false):void
 		{
 			// function.length is the number of arguments.
 			if (listener.length < _valueClasses.length)
 			{
-				var argumentString:String = (listener.length == 1) ? 'argument' : 'arguments';
-				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
+				var argumentString:String =
+					(listener.length == 1) ? 'argument' : 'arguments';
+
+				throw new ArgumentError('Listener has ' + listener.length + ' ' +
+					argumentString + ' but it needs at least ' + _valueClasses.length +
+					' to match the given value classes.');
 			}
 			
-			// If there are no previous listeners, add the first one as quickly as possible.
+			// If there are no previous listeners, add the first one as quickly
+			// as possible.
 			if (!listeners.length)
 			{
 				listeners[0] = listener;
@@ -190,11 +209,13 @@ package org.osflash.signals
 				// But throw an exception in some cases, as the error messages explain.
 				if (onceListeners[listener] && !once)
 				{
-					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
+					throw new IllegalOperationError('You cannot addOnce() then add() ' +
+						'the same listener without removing the relationship first.');
 				}
 				else if (!onceListeners[listener] && once)
 				{
-					throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
+					throw new IllegalOperationError('You cannot add() then addOnce()' +
+						' the same listener without removing the relationship first.');
 				}
 				// Listener was already added, so do nothing.
 				return;
