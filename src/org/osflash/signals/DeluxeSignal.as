@@ -21,12 +21,9 @@ package org.osflash.signals
 	 * <br/><br/>
 	 * Project home: <a target="_top" href="http://github.com/robertpenner/as3-signals/">http://github.com/robertpenner/as3-signals/</a>
 	 */
-	public class DeluxeSignal implements ISignalOwner, IPrioritySignal
+	public class DeluxeSignal extends Signal implements ISignalOwner, IPrioritySignal
 	{
 		protected var _target:Object;
-		protected var _valueClasses:Array;
-		protected var slots:Array;
-		protected var slotsNeedCloning:Boolean = false;
 		
 		/**
 		 * Creates a DeluxeSignal instance to dispatch events on behalf of a target object.
@@ -43,35 +40,10 @@ package org.osflash.signals
 		public function DeluxeSignal(target:Object = null, ...valueClasses)
 		{
 			_target = target;
-			slots = [];
-			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
-			if (valueClasses.length == 1 && valueClasses[0] is Array)
-				valueClasses = valueClasses[0];
-			this.valueClasses = valueClasses;
+			super(valueClasses);
 		}
 		
 		/** @inheritDoc */
-		[ArrayElementType("Class")]
-		public function get valueClasses():Array { return _valueClasses; }
-
-		/** @inheritDoc */
-		public function set valueClasses(value:Array):void
-		{
-			// Clone so the Array cannot be affected from outside.
-			_valueClasses = value ? value.slice() : [];
-			for (var i:int = _valueClasses.length; i--; )
-			{
-				if (!(_valueClasses[i] is Class))
-				{
-					throw new ArgumentError('Invalid valueClasses argument: item at index ' + i
-						+ ' should be a Class but was:<' + _valueClasses[i] + '>.');
-				}
-			}
-		}
-		
-		/** @inheritDoc */
-		public function get numListeners():uint { return slots.length; }
-		
 		/** @inheritDoc */
 		public function get target():Object { return _target; }
 		
@@ -83,20 +55,19 @@ package org.osflash.signals
 			_target = value;
 		}
 		
-		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function):Function
+		override public function add(listener:Function):Function
 		{
 			return addWithPriority(listener)
 		}
 		
 		public function addWithPriority(listener:Function, priority:int = 0):Function
 		{
-			registerListener(listener, false, priority);
+			registerListenerWithPriority(listener, false, priority);
 			return listener;
 		}
 		
-		public function addOnce(listener:Function):Function
+		override public function addOnce(listener:Function):Function
 		{
 			return addOnceWithPriority(listener)
 		}
@@ -104,37 +75,12 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function addOnceWithPriority(listener:Function, priority:int = 0):Function
 		{
-			registerListener(listener, true, priority);
+			registerListenerWithPriority(listener, true, priority);
 			return listener;
 		}
 		
 		/** @inheritDoc */
-		public function remove(listener:Function):Function
-		{
-			if (indexOfListener(listener) == -1) return listener;
-			if (slotsNeedCloning)
-			{
-				slots = slots.slice();
-				slotsNeedCloning = false;
-			}
-			slots.splice(indexOfListener(listener), 1);
-			return listener;
-		}
-		
-		/** @inheritDoc */
-		public function removeAll():void
-		{
-			// Looping backwards is more efficient when removing array items.
-			for (var i:uint = slots.length; i--; )
-			{
-				// This is the "proper" type-safe way, but perhaps not the fastest.
-				// TODO: Test for speed.
-				remove(Slot(slots[i]).listener);
-			}
-		}
-		
-		/** @inheritDoc */
-		public function dispatch(...valueObjects):void
+		override public function dispatch(...valueObjects):void
 		{
 			// Validate value objects against pre-defined value classes.
 			var valueObject:Object;
@@ -221,16 +167,12 @@ package org.osflash.signals
 			}
 		}
 		
-		protected function indexOfListener(listener:Function):int
+		override protected function registerListener(listener:Function, once:Boolean = false):void
 		{
-			for (var i:int = slots.length; i--; )
-			{
-				if (Slot(slots[i]).listener == listener) return i;
-			}
-			return -1;
+			registerListenerWithPriority(listener, once);
 		}
 		
-		protected function registerListener(listener:Function, once:Boolean = false, priority:int = 0):void
+		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):void
 		{
 			// function.length is the number of arguments.
 			if (listener.length < _valueClasses.length)
