@@ -23,9 +23,8 @@ package org.osflash.signals
 	public class Signal implements ISignalOwner, IDispatcher
 	{
 		protected var _valueClasses:Array;		// of Class
-		protected var listeners:Array;			// of Function
-		protected var onceListeners:Dictionary;	// of Function
-		protected var listenersNeedCloning:Boolean = false;
+		protected var slots:Array;			// of Slot
+		protected var slotsNeedCloning:Boolean = false;
 		
 		/**
 		 * Creates a Signal instance to dispatch value objects.
@@ -40,8 +39,7 @@ package org.osflash.signals
 		 */
 		public function Signal(...valueClasses)
 		{
-			listeners = [];
-			onceListeners = new Dictionary();
+			slots = [];
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
 			if (valueClasses.length == 1 && valueClasses[0] is Array)
 				valueClasses = valueClasses[0];
@@ -68,7 +66,7 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function get numListeners():uint { return listeners.length; }
+		public function get numListeners():uint { return slots.length; }
 		
 		/** @inheritDoc */
 		//TODO: @throws
@@ -88,15 +86,13 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function remove(listener:Function):Function
 		{
-			const index:int = listeners.indexOf(listener);
-			if (index == -1) return listener;
-			if (listenersNeedCloning)
+			if (indexOfListener(listener) == -1) return listener;
+			if (slotsNeedCloning)
 			{
-				listeners = listeners.slice();
-				listenersNeedCloning = false;
+				slots = slots.slice();
+				slotsNeedCloning = false;
 			}
-			listeners.splice(index, 1);
-			delete onceListeners[listener];
+			slots.splice(indexOfListener(listener), 1);
 			return listener;
 		}
 		
@@ -104,9 +100,11 @@ package org.osflash.signals
 		public function removeAll():void
 		{
 			// Looping backwards is more efficient when removing array items.
-			for (var i:uint = listeners.length; i--; )
+			for (var i:uint = slots.length; i--; )
 			{
-				remove(listeners[i] as Function);
+				// This is the "proper" type-safe way, but perhaps not the fastest.
+				// TODO: Test for speed.
+				remove(Slot(slots[i]).listener);
 			}
 		}
 		
@@ -133,40 +131,55 @@ package org.osflash.signals
 					+ '> is not an instance of <' + valueClass + '>.');
 			}
 
-			if (!listeners.length) return;
-			
 			//// Call listeners.
-			
-			// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
-			listenersNeedCloning = true;
-			var listener:Function;
-			switch (valueObjects.length)
+			if (slots.length)
 			{
-				case 0:
-					for each (listener in listeners)
-					{
-						if (onceListeners[listener]) remove(listener);
-						listener();
-					}
-					break;
-					
-				case 1:
-					const singleValue:Object = valueObjects[0];
-					for each (listener in listeners)
-					{
-						if (onceListeners[listener]) remove(listener);
-						listener(singleValue);
-					}
-					break;
-					
-				default:
-					for each (listener in listeners)
-					{
-						if (onceListeners[listener]) remove(listener);
-						listener.apply(null, valueObjects);
-					}
+				// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
+				slotsNeedCloning = true;
+				var slot:Slot;
+				switch (valueObjects.length)
+				{
+					case 0:
+						for each (slot in slots)
+						{
+							slot.execute0();
+						}
+						break;
+						
+					case 1:
+						const singleValue:Object = valueObjects[0];
+						for each (slot in slots)
+						{
+							slot.execute1(singleValue);
+						}
+						break;
+						
+					case 2:
+						const value1:Object = valueObjects[0];
+						const value2:Object = valueObjects[1];
+						for each (slot in slots)
+						{
+							slot.execute2(value1, value2);
+						}
+						break;
+						
+					default:
+						for each (slot in slots)
+						{
+							slot.execute(valueObjects);
+						}
+				}
+				slotsNeedCloning = false;
 			}
-			listenersNeedCloning = false;
+		}
+		
+		protected function indexOfListener(listener:Function):int
+		{
+			for (var i:int = slots.length; i--; )
+			{
+				if (Slot(slots[i]).listener == listener) return i;
+			}
+			return -1;
 		}
 		
 		protected function registerListener(listener:Function, once:Boolean = false):void
@@ -178,23 +191,25 @@ package org.osflash.signals
 				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
 			}
 			
+			const slot:Slot = new Slot(listener, once, this);
 			// If there are no previous listeners, add the first one as quickly as possible.
-			if (!listeners.length)
+			if (!slots.length)
 			{
-				listeners[0] = listener;
-				if (once) onceListeners[listener] = true;
+				slots[0] = slot;
 				return;
 			}
 						
-			if (listeners.indexOf(listener) >= 0)
+			var prevListenerIndex:int = indexOfListener(listener);
+			if (prevListenerIndex >= 0)
 			{
 				// If the listener was previously added, definitely don't add it again.
 				// But throw an exception in some cases, as the error messages explain.
-				if (onceListeners[listener] && !once)
+				var prevSlot:Slot = Slot(slots[prevListenerIndex]);
+				if (prevSlot.once && !once)
 				{
 					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 				}
-				else if (!onceListeners[listener] && once)
+				else if (!prevSlot.once && once)
 				{
 					throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 				}
@@ -202,15 +217,14 @@ package org.osflash.signals
 				return;
 			}
 			
-			if (listenersNeedCloning)
+			if (slotsNeedCloning)
 			{
-				listeners = listeners.slice();
-				listenersNeedCloning = false;
+				slots = slots.slice();
+				slotsNeedCloning = false;
 			}
 				
 			// Faster than push().
-			listeners[listeners.length] = listener;
-			if (once) onceListeners[listener] = true;
+			slots[slots.length] = slot;
 		}
 	}
 }
