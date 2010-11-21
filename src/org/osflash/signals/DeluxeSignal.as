@@ -25,8 +25,8 @@ package org.osflash.signals
 	{
 		protected var _target:Object;
 		protected var _valueClasses:Array;
-		protected var listenerBoxes:Array;
-		protected var listenersNeedCloning:Boolean = false;
+		protected var slots:Array;
+		protected var slotsNeedCloning:Boolean = false;
 		
 		/**
 		 * Creates a DeluxeSignal instance to dispatch events on behalf of a target object.
@@ -43,7 +43,7 @@ package org.osflash.signals
 		public function DeluxeSignal(target:Object = null, ...valueClasses)
 		{
 			_target = target;
-			listenerBoxes = [];
+			slots = [];
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
 			if (valueClasses.length == 1 && valueClasses[0] is Array)
 				valueClasses = valueClasses[0];
@@ -70,7 +70,7 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function get numListeners():uint { return listenerBoxes.length; }
+		public function get numListeners():uint { return slots.length; }
 		
 		/** @inheritDoc */
 		public function get target():Object { return _target; }
@@ -112,12 +112,12 @@ package org.osflash.signals
 		public function remove(listener:Function):Function
 		{
 			if (indexOfListener(listener) == -1) return listener;
-			if (listenersNeedCloning)
+			if (slotsNeedCloning)
 			{
-				listenerBoxes = listenerBoxes.slice();
-				listenersNeedCloning = false;
+				slots = slots.slice();
+				slotsNeedCloning = false;
 			}
-			listenerBoxes.splice(indexOfListener(listener), 1);
+			slots.splice(indexOfListener(listener), 1);
 			return listener;
 		}
 		
@@ -125,9 +125,11 @@ package org.osflash.signals
 		public function removeAll():void
 		{
 			// Looping backwards is more efficient when removing array items.
-			for (var i:uint = listenerBoxes.length; i--; )
+			for (var i:uint = slots.length; i--; )
 			{
-				remove(listenerBoxes[i].listener as Function);
+				// This is the "proper" type-safe way, but perhaps not the fastest.
+				// TODO: Test for speed.
+				remove(Slot(slots[i]).listener);
 			}
 		}
 		
@@ -162,23 +164,46 @@ package org.osflash.signals
 				event.signal = this;
 			}
 			
-			// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
-			listenersNeedCloning = true;
 			//// Call listeners.
-			var listener:Function;
-			if (listenerBoxes.length)
+			if (slots.length)
 			{
-				//TODO: investigate performance of various approaches
-				
-				for each (var listenerBox:Object in listenerBoxes)
+				// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
+				slotsNeedCloning = true;
+				var slot:Slot;
+				switch (valueObjects.length)
 				{
-					listener = listenerBox.listener;
-					if (listenerBox.once) remove(listener);
-					listener.apply(null, valueObjects);
+					case 0:
+						for each (slot in slots)
+						{
+							slot.execute0();
+						}
+						break;
+						
+					case 1:
+						const singleValue:Object = valueObjects[0];
+						for each (slot in slots)
+						{
+							slot.execute1(singleValue);
+						}
+						break;
+						
+					case 2:
+						const value1:Object = valueObjects[0];
+						const value2:Object = valueObjects[1];
+						for each (slot in slots)
+						{
+							slot.execute2(value1, value2);
+						}
+						break;
+						
+					default:
+						for each (slot in slots)
+						{
+							slot.execute(valueObjects);
+						}
 				}
+				slotsNeedCloning = false;
 			}
-			
-			listenersNeedCloning = false;
 			
 			if (!event || !event.bubbles) return;
 
@@ -198,9 +223,9 @@ package org.osflash.signals
 		
 		protected function indexOfListener(listener:Function):int
 		{
-			for (var i:int = listenerBoxes.length; i--; )
+			for (var i:int = slots.length; i--; )
 			{
-				if (listenerBoxes[i].listener == listener) return i;
+				if (Slot(slots[i]).listener == listener) return i;
 			}
 			return -1;
 		}
@@ -214,11 +239,11 @@ package org.osflash.signals
 				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
 			}
 			
-			var listenerBox:Object = { listener:listener, once:once, priority:priority };
+			const slot:Slot = new Slot(listener, once, this, priority);
 			// Process the first listener as quickly as possible.
-			if (!listenerBoxes.length)
+			if (!slots.length)
 			{
-				listenerBoxes[0] = listenerBox;
+				slots[0] = slot;
 				return;
 			}
 			
@@ -227,12 +252,12 @@ package org.osflash.signals
 			{
 				// If the listener was previously added, definitely don't add it again.
 				// But throw an exception in some cases, as the error messages explain.
-				var prevListenerBox:Object = listenerBoxes[prevListenerIndex];
-				if (prevListenerBox.once && !once)
+				var prevSlot:Slot = Slot(slots[prevListenerIndex]);
+				if (prevSlot.once && !once)
 				{
 					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 				}
-				else if (!prevListenerBox.once && once)
+				else if (!prevSlot.once && once)
 				{
 					throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 				}
@@ -240,28 +265,28 @@ package org.osflash.signals
 				return;
 			}
 			
-			if (listenersNeedCloning)
+			if (slotsNeedCloning)
 			{
-				listenerBoxes = listenerBoxes.slice();
-				listenersNeedCloning = false;
+				slots = slots.slice();
+				slotsNeedCloning = false;
 			}
 		
 			// Assume the listeners are already sorted by priority
 			// and insert in the right spot. For listeners with the same priority,
 			// we must preserve the order in which they were added.
-			var len:int = listenerBoxes.length;
+			const len:int = slots.length;
 			for (var i:int = 0; i < len; i++)
 			{
 				// As soon as a lower-priority listener is found, go in front of it.
-				if (priority > listenerBoxes[i].priority)
+				if (priority > Slot(slots[i]).priority)
 				{
-					listenerBoxes.splice(i, 0, listenerBox);
+					slots.splice(i, 0, slot);
 					return;
 				}
 			}
 			
 			// If we made it this far, the new listener has lowest priority, so put it last.
-			listenerBoxes[listenerBoxes.length] = listenerBox;
+			slots[slots.length] = slot;
 		}
 		
 	}
