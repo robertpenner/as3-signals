@@ -8,6 +8,7 @@ package org.osflash.signals
 	public final class SlotPoolTest
 	{
 		//todo how to use IAsync correct to continue after EXIT_FRAME?
+		//todo this test might fail if setTimeout is not called after EXIT_FRAME ...
 
 		[Inject]
 	    public var async:IAsync;
@@ -42,7 +43,7 @@ package org.osflash.signals
 
 			setTimeout(async.add(function():void{
 				 assertEquals(SlotPool.POOL_GROWTH_RATE, SlotPool.numAvailable);
-		 	}, 50), 1);
+		 	}, 50), 5);
 		}
 
 		[Test]
@@ -66,7 +67,7 @@ package org.osflash.signals
 
 			setTimeout(async.add(function():void{
 				 assertNull(slot.listener);
-		 	}, 50), 1);
+		 	}, 50), 5);
 		}
 
 		[Test]
@@ -82,7 +83,7 @@ package org.osflash.signals
 
 			setTimeout(async.add(function():void{
 				assertEquals(n, SlotPool.numAvailable);
-		 	}, 50), 1);
+		 	}, 50), 5);
 		}
 
 		[Test]
