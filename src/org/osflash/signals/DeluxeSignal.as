@@ -23,7 +23,6 @@ package org.osflash.signals
 	 */
 	public class DeluxeSignal extends Signal implements ISignalOwner, IPrioritySignal
 	{
-		//todo inconsistent naming
 		protected var _target:Object;
 		
 		/**
@@ -90,7 +89,7 @@ package org.osflash.signals
 			for (var i:int = 0; i < len; i++)
 			{
 				// null is allowed to pass through.
-				if ( (valueObject = valueObjects[i]) === null//todo why strict equality?
+				if ( (valueObject = valueObjects[i]) === null
 					|| valueObject is (valueClass = _valueClasses[i]) )
 					continue;
 					
@@ -184,8 +183,6 @@ package org.osflash.signals
 				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
 			}
 
-			//todo absolutely need to get rid of this
-			//todo replace with flyweight
 			const slot:Slot = new Slot(listener, once, this, priority);
 			// Process the first listener as quickly as possible.
 			if (!slots.length)

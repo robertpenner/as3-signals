@@ -131,7 +131,7 @@ package org.osflash.signals
 			for (var i:int = 0; i < numValueClasses; i++)
 			{
 				// null is allowed to pass through.
-				if ( (valueObject = valueObjects[i]) === null//todo why strict equality?
+				if ( (valueObject = valueObjects[i]) === null
 					|| valueObject is (valueClass = _valueClasses[i]) )
 					continue;
 					
