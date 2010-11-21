@@ -15,7 +15,7 @@
       <excludeFolder url="file://$MODULE_DIR$/../bin" />
       <excludeFolder url="file://$MODULE_DIR$/../report" />
     </content>
-    <orderEntry type="jdk" jdkName="flexsdk (player 10)" jdkType="Flex SDK Type" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="as3-signals libs" level="project" />
   </component>

@@ -113,7 +113,7 @@ package org.osflash.signals
 			var i:int = listeners.length;
 			while(--i > -1)
 			{
-				remove(Function(listeners[i]));
+				remove(listeners[i]);
 			}
 		}
 		
@@ -180,8 +180,7 @@ package org.osflash.signals
 			listenersNeedCloning = false;
 		}
 		
-		protected function registerListener(
-			listener:Function, once:Boolean = false):void
+		protected function registerListener(listener:Function, once:Boolean = false):void
 		{
 			// function.length is the number of arguments.
 			if (listener.length < _valueClasses.length)
@@ -194,8 +193,8 @@ package org.osflash.signals
 					' to match the given value classes.');
 			}
 			
-			// If there are no previous listeners, add the first one as quickly
-			// as possible.
+			// If there are no previous listeners, add the first one
+			// as quickly as possible.
 			if (!listeners.length)
 			{
 				listeners[0] = listener;

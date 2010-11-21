@@ -136,7 +136,7 @@ package org.osflash.signals
 			var i:int = listenerBoxes.length;
 			while(--i > -1)
 			{
-				remove(Function(listenerBoxes[i].listener));
+				remove(listenerBoxes[i].listener);
 			}
 		}
 		
