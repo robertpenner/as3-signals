@@ -21,13 +21,10 @@ package org.osflash.signals
 	 * <br/><br/>
 	 * Project home: <a target="_top" href="http://github.com/robertpenner/as3-signals/">http://github.com/robertpenner/as3-signals/</a>
 	 */
-	public class DeluxeSignal implements ISignalOwner, IPrioritySignal
+	public class DeluxeSignal extends Signal implements ISignalOwner, IPrioritySignal
 	{
 		//todo inconsistent naming
 		protected var _target:Object;
-		protected var _valueClasses:Array;
-		protected var listenerBoxes:Array;
-		protected var listenersNeedCloning:Boolean = false;
 		
 		/**
 		 * Creates a DeluxeSignal instance to dispatch events on behalf of a target object.
@@ -44,40 +41,10 @@ package org.osflash.signals
 		public function DeluxeSignal(target:Object = null, ...valueClasses)
 		{
 			_target = target;
-			listenerBoxes = [];
-			// Cannot use super.apply(null, valueClasses),
-			// so allow the subclass to call super(valueClasses).
-			if (valueClasses.length == 1 && valueClasses[0] is Array)
-				valueClasses = valueClasses[0];
-			this.valueClasses = valueClasses;
+			super(valueClasses);
 		}
 		
 		/** @inheritDoc */
-		public function get valueClasses():Array { return _valueClasses; }
-
-		/** @inheritDoc */
-		public function set valueClasses(value:Array):void
-		{
-			//todo when setting null we create a new array, why?
-
-			// Clone so the Array cannot be affected from outside.
-			_valueClasses = value ? value.slice() : [];
-
-			var i:int = _valueClasses.length;
-			while(--i > -1)
-			{
-				if (!(_valueClasses[i] is Class))
-				{
-					throw new ArgumentError('Invalid valueClasses argument: ' +
-						'item at index ' + i + ' should be a Class but was:<' +
-						_valueClasses[i] + '>.');
-				}
-			}
-		}
-		
-		/** @inheritDoc */
-		public function get numListeners():uint { return listenerBoxes.length; }
-		
 		/** @inheritDoc */
 		public function get target():Object { return _target; }
 		
@@ -89,59 +56,32 @@ package org.osflash.signals
 			_target = value;
 		}
 		
-		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function):Function
+		override public function add(listener:Function):Function
 		{
-			return addWithPriority(listener)
+			return addWithPriority(listener);
 		}
 		
 		public function addWithPriority(listener:Function, priority:int = 0):Function
 		{
-			registerListener(listener, false, priority);
+			registerListenerWithPriority(listener, false, priority);
 			return listener;
 		}
 		
-		public function addOnce(listener:Function):Function
+		override public function addOnce(listener:Function):Function
 		{
-			return addOnceWithPriority(listener)
+			return addOnceWithPriority(listener);
 		}
 		
 		/** @inheritDoc */
 		public function addOnceWithPriority(listener:Function, priority:int = 0):Function
 		{
-			registerListener(listener, true, priority);
+			registerListenerWithPriority(listener, true, priority);
 			return listener;
 		}
 		
 		/** @inheritDoc */
-		public function remove(listener:Function):Function
-		{
-			if (indexOfListener(listener) == -1) return listener;
-			if (listenersNeedCloning)
-			{
-				listenerBoxes = listenerBoxes.slice();
-				listenersNeedCloning = false;
-			}
-			listenerBoxes.splice(indexOfListener(listener), 1);
-			return listener;
-		}
-		
-		/** @inheritDoc */
-		public function removeAll():void
-		{
-			//todo see org.osflash.signals.Signal#removeAll
-
-			// Looping backwards is more efficient when removing array items.
-			var i:int = listenerBoxes.length;
-			while(--i > -1)
-			{
-				remove(listenerBoxes[i].listener);
-			}
-		}
-		
-		/** @inheritDoc */
-		public function dispatch(...valueObjects):void
+		override public function dispatch(...valueObjects):void
 		{
 			// Validate value objects against pre-defined value classes.
 			var valueObject:Object;
@@ -172,24 +112,46 @@ package org.osflash.signals
 				event.signal = this;
 			}
 			
-			// During a dispatch, add() and remove() should clone listeners array
-			// instead of modifying it.
-			listenersNeedCloning = true;
 			//// Call listeners.
-			var listener:Function;
-			if (listenerBoxes.length != 0)
+			if (slots.length)
 			{
-				//TODO: investigate performance of various approaches
-				
-				for each (var listenerBox:Object in listenerBoxes)
+				// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
+				slotsNeedCloning = true;
+				var slot:Slot;
+				switch (valueObjects.length)
 				{
-					listener = listenerBox.listener;
-					if (listenerBox.once) remove(listener);
-					listener.apply(null, valueObjects);
+					case 0:
+						for each (slot in slots)
+						{
+							slot.execute0();
+						}
+						break;
+						
+					case 1:
+						const singleValue:Object = valueObjects[0];
+						for each (slot in slots)
+						{
+							slot.execute1(singleValue);
+						}
+						break;
+						
+					case 2:
+						const value1:Object = valueObjects[0];
+						const value2:Object = valueObjects[1];
+						for each (slot in slots)
+						{
+							slot.execute2(value1, value2);
+						}
+						break;
+						
+					default:
+						for each (slot in slots)
+						{
+							slot.execute(valueObjects);
+						}
 				}
+				slotsNeedCloning = false;
 			}
-			
-			listenersNeedCloning = false;
 			
 			if (!event || !event.bubbles) return;
 
@@ -208,16 +170,12 @@ package org.osflash.signals
 			}
 		}
 		
-		protected function indexOfListener(listener:Function):int
+		override protected function registerListener(listener:Function, once:Boolean = false):void
 		{
-			for (var i:int = listenerBoxes.length; i--; )
-			{
-				if (listenerBoxes[i].listener == listener) return i;
-			}
-			return -1;
+			registerListenerWithPriority(listener, once);
 		}
 		
-		protected function registerListener(listener:Function, once:Boolean = false, priority:int = 0):void
+		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):void
 		{
 			// function.length is the number of arguments.
 			if (listener.length < _valueClasses.length)
@@ -228,11 +186,11 @@ package org.osflash.signals
 
 			//todo absolutely need to get rid of this
 			//todo replace with flyweight
-			var listenerBox:Object = { listener:listener, once:once, priority:priority };
+			const slot:Slot = new Slot(listener, once, this, priority);
 			// Process the first listener as quickly as possible.
-			if (!listenerBoxes.length)
+			if (!slots.length)
 			{
-				listenerBoxes[0] = listenerBox;
+				slots[0] = slot;
 				return;
 			}
 			
@@ -241,12 +199,12 @@ package org.osflash.signals
 			{
 				// If the listener was previously added, definitely don't add it again.
 				// But throw an exception in some cases, as the error messages explain.
-				var prevListenerBox:Object = listenerBoxes[prevListenerIndex];
-				if (prevListenerBox.once && !once)
+				var prevSlot:Slot = Slot(slots[prevListenerIndex]);
+				if (prevSlot.once && !once)
 				{
 					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 				}
-				else if (!prevListenerBox.once && once)
+				else if (!prevSlot.once && once)
 				{
 					throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 				}
@@ -254,28 +212,28 @@ package org.osflash.signals
 				return;
 			}
 			
-			if (listenersNeedCloning)
+			if (slotsNeedCloning)
 			{
-				listenerBoxes = listenerBoxes.slice();
-				listenersNeedCloning = false;
+				slots = slots.slice();
+				slotsNeedCloning = false;
 			}
 		
 			// Assume the listeners are already sorted by priority
 			// and insert in the right spot. For listeners with the same priority,
 			// we must preserve the order in which they were added.
-			var len:int = listenerBoxes.length;
+			const len:int = slots.length;
 			for (var i:int = 0; i < len; i++)
 			{
 				// As soon as a lower-priority listener is found, go in front of it.
-				if (priority > listenerBoxes[i].priority)
+				if (priority > Slot(slots[i]).priority)
 				{
-					listenerBoxes.splice(i, 0, listenerBox);
+					slots.splice(i, 0, slot);
 					return;
 				}
 			}
 			
 			// If we made it this far, the new listener has lowest priority, so put it last.
-			listenerBoxes[listenerBoxes.length] = listenerBox;
+			slots[slots.length] = slot;
 		}
 		
 	}

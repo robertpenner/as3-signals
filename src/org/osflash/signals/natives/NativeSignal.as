@@ -47,6 +47,7 @@ package org.osflash.signals.natives
 		public function set eventClass(value:Class):void { _eventClass = value || Event; }
 		
 		/** @inheritDoc */
+		[ArrayElementType("Class")]
 		public function get valueClasses():Array { return [_eventClass]; }
 
 		/** @inheritDoc */
