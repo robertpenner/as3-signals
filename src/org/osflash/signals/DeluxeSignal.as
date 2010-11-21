@@ -211,7 +211,7 @@ package org.osflash.signals
 			
 			if (slotsNeedCloning)
 			{
-				//todo clone pooled objects
+				//todo investigate if need to clone pooled objects
 				slots = slots.slice();
 				slotsNeedCloning = false;
 			}

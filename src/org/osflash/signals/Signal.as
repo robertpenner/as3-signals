@@ -21,7 +21,6 @@ package org.osflash.signals
 	 */
 	public class Signal implements ISignalOwner, IDispatcher
 	{
-		//todo consistent naming
 		protected var _valueClasses:Array;		// of Class
 		protected var slots:Array;			// of Slot
 		protected var slotsNeedCloning:Boolean = false;
@@ -91,7 +90,7 @@ package org.osflash.signals
 			if (indexOfListener(listener) == -1) return listener;
 			if (slotsNeedCloning)
 			{
-				//todo clone pooled objects
+				//todo investigate if need to clone pooled objects
 				slots = slots.slice();
 				slotsNeedCloning = false;
 			}
@@ -234,7 +233,7 @@ package org.osflash.signals
 			
 			if (slotsNeedCloning)
 			{
-				//todo need to clone pooled objects
+				//todo investigate if need to clone pooled objects
 				slots = slots.slice();
 				slotsNeedCloning = false;
 			}
