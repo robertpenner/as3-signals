@@ -72,5 +72,10 @@ package org.osflash.signals
 			if (once) _signal.remove(listener);
 			listener(value1, value2);
 		}
+
+		public function toString():String
+		{
+			return "Slot[listener: "+listener+", once: "+once+", priority: "+priority+"]";
+		}
 	}
 }

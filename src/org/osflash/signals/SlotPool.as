@@ -3,6 +3,8 @@ package org.osflash.signals {
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 
+	import org.osmf.metadata.IFacet;
+
 	/**
 	 * The SlotPool class represents a pool of Slot objects.
 	 *
@@ -19,6 +21,7 @@ package org.osflash.signals {
 	{
 		/**
 		 * An IEventDispatcher capable of dispatching <code>Event.EXIT_FRAME</code>.
+		 * @private
 		 */
 		private static const EXIT_FRAME_PROVIDER: IEventDispatcher = new Shape();
 
@@ -26,21 +29,23 @@ package org.osflash.signals {
 		 * The growth rate of the pool.
 		 * @private
 		 */
-		private static const POOL_GROWTH_RATE: int = 0x10;
+		public static const POOL_GROWTH_RATE: int = 0x10;
 
 		/**
 		 * Whether or not if it is allowed to call the constructor of Slot.
 		 * @private
 		 */
-		internal static var constructorAllowed:Boolean;
+		public static var constructorAllowed:Boolean;
 
 		/**
-		 * The number of available objects in the pool.
+		 * The private backing variable for the <code>numAvailable</code> property.
+		 * @private
 		 */
-		private static var numAvailable:int;
+		private static var _numAvailable:int;
 
 		/**
 		 * The list of available Slot objects.
+		 * @private
 		 */
 		private static var pooledSlots:Slot;
 
@@ -51,6 +56,7 @@ package org.osflash.signals {
 		 * <code>releaseDeadSlots.</code> is called.
 		 *
 		 * @see #releaseDeadSlots
+		 * @private
 		 */
 		private static var deadSlots:Slot;
 
@@ -74,7 +80,7 @@ package org.osflash.signals {
 		{
 			var slot:Slot;
 
-			if (0 == numAvailable)
+			if (0 == _numAvailable)
 			{
 				var n:int = POOL_GROWTH_RATE + 1;
 
@@ -94,12 +100,12 @@ package org.osflash.signals {
 					constructorAllowed = false;
 				}
 
-				numAvailable += POOL_GROWTH_RATE;
+				_numAvailable += POOL_GROWTH_RATE;
 			}
 
 			slot = pooledSlots;
 			pooledSlots = slot._nextInPool;
-			--numAvailable;
+			--_numAvailable;
 
 			slot.listener = listener;
 			slot.once = once;
@@ -117,7 +123,7 @@ package org.osflash.signals {
 		 *
 		 * @param slot The slot which is no longer being used.
 		 */
-		internal static function markDead(slot:Slot):void
+		public static function markDead(slot:Slot):void
 		{
 			slot._nextInPool = deadSlots;
 			deadSlots = slot;
@@ -146,7 +152,7 @@ package org.osflash.signals {
 		/**
 		 * Releases all dead slots and puts them back into the pool.
 		 */
-		private static function releaseDeadSlots():void
+		public static function releaseDeadSlots():void
 		{
 			var nextSlot: Slot = deadSlots;
 
@@ -160,10 +166,60 @@ package org.osflash.signals {
 				slot._nextInPool = pooledSlots;
 				pooledSlots = slot;
 
-				++numAvailable;
+				++_numAvailable;
 			}
 
 			deadSlots = null;
+		}
+
+		/**
+		 * Resets the state of the SlotPool.
+		 * @private
+		 */
+		public static function resetState():void
+		{
+			resetAll(deadSlots);
+			resetAll(pooledSlots);
+
+			deadSlots = null;
+			pooledSlots = null;
+			_numAvailable = 0;
+
+			if(listensForExitFrame)
+			{
+				EXIT_FRAME_PROVIDER.removeEventListener(Event.EXIT_FRAME, onExitFrame);
+				listensForExitFrame = false;
+			}
+
+			constructorAllowed = false;
+		}
+
+		/**
+		 * Resets a given list of Slot objects.
+		 *
+		 * @param list The linked list of slot objects to reset.
+		 * @private
+		 */
+		private static function resetAll(list:Slot):void {
+			var nextSlot:Slot = list;
+
+			while(nextSlot)
+			{
+				var slot:Slot = nextSlot;
+				nextSlot = slot._nextInPool;
+
+				slot.listener = null;
+				slot._signal = null;
+				slot._nextInPool = null;
+			}
+		}
+
+		/**
+		 * The number of available objects in the pool.
+		 */
+		public static function get numAvailable(): int
+		{
+			return _numAvailable;
 		}
 	}
 }
