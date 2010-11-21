@@ -3,8 +3,6 @@ package org.osflash.signals {
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 
-	import org.osmf.metadata.IFacet;
-
 	/**
 	 * The SlotPool class represents a pool of Slot objects.
 	 *
@@ -55,7 +53,7 @@ package org.osflash.signals {
 		 * Dead slot objects will be put back into the pool when
 		 * <code>releaseDeadSlots.</code> is called.
 		 *
-		 * @see #releaseDeadSlots()
+		 * @see org.osflash.signals.SlotPool#releaseDeadSlots()
 		 * @private
 		 */
 		private static var deadSlots:Slot;
