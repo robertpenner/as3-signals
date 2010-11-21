@@ -1,7 +1,6 @@
 package org.osflash.signals
 {
 	import flash.errors.IllegalOperationError;
-	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
 
 	/** 
@@ -92,10 +91,16 @@ package org.osflash.signals
 			if (indexOfListener(listener) == -1) return listener;
 			if (slotsNeedCloning)
 			{
+				//todo clone pooled objects
 				slots = slots.slice();
 				slotsNeedCloning = false;
 			}
-			slots.splice(indexOfListener(listener), 1);
+
+			const index: int = indexOfListener(listener);
+
+			SlotPool.release(slots[index]);
+			slots.splice(index, 1);
+
 			return listener;
 		}
 		
@@ -199,7 +204,7 @@ package org.osflash.signals
 				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
 			}
 			
-			const slot:Slot = new Slot(listener, once, this);
+			const slot:Slot = SlotPool.create(listener, once, this);
 			// If there are no previous listeners, add the first one as quickly as possible.
 			if (!slots.length)
 			{
@@ -229,6 +234,7 @@ package org.osflash.signals
 			
 			if (slotsNeedCloning)
 			{
+				//todo need to clone pooled objects
 				slots = slots.slice();
 				slotsNeedCloning = false;
 			}

@@ -72,9 +72,5 @@ package org.osflash.signals
 			if (once) _signal.remove(listener);
 			listener(value1, value2);
 		}
-
-		public function dispose(): void {
-			SlotPool.release(this);
-		}
 	}
 }

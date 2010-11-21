@@ -1,4 +1,6 @@
 package org.osflash.signals {
+	import flash.display.Shape;
+	import flash.events.Event;
 	import flash.utils.getQualifiedClassName;
 
 	/**
@@ -8,6 +10,12 @@ package org.osflash.signals {
 	 */
 	internal final class SlotPool
 	{
+		{
+			// Create a provider for Event.EXIT_FRAME and listen to the event.
+			// It is used to collect all dead slots after a frame executed.
+			new Shape().addEventListener(Event.EXIT_FRAME, onExitFrame);
+		}
+
 		/**
 		 * The growth rate of the pool.
 		 */
@@ -28,6 +36,11 @@ package org.osflash.signals {
 		 * A single linked list of Slot objects.
 		 */
 		private static var pool:Slot;
+
+		/**
+		 * A list of slots to release on the EXIT_FRAME event.
+		 */
+		private static var deadSlots:Slot;
 
 		/**
 		 * Returns a Slot object from the pool.
@@ -81,12 +94,33 @@ package org.osflash.signals {
 
 		internal static function release(slot:Slot):void
 		{
-			slot.listener = null;
-			slot._signal = null;
-			slot._nextInPool = pool;
-			pool = slot;
+			slot._nextInPool = deadSlots;
+			deadSlots = slot;
+		}
 
-			++availableInPool;
+		private static function onExitFrame(event:Event):void
+		{
+			releaseDeadSlots();
+		}
+
+		private static function releaseDeadSlots():void
+		{
+			var nextSlot: Slot = deadSlots;
+
+			while(nextSlot)
+			{
+				var slot: Slot = nextSlot;
+				nextSlot = slot._nextInPool;
+
+				slot.listener = null;
+				slot._signal = null;
+				slot._nextInPool = pool;
+				pool = slot;
+
+				++availableInPool;
+			}
+
+			deadSlots = null;
 		}
 	}
 }

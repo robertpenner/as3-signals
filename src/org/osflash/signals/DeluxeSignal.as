@@ -183,7 +183,7 @@ package org.osflash.signals
 				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
 			}
 
-			const slot:Slot = new Slot(listener, once, this, priority);
+			const slot:Slot = SlotPool.create(listener, once, this, priority);
 			// Process the first listener as quickly as possible.
 			if (!slots.length)
 			{
@@ -211,10 +211,12 @@ package org.osflash.signals
 			
 			if (slotsNeedCloning)
 			{
+				//todo clone pooled objects
 				slots = slots.slice();
 				slotsNeedCloning = false;
 			}
-		
+
+			//todo optimize me
 			// Assume the listeners are already sorted by priority
 			// and insert in the right spot. For listeners with the same priority,
 			// we must preserve the order in which they were added.
