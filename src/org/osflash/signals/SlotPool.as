@@ -1,12 +1,18 @@
 package org.osflash.signals {
 	import flash.display.Shape;
 	import flash.events.Event;
-	import flash.utils.getQualifiedClassName;
 
 	/**
 	 * The SlotPool class represents a pool of Slot objects.
 	 *
+	 * <p>SlotPool is responsible for creating and releasing
+	 * Slot objects. A slot object is usually released when
+	 * <code>Slot.remove</code> is called. Because of the internal wiring
+	 * of signals the SlotPool delays the release of Slot
+	 * objects until an <code>Event.EXIT_FRAME</code> event occurs.</p>
+	 *
 	 * @author Joa Ebert
+	 * @private
 	 */
 	internal final class SlotPool
 	{
@@ -92,17 +98,35 @@ package org.osflash.signals {
 			return pooledObject;
 		}
 
-		internal static function release(slot:Slot):void
+		/**
+		 * Marks a Slot dead.
+		 *
+		 * The internal references of the Slot object will be released
+		 * when the next Event.EXIT_FRAME event occurs.
+		 *
+		 * @param slot The slot which is no longer being used.
+		 */
+		internal static function markDead(slot:Slot):void
 		{
 			slot._nextInPool = deadSlots;
 			deadSlots = slot;
 		}
 
+		/**
+		 * Listener for native <code>Event.EXIT_FRAME</code>.
+		 *
+		 * This listener will invoke the <code>releaseDeadSlots</code> method.
+		 *
+		 * @param event The native event dispatched by the Flash Player.
+		 */
 		private static function onExitFrame(event:Event):void
 		{
 			releaseDeadSlots();
 		}
 
+		/**
+		 * Releases all dead slots and puts them back into the pool.
+		 */
 		private static function releaseDeadSlots():void
 		{
 			var nextSlot: Slot = deadSlots;

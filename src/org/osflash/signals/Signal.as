@@ -98,7 +98,7 @@ package org.osflash.signals
 
 			const index: int = indexOfListener(listener);
 
-			SlotPool.release(slots[index]);
+			SlotPool.markDead(slots[index]);
 			slots.splice(index, 1);
 
 			return listener;
