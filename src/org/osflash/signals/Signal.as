@@ -88,7 +88,7 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function remove(listener:Function):Function
 		{
-			var index:int = listeners.indexOf(listener);
+			const index:int = listeners.indexOf(listener);
 			if (index == -1) return listener;
 			if (listenersNeedCloning)
 			{
@@ -116,7 +116,7 @@ package org.osflash.signals
 			// Validate value objects against pre-defined value classes.
 			var valueObject:Object;
 			var valueClass:Class;
-			var numValueClasses:int = _valueClasses.length;
+			const numValueClasses:uint = _valueClasses.length;
 			if (valueObjects.length < numValueClasses)
 			{
 				throw new ArgumentError('Incorrect number of arguments. Expected at least ' + numValueClasses + ' but received ' + valueObjects.length + '.');
@@ -151,10 +151,11 @@ package org.osflash.signals
 					break;
 					
 				case 1:
+					const singleValue:Object = valueObjects[0];
 					for each (listener in listeners)
 					{
 						if (onceListeners[listener]) remove(listener);
-						listener(valueObjects[0]);
+						listener(singleValue);
 					}
 					break;
 					
@@ -173,7 +174,7 @@ package org.osflash.signals
 			// function.length is the number of arguments.
 			if (listener.length < _valueClasses.length)
 			{
-				var argumentString:String = (listener.length == 1) ? 'argument' : 'arguments';
+				const argumentString:String = (listener.length == 1) ? 'argument' : 'arguments';
 				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
 			}
 			
