@@ -58,7 +58,7 @@ package org.osflash.signals
 		//TODO: @throws
 		override public function add(listener:Function):Function
 		{
-			return addWithPriority(listener)
+			return addWithPriority(listener);
 		}
 		
 		public function addWithPriority(listener:Function, priority:int = 0):Function
@@ -69,7 +69,7 @@ package org.osflash.signals
 		
 		override public function addOnce(listener:Function):Function
 		{
-			return addOnceWithPriority(listener)
+			return addOnceWithPriority(listener);
 		}
 		
 		/** @inheritDoc */
