@@ -5,7 +5,7 @@ package org.osflash.signals
      *
      * @author Robert Penner
      */
-	public final class Slot
+	internal final class Slot
 	{
 		public var listener:Function;
 		public var once:Boolean;
