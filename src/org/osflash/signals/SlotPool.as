@@ -55,7 +55,7 @@ package org.osflash.signals {
 		 * Dead slot objects will be put back into the pool when
 		 * <code>releaseDeadSlots.</code> is called.
 		 *
-		 * @see #releaseDeadSlots
+		 * @see #releaseDeadSlots()
 		 * @private
 		 */
 		private static var deadSlots:Slot;

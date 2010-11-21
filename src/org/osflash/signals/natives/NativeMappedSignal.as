@@ -67,8 +67,8 @@ package org.osflash.signals.natives
 		 *  signal.add(function(arg1:String, arg2:int, arg3:Number):void { trace(arg1, arg2, arg3) }) // prints "ping", 3, 3.1415
 		 * </listing>
 		 * 
-		 * If the argument is a function then it is called when the event this NativeMappedSignal is listeneing for is dispatched.
-		 * The function should return an Array or a single object. The data returned from the function is passed along as arguemnts in the Signal dispatch.
+		 * If the argument is a function then it is called when the event this NativeMappedSignal is listening for is dispatched.
+		 * The function should return an Array or a single object. The data returned from the function is passed along as arguments in the Signal dispatch.
 		 * Lets look at some examples of mapping functions and the function that is called back:
 		 * 
 		 * <listing version="3.0">
@@ -194,7 +194,7 @@ package org.osflash.signals.natives
 		 * needs to be provided with a either a mapping function or a list of object literals.
 		 * See <code>mapTo</code> for more info.
 		 * 
-		 * Subcclasses could override this one instead of letting the environment set the mapTo,
+		 * Subclasses could override this one instead of letting the environment set the mapTo,
 		 * MAKE SURE to also override <code>mapTo(...)</code> if it should not be allowed.
 		 *
 		 * @parameter eventFromTarget the event that was dispatched from target.

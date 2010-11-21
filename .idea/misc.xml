@@ -312,6 +312,9 @@
   <component name="DependencyValidationManager">
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
+  <component name="EntryPointsManager">
+    <entry_points version="2.0" />
+  </component>
   <component name="HandyEdit.TapestrySupport" tapestryProject="false" askEnableTapestry="true" componentSpec="true">
     <locations pageRoot="" componentRoot="" applicationFile="" pagePropertiesRoot="" />
     <packages page="" component="" />

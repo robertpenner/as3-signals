@@ -19,7 +19,7 @@ package org.osflash.signals.natives
 		/**
 		 * Creates a new NativeRelaySignal instance to relay events from an IEventDispatcher.
 		 * @param	target	An object that implements the flash.events.IEventDispatcher interface.
-		 * @param	name	The event string name that would normally be passed to IEventDispatcher.addEventListener().
+		 * @param	eventType	The event string name that would normally be passed to IEventDispatcher.addEventListener().
 		 * @param	eventClass An optional class reference that enables an event type check in dispatch().
 		 * Because the target is an IEventDispatcher,
 		 * eventClass needs to be flash.events.Event or a subclass of it.

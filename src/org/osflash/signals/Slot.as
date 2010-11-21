@@ -37,7 +37,7 @@ package org.osflash.signals
 		/**
 		 * The Slot constructor cannot be executed. Use SlotPool.create instead.
 		 *
-		 * @see org.osflash.signals.SlotPool#create
+		 * @see org.osflash.signals.SlotPool#create()
 		 * @throws Error An error is thrown if the constructor is invoked outside of SlotPool.
 		 * @private
 		 */
