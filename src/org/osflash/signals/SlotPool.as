@@ -4,12 +4,12 @@ package org.osflash.signals {
 	import flash.events.IEventDispatcher;
 
 	/**
-	 * The SlotPool class represents a pool of SignalSlotList objects.
+	 * The SlotPool class represents a pool of SignalSlot objects.
 	 *
 	 * <p>SlotPool is responsible for creating and releasing
-	 * SignalSlotList objects. A slot object is usually released when
-	 * <code>SignalSlotList.remove</code> is called. Because of the internal wiring
-	 * of signals the SlotPool delays the release of SignalSlotList
+	 * SignalSlot objects. A slot object is usually released when
+	 * <code>SignalSlot.remove</code> is called. Because of the internal wiring
+	 * of signals the SlotPool delays the release of SignalSlot
 	 * objects until an <code>Event.EXIT_FRAME</code> event occurs.</p>
 	 *
 	 * @author Joa Ebert
@@ -30,7 +30,7 @@ package org.osflash.signals {
 		public static const POOL_GROWTH_RATE: int = 0x10;
 
 		/**
-		 * Whether or not if it is allowed to call the constructor of SignalSlotList.
+		 * Whether or not if it is allowed to call the constructor of SignalSlot.
 		 * @private
 		 */
 		public static var constructorAllowed:Boolean;
@@ -42,13 +42,13 @@ package org.osflash.signals {
 		private static var _numAvailable:int;
 
 		/**
-		 * The list of available SignalSlotList objects.
+		 * The list of available SignalSlot objects.
 		 * @private
 		 */
-		private static var pooledSlots:SignalSlotList;
+		private static var pooledSlots:SignalSlot;
 
 		/**
-		 * The list of dead SignalSlotList objects.
+		 * The list of dead SignalSlot objects.
 		 *
 		 * Dead slot objects will be put back into the pool when
 		 * <code>releaseDeadSlots.</code> is called.
@@ -56,7 +56,7 @@ package org.osflash.signals {
 		 * @see org.osflash.signals.SlotPool#releaseDeadSlots()
 		 * @private
 		 */
-		private static var deadSlots:SignalSlotList;
+		private static var deadSlots:SignalSlot;
 
 		/**
 		 * Whether or not the SlotPool is listening for <code>Event.EXIT_FRAME</code>.
@@ -64,9 +64,9 @@ package org.osflash.signals {
 		private static var listensForExitFrame: Boolean;
 
 		/**
-		 * Returns a SignalSlotList object from the pool.
+		 * Returns a SignalSlot object from the pool.
 		 *
-		 * <p>Creates a series of new SignalSlotList objects if the pool is out of object.</p>
+		 * <p>Creates a series of new SignalSlot objects if the pool is out of object.</p>
 		 *
 		 * @param listener The listener associated with the slot.
 		 * @param once Whether or not the listener should be executed only once.
@@ -74,9 +74,9 @@ package org.osflash.signals {
 		 * @param priority The priority of the slot.
 		 * @return A slot object.
 		 */
-		public static function create(listener:Function, once:Boolean = false, signal:ISignal = null, priority:int = 0):SignalSlotList
+		public static function create(listener:Function, once:Boolean = false, signal:ISignal = null, priority:int = 0):SignalSlot
 		{
-			var slot:SignalSlotList;
+			var slot:SignalSlot;
 
 			if (0 == _numAvailable)
 			{
@@ -88,7 +88,7 @@ package org.osflash.signals {
 
 					while (--n != 0)
 					{
-						slot = new SignalSlotList();
+						slot = new SignalSlot();
 						slot._nextInPool = pooledSlots;
 						pooledSlots = slot;
 					}
@@ -114,14 +114,14 @@ package org.osflash.signals {
 		}
 
 		/**
-		 * Marks a SignalSlotList dead.
+		 * Marks a SignalSlot dead.
 		 *
-		 * The internal references of the SignalSlotList object will be released
+		 * The internal references of the SignalSlot object will be released
 		 * when the next Event.EXIT_FRAME event occurs.
 		 *
 		 * @param slot The slot which is no longer being used.
 		 */
-		public static function markDead(slot:SignalSlotList):void
+		public static function markDead(slot:SignalSlot):void
 		{
 			slot._nextInPool = deadSlots;
 			deadSlots = slot;
@@ -152,11 +152,11 @@ package org.osflash.signals {
 		 */
 		public static function releaseDeadSlots():void
 		{
-			var nextSlot: SignalSlotList = deadSlots;
+			var nextSlot: SignalSlot = deadSlots;
 
 			while(nextSlot)
 			{
-				var slot: SignalSlotList = nextSlot;
+				var slot: SignalSlot = nextSlot;
 				nextSlot = slot._nextInPool;
 
 				slot._listener = null;
@@ -193,17 +193,17 @@ package org.osflash.signals {
 		}
 
 		/**
-		 * Resets a given list of SignalSlotList objects.
+		 * Resets a given list of SignalSlot objects.
 		 *
 		 * @param list The linked list of slot objects to reset.
 		 * @private
 		 */
-		private static function resetAll(list:SignalSlotList):void {
-			var nextSlot:SignalSlotList = list;
+		private static function resetAll(list:SignalSlot):void {
+			var nextSlot:SignalSlot = list;
 
 			while(nextSlot)
 			{
-				var slot:SignalSlotList = nextSlot;
+				var slot:SignalSlot = nextSlot;
 				nextSlot = slot._nextInPool;
 
 				slot._listener = null;

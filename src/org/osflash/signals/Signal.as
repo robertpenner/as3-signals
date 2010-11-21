@@ -114,7 +114,7 @@ package org.osflash.signals
 			{
 				// This is the "proper" type-safe way, but perhaps not the fastest.
 				// TODO: Test for speed.
-				remove(SignalSlotList(slots[i])._listener);
+				remove(SignalSlot(slots[i])._listener);
 			}
 		}
 		
@@ -148,7 +148,7 @@ package org.osflash.signals
 			{
 				// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
 				slotsNeedCloning = true;
-				var slot:SignalSlotList;
+				var slot:SignalSlot;
 				switch (valueObjects.length)
 				{
 					case 0:
@@ -189,7 +189,7 @@ package org.osflash.signals
 		{
 			for (var i:int = slots.length; i--; )
 			{
-				if (SignalSlotList(slots[i])._listener == listener) return i;
+				if (SignalSlot(slots[i])._listener == listener) return i;
 			}
 			return -1;
 		}
@@ -203,7 +203,7 @@ package org.osflash.signals
 				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
 			}
 			
-			const slot:SignalSlotList = SlotPool.create(listener, once, this);
+			const slot:SignalSlot = SlotPool.create(listener, once, this);
 			// If there are no previous listeners, add the first one as quickly as possible.
 			if (!slots.length)
 			{
@@ -216,7 +216,7 @@ package org.osflash.signals
 			{
 				// If the listener was previously added, definitely don't add it again.
 				// But throw an exception in some cases, as the error messages explain.
-				var prevSlot:SignalSlotList = SignalSlotList(slots[prevListenerIndex]);
+				var prevSlot:SignalSlot = SignalSlot(slots[prevListenerIndex]);
 				if (prevSlot._isOnce && !once)
 				{
 					throw new IllegalOperationError('You cannot addOnce() then add() ' +

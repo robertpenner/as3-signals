@@ -1,11 +1,11 @@
 package org.osflash.signals 
 {
     /**
-     * The SignalSlotList class represents a signal slot.
+     * The SignalSlot class represents a signal slot.
      *
      * @author Robert Penner
      */
-	internal final class SignalSlotList implements ISignalSlot
+	internal final class SignalSlot implements ISignalSlot
 	{
 		//
 		// Note: We define all properties as internal here so we
@@ -13,10 +13,10 @@ package org.osflash.signals
 		//
 
 		/**
-		 * The pseudo-private next SignalSlotList in the pool of SignalSlotList objects.
+		 * The pseudo-private next SignalSlot in the pool of SignalSlot objects.
 		 * @private
 		 */
-		internal var _nextInPool: SignalSlotList;
+		internal var _nextInPool: SignalSlot;
 
 		/**
 		 * The pseudo-private signal variable.
@@ -43,17 +43,17 @@ package org.osflash.signals
 		internal var _priority:int;
 
 		/**
-		 * The SignalSlotList constructor cannot be executed. Use SlotPool.create instead.
+		 * The SignalSlot constructor cannot be executed. Use SlotPool.create instead.
 		 *
 		 * @see org.osflash.signals.SlotPool#create()
 		 * @throws Error An error is thrown if the constructor is invoked outside of SlotPool.
 		 * @private
 		 */
-		public function SignalSlotList()
+		public function SignalSlot()
 		{
 			if (!SlotPool.constructorAllowed)
 			{
-				throw new Error('SignalSlotList is a pooled class. Use the SlotPool.create() method instead.');
+				throw new Error('SignalSlot is a pooled class. Use the SlotPool.create() method instead.');
 			}
 		}
 
@@ -124,7 +124,7 @@ package org.osflash.signals
 		 */
 		public function toString():String
 		{
-			return "SignalSlotList[listener: "+_listener+", once: "+_isOnce+", priority: "+_priority+"]";
+			return "SignalSlot[listener: "+_listener+", once: "+_isOnce+", priority: "+_priority+"]";
 		}
 	}
 }
