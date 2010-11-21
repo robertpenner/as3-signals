@@ -30,7 +30,7 @@ package org.osflash.signals
 		[Test]
 		public function available_objects_is_default_growth_rate():void
 		{
-			var slot: Slot = SlotPool.create(null);
+			var slot: SignalSlotList = SlotPool.create(null);
 
 			//we add one since one slot has been consumed
 			assertEquals(SlotPool.POOL_GROWTH_RATE, SlotPool.numAvailable + 1);
@@ -50,23 +50,23 @@ package org.osflash.signals
 		public function markDead_does_not_destroy_listener_before_timeout():void
 		{
 			var listener: Function = function():void {};
-			var slot: Slot = SlotPool.create(listener);
+			var slot: SignalSlotList = SlotPool.create(listener);
 
 			SlotPool.markDead(slot);
 
-			assertEquals(slot.listener, listener);
+			assertEquals(slot._listener, listener);
 		}
 
 		[Test]
 		public function markDead_destroys_listener_after_timeout():void
 		{
 			var listener: Function = function():void {};
-			var slot: Slot = SlotPool.create(listener);
+			var slot: SignalSlotList = SlotPool.create(listener);
 
 			SlotPool.markDead(slot);
 
 			setTimeout(async.add(function():void{
-				 assertNull(slot.listener);
+				 assertNull(slot._listener);
 		 	}, 50), 5);
 		}
 
@@ -104,12 +104,12 @@ package org.osflash.signals
 		{
 			var listener: Function = function():void{};
 			var signal: ISignal = new Signal();
-			var slot: Slot = SlotPool.create(listener, true, signal, 1);
+			var slot: SignalSlotList = SlotPool.create(listener, true, signal, 1);
 
-			assertEquals(1, slot.priority);
-			assertTrue(slot.once);
+			assertEquals(1, slot._priority);
+			assertTrue(slot._isOnce);
 			assertEquals(signal, slot._signal);
-			assertEquals(listener,  slot.listener);
+			assertEquals(listener,  slot._listener);
 		}
 	}
 }

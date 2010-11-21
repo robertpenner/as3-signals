@@ -116,7 +116,7 @@ package org.osflash.signals
 			{
 				// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
 				slotsNeedCloning = true;
-				var slot:Slot;
+				var slot:SignalSlotList;
 				switch (valueObjects.length)
 				{
 					case 0:
@@ -183,7 +183,7 @@ package org.osflash.signals
 				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
 			}
 
-			const slot:Slot = SlotPool.create(listener, once, this, priority);
+			const slot:SignalSlotList = SlotPool.create(listener, once, this, priority);
 			// Process the first listener as quickly as possible.
 			if (!slots.length)
 			{
@@ -196,12 +196,12 @@ package org.osflash.signals
 			{
 				// If the listener was previously added, definitely don't add it again.
 				// But throw an exception in some cases, as the error messages explain.
-				var prevSlot:Slot = Slot(slots[prevListenerIndex]);
-				if (prevSlot.once && !once)
+				var prevSlot:SignalSlotList = SignalSlotList(slots[prevListenerIndex]);
+				if (prevSlot._isOnce && !once)
 				{
 					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 				}
-				else if (!prevSlot.once && once)
+				else if (!prevSlot._isOnce && once)
 				{
 					throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
 				}
@@ -224,7 +224,7 @@ package org.osflash.signals
 			for (var i:int = 0; i < len; i++)
 			{
 				// As soon as a lower-priority listener is found, go in front of it.
-				if (priority > Slot(slots[i]).priority)
+				if (priority > SignalSlotList(slots[i])._priority)
 				{
 					slots.splice(i, 0, slot);
 					return;
