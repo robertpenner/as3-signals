@@ -1,8 +1,11 @@
 package org.osflash.signals 
 {
-	import org.osflash.signals.ISignal;
-
-	public class Slot
+    /**
+     * The Slot class represents a signal slot.
+     *
+     * @author Robert Penner
+     */
+	public final class Slot
 	{
 		public var listener:Function;
 		public var once:Boolean;
