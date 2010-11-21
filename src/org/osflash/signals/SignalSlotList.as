@@ -111,6 +111,7 @@ package org.osflash.signals
 				}
 				else
 				{
+					SlotPool.markDead(q.head);
 					allFiltered = false
 				}
 
@@ -123,6 +124,41 @@ package org.osflash.signals
 			}
 
 			return (first == null) ? nil : first;
+		}
+
+		public function contains(listener:Function):Boolean
+		{
+			return false;
+		}
+
+		public function clear():SignalSlotListNil
+		{
+			var p:ISignalSlotList = this;
+
+			while (p.nonEmpty)
+			{
+				SlotPool.markDead(p.head);
+				p = p.tail;
+			}
+
+			return nil;
+		}
+
+		public function find(listener:Function):SignalSlot
+		{
+			var p:ISignalSlotList = this;
+
+			while (p.nonEmpty)
+			{
+				if(p.head._listener == listener)
+				{
+					return p.head;
+				}
+
+				p = p.tail;
+			}
+
+			return null;
 		}
 	}
 }

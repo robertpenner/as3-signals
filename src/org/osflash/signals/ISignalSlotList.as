@@ -8,6 +8,12 @@ package org.osflash.signals
 
 		function filterNot(listener:Function):ISignalSlotList;
 
+		function contains(listener:Function):Boolean;
+
+		function find(listener: Function): SignalSlot;
+
+		function clear():SignalSlotListNil;
+
 		function get length(): int;
 
 		function get isEmpty(): Boolean;

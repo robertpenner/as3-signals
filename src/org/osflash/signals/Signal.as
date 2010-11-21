@@ -22,8 +22,7 @@ package org.osflash.signals
 	public class Signal implements ISignalOwner, IDispatcher
 	{
 		protected var _valueClasses:Array;		// of Class
-		protected var slots:Array;			// of Slot
-		protected var slotsNeedCloning:Boolean = false;
+		protected var slots:ISignalSlotList;
 		
 		/**
 		 * Creates a Signal instance to dispatch value objects.
@@ -38,7 +37,7 @@ package org.osflash.signals
 		 */
 		public function Signal(...valueClasses)
 		{
-			slots = [];
+			slots = nil;
 			// Cannot use super.apply(null, valueClasses),
 			// so allow the subclass to call super(valueClasses).
 			if (valueClasses.length == 1 && valueClasses[0] is Array)
@@ -87,35 +86,14 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function remove(listener:Function):Function
 		{
-			if (indexOfListener(listener) == -1) return listener;
-			if (slotsNeedCloning)
-			{
-				//todo investigate if need to clone pooled objects
-				slots = slots.slice();
-				slotsNeedCloning = false;
-			}
-
-			const index: int = indexOfListener(listener);
-
-			SlotPool.markDead(slots[index]);
-			slots.splice(index, 1);
-
+			slots = slots.filterNot(listener);
 			return listener;
 		}
 		
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			//todo optimize performance: why is remove called which will do indexOf
-			//we could do while(--i != 0) { listeners.pop() ... }
-
-			// Looping backwards is more efficient when removing array items.
-			for (var i:uint = slots.length; i--; )
-			{
-				// This is the "proper" type-safe way, but perhaps not the fastest.
-				// TODO: Test for speed.
-				remove(SignalSlot(slots[i])._listener);
-			}
+			slots = slots.clear();
 		}
 		
 		/** @inheritDoc */
@@ -143,57 +121,52 @@ package org.osflash.signals
 					+ '> is not an instance of <' + valueClass + '>.');
 			}
 
+			var slotsToProcess: ISignalSlotList = slots;
+
 			//// Call listeners.
-			if (slots.length)
+			if (slotsToProcess.nonEmpty)
 			{
 				// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
-				slotsNeedCloning = true;
 				var slot:SignalSlot;
 				switch (valueObjects.length)
 				{
 					case 0:
-						for each (slot in slots)
+						while (slotsToProcess.nonEmpty)
 						{
-							slot.execute0();
+							slotsToProcess.head.execute0();
+							slotsToProcess = slotsToProcess.tail;
 						}
 						break;
 						
 					case 1:
 						const singleValue:Object = valueObjects[0];
-						for each (slot in slots)
+						while (slotsToProcess.nonEmpty)
 						{
-							slot.execute1(singleValue);
+							slotsToProcess.head.execute1(singleValue);
+							slotsToProcess = slotsToProcess.tail;
 						}
 						break;
 						
 					case 2:
 						const value1:Object = valueObjects[0];
 						const value2:Object = valueObjects[1];
-						for each (slot in slots)
+						while (slotsToProcess.nonEmpty)
 						{
-							slot.execute2(value1, value2);
+							slotsToProcess.head.execute2(value1, value2);
+							slotsToProcess = slotsToProcess.tail;
 						}
 						break;
 						
 					default:
-						for each (slot in slots)
+						while (slotsToProcess.nonEmpty)
 						{
-							slot.execute(valueObjects);
+							slotsToProcess.head.execute(valueObjects);
+							slotsToProcess = slotsToProcess.tail;
 						}
 				}
-				slotsNeedCloning = false;
 			}
 		}
-		
-		protected function indexOfListener(listener:Function):int
-		{
-			for (var i:int = slots.length; i--; )
-			{
-				if (SignalSlot(slots[i])._listener == listener) return i;
-			}
-			return -1;
-		}
-		
+
 		protected function registerListener(listener:Function, once:Boolean = false):void
 		{
 			// function.length is the number of arguments.
@@ -205,18 +178,17 @@ package org.osflash.signals
 			
 			const slot:SignalSlot = SlotPool.create(listener, once, this);
 			// If there are no previous listeners, add the first one as quickly as possible.
-			if (!slots.length)
+			if (slots.isEmpty)
 			{
-				slots[0] = slot;
+				slots = slots.prepend(slot);
 				return;
 			}
 						
-			var prevListenerIndex:int = indexOfListener(listener);
-			if (prevListenerIndex >= 0)
+			if (slots.contains(listener))
 			{
 				// If the listener was previously added, definitely don't add it again.
 				// But throw an exception in some cases, as the error messages explain.
-				var prevSlot:SignalSlot = SignalSlot(slots[prevListenerIndex]);
+				var prevSlot:SignalSlot = slots.find(listener);
 				if (prevSlot._isOnce && !once)
 				{
 					throw new IllegalOperationError('You cannot addOnce() then add() ' +
@@ -231,15 +203,7 @@ package org.osflash.signals
 				return;
 			}
 			
-			if (slotsNeedCloning)
-			{
-				//todo investigate if need to clone pooled objects
-				slots = slots.slice();
-				slotsNeedCloning = false;
-			}
-				
-			// Faster than push().
-			slots[slots.length] = slot;
+			slots = slots.prepend(slot);
 		}
 	}
 }
