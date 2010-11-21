@@ -48,5 +48,20 @@ package org.osflash.signals
 		{
 			throw new Error('Cannot get head of empty list.')
 		}
+
+		public function contains(listener:Function):Boolean
+		{
+			return false;
+		}
+
+		public function find(listener:Function):SignalSlot
+		{
+			return null;
+		}
+
+		public function clear():SignalSlotListNil
+		{
+			return this;
+		}
 	}
 }
