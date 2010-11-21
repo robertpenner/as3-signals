@@ -8,7 +8,7 @@ package org.osflash.signals
 	internal final class Slot
 	{
 		/**
-		 * The next Slot in the pool of Slot objects.
+		 * The pseudo-private next Slot in the pool of Slot objects.
 		 * @private
 		 */
 		internal var _nextInPool: Slot;

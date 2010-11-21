@@ -1,6 +1,7 @@
 package org.osflash.signals {
 	import flash.display.Shape;
 	import flash.events.Event;
+	import flash.events.IEventDispatcher;
 
 	/**
 	 * The SlotPool class represents a pool of Slot objects.
@@ -16,14 +17,14 @@ package org.osflash.signals {
 	 */
 	internal final class SlotPool
 	{
-		{
-			// Create a provider for Event.EXIT_FRAME and listen to the event.
-			// It is used to collect all dead slots after a frame executed.
-			new Shape().addEventListener(Event.EXIT_FRAME, onExitFrame);
-		}
+		/**
+		 * An IEventDispatcher capable of dispatching <code>Event.EXIT_FRAME</code>.
+		 */
+		private static const EXIT_FRAME_PROVIDER: IEventDispatcher = new Shape();
 
 		/**
 		 * The growth rate of the pool.
+		 * @private
 		 */
 		private static const POOL_GROWTH_RATE: int = 0x10;
 
@@ -36,17 +37,27 @@ package org.osflash.signals {
 		/**
 		 * The number of available objects in the pool.
 		 */
-		private static var availableInPool:int;
+		private static var numAvailable:int;
 
 		/**
-		 * A single linked list of Slot objects.
+		 * The list of available Slot objects.
 		 */
-		private static var pool:Slot;
+		private static var pooledSlots:Slot;
 
 		/**
-		 * A list of slots to release on the EXIT_FRAME event.
+		 * The list of dead Slot objects.
+		 *
+		 * Dead slot objects will be put back into the pool when
+		 * <code>releaseDeadSlots.</code> is called.
+		 *
+		 * @see #releaseDeadSlots
 		 */
 		private static var deadSlots:Slot;
+
+		/**
+		 * Whether or not the SlotPool is listening for <code>Event.EXIT_FRAME</code>.
+		 */
+		private static var listensForExitFrame: Boolean;
 
 		/**
 		 * Returns a Slot object from the pool.
@@ -61,9 +72,9 @@ package org.osflash.signals {
 		 */
 		public static function create(listener:Function, once:Boolean = false, signal:ISignal = null, priority:int = 0):Slot
 		{
-			var pooledObject:Slot;
+			var slot:Slot;
 
-			if (0 == availableInPool)
+			if (0 == numAvailable)
 			{
 				var n:int = POOL_GROWTH_RATE + 1;
 
@@ -73,9 +84,9 @@ package org.osflash.signals {
 
 					while (--n != 0)
 					{
-						pooledObject = new Slot();
-						pooledObject._nextInPool = pool;
-						pool = pooledObject;
+						slot = new Slot();
+						slot._nextInPool = pooledSlots;
+						pooledSlots = slot;
 					}
 				}
 				finally
@@ -83,19 +94,19 @@ package org.osflash.signals {
 					constructorAllowed = false;
 				}
 
-				availableInPool += POOL_GROWTH_RATE;
+				numAvailable += POOL_GROWTH_RATE;
 			}
 
-			pooledObject = pool;
-			pool = pooledObject._nextInPool;
-			--availableInPool;
+			slot = pooledSlots;
+			pooledSlots = slot._nextInPool;
+			--numAvailable;
 
-			pooledObject.listener = listener;
-			pooledObject.once = once;
-			pooledObject.priority = priority;
-			pooledObject._signal = signal;
+			slot.listener = listener;
+			slot.once = once;
+			slot.priority = priority;
+			slot._signal = signal;
 
-			return pooledObject;
+			return slot;
 		}
 
 		/**
@@ -110,6 +121,11 @@ package org.osflash.signals {
 		{
 			slot._nextInPool = deadSlots;
 			deadSlots = slot;
+
+			if(!listensForExitFrame) {
+				EXIT_FRAME_PROVIDER.addEventListener(Event.EXIT_FRAME, onExitFrame);
+				listensForExitFrame = true;
+			}
 		}
 
 		/**
@@ -122,6 +138,9 @@ package org.osflash.signals {
 		private static function onExitFrame(event:Event):void
 		{
 			releaseDeadSlots();
+
+			EXIT_FRAME_PROVIDER.removeEventListener(Event.EXIT_FRAME, onExitFrame);
+			listensForExitFrame = false;
 		}
 
 		/**
@@ -138,10 +157,10 @@ package org.osflash.signals {
 
 				slot.listener = null;
 				slot._signal = null;
-				slot._nextInPool = pool;
-				pool = slot;
+				slot._nextInPool = pooledSlots;
+				pooledSlots = slot;
 
-				++availableInPool;
+				++numAvailable;
 			}
 
 			deadSlots = null;
