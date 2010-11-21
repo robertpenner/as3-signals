@@ -49,6 +49,7 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
+		[ArrayElementType("Class")]
 		public function get valueClasses():Array { return _valueClasses; }
 		
 		/** @inheritDoc */
