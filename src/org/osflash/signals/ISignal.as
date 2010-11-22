@@ -40,6 +40,10 @@ package org.osflash.signals
 		 * @return the listener Function passed as the parameter
 		 */
 		function remove(listener:Function):Function;
-		
+
+		/**
+		 * Unsubscribes all listeners from the signal.
+		 */
+		function removeAll():void
 	}
 }

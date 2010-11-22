@@ -4,6 +4,8 @@ package org.osflash.signals.natives
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 
+	import org.osflash.signals.IPrioritySignal;
+
 	/** 
 	 * Allows the eventClass to be set in MXML, e.g.
 	 * <natives:NativeSignal id="clicked" eventType="click" target="{this}">{MouseEvent}</natives:NativeSignal>
@@ -15,7 +17,7 @@ package org.osflash.signals.natives
 	 * A NativeSignal is essentially a mini-dispatcher locked to a specific event type and class.
 	 * It can become part of an interface.
 	 */
-	public class NativeSignal implements INativeSignalOwner
+	public class NativeSignal implements IPrioritySignal, INativeDispatcher
 	{
 		protected var _target:IEventDispatcher;
 		protected var _eventType:String;
