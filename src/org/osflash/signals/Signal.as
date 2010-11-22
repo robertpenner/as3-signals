@@ -22,7 +22,7 @@ package org.osflash.signals
 	public class Signal implements ISignal, IDispatcher
 	{
 		protected var _valueClasses:Array;		// of Class
-		protected var slots:SignalBindingList;
+		protected var bindings:SignalBindingList;
 		
 		/**
 		 * Creates a Signal instance to dispatch value objects.
@@ -37,7 +37,7 @@ package org.osflash.signals
 		 */
 		public function Signal(...valueClasses)
 		{
-			slots = SignalBindingList.NIL;
+			bindings = SignalBindingList.NIL;
 
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
 			this.valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array) ? valueClasses[0] : valueClasses;
@@ -47,7 +47,6 @@ package org.osflash.signals
 		[ArrayElementType("Class")]
 		public function get valueClasses():Array { return _valueClasses; }
 		
-		/** @inheritDoc */
 		public function set valueClasses(value:Array):void
 		{
 			// Clone so the Array cannot be affected from outside.
@@ -64,7 +63,7 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function get numListeners():uint { return slots.length; }
+		public function get numListeners():uint { return bindings.length; }
 		
 		/** @inheritDoc */
 		//TODO: @throws
@@ -84,14 +83,14 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function remove(listener:Function):Function
 		{
-			slots = slots.filterNot(listener);
+			bindings = bindings.filterNot(listener);
 			return listener;
 		}
 		
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			slots = SignalBindingList.NIL;
+			bindings = SignalBindingList.NIL;
 		}
 		
 		/** @inheritDoc */
@@ -119,45 +118,45 @@ package org.osflash.signals
 					+ '> is not an instance of <' + valueClass + '>.');
 			}
 
-			var slotsToProcess: SignalBindingList = slots;
+			var bindingsToProcess: SignalBindingList = bindings;
 
 			//// Call listeners.
-			if (slotsToProcess.nonEmpty)
+			if (bindingsToProcess.nonEmpty)
 			{
 				switch (valueObjects.length)
 				{
 					case 0:
-						while (slotsToProcess.nonEmpty)
+						while (bindingsToProcess.nonEmpty)
 						{
-							slotsToProcess.head.execute0();
-							slotsToProcess = slotsToProcess.tail;
+							bindingsToProcess.head.execute0();
+							bindingsToProcess = bindingsToProcess.tail;
 						}
 						break;
 						
 					case 1:
 						const singleValue:Object = valueObjects[0];
-						while (slotsToProcess.nonEmpty)
+						while (bindingsToProcess.nonEmpty)
 						{
-							slotsToProcess.head.execute1(singleValue);
-							slotsToProcess = slotsToProcess.tail;
+							bindingsToProcess.head.execute1(singleValue);
+							bindingsToProcess = bindingsToProcess.tail;
 						}
 						break;
 						
 					case 2:
 						const value1:Object = valueObjects[0];
 						const value2:Object = valueObjects[1];
-						while (slotsToProcess.nonEmpty)
+						while (bindingsToProcess.nonEmpty)
 						{
-							slotsToProcess.head.execute2(value1, value2);
-							slotsToProcess = slotsToProcess.tail;
+							bindingsToProcess.head.execute2(value1, value2);
+							bindingsToProcess = bindingsToProcess.tail;
 						}
 						break;
 						
 					default:
-						while (slotsToProcess.nonEmpty)
+						while (bindingsToProcess.nonEmpty)
 						{
-							slotsToProcess.head.execute(valueObjects);
-							slotsToProcess = slotsToProcess.tail;
+							bindingsToProcess.head.execute(valueObjects);
+							bindingsToProcess = bindingsToProcess.tail;
 						}
 				}
 			}
@@ -174,34 +173,31 @@ package org.osflash.signals
 						_valueClasses.length+' to match the given value classes.');
 			}
 			
-			const slot:SignalBinding = new SignalBinding(listener, once, this);
+			const binding:SignalBinding = new SignalBinding(listener, once, this);
+
 			// If there are no previous listeners, add the first one as quickly as possible.
-			if (!slots.nonEmpty)
+			if (!bindings.nonEmpty)
 			{
-				slots = new SignalBindingList(slot, slots);
+				bindings = new SignalBindingList(binding, bindings);
 				return;
 			}
 						
-			if (slots.contains(listener))
+			if (bindings.contains(listener))
 			{
 				// If the listener was previously added, definitely don't add it again.
 				// But throw an exception in some cases, as the error messages explain.
-				var prevSlot:SignalBinding = slots.find(listener);
-				if (prevSlot._isOnce && !once)
-				{
-					throw new IllegalOperationError('You cannot addOnce() then add() ' +
-						'the same listener without removing the relationship first.');
-				}
-				else if (!prevSlot._isOnce && once)
-				{
-					throw new IllegalOperationError('You cannot add() then addOnce()' +
-						' the same listener without removing the relationship first.');
-				}
+				const prevBinding:SignalBinding = bindings.find(listener);
+
+				if (prevBinding._isOnce && !once) throw new IllegalOperationError(
+						'You cannot addOnce() then add() the same listener without removing the relationship first.');
+				else if (!prevBinding._isOnce && once) throw new IllegalOperationError(
+						'You cannot add() then addOnce() the same listener without removing the relationship first.');
+
 				// Listener was already added, so do nothing.
 				return;
 			}
 
-			slots = new SignalBindingList(slot, slots);
+			bindings = new SignalBindingList(binding, bindings);
 		}
 	}
 }

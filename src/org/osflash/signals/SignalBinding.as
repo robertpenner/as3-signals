@@ -1,7 +1,7 @@
 package org.osflash.signals 
 {
     /**
-     * The SignalBinding class represents a signal slot.
+     * The SignalBinding class represents a signal binding.
      *
      * @author Robert Penner
 	 * @author Joa Ebert
@@ -48,10 +48,10 @@ package org.osflash.signals
 		/**
 		 * Creates and returns a new SignalBinding object.
 		 *
-		 * @param listener The listener associated with the slot.
+		 * @param listener The listener associated with the binding.
 		 * @param once Whether or not the listener should be executed only once.
-		 * @param signal The signal associated with the slot.
-		 * @param priority The priority of the slot.
+		 * @param signal The signal associated with the binding.
+		 * @param priority The priority of the binding.
 		 *
 		 * @throws ArgumentError An error is thrown if the given listener closure is <code>null</code>.
 		 */
@@ -185,6 +185,11 @@ package org.osflash.signals
 					'Given listener is null.\nDid you want to call pause() instead?');
 
 			_listener = newListener;
+		}
+
+		public function remove():void
+		{
+			_signal.remove(_listener)
 		}
 	}
 }

@@ -44,10 +44,8 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		/** @inheritDoc */
 		public function get target():Object { return _target; }
 		
-		/** @inheritDoc */
 		public function set target(value:Object):void
 		{
 			if (value == _target) return;
@@ -111,46 +109,46 @@ package org.osflash.signals
 				event.signal = this;
 			}
 
-			var slotsToProcess: SignalBindingList = slots;
+			var bindingsToProcess: SignalBindingList = bindings;
 
 			//// Call listeners.
-			if (slotsToProcess.nonEmpty)
+			if (bindingsToProcess.nonEmpty)
 			{
 				// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
 				switch (valueObjects.length)
 				{
 					case 0:
-						while (slotsToProcess.nonEmpty)
+						while (bindingsToProcess.nonEmpty)
 						{
-							slotsToProcess.head.execute0();
-							slotsToProcess = slotsToProcess.tail;
+							bindingsToProcess.head.execute0();
+							bindingsToProcess = bindingsToProcess.tail;
 						}
 						break;
 						
 					case 1:
 						const singleValue:Object = valueObjects[0];
-						while (slotsToProcess.nonEmpty)
+						while (bindingsToProcess.nonEmpty)
 						{
-							slotsToProcess.head.execute1(singleValue);
-							slotsToProcess = slotsToProcess.tail;
+							bindingsToProcess.head.execute1(singleValue);
+							bindingsToProcess = bindingsToProcess.tail;
 						}
 						break;
 						
 					case 2:
 						const value1:Object = valueObjects[0];
 						const value2:Object = valueObjects[1];
-						while (slotsToProcess.nonEmpty)
+						while (bindingsToProcess.nonEmpty)
 						{
-							slotsToProcess.head.execute2(value1, value2);
-							slotsToProcess = slotsToProcess.tail;
+							bindingsToProcess.head.execute2(value1, value2);
+							bindingsToProcess = bindingsToProcess.tail;
 						}
 						break;
 						
 					default:
-						while (slotsToProcess.nonEmpty)
+						while (bindingsToProcess.nonEmpty)
 						{
-							slotsToProcess.head.execute(valueObjects);
-							slotsToProcess = slotsToProcess.tail;
+							bindingsToProcess.head.execute(valueObjects);
+							bindingsToProcess = bindingsToProcess.tail;
 						}
 				}
 			}
@@ -186,33 +184,31 @@ package org.osflash.signals
 				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
 			}
 
-			const slot:SignalBinding = new SignalBinding(listener, once, this, priority);
+			const binding:SignalBinding = new SignalBinding(listener, once, this, priority);
 
 			// Process the first listener as quickly as possible.
-			if (!slots.nonEmpty)
+			if (!bindings.nonEmpty)
 			{
-				slots = new SignalBindingList(slot, slots);
+				bindings = new SignalBindingList(binding, bindings);
 				return;
 			}
 			
-			if (slots.contains(listener))
+			if (bindings.contains(listener))
 			{
 				// If the listener was previously added, definitely don't add it again.
 				// But throw an exception in some cases, as the error messages explain.
-				var prevSlot:SignalBinding = slots.find(listener);
-				if (prevSlot._isOnce && !once)
-				{
-					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
-				}
-				else if (!prevSlot._isOnce && once)
-				{
-					throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
-				}
+				const prevBinding:SignalBinding = bindings.find(listener);
+
+				if (prevBinding._isOnce && !once) throw new IllegalOperationError(
+						'You cannot addOnce() then add() the same listener without removing the relationship first.');
+				else if (!prevBinding._isOnce && once) throw new IllegalOperationError(
+						'You cannot add() then addOnce() the same listener without removing the relationship first.');
+
 				// Listener was already added, so do nothing.
 				return;
 			}
 			
-			slots = slots.insertWithPriority(slot);
+			bindings = bindings.insertWithPriority(binding);
 		}
 		
 	}

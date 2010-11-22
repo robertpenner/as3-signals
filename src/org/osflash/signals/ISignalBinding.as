@@ -76,5 +76,10 @@ package org.osflash.signals
 		 * @param value2 The second argument for the listener.
 		 */
 		function execute2(value1:Object, value2:Object):void;
+
+		/**
+		 * Removes the binding from its signal.
+		 */
+		function remove(): void;
 	}
 }

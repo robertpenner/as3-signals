@@ -33,12 +33,12 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		override public function addWithPriority(listener:Function, priority:int = 0):Function
 		{
-			const nonEmptyBefore: Boolean = slots.nonEmpty;
+			const nonEmptyBefore: Boolean = bindings.nonEmpty;
 			
 			// Try to add first because it may throw an exception.
 			super.addWithPriority(listener);
 			// Account for cases where the same listener is added twice.
-			if (nonEmptyBefore != slots.nonEmpty)
+			if (nonEmptyBefore != bindings.nonEmpty)
 				IEventDispatcher(_target).addEventListener(_eventType, dispatch, false, priority);
 			
 			return listener;
@@ -47,12 +47,12 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		override public function addOnceWithPriority(listener:Function, priority:int = 0):Function
 		{
-			const nonEmptyBefore: Boolean = slots.nonEmpty;
+			const nonEmptyBefore: Boolean = bindings.nonEmpty;
 
 			// Try to add first because it may throw an exception.
 			super.addOnceWithPriority(listener);
 			// Account for cases where the same listener is added twice.
-			if (nonEmptyBefore != slots.nonEmpty)
+			if (nonEmptyBefore != bindings.nonEmpty)
 				IEventDispatcher(_target).addEventListener(_eventType, dispatch, false, priority);
 			
 			return listener;
@@ -61,11 +61,11 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		override public function remove(listener:Function):Function
 		{
-			const nonEmptyBefore: Boolean = slots.nonEmpty;
+			const nonEmptyBefore: Boolean = bindings.nonEmpty;
 
 			super.remove(listener);
 
-			if (nonEmptyBefore != slots.nonEmpty) IEventDispatcher(_target).removeEventListener(_eventType, dispatch);
+			if (nonEmptyBefore != bindings.nonEmpty) IEventDispatcher(_target).removeEventListener(_eventType, dispatch);
 
 			return listener;
 		}
@@ -75,7 +75,7 @@ package org.osflash.signals.natives
 		 */
 		override public function removeAll(): void
 		{
-			if(slots.nonEmpty) IEventDispatcher(_target).removeEventListener(_eventType, dispatch);
+			if(bindings.nonEmpty) IEventDispatcher(_target).removeEventListener(_eventType, dispatch);
 			super.removeAll();
 		}
 	}
