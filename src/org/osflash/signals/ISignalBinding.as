@@ -8,12 +8,12 @@
 package org.osflash.signals
 {
 	/**
-	 * The ISignalSlot interface defines the basic properties of a
+	 * The ISignalBinding interface defines the basic properties of a
 	 * listener associated with a Signal.
 	 *
 	 * @author Joa Ebert
 	 */
-	public interface ISignalSlot
+	public interface ISignalBinding
 	{
 		/**
 		 * The listener associated with this binding.

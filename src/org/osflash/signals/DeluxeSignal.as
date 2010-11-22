@@ -111,7 +111,7 @@ package org.osflash.signals
 				event.signal = this;
 			}
 
-			var slotsToProcess: SignalSlotList = slots;
+			var slotsToProcess: SignalBindingList = slots;
 
 			//// Call listeners.
 			if (slotsToProcess.nonEmpty)
@@ -186,12 +186,12 @@ package org.osflash.signals
 				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
 			}
 
-			const slot:SignalSlot = new SignalSlot(listener, once, this, priority);
+			const slot:SignalBinding = new SignalBinding(listener, once, this, priority);
 
 			// Process the first listener as quickly as possible.
 			if (!slots.nonEmpty)
 			{
-				slots = new SignalSlotList(slot, slots);
+				slots = new SignalBindingList(slot, slots);
 				return;
 			}
 			
@@ -199,7 +199,7 @@ package org.osflash.signals
 			{
 				// If the listener was previously added, definitely don't add it again.
 				// But throw an exception in some cases, as the error messages explain.
-				var prevSlot:SignalSlot = slots.find(listener);
+				var prevSlot:SignalBinding = slots.find(listener);
 				if (prevSlot._isOnce && !once)
 				{
 					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');

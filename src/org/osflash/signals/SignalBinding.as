@@ -1,13 +1,13 @@
 package org.osflash.signals 
 {
     /**
-     * The SignalSlot class represents a signal slot.
+     * The SignalBinding class represents a signal slot.
      *
      * @author Robert Penner
 	 * @author Joa Ebert
 	 * @private
      */
-	internal final class SignalSlot implements ISignalSlot
+	internal final class SignalBinding implements ISignalBinding
 	{
 		/**
 		 * Private backing variable for the <code>signal</code> property.
@@ -46,7 +46,7 @@ package org.osflash.signals
 		internal var _priority:int;
 
 		/**
-		 * Creates and returns a new SignalSlot object.
+		 * Creates and returns a new SignalBinding object.
 		 *
 		 * @param listener The listener associated with the slot.
 		 * @param once Whether or not the listener should be executed only once.
@@ -55,7 +55,7 @@ package org.osflash.signals
 		 *
 		 * @throws ArgumentError An error is thrown if the given listener closure is <code>null</code>.
 		 */
-		public function SignalSlot(listener:Function, once:Boolean = false, signal:ISignal = null, priority:int = 0)
+		public function SignalBinding(listener:Function, once:Boolean = false, signal:ISignal = null, priority:int = 0)
 		{
 			if (null == listener) throw new ArgumentError('Given listener is null.');
 
@@ -144,7 +144,7 @@ package org.osflash.signals
 		 */
 		public function toString():String
 		{
-			return "[SignalSlot listener: "+_listener+", once: "+_isOnce+", priority: "+_priority+"]";
+			return "[SignalBinding listener: "+_listener+", once: "+_isOnce+", priority: "+_priority+"]";
 		}
 
 		/**

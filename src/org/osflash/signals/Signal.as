@@ -22,7 +22,7 @@ package org.osflash.signals
 	public class Signal implements ISignal, IDispatcher
 	{
 		protected var _valueClasses:Array;		// of Class
-		protected var slots:SignalSlotList;
+		protected var slots:SignalBindingList;
 		
 		/**
 		 * Creates a Signal instance to dispatch value objects.
@@ -37,7 +37,7 @@ package org.osflash.signals
 		 */
 		public function Signal(...valueClasses)
 		{
-			slots = SignalSlotList.NIL;
+			slots = SignalBindingList.NIL;
 
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
 			this.valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array) ? valueClasses[0] : valueClasses;
@@ -91,7 +91,7 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			slots = SignalSlotList.NIL;
+			slots = SignalBindingList.NIL;
 		}
 		
 		/** @inheritDoc */
@@ -119,7 +119,7 @@ package org.osflash.signals
 					+ '> is not an instance of <' + valueClass + '>.');
 			}
 
-			var slotsToProcess: SignalSlotList = slots;
+			var slotsToProcess: SignalBindingList = slots;
 
 			//// Call listeners.
 			if (slotsToProcess.nonEmpty)
@@ -174,11 +174,11 @@ package org.osflash.signals
 						_valueClasses.length+' to match the given value classes.');
 			}
 			
-			const slot:SignalSlot = new SignalSlot(listener, once, this);
+			const slot:SignalBinding = new SignalBinding(listener, once, this);
 			// If there are no previous listeners, add the first one as quickly as possible.
 			if (!slots.nonEmpty)
 			{
-				slots = new SignalSlotList(slot, slots);
+				slots = new SignalBindingList(slot, slots);
 				return;
 			}
 						
@@ -186,7 +186,7 @@ package org.osflash.signals
 			{
 				// If the listener was previously added, definitely don't add it again.
 				// But throw an exception in some cases, as the error messages explain.
-				var prevSlot:SignalSlot = slots.find(listener);
+				var prevSlot:SignalBinding = slots.find(listener);
 				if (prevSlot._isOnce && !once)
 				{
 					throw new IllegalOperationError('You cannot addOnce() then add() ' +
@@ -201,7 +201,7 @@ package org.osflash.signals
 				return;
 			}
 
-			slots = new SignalSlotList(slot, slots);
+			slots = new SignalBindingList(slot, slots);
 		}
 	}
 }

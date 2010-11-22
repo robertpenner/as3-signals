@@ -1,25 +1,25 @@
 package org.osflash.signals
 {
 	/**
-	 * The SignalSlotList class represents an immutable list of SignalSlot objects.
+	 * The SignalBindingList class represents an immutable list of SignalBinding objects.
 	 *
 	 * @author Joa Ebert
 	 * @private
 	 */
-	internal final class SignalSlotList
+	internal final class SignalBindingList
 	{
-		public static const NIL: SignalSlotList = new SignalSlotList(null, null);
+		public static const NIL: SignalBindingList = new SignalBindingList(null, null);
 
 		/**
-		 * Creates and returns a new SignalSlotList object.
+		 * Creates and returns a new SignalBindingList object.
 		 *
-		 * <p>A user never has to create a SignalSlotList manually. Use the <code>NIL</code> element to represent an
+		 * <p>A user never has to create a SignalBindingList manually. Use the <code>NIL</code> element to represent an
 		 * empty list. <code>NIL.prepend(value)</code> would create a list containing <code>value</code>.
 		 *
 		 * @param head The head of the list.
 		 * @param tail The tail of the list.
 		 */
-		public function SignalSlotList(head:SignalSlot, tail:SignalSlotList)
+		public function SignalBindingList(head:SignalBinding, tail:SignalBindingList)
 		{
 			if(null == head && null == tail)
 			{
@@ -43,8 +43,8 @@ package org.osflash.signals
 		// Although those variables are not const, they would be if AS3 would handle it correct.
 		//
 
-		public var head: SignalSlot;
-		public var tail: SignalSlotList;
+		public var head: SignalBinding;
+		public var tail: SignalBindingList;
 		public var nonEmpty: Boolean;
 
 		/**
@@ -72,7 +72,7 @@ package org.osflash.signals
 			//
 
 			var result: int = 0;
-			var p:SignalSlotList = this;
+			var p:SignalBindingList = this;
 
 			while (p.nonEmpty)
 			{
@@ -83,30 +83,30 @@ package org.osflash.signals
 			return result;
 		}
 
-		public function prepend(value:SignalSlot):SignalSlotList
+		public function prepend(value:SignalBinding):SignalBindingList
 		{
-			return new SignalSlotList(value, this);
+			return new SignalBindingList(value, this);
 		}
 
-		public function insertWithPriority(value: SignalSlot):SignalSlotList
+		public function insertWithPriority(value: SignalBinding):SignalBindingList
 		{
-			if (!nonEmpty) return new SignalSlotList(value, this);
+			if (!nonEmpty) return new SignalBindingList(value, this);
 
 			const priority: int = value._priority;
 
-			if(priority > this.head._priority) return new SignalSlotList(value, this);
+			if(priority > this.head._priority) return new SignalBindingList(value, this);
 
-			var p:SignalSlotList = this;
-			var q:SignalSlotList = null;
+			var p:SignalBindingList = this;
+			var q:SignalBindingList = null;
 
-			var first:SignalSlotList = null;
-			var last:SignalSlotList = null;
+			var first:SignalBindingList = null;
+			var last:SignalBindingList = null;
 
 			while (p.nonEmpty)
 			{
 				if (priority > p.head._priority)
 				{
-					q = new SignalSlotList(value, p);
+					q = new SignalBindingList(value, p);
 
 					if(null != last) last.tail = q;
 
@@ -114,7 +114,7 @@ package org.osflash.signals
 				}
 				else
 				{
-					q = new SignalSlotList(p.head, NIL);
+					q = new SignalBindingList(p.head, NIL);
 
 					if (null != last) last.tail = q;
 					if (null == first) first = q;
@@ -127,28 +127,28 @@ package org.osflash.signals
 
 			if (first == null || last == null) throw new Error('Internal error.');
 
-			last.tail = new SignalSlotList(value, NIL);
+			last.tail = new SignalBindingList(value, NIL);
 
 			return first;
 		}
 
-		public function filterNot(listener:Function):SignalSlotList
+		public function filterNot(listener:Function):SignalBindingList
 		{
 			if (!nonEmpty) return this;
 
 			if (listener == head._listener) return tail;
 
-			var p:SignalSlotList = this;
-			var q:SignalSlotList = null;
+			var p:SignalBindingList = this;
+			var q:SignalBindingList = null;
 
-			var first:SignalSlotList = null;
-			var last:SignalSlotList = null;
+			var first:SignalBindingList = null;
+			var last:SignalBindingList = null;
 
 			while (p.nonEmpty)
 			{
 				if (p.head._listener != listener)
 				{
-					q = new SignalSlotList(p.head, NIL);
+					q = new SignalBindingList(p.head, NIL);
 
 					if (null != last) last.tail = q;
 					if (null == first) first = q;
@@ -176,7 +176,7 @@ package org.osflash.signals
 		{
 			if (!nonEmpty) return false;
 
-			var p:SignalSlotList = this;
+			var p:SignalBindingList = this;
 
 			while (p.nonEmpty)
 			{
@@ -188,11 +188,11 @@ package org.osflash.signals
 			return false;
 		}
 
-		public function find(listener:Function):SignalSlot
+		public function find(listener:Function):SignalBinding
 		{
 			if (!nonEmpty) return null;
 
-			var p:SignalSlotList = this;
+			var p:SignalBindingList = this;
 
 			while (p.nonEmpty)
 			{
@@ -207,7 +207,7 @@ package org.osflash.signals
 		public function toString(): String
 		{
 			var buffer:String = '';
-			var p:SignalSlotList = this;
+			var p:SignalBindingList = this;
 
 			while (!p.nonEmpty) buffer += p.head+" -> ";
 
