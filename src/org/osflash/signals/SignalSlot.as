@@ -4,40 +4,43 @@ package org.osflash.signals
      * The SignalSlot class represents a signal slot.
      *
      * @author Robert Penner
+	 * @author Joa Ebert
+	 * @private
      */
 	internal final class SignalSlot implements ISignalSlot
 	{
-		//
-		// Note: We define all properties as internal here so we
-		// can access them without the overhead of an implicit getter.
-		//
-
 		/**
-		 * The pseudo-private next SignalSlot in the pool of SignalSlot objects.
+		 * Private backing variable for the <code>signal</code> property.
 		 * @private
 		 */
-		internal var _nextInPool: SignalSlot;
+		private var _signal:ISignal;
 
 		/**
-		 * The pseudo-private signal variable.
+		 * Private backing variable for the <code>paused</code> property.
 		 * @private
 		 */
-		internal var _signal:ISignal;
+		private var _paused:Boolean;
 
 		/**
-		 * The listener associated with this slot.
+		 * Private backing variable for the <code>listener</code> property.
+		 *
+		 * Visible in the signals package for fast access.
 		 * @private
 		 */
 		internal var _listener:Function;
 
 		/**
-		 * Whether or not this listener is only executed
+		 * Private backing variable for the <code>isOnce</code> property.
+		 *
+		 * Visible in the signals package for fast access.
 		 * @private
 		 */
 		internal var _isOnce:Boolean;
 
 		/**
-		 * The priority of this slot.
+		 * Private backing variable for the <code>priority</code> property.
+		 *
+		 * Visible in the signals package for fast access.
 		 * @private
 		 */
 		internal var _priority:int;
@@ -49,9 +52,13 @@ package org.osflash.signals
 		 * @param once Whether or not the listener should be executed only once.
 		 * @param signal The signal associated with the slot.
 		 * @param priority The priority of the slot.
+		 *
+		 * @throws ArgumentError An error is thrown if the given listener closure is <code>null</code>.
 		 */
 		public function SignalSlot(listener:Function, once:Boolean = false, signal:ISignal = null, priority:int = 0)
 		{
+			if (null == listener) throw new ArgumentError('Given listener is null.');
+
 			_listener = listener;
 			_isOnce = once;
 			_signal = signal;
@@ -63,8 +70,11 @@ package org.osflash.signals
 		 */
 		public function execute(valueObjects:Array):void
 		{
-			if (_isOnce) _signal.remove(_listener);
-			_listener.apply(null, valueObjects);
+			if (!_paused)
+			{
+				if (_isOnce) _signal.remove(_listener);
+				_listener.apply(null, valueObjects);
+			}
 		}
 
 		/**
@@ -72,8 +82,11 @@ package org.osflash.signals
 		 */
 		public function execute0():void
 		{
-			if (_isOnce) _signal.remove(_listener);
-			_listener();
+			if (!_paused)
+			{
+				if (_isOnce) _signal.remove(_listener);
+				_listener();
+			}
 		}
 
 		/**
@@ -81,8 +94,11 @@ package org.osflash.signals
 		 */
 		public function execute1(value1:Object):void
 		{
-			if (_isOnce) _signal.remove(_listener);
-			_listener(value1);
+			if (!_paused)
+			{
+				if (_isOnce) _signal.remove(_listener);
+				_listener(value1);
+			}
 		}
 
 		/**
@@ -90,8 +106,11 @@ package org.osflash.signals
 		 */
 		public function execute2(value1:Object, value2:Object):void
 		{
-			if (_isOnce) _signal.remove(_listener);
-			_listener(value1, value2);
+			if (!_paused)
+			{
+				if (_isOnce) _signal.remove(_listener);
+				_listener(value1, value2);
+			}
 		}
 
 		/**
@@ -128,16 +147,44 @@ package org.osflash.signals
 			return "[SignalSlot listener: "+_listener+", once: "+_isOnce+", priority: "+_priority+"]";
 		}
 
+		/**
+		 * @inheritDoc
+		 */
+		public function get paused():Boolean
+		{
+			return _paused;
+		}
+
+		public function set paused(value:Boolean):void
+		{
+			_paused = value;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
 		public function pause():void
 		{
+			_paused = true;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function resume():void
 		{
+			_paused = false;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function swap(newListener:Function):void
 		{
+			if (null == newListener) throw new ArgumentError(
+					'Given listener is null.\nDid you want to call pause() instead?');
+
+			_listener = newListener;
 		}
 	}
 }
