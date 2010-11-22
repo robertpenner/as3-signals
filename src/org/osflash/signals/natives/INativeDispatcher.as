@@ -26,9 +26,10 @@ package org.osflash.signals.natives
 		/**
 		 * Dispatches an event to listeners.
 		 * @param	event			An instance of a class that is or extends flash.events.Event.
+		 * @throws	ArgumentError	<code>ArgumentError</code>: Event object is <code>null</code>.
 		 * @throws	ArgumentError	<code>ArgumentError</code>:	Event object [event] is not an instance of [eventClass].
 		 * @throws	ArgumentError	<code>ArgumentError</code>:	Event object has incorrect type. Expected [eventType] but was [event.type].
 		 */
-		function dispatch(event:Event):Boolean;
+		function dispatchEvent(event:Event):Boolean;
 	}
 }

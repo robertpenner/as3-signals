@@ -119,14 +119,28 @@ package org.osflash.signals.natives
 				remove(listenerBoxes[i].listener as Function);
 			}
 		}
-		
+
+		/**
+		 * @inheritDoc
+		 */
+		public function dispatch(...valueObjects):void
+		{
+			if (null == valueObjects) throw new ArgumentError('Event object expected.');
+
+			if (valueObjects.length != 1) throw new ArgumentError('No more than one Event object expected.');
+
+			dispatchEvent(valueObjects[0] as Event);
+		}
+
 		/**
 		 * Unlike other signals, NativeSignal does not dispatch null
 		 * because it causes an exception in EventDispatcher.
 		 * @inheritDoc
 		 */
-		public function dispatch(event:Event):Boolean
+		public function dispatchEvent(event:Event):Boolean
 		{
+			if (null == event) throw new ArgumentError('Event object expected.');
+			
 			if (!(event is _eventClass))
 				throw new ArgumentError('Event object '+event+' is not an instance of '+_eventClass+'.');
 				

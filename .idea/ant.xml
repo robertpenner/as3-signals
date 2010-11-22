@@ -5,7 +5,7 @@
     <buildFile url="file://$PROJECT_DIR$/build.xml">
       <additionalClassPath />
       <antReference projectDefault="true" />
-      <customJdkName value="" />
+      <customJdkName value="1.6" />
       <maximumHeapSize value="128" />
       <maximumStackSize value="2" />
       <properties />

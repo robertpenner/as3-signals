@@ -33,6 +33,13 @@ package org.osflash.signals
 		 * @return the listener Function passed as the parameter
 		 */
 		function addOnce(listener:Function):Function;
+
+		/**
+		 * Dispatches an object to listeners.
+		 * @param	valueObjects	Any number of parameters to send to listeners. Will be type-checked against valueClasses.
+		 * @throws	ArgumentError	<code>ArgumentError</code>:	valueObjects are not compatible with valueClasses.
+		 */
+		function dispatch(...valueObjects):void;
 		
 		/**
 		 * Unsubscribes a listener from the signal.
