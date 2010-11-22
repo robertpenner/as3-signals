@@ -184,12 +184,23 @@ package org.osflash.signals
 			if (null == newListener) throw new ArgumentError(
 					'Given listener is null.\nDid you want to call pause() instead?');
 
+			if(newListener.length != _signal.valueClasses.length)
+			{
+				const argumentString:String = (listener.length == 1) ? 'argument' : 'arguments';
+
+				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+
+						_signal.valueClasses.length+' to match the signal\'s value classes.');
+			}
+
 			_listener = newListener;
 		}
 
+		/**
+		 * @inheritDoc
+		 */
 		public function remove():void
 		{
-			_signal.remove(_listener)
+			_signal.remove(_listener);
 		}
 	}
 }
