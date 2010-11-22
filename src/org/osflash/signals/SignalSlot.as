@@ -43,18 +43,19 @@ package org.osflash.signals
 		internal var _priority:int;
 
 		/**
-		 * The SignalSlot constructor cannot be executed. Use SlotPool.create instead.
+		 * Creates and returns a new SignalSlot object.
 		 *
-		 * @see org.osflash.signals.SlotPool#create()
-		 * @throws Error An error is thrown if the constructor is invoked outside of SlotPool.
-		 * @private
+		 * @param listener The listener associated with the slot.
+		 * @param once Whether or not the listener should be executed only once.
+		 * @param signal The signal associated with the slot.
+		 * @param priority The priority of the slot.
 		 */
-		public function SignalSlot()
+		public function SignalSlot(listener:Function, once:Boolean = false, signal:ISignal = null, priority:int = 0)
 		{
-			if (!SlotPool.constructorAllowed)
-			{
-				throw new Error('SignalSlot is a pooled class. Use the SlotPool.create() method instead.');
-			}
+			_listener = listener;
+			_isOnce = once;
+			_signal = signal;
+			_priority = priority;
 		}
 
 		/**
@@ -124,7 +125,19 @@ package org.osflash.signals
 		 */
 		public function toString():String
 		{
-			return "SignalSlot[listener: "+_listener+", once: "+_isOnce+", priority: "+_priority+"]";
+			return "[SignalSlot listener: "+_listener+", once: "+_isOnce+", priority: "+_priority+"]";
+		}
+
+		public function pause():void
+		{
+		}
+
+		public function resume():void
+		{
+		}
+
+		public function swap(newListener:Function):void
+		{
 		}
 	}
 }

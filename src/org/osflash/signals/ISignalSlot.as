@@ -16,19 +16,38 @@ package org.osflash.signals
 	public interface ISignalSlot
 	{
 		/**
-		 * The listener associated with this slot.
+		 * The listener associated with this binding.
 		 */
 		function get listener():Function;
 
 		/**
-		 * Whether or not this slot is destroyed after it has been used.
+		 * Whether or not this binding is destroyed after it has been used once.
 		 */
 		function get isOnce():Boolean;
 
 		/**
-		 * The priority of this slot.
+		 * The priority of this binding.
 		 */
 		function get priority(): int;
+
+		/**
+		 * Pauses this binding.
+		 */
+		function pause(): void;
+
+		/**
+		 * Resumes this binding if it has been paused before.
+		 */
+		function resume(): void;
+
+		/**
+		 * Swaps the listener function.
+		 *
+		 * <p>Note that the new listener must be compatible to the old listeners signature.</p>
+		 *
+		 * @param newListener The new listener to be associated with this binding.
+		 */
+		function swap(newListener: Function): void;
 
 		/**
 		 * Executes a listener of arity <code>n</code> where <code>n</code> is

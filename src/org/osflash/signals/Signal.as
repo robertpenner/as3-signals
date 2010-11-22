@@ -22,7 +22,7 @@ package org.osflash.signals
 	public class Signal implements ISignalOwner, IDispatcher
 	{
 		protected var _valueClasses:Array;		// of Class
-		protected var slots:ISignalSlotList;
+		protected var slots:SignalSlotList;
 		
 		/**
 		 * Creates a Signal instance to dispatch value objects.
@@ -37,12 +37,10 @@ package org.osflash.signals
 		 */
 		public function Signal(...valueClasses)
 		{
-			slots = nil;
-			// Cannot use super.apply(null, valueClasses),
-			// so allow the subclass to call super(valueClasses).
-			if (valueClasses.length == 1 && valueClasses[0] is Array)
-				valueClasses = valueClasses[0];
-			this.valueClasses = valueClasses;
+			slots = SignalSlotList.NIL;
+
+			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
+			this.valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array) ? valueClasses[0] : valueClasses;
 		}
 		
 		/** @inheritDoc */
@@ -93,7 +91,7 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			slots = slots.clear();
+			slots = SignalSlotList.NIL;
 		}
 		
 		/** @inheritDoc */
@@ -121,13 +119,11 @@ package org.osflash.signals
 					+ '> is not an instance of <' + valueClass + '>.');
 			}
 
-			var slotsToProcess: ISignalSlotList = slots;
+			var slotsToProcess: SignalSlotList = slots;
 
 			//// Call listeners.
 			if (slotsToProcess.nonEmpty)
 			{
-				// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
-				var slot:SignalSlot;
 				switch (valueObjects.length)
 				{
 					case 0:
@@ -173,10 +169,12 @@ package org.osflash.signals
 			if (listener.length < _valueClasses.length)
 			{
 				const argumentString:String = (listener.length == 1) ? 'argument' : 'arguments';
-				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
+
+				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+
+						_valueClasses.length+' to match the given value classes.');
 			}
 			
-			const slot:SignalSlot = SlotPool.create(listener, once, this);
+			const slot:SignalSlot = new SignalSlot(listener, once, this);
 			// If there are no previous listeners, add the first one as quickly as possible.
 			if (slots.isEmpty)
 			{
@@ -202,7 +200,7 @@ package org.osflash.signals
 				// Listener was already added, so do nothing.
 				return;
 			}
-			
+
 			slots = slots.prepend(slot);
 		}
 	}
