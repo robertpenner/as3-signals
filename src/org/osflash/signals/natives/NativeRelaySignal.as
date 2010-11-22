@@ -33,11 +33,12 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		override public function addWithPriority(listener:Function, priority:int = 0):Function
 		{
-			var prevListenerCount:uint = slots.length;
+			const nonEmptyBefore: Boolean = slots.nonEmpty;
+			
 			// Try to add first because it may throw an exception.
 			super.addWithPriority(listener);
 			// Account for cases where the same listener is added twice.
-			if (prevListenerCount == 0 && slots.length == 1)
+			if (nonEmptyBefore != slots.nonEmpty)
 				IEventDispatcher(_target).addEventListener(_eventType, dispatch, false, priority);
 			
 			return listener;
@@ -46,11 +47,12 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		override public function addOnceWithPriority(listener:Function, priority:int = 0):Function
 		{
-			var prevListenerCount:uint = slots.length;
+			const nonEmptyBefore: Boolean = slots.nonEmpty;
+
 			// Try to add first because it may throw an exception.
 			super.addOnceWithPriority(listener);
 			// Account for cases where the same listener is added twice.
-			if (prevListenerCount == 0 && slots.length == 1)
+			if (nonEmptyBefore != slots.nonEmpty)
 				IEventDispatcher(_target).addEventListener(_eventType, dispatch, false, priority);
 			
 			return listener;

@@ -178,7 +178,7 @@ package org.osflash.signals
 			// If there are no previous listeners, add the first one as quickly as possible.
 			if (!slots.nonEmpty)
 			{
-				slots = slots.prepend(slot);
+				slots = new SignalSlotList(slot, slots);
 				return;
 			}
 						
@@ -201,7 +201,7 @@ package org.osflash.signals
 				return;
 			}
 
-			slots = slots.prepend(slot);
+			slots = new SignalSlotList(slot, slots);
 		}
 	}
 }

@@ -191,7 +191,7 @@ package org.osflash.signals
 			// Process the first listener as quickly as possible.
 			if (!slots.nonEmpty)
 			{
-				slots = slots.prepend(slot);
+				slots = new SignalSlotList(slot, slots);
 				return;
 			}
 			
