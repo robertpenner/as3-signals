@@ -4,6 +4,7 @@ package org.osflash.signals
 	 * The SignalSlotList class represents an immutable list of SignalSlot objects.
 	 *
 	 * @author Joa Ebert
+	 * @private
 	 */
 	internal final class SignalSlotList
 	{
@@ -15,8 +16,6 @@ package org.osflash.signals
 		 * <p>A user never has to create a SignalSlotList manually. Use the <code>NIL</code> element to represent an
 		 * empty list. <code>NIL.prepend(value)</code> would create a list containing <code>value</code>.
 		 *
-		 * @private
-		 * 
 		 * @param head The head of the list.
 		 * @param tail The tail of the list.
 		 */
@@ -28,7 +27,6 @@ package org.osflash.signals
 						'Parameters head and tail are null. Use the NIL element instead.');
 
 				//this is the NIL element per definition
-				isEmpty = true;
 				nonEmpty = false;
 			}
 			else
@@ -37,7 +35,6 @@ package org.osflash.signals
 
 				this.head = head;
 				this.tail = tail;
-				isEmpty = false;
 				nonEmpty = true;
 			}
 		}
@@ -49,14 +46,24 @@ package org.osflash.signals
 		public var head: SignalSlot;
 		public var tail: SignalSlotList;
 		public var nonEmpty: Boolean;
-		public var isEmpty: Boolean;
+
+		/**
+		 * Whether or not the list is empty.
+		 *
+		 * <code>isEmpty</code> is the same as <code>!nonEmpty</code>. If performance is a criteria one should always
+		 * use the <code>nonEmpty</code> method. <code>isEmpty</code> is only a wrapper for convinience.
+		 */
+		public function get isEmpty():Boolean
+		{
+			return !nonEmpty;
+		}
 
 		/**
 		 * The length of the list.
 		 */
 		public function get length():int
 		{
-			if (isEmpty) return 0;
+			if (!nonEmpty) return 0;
 
 			//
 			// We could cache the length, but it would make methods like filterNot unnecessarily complicated.
@@ -83,7 +90,7 @@ package org.osflash.signals
 
 		public function insertWithPriority(value: SignalSlot):SignalSlotList
 		{
-			if (isEmpty) return new SignalSlotList(value, this);
+			if (!nonEmpty) return new SignalSlotList(value, this);
 
 			const priority: int = value._priority;
 
@@ -127,7 +134,7 @@ package org.osflash.signals
 
 		public function filterNot(listener:Function):SignalSlotList
 		{
-			if (isEmpty) return this;
+			if (!nonEmpty) return this;
 
 			if (listener == head._listener) return tail;
 
@@ -167,7 +174,7 @@ package org.osflash.signals
 
 		public function contains(listener:Function):Boolean
 		{
-			if (isEmpty) return false;
+			if (!nonEmpty) return false;
 
 			var p:SignalSlotList = this;
 
@@ -183,7 +190,7 @@ package org.osflash.signals
 
 		public function find(listener:Function):SignalSlot
 		{
-			if (isEmpty) return null; 
+			if (!nonEmpty) return null;
 
 			var p:SignalSlotList = this;
 
@@ -202,7 +209,7 @@ package org.osflash.signals
 			var buffer:String = '';
 			var p:SignalSlotList = this;
 
-			while (p.nonEmpty) buffer += p.head+" -> ";
+			while (!p.nonEmpty) buffer += p.head+" -> ";
 
 			buffer += "Nil";
 

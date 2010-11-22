@@ -189,7 +189,7 @@ package org.osflash.signals
 			const slot:SignalSlot = new SignalSlot(listener, once, this, priority);
 
 			// Process the first listener as quickly as possible.
-			if (slots.isEmpty)
+			if (!slots.nonEmpty)
 			{
 				slots = slots.prepend(slot);
 				return;

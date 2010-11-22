@@ -176,7 +176,7 @@ package org.osflash.signals
 			
 			const slot:SignalSlot = new SignalSlot(listener, once, this);
 			// If there are no previous listeners, add the first one as quickly as possible.
-			if (slots.isEmpty)
+			if (!slots.nonEmpty)
 			{
 				slots = slots.prepend(slot);
 				return;

@@ -59,11 +59,11 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		override public function remove(listener:Function):Function
 		{
-			const wasNonEmpty: Boolean = slots.nonEmpty;
+			const nonEmptyBefore: Boolean = slots.nonEmpty;
 
 			super.remove(listener);
 
-			if (wasNonEmpty != slots.nonEmpty) IEventDispatcher(_target).removeEventListener(_eventType, dispatch);
+			if (nonEmptyBefore != slots.nonEmpty) IEventDispatcher(_target).removeEventListener(_eventType, dispatch);
 
 			return listener;
 		}
