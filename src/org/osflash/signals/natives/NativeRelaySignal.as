@@ -59,13 +59,22 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		override public function remove(listener:Function):Function
 		{
-			var prevListenerCount:uint = slots.length;
+			const wasNonEmpty: Boolean = slots.nonEmpty;
+
 			super.remove(listener);
-			if (prevListenerCount == 1 && slots.length == 0)
-				IEventDispatcher(_target).removeEventListener(_eventType, dispatch);
-			
+
+			if (wasNonEmpty != slots.nonEmpty) IEventDispatcher(_target).removeEventListener(_eventType, dispatch);
+
 			return listener;
 		}
-		
+
+		/**
+		 * @inheritDoc
+		 */
+		override public function removeAll(): void
+		{
+			if(slots.nonEmpty) IEventDispatcher(_target).removeEventListener(_eventType, dispatch);
+			super.removeAll();
+		}
 	}
 }

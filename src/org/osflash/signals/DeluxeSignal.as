@@ -110,46 +110,49 @@ package org.osflash.signals
 				event.currentTarget = this.target;
 				event.signal = this;
 			}
-			
+
+			var slotsToProcess: SignalSlotList = slots;
+
 			//// Call listeners.
-			if (slots.length)
+			if (slotsToProcess.nonEmpty)
 			{
 				// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
-				slotsNeedCloning = true;
-				var slot:SignalSlot;
 				switch (valueObjects.length)
 				{
 					case 0:
-						for each (slot in slots)
+						while (slotsToProcess.nonEmpty)
 						{
-							slot.execute0();
+							slotsToProcess.head.execute0();
+							slotsToProcess = slotsToProcess.tail;
 						}
 						break;
 						
 					case 1:
 						const singleValue:Object = valueObjects[0];
-						for each (slot in slots)
+						while (slotsToProcess.nonEmpty)
 						{
-							slot.execute1(singleValue);
+							slotsToProcess.head.execute1(singleValue);
+							slotsToProcess = slotsToProcess.tail;
 						}
 						break;
 						
 					case 2:
 						const value1:Object = valueObjects[0];
 						const value2:Object = valueObjects[1];
-						for each (slot in slots)
+						while (slotsToProcess.nonEmpty)
 						{
-							slot.execute2(value1, value2);
+							slotsToProcess.head.execute2(value1, value2);
+							slotsToProcess = slotsToProcess.tail;
 						}
 						break;
 						
 					default:
-						for each (slot in slots)
+						while (slotsToProcess.nonEmpty)
 						{
-							slot.execute(valueObjects);
+							slotsToProcess.head.execute(valueObjects);
+							slotsToProcess = slotsToProcess.tail;
 						}
 				}
-				slotsNeedCloning = false;
 			}
 			
 			if (!event || !event.bubbles) return;
@@ -183,20 +186,20 @@ package org.osflash.signals
 				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
 			}
 
-			const slot:SignalSlot = SlotPool.create(listener, once, this, priority);
+			const slot:SignalSlot = new SignalSlot(listener, once, this, priority);
+
 			// Process the first listener as quickly as possible.
-			if (!slots.length)
+			if (slots.isEmpty)
 			{
-				slots[0] = slot;
+				slots = slots.prepend(slot);
 				return;
 			}
 			
-			var prevListenerIndex:int = indexOfListener(listener);
-			if (prevListenerIndex >= 0)
+			if (slots.contains(listener))
 			{
 				// If the listener was previously added, definitely don't add it again.
 				// But throw an exception in some cases, as the error messages explain.
-				var prevSlot:SignalSlot = SignalSlot(slots[prevListenerIndex]);
+				var prevSlot:SignalSlot = slots.find(listener);
 				if (prevSlot._isOnce && !once)
 				{
 					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
@@ -209,30 +212,7 @@ package org.osflash.signals
 				return;
 			}
 			
-			if (slotsNeedCloning)
-			{
-				//todo investigate if need to clone pooled objects
-				slots = slots.slice();
-				slotsNeedCloning = false;
-			}
-
-			//todo optimize me
-			// Assume the listeners are already sorted by priority
-			// and insert in the right spot. For listeners with the same priority,
-			// we must preserve the order in which they were added.
-			const len:int = slots.length;
-			for (var i:int = 0; i < len; i++)
-			{
-				// As soon as a lower-priority listener is found, go in front of it.
-				if (priority > SignalSlot(slots[i])._priority)
-				{
-					slots.splice(i, 0, slot);
-					return;
-				}
-			}
-			
-			// If we made it this far, the new listener has lowest priority, so put it last.
-			slots[slots.length] = slot;
+			slots = slots.insertWithPriority(slot);
 		}
 		
 	}
