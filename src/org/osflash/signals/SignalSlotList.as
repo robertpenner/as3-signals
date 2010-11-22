@@ -125,24 +125,6 @@ package org.osflash.signals
 			return first;
 		}
 
-		public function indexOf(value:Function):int
-		{
-			if (isEmpty) return -1;
-
-			var index:int = 0;
-			var p:SignalSlotList = this;
-
-			while (p.nonEmpty)
-			{
-				if (p.head._listener == value) return index;
-
-				p = p.tail;
-				++index;
-			}
-
-			return -1;
-		}
-
 		public function filterNot(listener:Function):SignalSlotList
 		{
 			if (isEmpty) return this;
@@ -154,7 +136,6 @@ package org.osflash.signals
 
 			var first:SignalSlotList = null;
 			var last:SignalSlotList = null;
-			var allFiltered:Boolean = true;
 
 			while (p.nonEmpty)
 			{
@@ -169,15 +150,19 @@ package org.osflash.signals
 				}
 				else
 				{
-					allFiltered = false;
+					//
+					// No need to check if first == null and last != null
+					// since we check already at the top if listener == head.listener
+					//
+
+					last.tail = p.tail;
+					return first;
 				}
 
 				p = p.tail;
 			}
 
-			if (allFiltered) return this;
-			else if (first == null) return NIL;
-			else return first;
+			return this;
 		}
 
 		public function contains(listener:Function):Boolean
