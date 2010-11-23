@@ -37,7 +37,8 @@ package org.osflash.signals
 		public var _MXMLSignalTest:MXMLSignalTest;
 		public var _MXMLNativeSignalTest:MXMLNativeSignalTest;
 		
-		public var _SignalDispatchExtraArgsTest:SignalDispatchArgsTest;
+		public var _SignalDispatchArgsTest:SignalDispatchArgsTest;
+		public var _SignalDispatchExtraArgsTest:SignalDispatchExtraArgsTest;
 		public var _SignalDispatchNoArgsTest:SignalDispatchNoArgsTest;
 		public var _SignalDispatchNonEventTest:SignalDispatchNonEventTest;
 		public var _SignalTest:SignalTest;

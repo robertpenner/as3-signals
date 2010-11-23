@@ -164,40 +164,40 @@ package org.osflash.signals
 
 		protected function registerListener(listener:Function, once:Boolean = false):void
 		{
-			// function.length is the number of arguments.
-			if (listener.length < _valueClasses.length)
+			if (!bindings.nonEmpty || verifyRegistrationOf(listener, once))
 			{
-				const argumentString:String = (listener.length == 1) ? 'argument' : 'arguments';
-
-				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+
-						_valueClasses.length+' to match the given value classes.');
+				bindings = new SignalBindingList(new SignalBinding(listener, once, this), bindings);
 			}
+		}
+
+		protected function verifyRegistrationOf(listener: Function,  once: Boolean): Boolean
+		{
+			const existingBinding:SignalBinding = bindings.find(listener);
+
+			if (null != existingBinding)
+			{
+				if (existingBinding._once != once)
+				{
+					//
+					// If the listener was previously added, definitely don't add it again.
+					// But throw an exception if their once value differs.
+					//
+
+					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
+				}
+
+				//
+				// Listener was already added.
+				//
+
+				return false;
+			}
+
+			//
+			// This listener has not been added before.
+			//
 			
-			const binding:SignalBinding = new SignalBinding(listener, once, this);
-
-			// If there are no previous listeners, add the first one as quickly as possible.
-			if (!bindings.nonEmpty)
-			{
-				bindings = new SignalBindingList(binding, bindings);
-				return;
-			}
-						
-			if (bindings.contains(listener))
-			{
-				// If the listener was previously added, definitely don't add it again.
-				// But throw an exception in some cases, as the error messages explain.
-				const prevBinding:SignalBinding = bindings.find(listener);
-
-				if (prevBinding._isOnce && !once) throw new IllegalOperationError(
-						'You cannot addOnce() then add() the same listener without removing the relationship first.');
-				else if (!prevBinding._isOnce && once) throw new IllegalOperationError(
-						'You cannot add() then addOnce() the same listener without removing the relationship first.');
-
-				// Listener was already added, so do nothing.
-				return;
-			}
-
-			bindings = new SignalBindingList(binding, bindings);
+			return true;
 		}
 	}
 }

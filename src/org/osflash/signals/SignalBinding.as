@@ -30,12 +30,12 @@ package org.osflash.signals
 		internal var _listener:Function;
 
 		/**
-		 * Private backing variable for the <code>isOnce</code> property.
+		 * Private backing variable for the <code>once</code> property.
 		 *
 		 * Visible in the signals package for fast access.
 		 * @private
 		 */
-		internal var _isOnce:Boolean;
+		internal var _once:Boolean;
 
 		/**
 		 * Private backing variable for the <code>priority</code> property.
@@ -57,12 +57,12 @@ package org.osflash.signals
 		 */
 		public function SignalBinding(listener:Function, once:Boolean = false, signal:ISignal = null, priority:int = 0)
 		{
-			if (null == listener) throw new ArgumentError('Given listener is null.');
-
 			_listener = listener;
-			_isOnce = once;
+			_once = once;
 			_signal = signal;
 			_priority = priority;
+
+			verifyListener(listener);
 		}
 
 		/**
@@ -72,7 +72,7 @@ package org.osflash.signals
 		{
 			if (!_paused)
 			{
-				if (_isOnce) _signal.remove(_listener);
+				if (_once) remove();
 				_listener.apply(null, valueObjects);
 			}
 		}
@@ -84,7 +84,7 @@ package org.osflash.signals
 		{
 			if (!_paused)
 			{
-				if (_isOnce) _signal.remove(_listener);
+				if (_once) remove();
 				_listener();
 			}
 		}
@@ -96,7 +96,7 @@ package org.osflash.signals
 		{
 			if (!_paused)
 			{
-				if (_isOnce) _signal.remove(_listener);
+				if (_once) remove();
 				_listener(value1);
 			}
 		}
@@ -108,7 +108,7 @@ package org.osflash.signals
 		{
 			if (!_paused)
 			{
-				if (_isOnce) _signal.remove(_listener);
+				if (_once) remove();
 				_listener(value1, value2);
 			}
 		}
@@ -121,12 +121,21 @@ package org.osflash.signals
 			return _listener;
 		}
 
+		public function set listener(value:Function):void
+		{
+			if (null == value) throw new ArgumentError(
+					'Given listener is null.\nDid you want to call pause() instead?');
+
+			verifyListener(value);
+			_listener = value;
+		}
+
 		/**
 		 * @inheritDoc
 		 */
-		public function get isOnce():Boolean
+		public function get once():Boolean
 		{
-			return _isOnce;
+			return _once;
 		}
 
 		/**
@@ -144,7 +153,7 @@ package org.osflash.signals
 		 */
 		public function toString():String
 		{
-			return "[SignalBinding listener: "+_listener+", once: "+_isOnce+", priority: "+_priority+"]";
+			return "[SignalBinding listener: "+_listener+", once: "+_once+", priority: "+_priority+", paused: "+_paused+"]";
 		}
 
 		/**
@@ -179,28 +188,30 @@ package org.osflash.signals
 		/**
 		 * @inheritDoc
 		 */
-		public function swap(newListener:Function):void
+		public function remove():void
 		{
-			if (null == newListener) throw new ArgumentError(
-					'Given listener is null.\nDid you want to call pause() instead?');
+			_signal.remove(_listener);
+		}
 
-			if(newListener.length != _signal.valueClasses.length)
+		protected function verifyListener(listener: Function): void
+		{
+			if(null == listener)
+			{
+				throw new ArgumentError('Given listener is null.');
+			}
+
+			if(null == _signal)
+			{
+				throw new Error('Internal signal reference has not been set yet.');
+			}
+			
+			if(listener.length < _signal.valueClasses.length)
 			{
 				const argumentString:String = (listener.length == 1) ? 'argument' : 'arguments';
 
 				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+
 						_signal.valueClasses.length+' to match the signal\'s value classes.');
 			}
-
-			_listener = newListener;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function remove():void
-		{
-			_signal.remove(_listener);
 		}
 	}
 }

@@ -19,11 +19,12 @@ package org.osflash.signals
 		 * The listener associated with this binding.
 		 */
 		function get listener():Function;
+		function set listener(value:Function):void;
 
 		/**
 		 * Whether or not this binding is destroyed after it has been used once.
 		 */
-		function get isOnce():Boolean;
+		function get once():Boolean;
 
 		/**
 		 * The priority of this binding.
@@ -39,15 +40,6 @@ package org.osflash.signals
 		 * Resumes this binding if it has been paused before.
 		 */
 		function resume(): void;
-
-		/**
-		 * Swaps the listener function.
-		 *
-		 * <p>Note that the new listener must be compatible to the old listeners signature.</p>
-		 *
-		 * @param newListener The new listener to be associated with this binding.
-		 */
-		function swap(newListener: Function): void;
 
 		/**
 		 * Executes a listener of arity <code>n</code> where <code>n</code> is
