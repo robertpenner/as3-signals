@@ -177,39 +177,10 @@ package org.osflash.signals
 		
 		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):void
 		{
-			// function.length is the number of arguments.
-			if (listener.length < _valueClasses.length)
+			if (!bindings.nonEmpty || verifyRegistrationOf(listener, once))
 			{
-				var argumentString:String = (listener.length == 1) ? 'argument' : 'arguments';
-				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
+				bindings = bindings.insertWithPriority(new SignalBinding(listener, once, this, priority));
 			}
-
-			const binding:SignalBinding = new SignalBinding(listener, once, this, priority);
-
-			// Process the first listener as quickly as possible.
-			if (!bindings.nonEmpty)
-			{
-				bindings = new SignalBindingList(binding, bindings);
-				return;
-			}
-			
-			if (bindings.contains(listener))
-			{
-				// If the listener was previously added, definitely don't add it again.
-				// But throw an exception in some cases, as the error messages explain.
-				const prevBinding:SignalBinding = bindings.find(listener);
-
-				if (prevBinding._isOnce && !once) throw new IllegalOperationError(
-						'You cannot addOnce() then add() the same listener without removing the relationship first.');
-				else if (!prevBinding._isOnce && once) throw new IllegalOperationError(
-						'You cannot add() then addOnce() the same listener without removing the relationship first.');
-
-				// Listener was already added, so do nothing.
-				return;
-			}
-			
-			bindings = bindings.insertWithPriority(binding);
 		}
-		
 	}
 }
