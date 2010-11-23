@@ -19,7 +19,7 @@ package org.osflash.signals
 		 * @param head The head of the list.
 		 * @param tail The tail of the list.
 		 */
-		public function SignalBindingList(head:SignalBinding, tail:SignalBindingList)
+		public function SignalBindingList(head:ISignalBinding, tail:SignalBindingList)
 		{
 			if(null == head && null == tail)
 			{
@@ -43,7 +43,7 @@ package org.osflash.signals
 		// Although those variables are not const, they would be if AS3 would handle it correct.
 		//
 
-		public var head: SignalBinding;
+		public var head: ISignalBinding;
 		public var tail: SignalBindingList;
 		public var nonEmpty: Boolean;
 
@@ -88,13 +88,13 @@ package org.osflash.signals
 			return new SignalBindingList(value, this);
 		}
 
-		public function insertWithPriority(value: SignalBinding):SignalBindingList
+		public function insertWithPriority(value: ISignalBinding):SignalBindingList
 		{
 			if (!nonEmpty) return new SignalBindingList(value, this);
 
-			const priority: int = value._priority;
+			const priority: int = value.priority;
 
-			if(priority > this.head._priority) return new SignalBindingList(value, this);
+			if(priority > this.head.priority) return new SignalBindingList(value, this);
 
 			var p:SignalBindingList = this;
 			var q:SignalBindingList = null;
@@ -104,7 +104,7 @@ package org.osflash.signals
 
 			while (p.nonEmpty)
 			{
-				if (priority > p.head._priority)
+				if (priority > p.head.priority)
 				{
 					q = new SignalBindingList(value, p);
 
@@ -136,7 +136,7 @@ package org.osflash.signals
 		{
 			if (!nonEmpty) return this;
 
-			if (listener == head._listener) return tail;
+			if (listener == head.listener) return tail;
 
 			var p:SignalBindingList = this;
 			var q:SignalBindingList = null;
@@ -146,7 +146,7 @@ package org.osflash.signals
 
 			while (p.nonEmpty)
 			{
-				if (p.head._listener != listener)
+				if (p.head.listener != listener)
 				{
 					q = new SignalBindingList(p.head, NIL);
 
@@ -180,7 +180,7 @@ package org.osflash.signals
 
 			while (p.nonEmpty)
 			{
-				if(p.head._listener == listener) return true;
+				if(p.head.listener == listener) return true;
 
 				p = p.tail;
 			}
@@ -188,7 +188,7 @@ package org.osflash.signals
 			return false;
 		}
 
-		public function find(listener:Function):SignalBinding
+		public function find(listener:Function):ISignalBinding
 		{
 			if (!nonEmpty) return null;
 
@@ -196,7 +196,7 @@ package org.osflash.signals
 
 			while (p.nonEmpty)
 			{
-				if(p.head._listener == listener) return p.head;
+				if(p.head.listener == listener) return p.head;
 
 				p = p.tail;
 			}

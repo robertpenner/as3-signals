@@ -1,7 +1,9 @@
 package org.osflash.signals
 {
 	import flash.errors.IllegalOperationError;
-	
+
+	import flash.utils.Dictionary;
+
 	import org.osflash.signals.events.IBubbleEventHandler;
 	import org.osflash.signals.events.IEvent;
 
@@ -80,90 +82,109 @@ package org.osflash.signals
 		/** @inheritDoc */
 		override public function dispatch(...valueObjects):void
 		{
+			//
 			// Validate value objects against pre-defined value classes.
+			//
+
 			var valueObject:Object;
 			var valueClass:Class;
-			var len:int = _valueClasses.length;
-			for (var i:int = 0; i < len; i++)
+
+			const numValueClasses:int = _valueClasses.length;
+			const numValueObjects:int = valueObjects.length;
+
+			for (var i:int = 0; i < numValueClasses; i++)
 			{
-				// null is allowed to pass through.
-				if ( (valueObject = valueObjects[i]) === null
-					|| valueObject is (valueClass = _valueClasses[i]) )
-					continue;
+				valueObject = valueObjects[i];
+				valueClass = _valueClasses[i];
+
+				if (valueObject === null || valueObject is valueClass) continue;
 					
-				throw new ArgumentError('Value object <' + valueObject
-					+ '> is not an instance of <' + valueClass + '>.');
+				throw new ArgumentError('Value object <'+valueObject
+					+'> is not an instance of <'+valueClass+'>.');
 			}
 
+			//
+			// Extract and clone event object if necessary.
+			//
+
 			var event:IEvent = valueObjects[0] as IEvent;
+
 			if (event)
 			{
-				// clone re-dispatched event
 				if (event.target)
 				{
-					//todo can we get rid of this somehow?
-					valueObjects[0] = event = event.clone();
+					event = event.clone();
+					valueObjects[0] = event;
 				}
-				event.target = this.target;
-				event.currentTarget = this.target;
+
+				event.target = target;
+				event.currentTarget = target;
 				event.signal = this;
 			}
 
-			var bindingsToProcess: SignalBindingList = bindings;
+			//
+			// Broadcast to listeners.
+			//
 
-			//// Call listeners.
+			var bindingsToProcess: SignalBindingList = bindings;
+			
 			if (bindingsToProcess.nonEmpty)
 			{
-				// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
-				switch (valueObjects.length)
+				if (numValueObjects == 0)
 				{
-					case 0:
-						while (bindingsToProcess.nonEmpty)
-						{
-							bindingsToProcess.head.execute0();
-							bindingsToProcess = bindingsToProcess.tail;
-						}
-						break;
-						
-					case 1:
-						const singleValue:Object = valueObjects[0];
-						while (bindingsToProcess.nonEmpty)
-						{
-							bindingsToProcess.head.execute1(singleValue);
-							bindingsToProcess = bindingsToProcess.tail;
-						}
-						break;
-						
-					case 2:
-						const value1:Object = valueObjects[0];
-						const value2:Object = valueObjects[1];
-						while (bindingsToProcess.nonEmpty)
-						{
-							bindingsToProcess.head.execute2(value1, value2);
-							bindingsToProcess = bindingsToProcess.tail;
-						}
-						break;
-						
-					default:
-						while (bindingsToProcess.nonEmpty)
-						{
-							bindingsToProcess.head.execute(valueObjects);
-							bindingsToProcess = bindingsToProcess.tail;
-						}
+					while (bindingsToProcess.nonEmpty)
+					{
+						bindingsToProcess.head.execute0();
+						bindingsToProcess = bindingsToProcess.tail;
+					}
+				}
+				else if (numValueObjects == 1)
+				{
+					const singleValue:Object = valueObjects[0];
+
+					while (bindingsToProcess.nonEmpty)
+					{
+						bindingsToProcess.head.execute1(singleValue);
+						bindingsToProcess = bindingsToProcess.tail;
+					}
+				}
+				else if (numValueObjects == 2)
+				{
+					const value1:Object = valueObjects[0];
+					const value2:Object = valueObjects[1];
+
+					while (bindingsToProcess.nonEmpty)
+					{
+						bindingsToProcess.head.execute2(value1, value2);
+						bindingsToProcess = bindingsToProcess.tail;
+					}
+				}
+				else
+				{
+					while (bindingsToProcess.nonEmpty)
+					{
+						bindingsToProcess.head.execute(valueObjects);
+						bindingsToProcess = bindingsToProcess.tail;
+					}
 				}
 			}
+
+			//
+			// Bubble the event as far as possible.
+			//
 			
 			if (!event || !event.bubbles) return;
 
-			//// Bubble the event as far as possible.
-			var currentTarget:Object = this.target;
-			while ( currentTarget && currentTarget.hasOwnProperty("parent")
-				//todo check if we can optimize this and hasOwnProperty is needed
-					&& (currentTarget = currentTarget.parent) )
+			var currentTarget:Object = target;
+
+			while (currentTarget && currentTarget.hasOwnProperty("parent") && (currentTarget = currentTarget.parent))
 			{
 				if (currentTarget is IBubbleEventHandler)
 				{
+					//
 					// onEventBubbled() can stop the bubbling by returning false.
+					//
+					
 					if (!IBubbleEventHandler(event.currentTarget = currentTarget).onEventBubbled(event))
 						break;
 				}
@@ -180,6 +201,10 @@ package org.osflash.signals
 			if (!bindings.nonEmpty || verifyRegistrationOf(listener, once))
 			{
 				bindings = bindings.insertWithPriority(new SignalBinding(listener, once, this, priority));
+
+				if (null == existing) existing = new Dictionary();
+
+				existing[listener] = true;
 			}
 		}
 	}

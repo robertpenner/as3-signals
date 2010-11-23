@@ -27,7 +27,7 @@ package org.osflash.signals
 		 * Visible in the signals package for fast access.
 		 * @private
 		 */
-		internal var _listener:Function;
+		private var _listener:Function;
 
 		/**
 		 * Private backing variable for the <code>once</code> property.
@@ -35,7 +35,7 @@ package org.osflash.signals
 		 * Visible in the signals package for fast access.
 		 * @private
 		 */
-		internal var _once:Boolean;
+		private var _once:Boolean;
 
 		/**
 		 * Private backing variable for the <code>priority</code> property.
@@ -43,7 +43,7 @@ package org.osflash.signals
 		 * Visible in the signals package for fast access.
 		 * @private
 		 */
-		internal var _priority:int;
+		private var _priority:int;
 
 		/**
 		 * Creates and returns a new SignalBinding object.
