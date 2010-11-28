@@ -27,6 +27,7 @@ package org.osflash.signals.natives
 		protected var _target:IEventDispatcher;
 		protected var _eventType:String;
 		protected var _eventClass:Class;
+		protected var _valueClasses:Array;
 
 		protected var bindings:SignalBindingList;
 		protected var existing:Dictionary;
@@ -49,19 +50,22 @@ package org.osflash.signals.natives
 		
 		/** @inheritDoc */
 		public function get eventType():String { return _eventType; }
-		/** @inheritDoc */
+
 		public function set eventType(value:String):void { _eventType = value; }
 		
 		/** @inheritDoc */
 		public function get eventClass():Class { return _eventClass; }
-		/** @inheritDoc */
-		public function set eventClass(value:Class):void { _eventClass = value || Event; }
+
+		public function set eventClass(value:Class):void
+		{
+			_eventClass = value || Event;
+			_valueClasses = [_eventClass];
+		}
 		
 		/** @inheritDoc */
 		[ArrayElementType("Class")]
-		public function get valueClasses():Array { return [_eventClass]; }
+		public function get valueClasses():Array { return _valueClasses; }
 
-		/** @inheritDoc */
 		public function set valueClasses(value:Array):void
 		{
 			eventClass = value && value.length > 0 ? value[0] : null;
@@ -73,7 +77,6 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		public function get target():IEventDispatcher { return _target; }
 		
-		/** @inheritDoc */
 		public function set target(value:IEventDispatcher):void
 		{
 			if (value == _target) return;
@@ -119,7 +122,7 @@ package org.osflash.signals.natives
 			{
 				if(existing != null)
 				{
-					_target.removeEventListener(_eventType, onNativeEvent);
+					target.removeEventListener(eventType, onNativeEvent);
 					existing = null;
 				}
 			}
@@ -131,10 +134,7 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			if(null != existing)
-			{
-				_target.removeEventListener(_eventType, onNativeEvent);
-			}
+			if (null != existing) target.removeEventListener(eventType, onNativeEvent);
 
 			bindings = SignalBindingList.NIL;
 			existing = null;
@@ -161,13 +161,13 @@ package org.osflash.signals.natives
 		{
 			if (null == event) throw new ArgumentError('Event object expected.');
 			
-			if (!(event is _eventClass))
-				throw new ArgumentError('Event object '+event+' is not an instance of '+_eventClass+'.');
+			if (!(event is eventClass))
+				throw new ArgumentError('Event object '+event+' is not an instance of '+eventClass+'.');
 				
-			if (event.type != _eventType)
-				throw new ArgumentError('Event object has incorrect type. Expected <'+_eventType+'> but was <'+event.type+'>.');
+			if (event.type != eventType)
+				throw new ArgumentError('Event object has incorrect type. Expected <'+eventType+'> but was <'+event.type+'>.');
 
-			return _target.dispatchEvent(event);
+			return target.dispatchEvent(event);
 		}
 		
 		protected function registerListener(listener:Function, once:Boolean = false, priority:int = 0):void
@@ -182,7 +182,7 @@ package org.osflash.signals.natives
 				if (null == existing)
 				{
 					existing = new Dictionary();
-					_target.addEventListener(_eventType, onNativeEvent, false, priority);
+					target.addEventListener(eventType, onNativeEvent, false, priority);
 				}
 
 				existing[listener] = true;

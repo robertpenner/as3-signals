@@ -113,7 +113,7 @@ package org.osflash.signals
 			var valueObject:Object;
 			var valueClass:Class;
 
-			const numValueClasses: int = _valueClasses.length;
+			const numValueClasses: int = valueClasses.length;
 			const numValueObjects: int = valueObjects.length;
 
 			if (numValueObjects < numValueClasses)
@@ -126,7 +126,7 @@ package org.osflash.signals
 			for (var i: int = 0; i < numValueClasses; ++i)
 			{
 				valueObject = valueObjects[i];
-				valueClass = _valueClasses[i];
+				valueClass = valueClasses[i];
 
 				if (valueObject === null || valueObject is valueClass) continue;
 					
