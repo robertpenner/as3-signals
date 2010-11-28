@@ -22,7 +22,7 @@ package org.osflash.signals.natives
 		protected var _target:IEventDispatcher;
 		protected var _eventType:String;
 		protected var _eventClass:Class;
-		protected var listenerBoxes:Array;
+		protected var listenerBoxes:Vector.<NativeSignalBox>;
 				
 		/**
 		 * Creates a NativeSignal instance to dispatch events on behalf of a target object.
@@ -32,7 +32,7 @@ package org.osflash.signals.natives
 		 */
 		public function NativeSignal(target:IEventDispatcher = null, eventType:String = "", eventClass:Class = null)
 		{
-			listenerBoxes = [];
+			listenerBoxes = new Vector.<NativeSignalBox>();
 			this.target = target;
 			this.eventType = eventType;
 			this.eventClass = eventClass;
@@ -76,7 +76,7 @@ package org.osflash.signals.natives
 		//TODO: @throws
 		public function add(listener:Function):Function
 		{
-			return addWithPriority(listener)
+			return addWithPriority(listener);
 		}
 		
 		/** @inheritDoc */
@@ -90,7 +90,7 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		public function addOnce(listener:Function):Function
 		{
-			return addOnceWithPriority(listener)
+			return addOnceWithPriority(listener);
 		}
 		
 		/** @inheritDoc */
@@ -105,7 +105,7 @@ package org.osflash.signals.natives
 		{
 			var listenerIndex:int = indexOfListener(listener);
 			if (listenerIndex == -1) return listener;
-			var listenerBox:Object = listenerBoxes.splice(listenerIndex, 1)[0];
+			var listenerBox:NativeSignalBox = listenerBoxes.splice(listenerIndex, 1)[0];
 			// For once listeners, execute is a wrapper function around the listener.
 			_target.removeEventListener(_eventType, listenerBox.execute);
 			return listener;
@@ -116,7 +116,7 @@ package org.osflash.signals.natives
 		{
 			for (var i:int = listenerBoxes.length; i--; )
 			{
-				remove(listenerBoxes[i].listener as Function);
+				remove(listenerBoxes[i].listener);
 			}
 		}
 
@@ -161,7 +161,7 @@ package org.osflash.signals.natives
 			{
 				// If the listener was previously added, definitely don't add it again.
 				// But throw an exception in some cases, as the error messages explain.
-				var prevlistenerBox:Object = listenerBoxes[prevListenerIndex];
+				var prevlistenerBox:NativeSignalBox = listenerBoxes[prevListenerIndex];
 				if (prevlistenerBox.once && !once)
 				{
 					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
@@ -174,8 +174,7 @@ package org.osflash.signals.natives
 				return;
 			}
 			
-			var listenerBox:Object = { listener:listener, once:once, execute:listener };
-			
+			var listenerBox : NativeSignalBox = new NativeSignalBox(listener, once, listener);			
 			if (once)
 			{
 				var signal:NativeSignal = this;

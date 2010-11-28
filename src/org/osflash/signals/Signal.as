@@ -3,7 +3,6 @@ package org.osflash.signals
 	import flash.errors.IllegalOperationError;
 	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
-	import flash.utils.getTimer;
 
 	/** 
 	 * Allows the valueClasses to be set in MXML, e.g.
