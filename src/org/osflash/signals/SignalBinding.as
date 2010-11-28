@@ -7,7 +7,7 @@ package org.osflash.signals
 	 * @author Joa Ebert
 	 * @private
      */
-	internal final class SignalBinding implements ISignalBinding
+	public final class SignalBinding implements ISignalBinding
 	{
 		/**
 		 * Private backing variable for the <code>signal</code> property.

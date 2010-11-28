@@ -6,7 +6,7 @@ package org.osflash.signals
 	 * @author Joa Ebert
 	 * @private
 	 */
-	internal final class SignalBindingList
+	public final class SignalBindingList
 	{
 		public static const NIL: SignalBindingList = new SignalBindingList(null, null);
 

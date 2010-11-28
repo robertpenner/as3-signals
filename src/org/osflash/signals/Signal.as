@@ -89,7 +89,10 @@ package org.osflash.signals
 		public function remove(listener:Function):Function
 		{
 			bindings = bindings.filterNot(listener);
-			delete existing[listener];
+
+			if (!bindings.nonEmpty) existing = null;
+			else delete existing[listener];
+
 			return listener;
 		}
 		
