@@ -159,7 +159,7 @@ package org.osflash.signals.natives
 			{
 				if (mappingFunction.length == 1)//todo invariant
 				{
-					return mappingFunction(eventFromTarget);
+					return (mappingFunction)(eventFromTarget);
 				}
 				else
 				{
@@ -209,7 +209,7 @@ package org.osflash.signals.natives
 			{
 				throw new ArgumentError('Mapping returned '+
 						getQualifiedClassName(mappedData)+', expected '+
-						valueClasses[0]+'.')
+						valueClasses[0]+'.');
 			}
 
 			return super.dispatchEvent(event);

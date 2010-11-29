@@ -213,7 +213,7 @@ package org.osflash.signals
 
 			buffer += "Nil";
 
-			return "[List "+buffer+"]"
+			return "[List "+buffer+"]";
 		}
 	}
 }

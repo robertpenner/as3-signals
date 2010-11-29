@@ -2,7 +2,6 @@ package org.osflash.signals.natives
 {
 	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
-	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	import flash.utils.Dictionary;
 
@@ -96,7 +95,7 @@ package org.osflash.signals.natives
 		//TODO: @throws
 		public function add(listener:Function):Function
 		{
-			return addWithPriority(listener)
+			return addWithPriority(listener);
 		}
 		
 		/** @inheritDoc */
@@ -110,7 +109,7 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		public function addOnce(listener:Function):Function
 		{
-			return addOnceWithPriority(listener)
+			return addOnceWithPriority(listener);
 		}
 		
 		/** @inheritDoc */
