@@ -2,8 +2,8 @@ package org.osflash.signals.natives
 {
 	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
-
 	import flash.utils.Dictionary;
 
 	import org.osflash.signals.IPrioritySignal;
@@ -24,7 +24,7 @@ package org.osflash.signals.natives
 	 */
 	public class NativeSignal implements IPrioritySignal, INativeDispatcher
 	{
-		protected var _target:IEventDispatcher;
+		protected var _eventDispatcher:IEventDispatcher;
 		protected var _eventType:String;
 		protected var _eventClass:Class;
 		protected var _valueClasses:Array;
@@ -43,7 +43,7 @@ package org.osflash.signals.natives
 			bindings = SignalBindingList.NIL;
 			existing = null;
 
-			this.target = target;
+			this.eventDispatcher = target;
 			this.eventType = eventType;
 			this.eventClass = eventClass;
 		}
@@ -75,15 +75,22 @@ package org.osflash.signals.natives
 		public function get numListeners():uint { return bindings.length; }
 		
 		/** @inheritDoc */
-		public function get target():IEventDispatcher { return _target; }
+		public function get eventDispatcher():IEventDispatcher { return _eventDispatcher; }
 		
-		public function set target(value:IEventDispatcher):void
+		public function set eventDispatcher(value:IEventDispatcher):void
 		{
-			if (value == _target) return;
+			if (value == _eventDispatcher) return;
 
 			removeAll();
-			_target = value;
+			_eventDispatcher = value;
 		}
+
+		/** @inheritDoc */
+		[Deprecated(replacement="eventDispatcher", since="0.9")]
+		public function get target():IEventDispatcher { return eventDispatcher; }
+
+		[Deprecated(replacement="eventDispatcher", since="0.9")]
+		public function set target(value:IEventDispatcher):void { eventDispatcher = value; }
 		
 		/** @inheritDoc */
 		//TODO: @throws
@@ -122,7 +129,7 @@ package org.osflash.signals.natives
 			{
 				if(existing != null)
 				{
-					target.removeEventListener(eventType, onNativeEvent);
+					eventDispatcher.removeEventListener(eventType, onNativeEvent);
 					existing = null;
 				}
 			}
@@ -134,7 +141,7 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			if (null != existing) target.removeEventListener(eventType, onNativeEvent);
+			if (null != existing) eventDispatcher.removeEventListener(eventType, onNativeEvent);
 
 			bindings = SignalBindingList.NIL;
 			existing = null;
@@ -167,7 +174,7 @@ package org.osflash.signals.natives
 			if (event.type != eventType)
 				throw new ArgumentError('Event object has incorrect type. Expected <'+eventType+'> but was <'+event.type+'>.');
 
-			return target.dispatchEvent(event);
+			return eventDispatcher.dispatchEvent(event);
 		}
 		
 		protected function registerListener(listener:Function, once:Boolean = false, priority:int = 0):void
@@ -182,7 +189,7 @@ package org.osflash.signals.natives
 				if (null == existing)
 				{
 					existing = new Dictionary();
-					target.addEventListener(eventType, onNativeEvent, false, priority);
+					eventDispatcher.addEventListener(eventType, onNativeEvent, false, priority);
 				}
 
 				existing[listener] = true;

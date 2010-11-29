@@ -1,7 +1,5 @@
 package org.osflash.signals
 {
-	import flash.errors.IllegalOperationError;
-
 	import flash.utils.Dictionary;
 
 	import org.osflash.signals.events.IBubbleEventHandler;

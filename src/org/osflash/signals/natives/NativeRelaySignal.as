@@ -1,6 +1,7 @@
 package org.osflash.signals.natives
 {
 	import org.osflash.signals.DeluxeSignal;
+	import org.osflash.signals.SignalBindingList;
 
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
@@ -12,9 +13,11 @@ package org.osflash.signals.natives
 	 * NativeRelaySignal has its own dispatching code,
 	 * whereas NativeSignal uses the IEventDispatcher to dispatch.
 	 */
-	public class NativeRelaySignal extends DeluxeSignal
+	public class NativeRelaySignal extends DeluxeSignal implements INativeDispatcher
 	{
 		protected var _eventType:String;
+		protected var _eventClass:Class;
+		protected var _eventDispatcher:IEventDispatcher;
 
 		/**
 		 * Creates a new NativeRelaySignal instance to relay events from an IEventDispatcher.
@@ -27,7 +30,41 @@ package org.osflash.signals.natives
 		public function NativeRelaySignal(target:IEventDispatcher, eventType:String, eventClass:Class = null)
 		{
 			super(target, eventClass || Event);
-			_eventType = eventType;
+
+			this.eventType = eventType;
+			this.eventClass = eventClass;
+			this.eventDispatcher = target;
+		}
+
+		/** @inheritDoc */
+		public function get eventType():String { return _eventType; }
+
+		public function set eventType(value:String):void { _eventType = value; }
+
+		/** @inheritDoc */
+		public function get eventDispatcher():IEventDispatcher { return _eventDispatcher; }
+
+		public function set eventDispatcher(value:IEventDispatcher):void { target = value; }
+
+		/** @inheritDoc */
+		override public function set target(value:Object):void
+		{
+			super.target = value;
+			_eventDispatcher = IEventDispatcher(value);
+		}
+
+		/** @inheritDoc */
+		public function get eventClass():Class { return _eventClass; }
+
+		public function set eventClass(value:Class):void
+		{
+			_eventClass = value || Event;
+			_valueClasses = [_eventClass];
+		}
+
+		override public function set valueClasses(value:Array):void
+		{
+			eventClass = value && value.length > 0 ? value[0] : null;
 		}
 		
 		/** @inheritDoc */
@@ -39,7 +76,7 @@ package org.osflash.signals.natives
 			super.addWithPriority(listener);
 			// Account for cases where the same listener is added twice.
 			if (nonEmptyBefore != bindings.nonEmpty)
-				IEventDispatcher(_target).addEventListener(_eventType, dispatch, false, priority);
+				IEventDispatcher(target).addEventListener(eventType, onNativeEvent, false, priority);
 			
 			return listener;
 		}
@@ -53,7 +90,7 @@ package org.osflash.signals.natives
 			super.addOnceWithPriority(listener);
 			// Account for cases where the same listener is added twice.
 			if (nonEmptyBefore != bindings.nonEmpty)
-				IEventDispatcher(_target).addEventListener(_eventType, dispatch, false, priority);
+				IEventDispatcher(target).addEventListener(eventType, onNativeEvent);
 			
 			return listener;
 		}
@@ -65,7 +102,7 @@ package org.osflash.signals.natives
 
 			super.remove(listener);
 
-			if (nonEmptyBefore != bindings.nonEmpty) IEventDispatcher(_target).removeEventListener(_eventType, dispatch);
+			if (nonEmptyBefore != bindings.nonEmpty) IEventDispatcher(target).removeEventListener(eventType, onNativeEvent);
 
 			return listener;
 		}
@@ -75,8 +112,49 @@ package org.osflash.signals.natives
 		 */
 		override public function removeAll(): void
 		{
-			if(bindings.nonEmpty) IEventDispatcher(_target).removeEventListener(_eventType, dispatch);
+			if(bindings.nonEmpty) IEventDispatcher(target).removeEventListener(eventType, onNativeEvent);
 			super.removeAll();
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		override public function dispatch(...valueObjects):void
+		{
+			if (null == valueObjects) throw new ArgumentError('Event object expected.');
+
+			if (valueObjects.length != 1) throw new ArgumentError('No more than one Event object expected.');
+
+			dispatchEvent(valueObjects[0] as Event);
+		}
+
+		/**
+		 * Unlike other signals, NativeSignal does not dispatch null
+		 * because it causes an exception in EventDispatcher.
+		 * @inheritDoc
+		 */
+		public function dispatchEvent(event:Event):Boolean
+		{
+			if (null == event) throw new ArgumentError('Event object expected.');
+
+			if (!(event is eventClass))
+				throw new ArgumentError('Event object '+event+' is not an instance of '+eventClass+'.');
+
+			if (event.type != eventType)
+				throw new ArgumentError('Event object has incorrect type. Expected <'+eventType+'> but was <'+event.type+'>.');
+
+			return target.dispatchEvent(event);
+		}
+
+		protected function onNativeEvent(event: Event): void
+		{
+			var bindingsToProcess:SignalBindingList = bindings;
+
+			while (bindingsToProcess.nonEmpty)
+			{
+				bindingsToProcess.head.execute1(event);
+				bindingsToProcess = bindingsToProcess.tail;
+			}
 		}
 	}
 }

@@ -21,7 +21,9 @@ package org.osflash.signals.natives
 		/**
 		 * The object considered the source of the dispatched events.
 		 */
-		function get target():IEventDispatcher;
+		function get eventDispatcher():IEventDispatcher;
+
+		function set eventDispatcher(value:IEventDispatcher):void;
 
 		/**
 		 * Dispatches an event to listeners.
