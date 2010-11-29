@@ -90,7 +90,7 @@ package org.osflash.signals.natives
 			super.addOnceWithPriority(listener);
 			// Account for cases where the same listener is added twice.
 			if (nonEmptyBefore != bindings.nonEmpty)
-				IEventDispatcher(target).addEventListener(eventType, onNativeEvent);
+				IEventDispatcher(target).addEventListener(eventType, onNativeEvent, false, priority);
 			
 			return listener;
 		}
