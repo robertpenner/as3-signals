@@ -142,8 +142,14 @@ package org.osflash.signals.natives
 
 			if (event.type != eventType)
 				throw new ArgumentError('Event object has incorrect type. Expected <'+eventType+'> but was <'+event.type+'>.');
-
-			return target.dispatchEvent(event);
+			
+			if(target is IEventDispatcher)
+				return IEventDispatcher(target).dispatchEvent(event);
+			else if(target is INativeDispatcher)
+				return INativeDispatcher(target).dispatchEvent(event);
+			else
+				throw new ArgumentError('Target has to implement either IEventDispatcher or INativeDispatcher.');
+			
 		}
 
 		protected function onNativeEvent(event: Event): void
