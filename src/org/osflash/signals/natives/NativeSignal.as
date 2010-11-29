@@ -30,7 +30,6 @@ package org.osflash.signals.natives
 
 		protected var bindings:SignalBindingList;
 		protected var existing:Dictionary;
-
 		/**
 		 * Creates a NativeSignal instance to dispatch events on behalf of a target object.
 		 * @param	target The object on whose behalf the signal is dispatching events.
@@ -133,7 +132,6 @@ package org.osflash.signals.natives
 				}
 			}
 			else delete existing[listener];
-
 			return listener;
 		}
 		
