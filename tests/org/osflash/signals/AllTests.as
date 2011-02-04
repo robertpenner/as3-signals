@@ -32,7 +32,6 @@ package org.osflash.signals
 		public var _DeluxeSignalDispatchExtraArgsTest:DeluxeSignalDispatchExtraArgsTest;
 		public var _DeluxeSignalDispatchNoArgsTest:DeluxeSignalDispatchNoArgsTest;
 		public var _DeluxeSignalDispatchNonEventTest:DeluxeSignalDispatchNonEventTest;
-		public var _DeluxeSignalSplitInterfacesTest:DeluxeSignalSplitInterfacesTest;
 		public var _DeluxeSignalWithBubblingEventTest:DeluxeSignalWithBubblingEventTest;
 		public var _DeluxeSignalWithCustomEventTest:DeluxeSignalWithCustomEventTest;
 		public var _DeluxeSignalWithGenericEventTest:DeluxeSignalWithGenericEventTest;
@@ -40,10 +39,10 @@ package org.osflash.signals
 		public var _MXMLSignalTest:MXMLSignalTest;
 		public var _MXMLNativeSignalTest:MXMLNativeSignalTest;
 		
-		public var _SignalDispatchExtraArgsTest:SignalDispatchArgsTest;
+		public var _SignalDispatchArgsTest:SignalDispatchArgsTest;
+		public var _SignalDispatchExtraArgsTest:SignalDispatchExtraArgsTest;
 		public var _SignalDispatchNoArgsTest:SignalDispatchNoArgsTest;
 		public var _SignalDispatchNonEventTest:SignalDispatchNonEventTest;
-		public var _SignalSplitInterfacesTest:SignalSplitInterfacesTest;
 		public var _SignalTest:SignalTest;
 		public var _SignalWithCustomEventTest:SignalWithCustomEventTest;
 		

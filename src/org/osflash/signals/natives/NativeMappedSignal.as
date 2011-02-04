@@ -2,6 +2,9 @@ package org.osflash.signals.natives
 {
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
+	import flash.utils.getQualifiedClassName;
+
+	import org.osflash.signals.SignalBindingList;
 
 	/**
 	 * <p>
@@ -13,16 +16,6 @@ package org.osflash.signals.natives
 	 */
 	public class NativeMappedSignal extends NativeRelaySignal
 	{
-		/**
-		 * @default is initialized to flash.events.Event in constructor if omitted as parameter
-		 */
-		protected var _eventClass:Class;
-		
-		public function get eventClass():Class 
-		{
-			return _eventClass;
-		}
-		
 		/**
 		 * @default is null, no mapping will occur 
 		 */		
@@ -46,9 +39,33 @@ package org.osflash.signals.natives
 		 */
 		public function NativeMappedSignal(target:IEventDispatcher, eventType:String, eventClass:Class=null, ... mappedTypes)
 		{
-			_eventClass = eventClass || Event;
-			super(target, eventType);
+			super(target, eventType, eventClass);
 			valueClasses = mappedTypes;
+		}
+
+		/**
+		 * @inheritDoc
+		 */
+		override public function get eventClass():Class { return _eventClass; }
+
+		override public function set eventClass(value:Class):void { _eventClass = value; }
+
+		/**
+		 * @inheritDoc
+		 */
+		override public function set valueClasses(value:Array):void
+		{
+			_valueClasses = value ? value.slice() : [];
+			
+			for (var i:int = _valueClasses.length; i--; )
+			{
+				if (!(_valueClasses[i] is Class))
+				{
+					throw new ArgumentError('Invalid valueClasses argument: ' +
+						'item at index ' + i + ' should be a Class but was:<' +
+						_valueClasses[i] + '>.' + getQualifiedClassName(_valueClasses[i]));
+				}
+			}
 		}
 		
 		/**
@@ -67,8 +84,8 @@ package org.osflash.signals.natives
 		 *  signal.add(function(arg1:String, arg2:int, arg3:Number):void { trace(arg1, arg2, arg3) }) // prints "ping", 3, 3.1415
 		 * </listing>
 		 * 
-		 * If the argument is a function then it is called when the event this NativeMappedSignal is listeneing for is dispatched.
-		 * The function should return an Array or a single object. The data returned from the function is passed along as arguemnts in the Signal dispatch.
+		 * If the argument is a function then it is called when the event this NativeMappedSignal is listening for is dispatched.
+		 * The function should return an Array or a single object. The data returned from the function is passed along as arguments in the Signal dispatch.
 		 * Lets look at some examples of mapping functions and the function that is called back:
 		 * 
 		 * <listing version="3.0">
@@ -101,11 +118,11 @@ package org.osflash.signals.natives
 		 */		
 		public function mapTo(...objectListOrFunction):NativeMappedSignal
 		{
-			if (isArgumentListAFunction(objectListOrFunction))
+			if (objectListOrFunction.length == 1 && objectListOrFunction[0] is Function)
 			{
 				_mappingFunction = objectListOrFunction[0] as Function;
 				
-				if (hasFunctionMoreThanOneArgument(_mappingFunction))
+				if (_mappingFunction.length > 1)
 				{	
 					throw new ArgumentError('Mapping function has ' + _mappingFunction.length 
 						+ ' arguments but it needs zero or one of type Event');
@@ -118,83 +135,14 @@ package org.osflash.signals.natives
 			
 			return this;
 		}
-		
-		private function isArgumentListAFunction(argList:Array):Boolean
-		{
-			return argList.length == 1 && argList[0] is Function;
-		}
-		
-		private function hasFunctionMoreThanOneArgument(f:Function):Boolean
-		{
-			return f.length > 1;
-		}
-		
-		/**
-		 * This is used as eventHandler for target or can be called directly with the parameters specified by valueClasses.
-		 * <p>If used as eventHandler the data mapping system is used to supply the super.dispatch with alternative data to dispatch.</p>
-		 *
-		 * @see #mapEvent()
-		 * @see #mapTo()
-		 * @see org.osflash.signals.NativeRelaySignal#dispatch()
-		 */
-		override public function dispatch(... valueObjects):void 
-		{
-			if (areValueObjectValidForMapping(valueObjects)) 
-			{
-				var mappedData:Object = mapEvent(valueObjects[0] as Event);
-				dispatchMappedData(mappedData);
-			} 
-			else 
-			{
-				super.dispatch.apply(null, valueObjects);
-			}
-		}
 
-		private function areValueObjectValidForMapping(valueObjects:Array):Boolean
-		{
-			return valueObjects.length == 1 && valueObjects[0] is _eventClass;
-		}
-		
-		private function dispatchMappedData(mappedData:Object):void
-		{
-			if (mappedData is Array)
-			{
-				if (shouldArrayBePassedWithoutUnrolling)
-				{
-					super.dispatch.call(null, mappedData);
-				}
-				else
-				{
-					super.dispatch.apply(null, mappedData);
-				}
-			}
-			else
-			{
-				super.dispatch.call(null, mappedData);
-			}
-		}
-		
-		private function get shouldArrayBePassedWithoutUnrolling():Boolean
-		{
-			return _valueClasses.length == 1 && _valueClasses[0] == Array;
-		}
-		
-		protected function get mappingFunctionWantsEvent():Boolean
-		{
-			return _mappingFunction.length == 1;
-		}
-		
-		protected function get mappingFunctionExists():Boolean
-		{
-			return _mappingFunction != null;
-		}
-		
+
 		/**
 		 * For usage without extension, instances of <code>NativeMappedSignal</code> that are dispatching any values ( <code>valueClasses.length > 0</code> ),
 		 * needs to be provided with a either a mapping function or a list of object literals.
 		 * See <code>mapTo</code> for more info.
 		 * 
-		 * Subcclasses could override this one instead of letting the environment set the mapTo,
+		 * Subclasses could override this one instead of letting the environment set the mapTo,
 		 * MAKE SURE to also override <code>mapTo(...)</code> if it should not be allowed.
 		 *
 		 * @parameter eventFromTarget the event that was dispatched from target.
@@ -205,17 +153,17 @@ package org.osflash.signals.natives
 		 *
 		 * @see #mapTo()
 		 */
-		protected function mapEvent (eventFromTarget:Event):Object 
+		protected function mapEvent(eventFromTarget:Event):Object
 		{
-			if (mappingFunctionExists) 
+			if (mappingFunction != null)
 			{
-				if (mappingFunctionWantsEvent)
+				if (mappingFunction.length == 1)//todo invariant
 				{
-					return _mappingFunction(eventFromTarget);
+					return mappingFunction(eventFromTarget);
 				}
 				else
 				{
-					return _mappingFunction();
+					return mappingFunction();
 				}
 			} 
 			else if (valueClasses.length == 0) 
@@ -225,6 +173,83 @@ package org.osflash.signals.natives
 			
 			throw new ArgumentError("There are valueClasses set to be dispatched <" + valueClasses 
 				+ "> but mappingFunction is null.");
+		}
+
+		override public function dispatchEvent(event:Event):Boolean
+		{
+			//
+			//TODO: this is only required for backwards compatibility
+			//
+			const mappedData: Object = mapEvent(event);
+			const numValueClasses:int = valueClasses.length;
+
+			if(mappedData is Array)
+			{
+				const valueObjects: Array = mappedData as Array;
+
+				var valueObject: Object;
+				var valueClass: Class;
+
+				for (var i:int = 0; i < numValueClasses; i++)
+				{
+					valueObject = valueObjects[i];
+					valueClass = valueClasses[i];
+
+					if (valueObject === null || valueObject is valueClass) continue;
+
+					throw new ArgumentError('Value object <'+valueObject
+						+'> is not an instance of <'+valueClass+'>.');
+				}
+			}
+			else if(numValueClasses > 1)
+			{
+				throw new ArgumentError('Expected more than one value.');
+			}
+			else if(!(mappedData is valueClasses[0]))
+			{
+				throw new ArgumentError('Mapping returned '+
+						getQualifiedClassName(mappedData)+', expected '+
+						valueClasses[0]+'.')
+			}
+
+			return super.dispatchEvent(event);
+		}
+
+		override protected function onNativeEvent(event: Event): void
+		{
+			const mappedData:Object = mapEvent(event);
+
+			var bindingsToProcess:SignalBindingList = bindings;
+
+			if (mappedData is Array)
+			{
+				if (valueClasses.length == 1 && valueClasses[0] == Array)//todo invariant
+				{
+					while (bindingsToProcess.nonEmpty)
+					{
+						bindingsToProcess.head.execute1(mappedData);
+						bindingsToProcess = bindingsToProcess.tail;
+					}
+				}
+				else
+				{
+					const mappedDataArray: Array = mappedData as Array;
+
+					while (bindingsToProcess.nonEmpty)
+					{
+						bindingsToProcess.head.execute(mappedDataArray);
+						bindingsToProcess = bindingsToProcess.tail;
+					}
+				}
+			}
+			else
+			{
+				while (bindingsToProcess.nonEmpty)
+				{
+					bindingsToProcess.head.execute1(mappedData);
+					bindingsToProcess = bindingsToProcess.tail;
+				}
+			}
 		}
 	}
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="Flex" version="4">
+  <component name="Flex.Build.Configuration">
+    <option name="DO_BUILD" value="true" />
+    <option name="OUTPUT_TYPE" value="Library" />
+    <option name="OUTPUT_FILE_NAME" value="as3-signals.swc" />
+    <option name="TARGET_PLAYER_VERSION" value="10.0.0" />
+    <option name="VERSION" value="3" />
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/..">
+      <sourceFolder url="file://$MODULE_DIR$/../src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../tests" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/../bin" />
+      <excludeFolder url="file://$MODULE_DIR$/../report" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="as3-signals libs" level="project" />
+  </component>
+</module>
+

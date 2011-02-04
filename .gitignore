@@ -7,6 +7,12 @@ docs/*
 obj/*
 dist/*
 report/*
+out/*
+target/*
+
+.idea/dictionaries/*
+.idea/uiDesigner.xml
+.idea/workspace.xml
 
 .settings/*
 .actionScriptProperties

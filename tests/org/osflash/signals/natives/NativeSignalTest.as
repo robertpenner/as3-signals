@@ -46,7 +46,7 @@ package org.osflash.signals.natives
 			assertTrue('implements IPrioritySignal', clicked is IPrioritySignal);
 			assertTrue('implements INativeDispatcher', clicked is INativeDispatcher);
 			assertFalse('sprite has no click event listener to start', sprite.hasEventListener('click'));
-			assertSame('target round-trips through constructor', sprite, clicked.target);
+			assertSame('target round-trips through constructor', sprite, clicked.eventDispatcher);
 		}
 		//////
 		[Test]
@@ -329,7 +329,7 @@ package org.osflash.signals.natives
 		public function setting_target_to_a_different_object_should_remove_all_listeners_from_1st_target():void
 		{
 			clicked.add(emptyHandler);
-			clicked.target = new EventDispatcher();
+			clicked.eventDispatcher = new EventDispatcher();
 			assertFalse(sprite.hasEventListener('click'));
 		}
 		//////
@@ -338,7 +338,7 @@ package org.osflash.signals.natives
 		{
 			clicked.add(emptyHandler);
 			var numListenersBefore:uint = clicked.numListeners;
-			clicked.target = sprite;
+			clicked.eventDispatcher = sprite;
 			assertEquals(numListenersBefore, clicked.numListeners);
 		}
 	}

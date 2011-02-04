@@ -93,13 +93,14 @@ package org.osflash.signals
 				listeners.push(completed.add(function():void{}));
 			}
 			
-			assertTrue("there should be 100 listeners", completed.numListeners == 100);
+			assertEquals("there should be 100 listeners", 100, completed.numListeners);
 			
 			for each( var fnt:Function in listeners )
 			{
 				completed.remove(fnt);
 			}
-			assertTrue("all anonymous listeners removed", completed.numListeners == 0);
+
+			assertEquals("all anonymous listeners removed", 0, completed.numListeners);
 		}
 		
 		//////
@@ -113,13 +114,14 @@ package org.osflash.signals
 				listeners.push(completed.addOnce(function():void{}));
 			}
 			
-			assertTrue("there should be 100 listeners", completed.numListeners == 100);
+			assertEquals("there should be 100 listeners", 100, completed.numListeners);
 			
 			for each( var fnt:Function in listeners )
 			{
 				completed.remove(fnt);
 			}
-			assertTrue("all anonymous listeners removed", completed.numListeners == 0);
+
+			assertEquals("all anonymous listeners removed", 0, completed.numListeners);
 		}
 		
 		//////
