@@ -20,12 +20,12 @@ package org.osflash.signals
 	 * <br/><br/>
 	 * Project home: <a target="_top" href="http://github.com/robertpenner/as3-signals/">http://github.com/robertpenner/as3-signals/</a>
 	 */
-	public class Signal implements ISignalOwner, IDispatcher
+	public class Signal implements ISignal
 	{
 		protected var _valueClasses:Array;		// of Class
-		protected var listeners:Array;			// of Function
-		protected var onceListeners:Dictionary;	// of Function
-		protected var listenersNeedCloning:Boolean = false;
+
+		protected var bindings:SignalBindingList;
+		protected var existing:Dictionary;
 		
 		/**
 		 * Creates a Signal instance to dispatch value objects.
@@ -40,18 +40,17 @@ package org.osflash.signals
 		 */
 		public function Signal(...valueClasses)
 		{
-			listeners = [];
-			onceListeners = new Dictionary();
+			bindings = SignalBindingList.NIL;
+			existing = null;
+
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
-			if (valueClasses.length == 1 && valueClasses[0] is Array)
-				valueClasses = valueClasses[0];
-			this.valueClasses = valueClasses;
+			this.valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array) ? valueClasses[0] : valueClasses;
 		}
 		
 		/** @inheritDoc */
+		[ArrayElementType("Class")]
 		public function get valueClasses():Array { return _valueClasses; }
 		
-		/** @inheritDoc */
 		public function set valueClasses(value:Array):void
 		{
 			// Clone so the Array cannot be affected from outside.
@@ -60,14 +59,15 @@ package org.osflash.signals
 			{
 				if (!(_valueClasses[i] is Class))
 				{
-					throw new ArgumentError('Invalid valueClasses argument: item at index ' + i
-						+ ' should be a Class but was:<' + _valueClasses[i] + '>.' + getQualifiedClassName(_valueClasses[i]));
+					throw new ArgumentError('Invalid valueClasses argument: ' +
+						'item at index ' + i + ' should be a Class but was:<' +
+						_valueClasses[i] + '>.' + getQualifiedClassName(_valueClasses[i]));
 				}
 			}
 		}
 		
 		/** @inheritDoc */
-		public function get numListeners():uint { return listeners.length; }
+		public function get numListeners():uint { return bindings.length; }
 		
 		/** @inheritDoc */
 		//TODO: @throws
@@ -87,128 +87,142 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function remove(listener:Function):Function
 		{
-			var index:int = listeners.indexOf(listener);
-			if (index == -1) return listener;
-			if (listenersNeedCloning)
-			{
-				listeners = listeners.slice();
-				listenersNeedCloning = false;
-			}
-			listeners.splice(index, 1);
-			delete onceListeners[listener];
+			bindings = bindings.filterNot(listener);
+
+			if (!bindings.nonEmpty) existing = null;
+			else delete existing[listener];
+
 			return listener;
 		}
 		
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			// Looping backwards is more efficient when removing array items.
-			for (var i:uint = listeners.length; i--; )
-			{
-				remove(listeners[i] as Function);
-			}
+			bindings = SignalBindingList.NIL;
+			existing = null;
 		}
 		
 		/** @inheritDoc */
 		public function dispatch(...valueObjects):void
 		{
+			//
 			// Validate value objects against pre-defined value classes.
+			//
+
 			var valueObject:Object;
 			var valueClass:Class;
-			var numValueClasses:int = _valueClasses.length;
-			if (valueObjects.length < numValueClasses)
+
+			const numValueClasses: int = valueClasses.length;
+			const numValueObjects: int = valueObjects.length;
+
+			if (numValueObjects < numValueClasses)
 			{
-				throw new ArgumentError('Incorrect number of arguments. Expected at least ' + numValueClasses + ' but received ' + valueObjects.length + '.');
+				throw new ArgumentError('Incorrect number of arguments. '+
+					'Expected at least '+numValueClasses+' but received '+
+					numValueObjects+'.');
 			}
 			
-			for (var i:int = 0; i < numValueClasses; i++)
+			for (var i: int = 0; i < numValueClasses; ++i)
 			{
-				// null is allowed to pass through.
-				if ( (valueObject = valueObjects[i]) === null
-					|| valueObject is (valueClass = _valueClasses[i]) )
-					continue;
+				valueObject = valueObjects[i];
+				valueClass = valueClasses[i];
+
+				if (valueObject === null || valueObject is valueClass) continue;
 					
-				throw new ArgumentError('Value object <' + valueObject
-					+ '> is not an instance of <' + valueClass + '>.');
+				throw new ArgumentError('Value object <'+valueObject
+					+'> is not an instance of <'+valueClass+'>.');
 			}
 
-			if (!listeners.length) return;
-			
-			//// Call listeners.
-			
-			// During a dispatch, add() and remove() should clone listeners array instead of modifying it.
-			listenersNeedCloning = true;
-			var listener:Function;
-			switch (valueObjects.length)
+			//
+			// Broadcast to listeners.
+			//
+
+			var bindingsToProcess:SignalBindingList = bindings;
+
+			if (bindingsToProcess.nonEmpty)
 			{
-				case 0:
-					for each (listener in listeners)
+				if (numValueObjects == 0)
+				{
+					while (bindingsToProcess.nonEmpty)
 					{
-						if (onceListeners[listener]) remove(listener);
-						listener();
+						bindingsToProcess.head.execute0();
+						bindingsToProcess = bindingsToProcess.tail;
 					}
-					break;
-					
-				case 1:
-					for each (listener in listeners)
+				}
+				else if (numValueObjects == 1)
+				{
+					const singleValue:Object = valueObjects[0];
+
+					while (bindingsToProcess.nonEmpty)
 					{
-						if (onceListeners[listener]) remove(listener);
-						listener(valueObjects[0]);
+						bindingsToProcess.head.execute1(singleValue);
+						bindingsToProcess = bindingsToProcess.tail;
 					}
-					break;
-					
-				default:
-					for each (listener in listeners)
+				}
+				else if (numValueObjects == 2)
+				{
+					const value1:Object = valueObjects[0];
+					const value2:Object = valueObjects[1];
+
+					while (bindingsToProcess.nonEmpty)
 					{
-						if (onceListeners[listener]) remove(listener);
-						listener.apply(null, valueObjects);
+						bindingsToProcess.head.execute2(value1, value2);
+						bindingsToProcess = bindingsToProcess.tail;
 					}
+				}
+				else
+				{
+					while (bindingsToProcess.nonEmpty)
+					{
+						bindingsToProcess.head.execute(valueObjects);
+						bindingsToProcess = bindingsToProcess.tail;
+					}
+				}
 			}
-			listenersNeedCloning = false;
 		}
-		
+
 		protected function registerListener(listener:Function, once:Boolean = false):void
 		{
-			// function.length is the number of arguments.
-			if (listener.length < _valueClasses.length)
+			if (!bindings.nonEmpty || verifyRegistrationOf(listener, once))
 			{
-				var argumentString:String = (listener.length == 1) ? 'argument' : 'arguments';
-				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+_valueClasses.length+' to match the given value classes.');
+				bindings = new SignalBindingList(new SignalBinding(listener, once, this), bindings);
+
+				if (null == existing) existing = new Dictionary();
+
+				existing[listener] = true;
 			}
+		}
+
+		protected function verifyRegistrationOf(listener: Function,  once: Boolean): Boolean
+		{
+			if(!existing || !existing[listener]) return true;
 			
-			// If there are no previous listeners, add the first one as quickly as possible.
-			if (!listeners.length)
+			const existingBinding:ISignalBinding = bindings.find(listener);
+
+			if (null != existingBinding)
 			{
-				listeners[0] = listener;
-				if (once) onceListeners[listener] = true;
-				return;
-			}
-						
-			if (listeners.indexOf(listener) >= 0)
-			{
-				// If the listener was previously added, definitely don't add it again.
-				// But throw an exception in some cases, as the error messages explain.
-				if (onceListeners[listener] && !once)
+				if (existingBinding.once != once)
 				{
+					//
+					// If the listener was previously added, definitely don't add it again.
+					// But throw an exception if their once value differs.
+					//
+
 					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 				}
-				else if (!onceListeners[listener] && once)
-				{
-					throw new IllegalOperationError('You cannot add() then addOnce() the same listener without removing the relationship first.');
-				}
-				// Listener was already added, so do nothing.
-				return;
+
+				//
+				// Listener was already added.
+				//
+
+				return false;
 			}
+
+			//
+			// This listener has not been added before.
+			//
 			
-			if (listenersNeedCloning)
-			{
-				listeners = listeners.slice();
-				listenersNeedCloning = false;
-			}
-				
-			// Faster than push().
-			listeners[listeners.length] = listener;
-			if (once) onceListeners[listener] = true;
+			return true;
 		}
 	}
 }
