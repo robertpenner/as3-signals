@@ -84,6 +84,8 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		override public function addOnceWithPriority(listener:Function, priority:int = 0):Function
 		{
+			if (null == target) throw new ArgumentError('Target object expected.');
+			
 			const nonEmptyBefore: Boolean = bindings.nonEmpty;
 
 			// Try to add first because it may throw an exception.
