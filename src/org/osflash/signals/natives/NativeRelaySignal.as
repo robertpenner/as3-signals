@@ -149,7 +149,6 @@ package org.osflash.signals.natives
 				return INativeDispatcher(target).dispatchEvent(event);
 			else
 				throw new ArgumentError('Target has to implement either IEventDispatcher or INativeDispatcher.');
-			
 		}
 
 		protected function onNativeEvent(event: Event): void

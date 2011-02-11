@@ -163,6 +163,24 @@ package org.osflash.signals.natives
 		}
 		
 		//////
+		[Test(expects="ArgumentError")]
+		public function dispatching_invalid_signal_target_should_throw_ArgumentError() : void
+		{
+			try
+			{
+				clicked.target = new MouseEvent("click");
+				clicked.addOnce(emptyHandler);
+			}
+			catch(error : TypeError)
+			{
+			}
+			finally
+			{
+				clicked.dispatchEvent(new MouseEvent('click'));
+			}
+		}
+		
+		//////
 		[Test]
 		public function removed_listener_should_be_returned():void
 		{
