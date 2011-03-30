@@ -243,6 +243,7 @@ package org.osflash.signals
 		{
 			completed.removeAll();
 		}
+		
 		//////
 		[Test]
 		public function adding_a_listener_during_dispatch_should_not_call_it():void
@@ -255,6 +256,7 @@ package org.osflash.signals
 		{
 			completed.add(failIfCalled);
 		}
+		
 		//////
 		[Test]
 		public function removed_listener_should_be_returned():void
@@ -262,6 +264,6 @@ package org.osflash.signals
 			var listener:Function = completed.add(function():void{});
 			
 			assertTrue("Listener is returned", listener == completed.remove(listener));
-	}
+		}
 	}
 }

@@ -43,5 +43,7 @@ package org.osflash.signals
 		public var _SignalDispatchNonEventTest:SignalDispatchNonEventTest;
 		public var _SignalTest:SignalTest;
 		public var _SignalWithCustomEventTest:SignalWithCustomEventTest;
+		
+		public var _SingleSignalTest:SingleSignalTest;
 	}
 }

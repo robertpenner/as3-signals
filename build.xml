@@ -57,7 +57,7 @@
 			<arg value="-keep-as3-metadata+=Test,Suite,Before,BeforeClass,After,AfterClass,RunWith,Ignore,Inject"/>
 		</java>
 		<exec executable="open" os="Mac OS X">
-			<arg line='-a "flash player" ${tests.swf}' />
+			<arg line='-a "flash player debugger" ${tests.swf}' />
 		</exec>		
 		<exec executable="cmd.exe" osfamily="windows">
 			<arg line='/C start ${tests.swf}' />
