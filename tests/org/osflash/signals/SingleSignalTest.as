@@ -1,5 +1,6 @@
 package org.osflash.signals
 {
+	import flash.errors.IllegalOperationError;
 	import asunit.asserts.assertEquals;
 	import asunit.asserts.assertNull;
 	import asunit.asserts.assertTrue;
@@ -40,6 +41,8 @@ package org.osflash.signals
 			assertEquals(0, completed.numListeners);
 		}
 		
+		//////
+		
 		[Test]
 		public function dispatch_should_pass_event_to_listener_but_not_set_signal_or_target_properties():void
 		{
@@ -52,6 +55,37 @@ package org.osflash.signals
 			assertNull('event.signal is not set by Signal', e.signal);
 			assertNull('event.target is not set by Signal', e.target);
 		}
+		
+		//////
+		
+		[Test(expects="flash.errors.IllegalOperationError")]
+		public function add_two_listeners_should_throw_an_error():void
+		{
+			completed.add(checkGenericEvent);
+			completed.add(checkGenericEvent);
+		}
+		
+		//////
+		
+		[Test(expects="flash.errors.IllegalOperationError")]
+		public function add_one_hundred_listeners_should_throw_an_error():void
+		{
+			for(var i : int = 0; i<100; i++)
+			{
+				completed.add(checkGenericEvent);
+			}
+		}
+		
+		//////
+		
+		[Test]
+		public function add_one_listeners_then_remove_it_then_add_another_listener():void
+		{
+			completed.add(failIfCalled);
+			completed.remove(failIfCalled);
+			completed.add(checkGenericEvent);
+			completed.dispatch(new GenericEvent());
+		}	
 		
 		//////
 		
@@ -117,6 +151,30 @@ package org.osflash.signals
 		private function checkSprite(sprite:Sprite):void
 		{
 			assertTrue(sprite is Sprite);
+		}
+		
+		//////
+		[Test]
+		public function adding_a_listener_during_dispatch_should_not_call_it():void
+		{
+			completed.add(async.add(addListenerDuringDispatch, 10));
+			completed.dispatch(new GenericEvent());
+		}
+		
+		private function addListenerDuringDispatch():void
+		{
+			try
+			{
+				completed.add(failIfCalled);
+			}
+			catch(error : IllegalOperationError)
+			{
+				assertTrue('there should be 1 listener', completed.numListeners == 1);
+			}
+			catch(error : Error)
+			{
+				fail('This error should not have been thrown.');
+			}
 		}
 		
 		//////
