@@ -20,7 +20,7 @@ package org.osflash.signals
 	{
 		private var _out0: TextField;
 		private var _out1: TextField;
-		private var _s: Signal;
+		private var _s: ISignal;
 		private var _t0: int;
 
 		private var _f: int;
@@ -41,7 +41,7 @@ package org.osflash.signals
 			_out1.x = 0x200;
 			_out1.y = 0x20;
 
-			_s = new DeluxeSignal();
+			_s = new SingleSignal();
 
 			addChild(_out0);
 			addChild(_out1);

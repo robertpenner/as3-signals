@@ -21,7 +21,7 @@ package org.osflash.signals
 		private var _out1: TextField;
 		private var _t0: int;
 
-		private var _s: Signal;
+		private var _s: ISignal;
 		private var _d: int;
 		private var _f: int;
 		private var _min:int;
