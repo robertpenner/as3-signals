@@ -1,4 +1,4 @@
-package org.osflash.signals 
+package org.osflash.signals
 {
     /**
      * The SignalBinding class represents a signal binding.
@@ -57,12 +57,11 @@ package org.osflash.signals
 		 */
 		public function SignalBinding(listener:Function, once:Boolean = false, signal:ISignal = null, priority:int = 0)
 		{
-			_listener = listener;
 			_once = once;
 			_signal = signal;
 			_priority = priority;
 
-			verifyListener(listener);
+			this.listener = listener;
 		}
 
 		/**
@@ -126,8 +125,22 @@ package org.osflash.signals
 			if (null == value) throw new ArgumentError(
 					'Given listener is null.\nDid you want to call pause() instead?');
 
-			verifyListener(value);
-			_listener = value;
+			if(null == _signal) throw new Error(
+				'Internal signal reference has not been set yet.');
+
+			if(value.length < _signal.valueClasses.length)
+			{
+				// trim the length of the arguments passed in to match what the function takes if
+				// it's less. varargs functions return 0 for their argument length, so this means if
+				// someone listens with a varargs function, no arguments will be inserted into the
+				// varargs.
+				_listener = function(...args) :* {
+					args.length = value.length;
+					return value.apply(this, args);
+				};
+			} else {
+				_listener = value;
+			}
 		}
 
 		/**
@@ -193,25 +206,5 @@ package org.osflash.signals
 			_signal.remove(_listener);
 		}
 
-		protected function verifyListener(listener: Function): void
-		{
-			if(null == listener)
-			{
-				throw new ArgumentError('Given listener is null.');
-			}
-
-			if(null == _signal)
-			{
-				throw new Error('Internal signal reference has not been set yet.');
-			}
-			
-			if(listener.length < _signal.valueClasses.length)
-			{
-				const argumentString:String = (listener.length == 1) ? 'argument' : 'arguments';
-
-				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+
-						_signal.valueClasses.length+' to match the signal\'s value classes.');
-			}
-		}
 	}
 }

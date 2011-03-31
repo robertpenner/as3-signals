@@ -6,10 +6,10 @@ package org.osflash.signals
 	import org.osflash.signals.events.GenericEvent;
 
 	public class DeluxeSignalWithCustomEventTest
-	{	
+	{
 	    [Inject]
 	    public var async:IAsync;
-	    
+
 		public var messaged:DeluxeSignal;
 
 		[Before]
@@ -30,7 +30,7 @@ package org.osflash.signals
 		{
 			assertSame(MessageEvent, messaged.valueClasses[0]);
 		}
-		
+
 		[Test]
 		public function valueClasses_roundtrip_through_setter():void
 		{
@@ -46,14 +46,14 @@ package org.osflash.signals
 			messaged.valueClasses = newValueClasses;
 			assertNotSame(newValueClasses, messaged.valueClasses);
 		}
-		
+
 		[Test]
 		public function add_one_listener_and_dispatch():void
 		{
 			messaged.add(async.add(onMessage, 50));
 			messaged.dispatch(new MessageEvent('ok'));
 		}
-		
+
 		protected function onMessage(e:MessageEvent):void
 		{
 			assertEquals('source of the event', messaged, e.signal);
@@ -67,7 +67,7 @@ package org.osflash.signals
 			messaged.dispatch(new GenericEvent());
 		}
 
-		[Test(expects="ArgumentError")]
+		[Test]
 		public function signal_with_eventClass_adding_listener_without_args_should_throw_ArgumentError():void
 		{
 			messaged.add(function():void {});
@@ -84,17 +84,17 @@ import org.osflash.signals.events.IEvent;
 class MessageEvent extends GenericEvent implements IEvent
 {
 	public var message:String;
-	
+
 	public function MessageEvent(message:String)
 	{
 		super();
 		this.message = message;
 	}
-	
+
 	override public function clone():IEvent
 	{
 		return new MessageEvent(message);
 	}
-	
+
 }
 

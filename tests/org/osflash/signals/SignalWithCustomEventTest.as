@@ -9,7 +9,7 @@ package org.osflash.signals
 	{
 	    [Inject]
 	    public var async:IAsync;
-	
+
 		public var messaged:Signal;
 
 		[Before]
@@ -47,14 +47,14 @@ package org.osflash.signals
 			messaged.valueClasses = newValueClasses;
 			assertNotSame(newValueClasses, messaged.valueClasses);
 		}
-		
+
 		[Test]
 		public function add_one_listener_and_dispatch():void
 		{
 			messaged.add(async.add(onMessage, 50));
 			messaged.dispatch(new MessageEvent('ok'));
 		}
-		
+
 		protected function onMessage(e:MessageEvent):void
 		{
 			assertEquals('message value in the event', 'ok', e.message);
@@ -67,31 +67,25 @@ package org.osflash.signals
 		}
 
 		[Test(expects="ArgumentError")]
-		public function signal_with_eventClass_adding_listener_without_args_should_throw_ArgumentError():void
-		{
-			messaged.add(function():void {});
-		}
-
-		[Test(expects="ArgumentError")]
 		public function constructing_signal_with_non_class_should_throw_ArgumentError():void
 		{
 			new Signal(new Date());
 		}
-		
+
 		[Test(expects="ArgumentError")]
 		public function constructing_signal_with_two_nulls_should_throw_ArgumentError():void
 		{
 			new Signal(null, null);
 		}
-		
+
 		[Test(expects="ArgumentError")]
 		public function constructing_signal_with_class_and_non_class_should_throw_ArgumentError():void
 		{
 			new Signal(Date, 42);
 		}
 
-		[Test(expects="ArgumentError")]
-		public function add_listener_with_fewer_args_than_valueClasses_should_throw_ArgumentError():void
+		[Test]
+		public function add_listener_with_fewer_args_than_valueClasses():void
 		{
 			var signal:Signal = new Signal(Date, Array);
 			signal.add( function(date:Date):void { } );
@@ -108,17 +102,17 @@ import org.osflash.signals.events.IEvent;
 class MessageEvent extends GenericEvent implements IEvent
 {
 	public var message:String;
-	
+
 	public function MessageEvent(message:String)
 	{
 		super();
 		this.message = message;
 	}
-	
+
 	override public function clone():IEvent
 	{
 		return new MessageEvent(message);
 	}
-	
+
 }
 
