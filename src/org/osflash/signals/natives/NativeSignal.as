@@ -168,7 +168,7 @@ package org.osflash.signals.natives
 				
 			if (event.type != eventType)
 				throw new ArgumentError('Event object has incorrect type. Expected <'+eventType+'> but was <'+event.type+'>.');
-
+			
 			return eventDispatcher.dispatchEvent(event);
 		}
 		
