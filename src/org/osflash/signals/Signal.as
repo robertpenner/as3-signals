@@ -85,6 +85,7 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function remove(listener:Function):Function
 		{
+			// How do we get the removed binding?
 			bindings = bindings.filterNot(listener);
 
 			if (!bindings.nonEmpty) existing = null;

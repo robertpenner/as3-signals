@@ -143,7 +143,10 @@ package org.osflash.signals
 
 			var first:SignalBindingList = null;
 			var last:SignalBindingList = null;
-
+			
+			// Make sure we disembody the signalbinding, otherwise the binding will have a reference
+			// to the signal.
+			
 			while (p.nonEmpty)
 			{
 				if (p.head.listener != listener)
@@ -161,7 +164,9 @@ package org.osflash.signals
 					// No need to check if first == null and last != null
 					// since we check already at the top if listener == head.listener
 					//
-
+					
+					
+					
 					last.tail = p.tail;
 					return first;
 				}
