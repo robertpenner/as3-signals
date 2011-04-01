@@ -176,10 +176,10 @@ package org.osflash.signals
 			}
 			
 			//
-			// Return null, as you're adding the same listener twice. We could possibly have a way
-			// to locate the binding by listener?
+			// TODO : Question about returning null, as you're adding the same listener twice. We 
+			// could possibly have a way to locate the binding by listener?
 			//
-			return null;
+			return binding;
 		}
 
 		protected function verifyRegistrationOf(listener: Function,  once: Boolean): Boolean

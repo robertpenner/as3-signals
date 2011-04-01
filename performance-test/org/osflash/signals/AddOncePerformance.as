@@ -41,7 +41,7 @@ package org.osflash.signals
 			_out1.x = 0x200;
 			_out1.y = 0x20;
 
-			_s = new DeluxeSignal();
+			_s = new Signal();
 
 			addChild(_out0);
 			addChild(_out1);
