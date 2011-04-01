@@ -125,7 +125,7 @@ package org.osflash.signals
 		{
 			if (null == value) throw new ArgumentError(
 					'Given listener is null.\nDid you want to call pause() instead?');
-
+			
 			verifyListener(value);
 			_listener = value;
 		}

@@ -30,6 +30,44 @@ package org.osflash.signals
 			completed = null;
 		}
 		
+		protected function checkGenericEvent(e:GenericEvent):void
+		{
+			assertNull('event.signal is not set by Signal', e.signal);
+			assertNull('event.target is not set by Signal', e.target);
+		}
+		
+		protected function newEmptyHandler():Function
+		{
+			return function():void {};
+		}
+		
+		protected function failIfCalled():void
+		{
+			fail('This event handler should not have been called.');
+		}
+		
+		//////
+		
+		[Test]
+		public function add_listener_and_verify_once_is_false() : void
+		{
+			var listener : Function = newEmptyHandler();
+			var binding : ISignalBinding = completed.add(listener);
+			
+			assertTrue('Binding once is false', binding.once == false);
+		}
+		
+		//////
+		
+		[Test]
+		public function add_listener_and_verify_priority_is_zero() : void
+		{
+			var listener : Function = newEmptyHandler();
+			var binding : ISignalBinding = completed.add(listener);
+			
+			assertTrue('Binding priority is zero', binding.priority == 0);
+		}
+		
 		//////
 		
 		[Test]
@@ -40,23 +78,7 @@ package org.osflash.signals
 			
 			assertTrue('Binding listener is the same as the listener', binding.listener === listener);
 		}
-		
-		protected function checkGenericEvent(e:GenericEvent):void
-		{
-			assertNull('event.signal is not set by Signal', e.signal);
-			assertNull('event.target is not set by Signal', e.target);
-		}
-		
-		protected function newEmptyHandler():Function
-		{
-			return function(e:*):void {};
-		}
-		
-		protected function failIfCalled():void
-		{
-			fail('This event handler should not have been called.');
-		}
-		
+				
 		//////
 		
 		[Test]
@@ -143,6 +165,154 @@ package org.osflash.signals
 			binding.resume();
 			
 			completed.dispatch(new GenericEvent());
+		}
+		
+		//////
+		
+		[Test]
+		public function add_listener_switch_pause_and_resume_on_binding_should_not_dispatch() : void
+		{
+			var binding : ISignalBinding = completed.add(failIfCalled);
+			binding.pause();
+			binding.resume();
+			binding.pause();
+			
+			completed.dispatch();			
+		}
+		
+		//////
+		
+		[Test]
+		public function add_listener_then_dispatch_change_listener_on_binding_should_dispatch_second_listener() : void
+		{
+			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			
+			completed.dispatch();
+			
+			binding.listener = newEmptyHandler();
+			
+			completed.dispatch();			
+		}
+		
+		//////
+		
+		[Test]
+		public function add_listener_then_dispatch_change_listener_on_binding_then_pause_should_not_dispatch_second_listener() : void
+		{
+			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			
+			completed.dispatch();
+			
+			binding.listener = failIfCalled;
+			binding.pause();
+			
+			completed.dispatch();			
+		}
+		
+		//////
+		
+		[Test]
+		public function add_listener_then_change_listener_then_switch_back_and_then_should_dispatch() : void
+		{
+			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			
+			completed.dispatch();
+			
+			var listener : Function = binding.listener;
+			
+			binding.listener = failIfCalled;
+			binding.listener = listener;
+			
+			completed.dispatch();
+		}
+		
+		//////
+		
+		[Test(expects="ArgumentError")]
+		public function add_listener_then_set_listener_to_null_should_throw_ArgumentError() : void
+		{
+			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			binding.listener = null;
+		}
+		
+		//////
+		
+		[Test]
+		public function add_listener_and_call_execute0_on_binding_should_call_listener() : void
+		{
+			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			binding.execute0(); 
+		}
+		
+		//////
+		
+		[Test]
+		public function add_listener_twice_and_call_execute0_on_binding_should_call_listener_and_not_on_signal_listeners() : void
+		{
+			completed.add(failIfCalled);
+			
+			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			binding.execute0(); 
+		}
+		
+		//////
+		
+		[Test]
+		public function add_listener_and_call_execute1_on_binding_should_call_listener() : void
+		{
+			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			binding.execute1(1); 
+		}
+		
+		//////
+		
+		[Test]
+		public function add_listener_twice_and_call_execute1_on_binding_should_call_listener_and_not_on_signal_listeners() : void
+		{
+			completed.add(failIfCalled);
+			
+			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			binding.execute1(1); 
+		}
+		
+		//////
+		
+		[Test]
+		public function add_listener_and_call_execute2_on_binding_should_call_listener() : void
+		{
+			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			binding.execute2(1, 2); 
+		}
+		
+		//////
+		
+		[Test]
+		public function add_listener_twice_and_call_execute2_on_binding_should_call_listener_and_not_on_signal_listeners() : void
+		{
+			completed.add(failIfCalled);
+			
+			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			binding.execute2(1, 2); 
+		}
+		
+		//////
+		
+		[Test]
+		public function add_listener_and_call_execute_on_binding_should_call_listener() : void
+		{
+			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			binding.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
+		}
+		
+		//////
+		
+		[Test]
+		public function add_listener_twice_and_call_execute_on_binding_should_call_listener_and_not_on_signal_listeners() : void
+		{
+			completed.add(failIfCalled);
+			
+			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			binding.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
 		}
 	}
 }
