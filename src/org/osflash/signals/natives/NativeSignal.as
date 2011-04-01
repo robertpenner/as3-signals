@@ -193,7 +193,11 @@ package org.osflash.signals.natives
 				return binding;
 			}
 			
-			return bindings.find(listener);
+			//
+			// Return null, as you're adding the same listener twice. We could possibly have a way
+			// to locate the binding by listener?
+			//
+			return null;
 		}
 
 		protected function verifyRegistrationOf(listener: Function,  once: Boolean): Boolean
