@@ -58,6 +58,29 @@ package org.osflash.signals
 			completed.add(async.add(checkGenericEvent, 10));
 			completed.dispatch(new GenericEvent());
 		}
+		
+		//////
+		
+		[Test]
+		public function add_the_same_listener_twice():void
+		{
+			var listener : Function = checkGenericEvent;
+			
+			completed.add(listener);
+			completed.add(listener);
+		}
+		
+		//////
+		
+		[Test]
+		public function add_the_same_listener_twice_and_dispatch_should_call_both():void
+		{
+			var listener : Function = checkGenericEvent;
+			
+			completed.add(listener);
+			completed.add(listener);
+			completed.dispatch(new GenericEvent());
+		}
 
 		//////
 
