@@ -281,18 +281,18 @@ package org.osflash.signals.natives
 		[Test]
 		public function can_use_anonymous_listeners():void
 		{
-			var listeners:Array = [];
+			var bindings:Array = [];
 			
 			for ( var i:int = 0; i < 100;  i++ )
 			{
-				listeners.push(clicked.add(function(e:MouseEvent):void{}));
+				bindings.push(clicked.add(function(e:MouseEvent):void{}));
 			}
 			
 			assertTrue("there should be 100 listeners", clicked.numListeners == 100);
 			
-			for each( var fnt:Function in listeners )
+			for each( var binding:ISignalBinding in bindings )
 			{
-				clicked.remove(fnt);
+				clicked.remove(binding.listener);
 			}
 			assertTrue("all anonymous listeners removed", clicked.numListeners == 0);
 		}
@@ -301,18 +301,18 @@ package org.osflash.signals.natives
 		[Test]
 		public function can_use_anonymous_listeners_in_addOnce():void
 		{
-			var listeners:Array = [];
+			var bindings:Array = [];
 			
 			for ( var i:int = 0; i < 100;  i++ )
 			{
-				listeners.push(clicked.addOnce(function(e:MouseEvent):void{}));
+				bindings.push(clicked.addOnce(function(e:MouseEvent):void{}));
 			}
 			
 			assertTrue("there should be 100 listeners", clicked.numListeners == 100);
 			
-			for each( var fnt:Function in listeners )
+			for each( var binding:ISignalBinding in bindings )
 			{
-				clicked.remove(fnt);
+				clicked.remove(binding.listener);
 			}
 			assertTrue("all anonymous listeners removed", clicked.numListeners == 0);
 		}
@@ -321,7 +321,7 @@ package org.osflash.signals.natives
 		[Test]
 		public function removed_listener_should_be_returned():void
 		{
-			var binding:ISignalBinding = clicked.add(function():void{});
+			var binding:ISignalBinding = clicked.add(function(e:MouseEvent):void{});
 			var listener:Function = binding.listener;
 			
 			assertTrue("Listener is returned", listener == clicked.remove(listener));

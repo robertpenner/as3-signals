@@ -86,18 +86,18 @@ package org.osflash.signals
 		[Test]
 		public function can_use_anonymous_listeners():void
 		{
-			var listeners:Array = [];
+			var bindings:Array = [];
 			
 			for ( var i:int = 0; i < 100;  i++ )
 			{
-				listeners.push(completed.add(function():void{}));
+				bindings.push(completed.add(function():void{}));
 			}
 			
 			assertEquals("there should be 100 listeners", 100, completed.numListeners);
 			
-			for each( var fnt:Function in listeners )
+			for each( var binding:ISignalBinding in bindings )
 			{
-				completed.remove(fnt);
+				completed.remove(binding.listener);
 			}
 
 			assertEquals("all anonymous listeners removed", 0, completed.numListeners);
@@ -107,18 +107,18 @@ package org.osflash.signals
 		[Test]
 		public function can_use_anonymous_listeners_in_addOnce():void
 		{
-			var listeners:Array = [];
+			var bindings:Array = [];
 			
 			for ( var i:int = 0; i < 100;  i++ )
 			{
-				listeners.push(completed.addOnce(function():void{}));
+				bindings.push(completed.addOnce(function():void{}));
 			}
 			
 			assertEquals("there should be 100 listeners", 100, completed.numListeners);
 			
-			for each( var fnt:Function in listeners )
+			for each( var binding:ISignalBinding in bindings )
 			{
-				completed.remove(fnt);
+				completed.remove(binding.listener);
 			}
 
 			assertEquals("all anonymous listeners removed", 0, completed.numListeners);
