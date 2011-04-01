@@ -2,6 +2,7 @@ package org.osflash.signals
 {
 	import asunit.asserts.assertNull;
 	import asunit.asserts.assertTrue;
+	import asunit.asserts.fail;
 	import asunit.framework.IAsync;
 
 	import org.osflash.signals.events.GenericEvent;
@@ -49,6 +50,11 @@ package org.osflash.signals
 		protected function newEmptyHandler():Function
 		{
 			return function(e:*):void {};
+		}
+		
+		protected function failIfCalled():void
+		{
+			fail('This event handler should not have been called.');
 		}
 		
 		//////
@@ -114,6 +120,29 @@ package org.osflash.signals
 			binding0.remove();
 			
 			assertTrue('Number of listeners should be 0', completed.numListeners == 0);
+		}
+		
+		//////
+		
+		[Test]
+		public function add_listener_pause_on_binding_should_not_dispatch() : void
+		{
+			var binding : ISignalBinding = completed.add(failIfCalled);
+			binding.pause();
+			
+			completed.dispatch();
+		}
+		
+		//////
+		
+		[Test]
+		public function add_listener_pause_then_resume_on_binding_should_dispatch() : void
+		{
+			var binding : ISignalBinding = completed.add(async.add(checkGenericEvent, 10));
+			binding.pause();
+			binding.resume();
+			
+			completed.dispatch(new GenericEvent());
 		}
 	}
 }
