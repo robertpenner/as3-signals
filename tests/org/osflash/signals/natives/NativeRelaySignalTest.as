@@ -4,6 +4,7 @@ package org.osflash.signals.natives
 	import asunit.framework.IAsync;
 
 	import org.osflash.signals.ISignal;
+	import org.osflash.signals.ISignalBinding;
 
 	import flash.display.Sprite;
 	import flash.events.EventDispatcher;
@@ -199,7 +200,8 @@ package org.osflash.signals.natives
 		[Test]
 		public function removed_listener_should_be_returned():void
 		{
-			var listener:Function = clicked.add(function(e:MouseEvent):void{});
+			var binding:ISignalBinding = clicked.add(function():void{});
+			var listener:Function = binding.listener;
 			
 			assertTrue("Listener is returned", listener == clicked.remove(listener));
 		}

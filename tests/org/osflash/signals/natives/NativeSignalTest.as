@@ -2,15 +2,16 @@ package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
 	import asunit.framework.IAsync;
-	import flash.events.EventDispatcher;
-	import flash.events.TimerEvent;
 
 	import org.osflash.signals.IPrioritySignal;
+	import org.osflash.signals.ISignalBinding;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
 
 	public class NativeSignalTest
 	{
@@ -320,7 +321,8 @@ package org.osflash.signals.natives
 		[Test]
 		public function removed_listener_should_be_returned():void
 		{
-			var listener:Function = clicked.add(function(e:MouseEvent):void{});
+			var binding:ISignalBinding = clicked.add(function():void{});
+			var listener:Function = binding.listener;
 			
 			assertTrue("Listener is returned", listener == clicked.remove(listener));
 		}
