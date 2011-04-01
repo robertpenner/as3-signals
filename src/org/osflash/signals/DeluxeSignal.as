@@ -61,27 +61,25 @@ package org.osflash.signals
 		}
 
 		// TODO: @throws
-		override public function add(listener : Function) : Function
+		override public function add(listener : Function) : ISignalBinding
 		{
 			return addWithPriority(listener);
 		}
 
-		public function addWithPriority(listener : Function, priority : int = 0) : Function
+		public function addWithPriority(listener : Function, priority : int = 0) : ISignalBinding
 		{
-			registerListenerWithPriority(listener, false, priority);
-			return listener;
+			return registerListenerWithPriority(listener, false, priority);
 		}
 
-		override public function addOnce(listener : Function) : Function
+		override public function addOnce(listener : Function) : ISignalBinding
 		{
 			return addOnceWithPriority(listener);
 		}
 
 		/** @inheritDoc */
-		public function addOnceWithPriority(listener : Function, priority : int = 0) : Function
+		public function addOnceWithPriority(listener : Function, priority : int = 0) : ISignalBinding
 		{
-			registerListenerWithPriority(listener, true, priority);
-			return listener;
+			return registerListenerWithPriority(listener, true, priority);
 		}
 
 		/** @inheritDoc */
@@ -195,21 +193,26 @@ package org.osflash.signals
 			}
 		}
 
-		override protected function registerListener(listener : Function, once : Boolean = false) : void
+		override protected function registerListener(listener : Function, once : Boolean = false) : ISignalBinding
 		{
-			registerListenerWithPriority(listener, once);
+			return registerListenerWithPriority(listener, once);
 		}
 
-		protected function registerListenerWithPriority(listener : Function, once : Boolean = false, priority : int = 0) : void
+		protected function registerListenerWithPriority(listener : Function, once : Boolean = false, priority : int = 0) : ISignalBinding
 		{
 			if (!bindings.nonEmpty || verifyRegistrationOf(listener, once))
 			{
-				bindings = bindings.insertWithPriority(new SignalBinding(listener, once, this, priority));
+				const binding : ISignalBinding = new SignalBinding(listener, once, this, priority);
+				bindings = bindings.insertWithPriority(binding);
 
 				if (null == existing) existing = new Dictionary();
 
 				existing[listener] = true;
+				
+				return binding;
 			}
+			
+			return bindings.find(listener);
 		}
 	}
 }

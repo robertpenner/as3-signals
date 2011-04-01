@@ -92,30 +92,28 @@ package org.osflash.signals.natives
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function):Function
+		public function add(listener:Function):ISignalBinding
 		{
 			return addWithPriority(listener);
 		}
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function addWithPriority(listener:Function, priority:int = 0):Function
+		public function addWithPriority(listener:Function, priority:int = 0):ISignalBinding
 		{
-			registerListener(listener, false, priority);
-			return listener;
+			return registerListener(listener, false, priority);
 		}
 		
 		/** @inheritDoc */
-		public function addOnce(listener:Function):Function
+		public function addOnce(listener:Function):ISignalBinding
 		{
 			return addOnceWithPriority(listener);
 		}
 		
 		/** @inheritDoc */
-		public function addOnceWithPriority(listener:Function, priority:int = 0):Function
+		public function addOnceWithPriority(listener:Function, priority:int = 0):ISignalBinding
 		{
-			registerListener(listener, true, priority);
-			return listener;
+			return registerListener(listener, true, priority);
 		}
 		
 		/** @inheritDoc */
@@ -174,14 +172,15 @@ package org.osflash.signals.natives
 			return eventDispatcher.dispatchEvent(event);
 		}
 		
-		protected function registerListener(listener:Function, once:Boolean = false, priority:int = 0):void
+		protected function registerListener(listener:Function, once:Boolean = false, priority:int = 0):ISignalBinding
 		{
 			if (listener.length != 1)
 				throw new ArgumentError('Listener for native event must declare exactly 1 argument.');
 				
 			if (!bindings.nonEmpty || verifyRegistrationOf(listener, once))
 			{
-				bindings = bindings.insertWithPriority(new SignalBinding(listener, once, this, priority));
+				const binding : ISignalBinding = new SignalBinding(listener, once, this, priority);
+				bindings = bindings.insertWithPriority(binding);
 
 				if (null == existing)
 				{
@@ -190,7 +189,11 @@ package org.osflash.signals.natives
 				}
 
 				existing[listener] = true;
+				
+				return binding;
 			}
+			
+			return bindings.find(listener);
 		}
 
 		protected function verifyRegistrationOf(listener: Function,  once: Boolean): Boolean

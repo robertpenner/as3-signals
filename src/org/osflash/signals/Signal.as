@@ -71,17 +71,15 @@ package org.osflash.signals
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function):Function
+		public function add(listener:Function):ISignalBinding
 		{
-			registerListener(listener);
-			return listener;
+			return registerListener(listener);
 		}
 		
 		/** @inheritDoc */
-		public function addOnce(listener:Function):Function
+		public function addOnce(listener:Function):ISignalBinding
 		{
-			registerListener(listener, true);
-			return listener;
+			return registerListener(listener, true);
 		}
 		
 		/** @inheritDoc */
@@ -181,16 +179,24 @@ package org.osflash.signals
 			}
 		}
 
-		protected function registerListener(listener:Function, once:Boolean = false):void
+		protected function registerListener(listener:Function, once:Boolean = false):ISignalBinding
 		{
 			if (!bindings.nonEmpty || verifyRegistrationOf(listener, once))
 			{
-				bindings = new SignalBindingList(new SignalBinding(listener, once, this), bindings);
+				const binding : ISignalBinding = new SignalBinding(listener, once, this);
+				bindings = new SignalBindingList(binding, bindings);
 
 				if (null == existing) existing = new Dictionary();
 
 				existing[listener] = true;
+				
+				return binding;
 			}
+			
+			//
+			// This is pretty expensive, we could possibly send null back?
+			//
+			return bindings.find(listener);
 		}
 
 		protected function verifyRegistrationOf(listener: Function,  once: Boolean): Boolean

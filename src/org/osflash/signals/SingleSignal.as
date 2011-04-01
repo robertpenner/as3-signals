@@ -67,17 +67,15 @@ package org.osflash.signals
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function):Function
+		public function add(listener:Function):ISignalBinding
 		{
-			registerListener(listener);
-			return listener;
+			return registerListener(listener);
 		}
 		
 		/** @inheritDoc */
-		public function addOnce(listener:Function):Function
+		public function addOnce(listener:Function):ISignalBinding
 		{
-			registerListener(listener, true);
-			return listener;
+			return registerListener(listener, true);
 		}
 		
 		/** @inheritDoc */
@@ -159,7 +157,7 @@ package org.osflash.signals
 			}
 		}
 		
-		protected function registerListener(listener:Function, once:Boolean = false):void
+		protected function registerListener(listener:Function, once:Boolean = false):ISignalBinding
 		{
 			if (null != binding) 
 			{
@@ -174,6 +172,8 @@ package org.osflash.signals
 			{
 				binding = new SignalBinding(listener, once, this);
 			}
+			
+			return binding;
 		}
 
 		protected function verifyRegistrationOf(listener: Function,  once: Boolean): Boolean

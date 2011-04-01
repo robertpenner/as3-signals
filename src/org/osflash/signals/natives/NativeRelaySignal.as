@@ -1,5 +1,6 @@
 package org.osflash.signals.natives
 {
+	import org.osflash.signals.ISignalBinding;
 	import org.osflash.signals.DeluxeSignal;
 	import org.osflash.signals.SignalBindingList;
 
@@ -68,33 +69,33 @@ package org.osflash.signals.natives
 		}
 		
 		/** @inheritDoc */
-		override public function addWithPriority(listener:Function, priority:int = 0):Function
+		override public function addWithPriority(listener:Function, priority:int = 0):ISignalBinding
 		{
 			const nonEmptyBefore: Boolean = bindings.nonEmpty;
 			
 			// Try to add first because it may throw an exception.
-			super.addWithPriority(listener);
+			const binding : ISignalBinding = super.addWithPriority(listener);
 			// Account for cases where the same listener is added twice.
 			if (nonEmptyBefore != bindings.nonEmpty)
 				IEventDispatcher(target).addEventListener(eventType, onNativeEvent, false, priority);
 			
-			return listener;
+			return binding;
 		}
 		
 		/** @inheritDoc */
-		override public function addOnceWithPriority(listener:Function, priority:int = 0):Function
+		override public function addOnceWithPriority(listener:Function, priority:int = 0):ISignalBinding
 		{
 			if (null == target) throw new ArgumentError('Target object expected.');
 			
 			const nonEmptyBefore: Boolean = bindings.nonEmpty;
 
 			// Try to add first because it may throw an exception.
-			super.addOnceWithPriority(listener);
+			const binding : ISignalBinding = super.addOnceWithPriority(listener);
 			// Account for cases where the same listener is added twice.
 			if (nonEmptyBefore != bindings.nonEmpty)
 				IEventDispatcher(target).addEventListener(eventType, onNativeEvent, false, priority);
 			
-			return listener;
+			return binding;
 		}
 		
 		/** @inheritDoc */
