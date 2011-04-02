@@ -197,13 +197,25 @@ package org.osflash.signals.natives
 		}
 		
 		//////
+		
+		[Test]
+		public function removed_listener_should_return_binding():void
+		{
+			var listener:Function = function(e:MouseEvent):void{};
+			var binding:ISignalBinding = clicked.add(listener);
+			
+			assertTrue("Binding is returned", binding == clicked.remove(listener));
+		}
+		
+		//////
+		
 		[Test]
 		public function removed_listener_should_be_returned():void
 		{
 			var binding:ISignalBinding = clicked.add(function(e:MouseEvent):void{});
 			var listener:Function = binding.listener;
 			
-			assertTrue("Listener is returned", listener == clicked.remove(listener));
+			assertTrue("Binding is returned", binding == clicked.remove(listener));
 		}
 	}
 }

@@ -281,13 +281,25 @@ package org.osflash.signals
 		}
 		
 		//////
+		
+		[Test]
+		public function removed_listener_should_return_binding():void
+		{
+			var listener:Function = function():void{};
+			var binding:ISignalBinding = completed.add(listener);
+			
+			assertTrue("Binding is returned", binding == completed.remove(listener));
+		}
+		
+		//////
+		
 		[Test]
 		public function removed_listener_should_be_returned():void
 		{
 			var binding:ISignalBinding = completed.add(function():void{});
 			var listener:Function = binding.listener;
 			
-			assertTrue("Listener is returned", listener == completed.remove(listener));
+			assertTrue("Binding is returned", binding == completed.remove(listener));
 		}
 	}
 }
