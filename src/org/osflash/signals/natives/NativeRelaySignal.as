@@ -99,15 +99,15 @@ package org.osflash.signals.natives
 		}
 		
 		/** @inheritDoc */
-		override public function remove(listener:Function):Function
+		override public function remove(listener:Function):ISignalBinding
 		{
 			const nonEmptyBefore: Boolean = bindings.nonEmpty;
 
-			super.remove(listener);
+			const binding :ISignalBinding = super.remove(listener);
 
 			if (nonEmptyBefore != bindings.nonEmpty) IEventDispatcher(target).removeEventListener(eventType, onNativeEvent);
 
-			return listener;
+			return binding;
 		}
 
 		/**

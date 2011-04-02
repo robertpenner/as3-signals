@@ -117,8 +117,9 @@ package org.osflash.signals.natives
 		}
 		
 		/** @inheritDoc */
-		public function remove(listener:Function):Function
+		public function remove(listener:Function):ISignalBinding
 		{
+			const binding : ISignalBinding = bindings.find(listener);
 			bindings = bindings.filterNot(listener);
 
 			if (!bindings.nonEmpty)
@@ -130,7 +131,7 @@ package org.osflash.signals.natives
 				}
 			}
 			else delete existing[listener];
-			return listener;
+			return binding;
 		}
 		
 		/** @inheritDoc */

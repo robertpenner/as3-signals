@@ -83,15 +83,17 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function remove(listener:Function):Function
+		public function remove(listener:Function):ISignalBinding
 		{
+			const binding : ISignalBinding = bindings.find(listener);
+			
 			// How do we get the removed binding?
 			bindings = bindings.filterNot(listener);
 
 			if (!bindings.nonEmpty) existing = null;
 			else delete existing[listener];
 
-			return listener;
+			return binding;
 		}
 		
 		/** @inheritDoc */

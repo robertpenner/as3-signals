@@ -79,14 +79,19 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function remove(listener:Function):Function
+		public function remove(listener:Function):ISignalBinding
 		{
 			if(binding && binding.listener == listener)
 			{
+				// This will need to be a clone I think
+				const bind : ISignalBinding = binding;
+				
 				binding = null;
+				
+				return bind;
 			}
 
-			return listener;
+			return null;
 		}
 		
 		/** @inheritDoc */
