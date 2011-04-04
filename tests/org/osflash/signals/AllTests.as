@@ -10,6 +10,7 @@ package org.osflash.signals
 	import org.osflash.signals.natives.NativeRelaySignalTest;
 	import org.osflash.signals.natives.NativeSignalBindingTest;
 	import org.osflash.signals.natives.NativeSignalTest;
+	import org.osflash.signals.natives.sets.NativeSignalSetTest;
 
 	[Suite]
 	public class AllTests
@@ -54,5 +55,7 @@ package org.osflash.signals
 		public var _SingleSignalDispatchNoArgsTest:SingleSignalDispatchNoArgsTest;
 		public var _SingleSignalDispatchNonEventTest:SingleSignalDispatchNonEventTest;
 		public var _SingleSignalBindingTest:SingleSignalBindingTest;
+		
+		public var _NativeSignalSetTest:NativeSignalSetTest;
 	}
 }

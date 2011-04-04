@@ -60,25 +60,19 @@ package org.osflash.signals.natives.sets
 		/**
 		 * Lazily instantiates a NativeSignal
 		 */
-		protected function getNativeSignal(eventType:String, eventClass:Class = null):NativeSignal 
+		public function getNativeSignal(eventType:String, eventClass:Class = null):NativeSignal 
 		{
+			if(null == eventType) throw new ArgumentError('eventType must not be null.');
+			
 			return _signals[eventType] ||= new NativeSignal(target, eventType, eventClass || Event);
-		}
-
-		/**
-		 * adds a INativeSignalOwner (e.g. NativeSignal) to the list of instantiated signals
-		 */
-		protected function addSignal(signal:INativeDispatcher):void 
-		{
-			_signals[signal.eventType] = signal;
 		}
 
 		/**
 		 * The current number of listeners for the signal.
 		 */
-		public function get numListeners():uint 
+		public function get numListeners():int 
 		{
-			var count:uint = 0;
+			var count:int = 0;
 			for each (var signal:INativeDispatcher in _signals) 
 			{
 				count += signal.numListeners;
