@@ -1,14 +1,13 @@
 package org.osflash.signals.natives
 {
+	import org.osflash.signals.ISignalBinding;
+	import org.osflash.signals.SignalBinding;
+	import org.osflash.signals.SignalBindingList;
+
 	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	import flash.utils.Dictionary;
-
-	import org.osflash.signals.IPrioritySignal;
-	import org.osflash.signals.ISignalBinding;
-	import org.osflash.signals.SignalBinding;
-	import org.osflash.signals.SignalBindingList;
 
 	/** 
 	 * Allows the eventClass to be set in MXML, e.g.
@@ -21,7 +20,7 @@ package org.osflash.signals.natives
 	 * A NativeSignal is essentially a mini-dispatcher locked to a specific event type and class.
 	 * It can become part of an interface.
 	 */
-	public class NativeSignal implements IPrioritySignal, INativeDispatcher
+	public class NativeSignal implements INativeDispatcher
 	{
 		protected var _eventDispatcher:IEventDispatcher;
 		protected var _eventType:String;

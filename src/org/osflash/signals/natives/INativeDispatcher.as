@@ -1,12 +1,13 @@
 package org.osflash.signals.natives
 {
+	import org.osflash.signals.IPrioritySignal;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 
 	/**
 	 * Similar to IDispatcher but using strong types specific to Flash's native event system.
 	 */
-	public interface INativeDispatcher
+	public interface INativeDispatcher extends IPrioritySignal
 	{
 		/**
 		 * The type of event permitted to be dispatched. Corresponds to flash.events.Event.type.
