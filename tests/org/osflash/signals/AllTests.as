@@ -10,6 +10,7 @@ package org.osflash.signals
 	import org.osflash.signals.natives.NativeRelaySignalTest;
 	import org.osflash.signals.natives.NativeSignalBindingTest;
 	import org.osflash.signals.natives.NativeSignalTest;
+	import org.osflash.signals.natives.sets.DisplayObjectSignalSetTest;
 	import org.osflash.signals.natives.sets.EventDispatcherSignalSetTest;
 	import org.osflash.signals.natives.sets.NativeSignalSetTest;
 
@@ -59,5 +60,6 @@ package org.osflash.signals
 		
 		public var _NativeSignalSetTest:NativeSignalSetTest;
 		public var _EventDispatcherSignalSetTest:EventDispatcherSignalSetTest;
+		public var _DisplayObjectSignalSetTest:DisplayObjectSignalSetTest;
 	}
 }
