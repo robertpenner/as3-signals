@@ -320,5 +320,78 @@ package org.osflash.signals.natives.sets
 			
 			sprite.dispatchEvent(new Event(Event.RENDER));
 		}
+		
+		//////
+		
+		[Test]
+		public function add_added_then_numListeners_should_be_one():void
+		{
+			signalSet.added.add(handleEvent);
+			assertTrue('Number of listeners should be 1', signalSet.numListeners == 1);
+		}
+		
+		//////
+		
+		[Test]
+		public function add_addedToStage_then_numListeners_should_be_one():void
+		{
+			signalSet.addedToStage.add(handleEvent);
+			assertTrue('Number of listeners should be 1', signalSet.numListeners == 1);
+		}
+		
+		//////
+		
+		[Test]
+		public function add_enterFrame_then_numListeners_should_be_one():void
+		{
+			signalSet.enterFrame.add(handleEvent);
+			assertTrue('Number of listeners should be 1', signalSet.numListeners == 1);
+		}
+		
+		//////
+		
+		[Test]
+		public function add_exitFrame_then_numListeners_should_be_one():void
+		{
+			signalSet.exitFrame.add(handleEvent);
+			assertTrue('Number of listeners should be 1', signalSet.numListeners == 1);
+		}
+		
+		//////
+		
+		[Test]
+		public function add_frameConstructed_then_numListeners_should_be_one():void
+		{
+			signalSet.frameConstructed.add(handleEvent);
+			assertTrue('Number of listeners should be 1', signalSet.numListeners == 1);
+		}
+		
+		//////
+		
+		[Test]
+		public function add_removed_then_numListeners_should_be_one():void
+		{
+			signalSet.removed.add(handleEvent);
+			assertTrue('Number of listeners should be 1', signalSet.numListeners == 1);
+		}
+		
+		//////
+		
+		[Test]
+		public function add_removedFromStage_then_numListeners_should_be_one():void
+		{
+			signalSet.removedFromStage.add(handleEvent);
+			assertTrue('Number of listeners should be 1', signalSet.numListeners == 1);
+		}
+		
+		//////
+		
+		[Test]
+		public function add_render_then_numListeners_should_be_one():void
+		{
+			signalSet.render.add(handleEvent);
+			assertTrue('Number of listeners should be 1', signalSet.numListeners == 1);
+		}
+		
 	}
 }
