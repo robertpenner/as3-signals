@@ -160,5 +160,165 @@ package org.osflash.signals.natives.sets
 		{
 			assertNotNull('Render NativeSignal should not be null', signalSet.render);
 		}
+		
+		//////
+		
+		[Test]
+		public function add_added_then_EventDispatcher_dispatch_should_call_signal_listener():void
+		{
+			signalSet.added.add(async.add(handleEvent));
+			sprite.dispatchEvent(new Event(Event.ADDED));
+		}
+		
+		//////
+		
+		[Test]
+		public function add_addedToStage_then_EventDispatcher_dispatch_should_call_signal_listener():void
+		{
+			signalSet.addedToStage.add(async.add(handleEvent));
+			sprite.dispatchEvent(new Event(Event.ADDED_TO_STAGE));
+		}
+		
+		//////
+		
+		[Test]
+		public function add_enterFrame_then_EventDispatcher_dispatch_should_call_signal_listener():void
+		{
+			signalSet.enterFrame.add(async.add(handleEvent));
+			sprite.dispatchEvent(new Event(Event.ENTER_FRAME));
+		}
+		
+		//////
+		
+		[Test]
+		public function add_exitFrame_then_EventDispatcher_dispatch_should_call_signal_listener():void
+		{
+			signalSet.exitFrame.add(async.add(handleEvent));
+			sprite.dispatchEvent(new Event(Event.EXIT_FRAME));
+		}
+		
+		//////
+		
+		[Test]
+		public function add_frameConstructed_then_EventDispatcher_dispatch_should_call_signal_listener():void
+		{
+			signalSet.frameConstructed.add(async.add(handleEvent));
+			sprite.dispatchEvent(new Event(Event.FRAME_CONSTRUCTED));
+		}
+		
+		//////
+		
+		[Test]
+		public function add_removed_then_EventDispatcher_dispatch_should_call_signal_listener():void
+		{
+			signalSet.removed.add(async.add(handleEvent));
+			sprite.dispatchEvent(new Event(Event.REMOVED));
+		}
+		
+		//////
+		
+		[Test]
+		public function add_removedFromStage_then_EventDispatcher_dispatch_should_call_signal_listener():void
+		{
+			signalSet.removedFromStage.add(async.add(handleEvent));
+			sprite.dispatchEvent(new Event(Event.REMOVED_FROM_STAGE));
+		}
+		
+		//////
+		
+		[Test]
+		public function add_render_then_EventDispatcher_dispatch_should_call_signal_listener():void
+		{
+			signalSet.render.add(async.add(handleEvent));
+			sprite.dispatchEvent(new Event(Event.RENDER));
+		}
+		
+		//////
+		
+		[Test]
+		public function add_added_then_pause_and_dispatch_should_not_call_signal_listener():void
+		{
+			const binding : ISignalBinding = signalSet.added.add(failIfCalled);
+			binding.pause();
+			
+			sprite.dispatchEvent(new Event(Event.ADDED));
+		}
+		
+		//////
+		
+		[Test]
+		public function add_addedToStage_then_pause_and_dispatch_should_not_call_signal_listener():void
+		{
+			const binding : ISignalBinding = signalSet.addedToStage.add(failIfCalled);
+			binding.pause();
+			
+			sprite.dispatchEvent(new Event(Event.ADDED_TO_STAGE));
+		}
+		
+		//////
+		
+		[Test]
+		public function add_enterFrame_then_pause_and_dispatch_should_not_call_signal_listener():void
+		{
+			const binding : ISignalBinding = signalSet.enterFrame.add(failIfCalled);
+			binding.pause();
+			
+			sprite.dispatchEvent(new Event(Event.ENTER_FRAME));
+		}
+		
+		//////
+		
+		[Test]
+		public function add_exitFrame_then_pause_and_dispatch_should_not_call_signal_listener():void
+		{
+			const binding : ISignalBinding = signalSet.exitFrame.add(failIfCalled);
+			binding.pause();
+			
+			sprite.dispatchEvent(new Event(Event.EXIT_FRAME));
+		}
+		
+		//////
+		
+		[Test]
+		public function add_frameConstructed_then_pause_and_dispatch_should_not_call_signal_listener():void
+		{
+			const binding : ISignalBinding = signalSet.frameConstructed.add(failIfCalled);
+			binding.pause();
+			
+			sprite.dispatchEvent(new Event(Event.FRAME_CONSTRUCTED));
+		}
+		
+		//////
+		
+		[Test]
+		public function add_removed_then_pause_and_dispatch_should_not_call_signal_listener():void
+		{
+			const binding : ISignalBinding = signalSet.removed.add(failIfCalled);
+			binding.pause();
+			
+			sprite.dispatchEvent(new Event(Event.REMOVED));
+		}
+		
+		//////
+		
+		[Test]
+		public function add_removedFromStage_then_pause_and_dispatch_should_not_call_signal_listener():void
+		{
+			const binding : ISignalBinding = signalSet.removedFromStage.add(failIfCalled);
+			binding.pause();
+			
+			sprite.dispatchEvent(new Event(Event.REMOVED_FROM_STAGE));
+		}
+		
+		//////
+		
+		[Test]
+		public function add_render_then_pause_and_dispatch_should_not_call_signal_listener():void
+		{
+			const binding : ISignalBinding = signalSet.render.add(failIfCalled);
+			binding.pause();
+			
+			sprite.dispatchEvent(new Event(Event.RENDER));
+		}
 	}
 }
