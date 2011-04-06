@@ -393,5 +393,62 @@ package org.osflash.signals.natives.sets
 			assertTrue('Number of listeners should be 1', signalSet.numListeners == 1);
 		}
 		
+		[Test]
+		public function add_all_signals_then_numListeners_should_be_ten():void
+		{
+			signalSet.activate.add(handleEvent);
+			signalSet.deactivate.add(handleEvent);
+			
+			signalSet.added.add(handleEvent);
+			signalSet.addedToStage.add(handleEvent);
+			signalSet.enterFrame.add(handleEvent);
+			signalSet.exitFrame.add(handleEvent);
+			signalSet.frameConstructed.add(handleEvent);
+			signalSet.removed.add(handleEvent);
+			signalSet.removedFromStage.add(handleEvent);
+			signalSet.render.add(handleEvent);
+			assertTrue('Number of listeners should be 10', signalSet.numListeners == 10);
+		}
+		
+		[Test]
+		public function add_all_signals_then_remove_from_two_and_numListeners_should_be_eight():void
+		{
+			signalSet.activate.add(handleEvent);
+			signalSet.deactivate.add(handleEvent);
+			
+			signalSet.added.add(handleEvent);
+			signalSet.addedToStage.add(handleEvent);
+			signalSet.enterFrame.add(handleEvent);
+			signalSet.exitFrame.add(handleEvent);
+			signalSet.frameConstructed.add(handleEvent);
+			signalSet.removed.add(handleEvent);
+			signalSet.removedFromStage.add(handleEvent);
+			signalSet.render.add(handleEvent);
+			
+			signalSet.addedToStage.removeAll();
+			signalSet.exitFrame.removeAll();
+			
+			assertTrue('Number of listeners should be 8', signalSet.numListeners == 8);
+		}
+		
+		[Test]
+		public function add_all_signals_then_removeAll_and_numListeners_should_be_zero():void
+		{
+			signalSet.activate.add(handleEvent);
+			signalSet.deactivate.add(handleEvent);
+			
+			signalSet.added.add(handleEvent);
+			signalSet.addedToStage.add(handleEvent);
+			signalSet.enterFrame.add(handleEvent);
+			signalSet.exitFrame.add(handleEvent);
+			signalSet.frameConstructed.add(handleEvent);
+			signalSet.removed.add(handleEvent);
+			signalSet.removedFromStage.add(handleEvent);
+			signalSet.render.add(handleEvent);
+			
+			signalSet.removeAll();
+			
+			assertTrue('Number of listeners should be 0', signalSet.numListeners == 0);
+		}
 	}
 }
