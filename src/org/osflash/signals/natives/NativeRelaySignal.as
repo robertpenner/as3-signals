@@ -177,7 +177,7 @@ package org.osflash.signals.natives
 		
 		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):ISignalBinding
 		{
-			if (!bindings.nonEmpty || verifyRegistrationOf(listener, once))
+			if (registrationPossible(listener, once))
 			{
 				const binding:ISignalBinding = new SignalBinding(listener, once, this, priority);
 				bindings = bindings.insertWithPriority(binding);

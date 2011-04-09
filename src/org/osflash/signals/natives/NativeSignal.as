@@ -167,12 +167,13 @@ package org.osflash.signals.natives
 		
 		protected function registerListener(listener:Function, once:Boolean = false, priority:int = 0):ISignalBinding
 		{
+			//TODO: Consider removing this check to allow ...args listeners.
 			if (listener.length != 1)
 				throw new ArgumentError('Listener for native event must declare exactly 1 argument.');
 				
-			if (!bindings.nonEmpty || verifyRegistrationOf(listener, once))
+			if (registrationPossible(listener, once))
 			{
-				const binding : ISignalBinding = new SignalBinding(listener, once, this, priority);
+				const binding:ISignalBinding = new SignalBinding(listener, once, this, priority);
 				bindings = bindings.insertWithPriority(binding);
 
 				if (null == existing)
@@ -186,16 +187,12 @@ package org.osflash.signals.natives
 				return binding;
 			}
 			
-			//
-			// TODO : Question about returning null, as you're adding the same listener twice. We 
-			// could possibly have a way to locate the binding by listener?
-			//
 			return bindings.find(listener);
 		}
 
-		protected function verifyRegistrationOf(listener: Function,  once: Boolean): Boolean
+		protected function registrationPossible(listener: Function,  once: Boolean): Boolean
 		{
-			if(!existing || !existing[listener]) return true;
+			if (!bindings.nonEmpty || !existing || !existing[listener]) return true;
 
 			const existingBinding:ISignalBinding = bindings.find(listener);
 

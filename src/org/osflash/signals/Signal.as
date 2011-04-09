@@ -184,55 +184,32 @@ package org.osflash.signals
 
 		protected function registerListener(listener:Function, once:Boolean = false):ISignalBinding
 		{
-			if (!bindings.nonEmpty || verifyRegistrationOf(listener, once))
+			if (registrationPossible(listener, once))
 			{
-				const binding : ISignalBinding = new SignalBinding(listener, once, this);
+				const binding:ISignalBinding = new SignalBinding(listener, once, this);
 				bindings = new SignalBindingList(binding, bindings);
-
-				if (null == existing) existing = new Dictionary();
-
-				existing[listener] = true;
-				
+				(existing ||= new Dictionary())[listener] = true;
 				return binding;
 			}
 			
-			//
-			// TODO : Question about returning null, as you're adding the same listener twice. We 
-			// could possibly have a way to locate the binding by listener?
-			//
 			return bindings.find(listener);
 		}
 
-		protected function verifyRegistrationOf(listener: Function,  once: Boolean): Boolean
+		protected function registrationPossible(listener:Function, once:Boolean):Boolean
 		{
-			if(!existing || !existing[listener]) return true;
+			if (!bindings.nonEmpty || !existing || !existing[listener]) return true;
 			
 			const existingBinding:ISignalBinding = bindings.find(listener);
+			if (!existingBinding) return true;
 
-			if (null != existingBinding)
+			if (existingBinding.once != once)
 			{
-				if (existingBinding.once != once)
-				{
-					//
-					// If the listener was previously added, definitely don't add it again.
-					// But throw an exception if their once value differs.
-					//
-
-					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
-				}
-
-				//
-				// Listener was already added.
-				//
-
-				return false;
+				// If the listener was previously added, definitely don't add it again.
+				// But throw an exception if their once values differ.
+				throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 			}
-
-			//
-			// This listener has not been added before.
-			//
 			
-			return true;
+			return false; // Listener was already registered.
 		}
 	}
 }

@@ -23,7 +23,7 @@ package org.osflash.signals
 	public class DeluxeSignal extends Signal implements IPrioritySignal
 	{
 
-		protected var _target : Object;
+		protected var _target:Object;
 
 		/**
 		 * Creates a DeluxeSignal instance to dispatch events on behalf of a target object.
@@ -37,23 +37,23 @@ package org.osflash.signals
 		 * NOTE: Subclasses cannot call super.apply(null, valueClasses),
 		 * but this constructor has logic to support super(valueClasses).
 		 */
-		public function DeluxeSignal(target : Object = null, ...valueClasses)
+		public function DeluxeSignal(target:Object = null, ...valueClasses)
 		{
 			_target = target;
 			
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
-			valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array) ? valueClasses[0] : valueClasses;
+			valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array) ? valueClasses[0]:valueClasses;
 			
 			super(valueClasses);
 		}
 
 		/** @inheritDoc */
-		public function get target() : Object
+		public function get target():Object
 		{
 			return _target;
 		}
 
-		public function set target(value : Object) : void
+		public function set target(value:Object):void
 		{
 			if (value == _target) return;
 			removeAll();
@@ -61,41 +61,41 @@ package org.osflash.signals
 		}
 
 		// TODO: @throws
-		override public function add(listener : Function) : ISignalBinding
+		override public function add(listener:Function):ISignalBinding
 		{
 			return addWithPriority(listener);
 		}
 
-		public function addWithPriority(listener : Function, priority : int = 0) : ISignalBinding
+		public function addWithPriority(listener:Function, priority:int = 0):ISignalBinding
 		{
 			return registerListenerWithPriority(listener, false, priority);
 		}
 
-		override public function addOnce(listener : Function) : ISignalBinding
+		override public function addOnce(listener:Function):ISignalBinding
 		{
 			return addOnceWithPriority(listener);
 		}
 
 		/** @inheritDoc */
-		public function addOnceWithPriority(listener : Function, priority : int = 0) : ISignalBinding
+		public function addOnceWithPriority(listener:Function, priority:int = 0):ISignalBinding
 		{
 			return registerListenerWithPriority(listener, true, priority);
 		}
 
 		/** @inheritDoc */
-		override public function dispatch(...valueObjects) : void
+		override public function dispatch(...valueObjects):void
 		{
 			//
 			// Validate value objects against pre-defined value classes.
 			//
 
-			var valueObject : Object;
-			var valueClass : Class;
+			var valueObject:Object;
+			var valueClass:Class;
 
-			const numValueClasses : int = _valueClasses.length;
-			const numValueObjects : int = valueObjects.length;
+			const numValueClasses:int = _valueClasses.length;
+			const numValueObjects:int = valueObjects.length;
 
-			for (var i : int = 0; i < numValueClasses; i++)
+			for (var i:int = 0; i < numValueClasses; i++)
 			{
 				valueObject = valueObjects[i];
 				valueClass = _valueClasses[i];
@@ -109,7 +109,7 @@ package org.osflash.signals
 			// Extract and clone event object if necessary.
 			//
 
-			var event : IEvent = valueObjects[0] as IEvent;
+			var event:IEvent = valueObjects[0] as IEvent;
 
 			if (event)
 			{
@@ -128,7 +128,7 @@ package org.osflash.signals
 			// Broadcast to listeners.
 			//
 
-			var bindingsToProcess : SignalBindingList = bindings;
+			var bindingsToProcess:SignalBindingList = bindings;
 
 			if (bindingsToProcess.nonEmpty)
 			{
@@ -142,7 +142,7 @@ package org.osflash.signals
 				}
 				else if (numValueObjects == 1)
 				{
-					const singleValue : Object = valueObjects[0];
+					const singleValue:Object = valueObjects[0];
 
 					while (bindingsToProcess.nonEmpty)
 					{
@@ -152,8 +152,8 @@ package org.osflash.signals
 				}
 				else if (numValueObjects == 2)
 				{
-					const value1 : Object = valueObjects[0];
-					const value2 : Object = valueObjects[1];
+					const value1:Object = valueObjects[0];
+					const value2:Object = valueObjects[1];
 
 					while (bindingsToProcess.nonEmpty)
 					{
@@ -177,7 +177,7 @@ package org.osflash.signals
 
 			if (!event || !event.bubbles) return;
 
-			var currentTarget : Object = target;
+			var currentTarget:Object = target;
 
 			while (currentTarget && currentTarget.hasOwnProperty("parent") && (currentTarget = currentTarget["parent"]))
 			{
@@ -193,16 +193,16 @@ package org.osflash.signals
 			}
 		}
 
-		override protected function registerListener(listener : Function, once : Boolean = false) : ISignalBinding
+		override protected function registerListener(listener:Function, once:Boolean = false):ISignalBinding
 		{
 			return registerListenerWithPriority(listener, once);
 		}
 
-		protected function registerListenerWithPriority(listener : Function, once : Boolean = false, priority : int = 0) : ISignalBinding
+		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):ISignalBinding
 		{
-			if (!bindings.nonEmpty || verifyRegistrationOf(listener, once))
+			if (registrationPossible(listener, once))
 			{
-				const binding : ISignalBinding = new SignalBinding(listener, once, this, priority);
+				const binding:ISignalBinding = new SignalBinding(listener, once, this, priority);
 				bindings = bindings.insertWithPriority(binding);
 
 				if (null == existing) existing = new Dictionary();
@@ -212,10 +212,6 @@ package org.osflash.signals
 				return binding;
 			}
 			
-			//
-			// TODO : Question about returning null, as you're adding the same listener twice. We 
-			// could possibly have a way to locate the binding by listener?
-			//
 			return bindings.find(listener);
 		}
 	}
