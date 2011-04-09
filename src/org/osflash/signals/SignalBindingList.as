@@ -140,26 +140,21 @@ package org.osflash.signals
 
 			// The first item wasn't a match so the filtered list will contain it.
 			const first:SignalBindingList = new SignalBindingList(head, NIL);
-			var current:SignalBindingList = this;
-			var q:SignalBindingList = null;
-			var previous:SignalBindingList = null;
-			do
+			var current:SignalBindingList = tail;
+			var previous:SignalBindingList = first;
+			
+			while (current.nonEmpty)
 			{
 				if (current.head.listener == listener)
 				{
 					// Splice out the current head.
 					previous.tail = current.tail;
-
 					return first;
 				}
 				
-				q = new SignalBindingList(current.head, NIL);
-				if (previous) previous.tail = q;
-				previous = q;
-
+				previous = previous.tail = new SignalBindingList(current.head, NIL);
 				current = current.tail;
 			}
-			while (current.nonEmpty)
 
 			// The listener was not found so this list is unchanged.
 			return this;
