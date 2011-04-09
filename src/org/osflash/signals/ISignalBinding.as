@@ -22,24 +22,21 @@ package org.osflash.signals
 		function set listener(value:Function):void;
 
 		/**
-		 * Whether or not this binding is destroyed after it has been used once.
+		 * Whether this binding is destroyed after it has been used once.
 		 */
 		function get once():Boolean;
 
 		/**
 		 * The priority of this binding.
 		 */
-		function get priority(): int;
-
+		function get priority():int;
+		
 		/**
-		 * Pauses this binding.
+		 * Whether the listener is called on execution. Defaults to true.
 		 */
-		function pause(): void;
-
-		/**
-		 * Resumes this binding if it has been paused before.
-		 */
-		function resume(): void;
+		function get enabled():Boolean;
+		
+		function set enabled(value:Boolean):void;
 
 		/**
 		 * Executes a listener of arity <code>n</code> where <code>n</code> is

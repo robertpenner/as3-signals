@@ -19,7 +19,7 @@ package org.osflash.signals
 		 * Private backing variable for the <code>paused</code> property.
 		 * @private
 		 */
-		private var _paused:Boolean;
+		private var _enabled:Boolean = true;
 
 		/**
 		 * Private backing variable for the <code>listener</code> property.
@@ -70,11 +70,9 @@ package org.osflash.signals
 		 */
 		public function execute(valueObjects:Array):void
 		{
-			if (!_paused)
-			{
-				if (_once) remove();
-				_listener.apply(null, valueObjects);
-			}
+			if (!_enabled) return;
+			if (_once) remove();
+			_listener.apply(null, valueObjects);
 		}
 
 		/**
@@ -82,11 +80,9 @@ package org.osflash.signals
 		 */
 		public function execute0():void
 		{
-			if (!_paused)
-			{
-				if (_once) remove();
-				_listener();
-			}
+			if (!_enabled) return;
+			if (_once) remove();
+			_listener();
 		}
 
 		/**
@@ -94,11 +90,9 @@ package org.osflash.signals
 		 */
 		public function execute1(value1:Object):void
 		{
-			if (!_paused)
-			{
-				if (_once) remove();
-				_listener(value1);
-			}
+			if (!_enabled) return;
+			if (_once) remove();
+			_listener(value1);
 		}
 
 		/**
@@ -106,11 +100,9 @@ package org.osflash.signals
 		 */
 		public function execute2(value1:Object, value2:Object):void
 		{
-			if (!_paused)
-			{
-				if (_once) remove();
-				_listener(value1, value2);
-			}
+			if (!_enabled) return;
+			if (_once) remove();
+			_listener(value1, value2);
 		}
 
 		/**
@@ -133,18 +125,12 @@ package org.osflash.signals
 		/**
 		 * @inheritDoc
 		 */
-		public function get once():Boolean
-		{
-			return _once;
-		}
+		public function get once():Boolean { return _once; }
 
 		/**
 		 * @inheritDoc
 		 */
-		public function get priority():int
-		{
-			return _priority;
-		}
+		public function get priority():int { return _priority; }
 
 		/**
 		 * Creates and returns the string representation of the current object.
@@ -153,37 +139,15 @@ package org.osflash.signals
 		 */
 		public function toString():String
 		{
-			return "[SignalBinding listener: "+_listener+", once: "+_once+", priority: "+_priority+", paused: "+_paused+"]";
+			return "[SignalBinding listener: "+_listener+", once: "+_once+", priority: "+_priority+", paused: "+_enabled+"]";
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		public function get paused():Boolean
-		{
-			return _paused;
-		}
+		public function get enabled():Boolean { return _enabled; }
 
-		public function set paused(value:Boolean):void
-		{
-			_paused = value;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function pause():void
-		{
-			_paused = true;
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function resume():void
-		{
-			_paused = false;
-		}
+		public function set enabled(value:Boolean):void	{ _enabled = value; }
 
 		/**
 		 * @inheritDoc
@@ -193,19 +157,19 @@ package org.osflash.signals
 			_signal.remove(_listener);
 		}
 
-		protected function verifyListener(listener: Function): void
+		protected function verifyListener(listener:Function): void
 		{
-			if(null == listener)
+			if (null == listener)
 			{
 				throw new ArgumentError('Given listener is null.');
 			}
 
-			if(null == _signal)
+			if (null == _signal)
 			{
 				throw new Error('Internal signal reference has not been set yet.');
 			}
 			
-			if(listener.length < _signal.valueClasses.length)
+			if (listener.length < _signal.valueClasses.length)
 			{
 				const argumentString:String = (listener.length == 1) ? 'argument' : 'arguments';
 

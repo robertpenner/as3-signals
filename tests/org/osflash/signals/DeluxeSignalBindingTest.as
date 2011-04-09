@@ -149,7 +149,7 @@ package org.osflash.signals
 		public function add_listener_pause_on_binding_should_not_dispatch() : void
 		{
 			var binding : ISignalBinding = completed.add(failIfCalled);
-			binding.pause();
+			binding.enabled = false;
 			
 			completed.dispatch();
 		}
@@ -160,8 +160,8 @@ package org.osflash.signals
 		public function add_listener_pause_then_resume_on_binding_should_dispatch() : void
 		{
 			var binding : ISignalBinding = completed.add(async.add(checkGenericEvent, 10));
-			binding.pause();
-			binding.resume();
+			binding.enabled = false;
+			binding.enabled = true;
 			
 			completed.dispatch(new GenericEvent());
 		}
@@ -172,9 +172,9 @@ package org.osflash.signals
 		public function add_listener_switch_pause_and_resume_on_binding_should_not_dispatch() : void
 		{
 			var binding : ISignalBinding = completed.add(failIfCalled);
-			binding.pause();
-			binding.resume();
-			binding.pause();
+			binding.enabled = false;
+			binding.enabled = true;
+			binding.enabled = false;
 			
 			completed.dispatch();			
 		}
@@ -203,7 +203,7 @@ package org.osflash.signals
 			completed.dispatch();
 			
 			binding.listener = failIfCalled;
-			binding.pause();
+			binding.enabled = false;
 			
 			completed.dispatch();			
 		}
@@ -418,7 +418,7 @@ package org.osflash.signals
 		public function addOnce_listener_pause_on_binding_should_not_dispatch() : void
 		{
 			var binding : ISignalBinding = completed.addOnce(failIfCalled);
-			binding.pause();
+			binding.enabled = false;
 			
 			completed.dispatch();
 		}
@@ -429,8 +429,8 @@ package org.osflash.signals
 		public function addOnce_listener_pause_then_resume_on_binding_should_dispatch() : void
 		{
 			var binding : ISignalBinding = completed.addOnce(async.add(checkGenericEvent, 10));
-			binding.pause();
-			binding.resume();
+			binding.enabled = false;
+			binding.enabled = true;
 			
 			completed.dispatch(new GenericEvent());
 		}
@@ -441,9 +441,9 @@ package org.osflash.signals
 		public function addOnce_listener_switch_pause_and_resume_on_binding_should_not_dispatch() : void
 		{
 			var binding : ISignalBinding = completed.addOnce(failIfCalled);
-			binding.pause();
-			binding.resume();
-			binding.pause();
+			binding.enabled = false;
+			binding.enabled = true;
+			binding.enabled = false;
 			
 			completed.dispatch();			
 		}
@@ -472,7 +472,7 @@ package org.osflash.signals
 			completed.dispatch();
 			
 			binding.listener = failIfCalled;
-			binding.pause();
+			binding.enabled = false;
 			
 			completed.dispatch();			
 		}

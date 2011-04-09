@@ -137,7 +137,7 @@ package org.osflash.signals.natives.sets
 		public function add_activate_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
 			const binding : ISignalBinding = signalSet.activate.add(failIfCalled);
-			binding.pause();
+			binding.enabled = false;
 			
 			sprite.dispatchEvent(new Event(Event.ACTIVATE));
 		}
@@ -148,7 +148,7 @@ package org.osflash.signals.natives.sets
 		public function add_deactivate_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
 			const binding : ISignalBinding = signalSet.deactivate.add(failIfCalled);
-			binding.pause();
+			binding.enabled = false;
 			
 			sprite.dispatchEvent(new Event(Event.DEACTIVATE));
 		}

@@ -48,10 +48,10 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_and_verify_once_is_false() : void
+		public function add_listener_and_verify_once_is_false():void
 		{
-			var listener : Function = newEmptyHandler();
-			var binding : ISignalBinding = completed.add(listener);
+			var listener:Function = newEmptyHandler();
+			var binding:ISignalBinding = completed.add(listener);
 			
 			assertTrue('Binding once is false', binding.once == false);
 		}
@@ -59,10 +59,10 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_and_verify_priority_is_zero() : void
+		public function add_listener_and_verify_priority_is_zero():void
 		{
-			var listener : Function = newEmptyHandler();
-			var binding : ISignalBinding = completed.add(listener);
+			var listener:Function = newEmptyHandler();
+			var binding:ISignalBinding = completed.add(listener);
 			
 			assertTrue('Binding priority is zero', binding.priority == 0);
 		}
@@ -70,10 +70,10 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_and_verify_binding_listener_is_same() : void
+		public function add_listener_and_verify_binding_listener_is_same():void
 		{
-			var listener : Function = newEmptyHandler();
-			var binding : ISignalBinding = completed.add(listener);
+			var listener:Function = newEmptyHandler();
+			var binding:ISignalBinding = completed.add(listener);
 			
 			assertTrue('Binding listener is the same as the listener', binding.listener === listener);
 		}
@@ -81,9 +81,9 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_and_remove_using_binding() : void
+		public function add_listener_and_remove_using_binding():void
 		{
-			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			var binding:ISignalBinding = completed.add(newEmptyHandler());
 			binding.remove();
 			
 			assertTrue('Number of listeners should be 0', completed.numListeners == 0);
@@ -92,10 +92,10 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_pause_on_binding_should_not_dispatch() : void
+		public function add_listener_pause_on_binding_should_not_dispatch():void
 		{
-			var binding : ISignalBinding = completed.add(failIfCalled);
-			binding.pause();
+			var binding:ISignalBinding = completed.add(failIfCalled);
+			binding.enabled = false;
 			
 			completed.dispatch();
 		}
@@ -103,11 +103,11 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_pause_then_resume_on_binding_should_dispatch() : void
+		public function add_listener_pause_then_resume_on_binding_should_dispatch():void
 		{
-			var binding : ISignalBinding = completed.add(async.add(checkGenericEvent, 10));
-			binding.pause();
-			binding.resume();
+			var binding:ISignalBinding = completed.add(async.add(checkGenericEvent, 10));
+			binding.enabled = false;
+			binding.enabled = true;
 			
 			completed.dispatch(new GenericEvent());
 		}
@@ -115,12 +115,12 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_switch_pause_and_resume_on_binding_should_not_dispatch() : void
+		public function add_listener_switch_pause_and_resume_on_binding_should_not_dispatch():void
 		{
-			var binding : ISignalBinding = completed.add(failIfCalled);
-			binding.pause();
-			binding.resume();
-			binding.pause();
+			var binding:ISignalBinding = completed.add(failIfCalled);
+			binding.enabled = false;
+			binding.enabled = true;
+			binding.enabled = false;
 			
 			completed.dispatch();			
 		}
@@ -128,9 +128,9 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_then_dispatch_change_listener_on_binding_should_dispatch_second_listener() : void
+		public function add_listener_then_dispatch_change_listener_on_binding_should_dispatch_second_listener():void
 		{
-			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			var binding:ISignalBinding = completed.add(newEmptyHandler());
 			
 			completed.dispatch();
 			
@@ -142,14 +142,14 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_then_dispatch_change_listener_on_binding_then_pause_should_not_dispatch_second_listener() : void
+		public function add_listener_then_dispatch_change_listener_on_binding_then_pause_should_not_dispatch_second_listener():void
 		{
-			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			var binding:ISignalBinding = completed.add(newEmptyHandler());
 			
 			completed.dispatch();
 			
 			binding.listener = failIfCalled;
-			binding.pause();
+			binding.enabled = false;
 			
 			completed.dispatch();			
 		}
@@ -157,13 +157,13 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_then_change_listener_then_switch_back_and_then_should_dispatch() : void
+		public function add_listener_then_change_listener_then_switch_back_and_then_should_dispatch():void
 		{
-			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			var binding:ISignalBinding = completed.add(newEmptyHandler());
 			
 			completed.dispatch();
 			
-			var listener : Function = binding.listener;
+			var listener:Function = binding.listener;
 			
 			binding.listener = failIfCalled;
 			binding.listener = listener;
@@ -174,55 +174,55 @@ package org.osflash.signals
 		//////
 		
 		[Test(expects="ArgumentError")]
-		public function add_listener_then_set_listener_to_null_should_throw_ArgumentError() : void
+		public function add_listener_then_set_listener_to_null_should_throw_ArgumentError():void
 		{
-			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			var binding:ISignalBinding = completed.add(newEmptyHandler());
 			binding.listener = null;
 		}
 		
 		//////
 		
 		[Test]
-		public function add_listener_and_call_execute0_on_binding_should_call_listener() : void
+		public function add_listener_and_call_execute0_on_binding_should_call_listener():void
 		{
-			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			var binding:ISignalBinding = completed.add(newEmptyHandler());
 			binding.execute0(); 
 		}
 		
 		//////
 		
 		[Test]
-		public function add_listener_and_call_execute1_on_binding_should_call_listener() : void
+		public function add_listener_and_call_execute1_on_binding_should_call_listener():void
 		{
-			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			var binding:ISignalBinding = completed.add(newEmptyHandler());
 			binding.execute1(1); 
 		}
 		
 		//////
 		
 		[Test]
-		public function add_listener_and_call_execute2_on_binding_should_call_listener() : void
+		public function add_listener_and_call_execute2_on_binding_should_call_listener():void
 		{
-			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			var binding:ISignalBinding = completed.add(newEmptyHandler());
 			binding.execute2(1, 2); 
 		}
 		
 		//////
 		
 		[Test]
-		public function add_listener_and_call_execute_on_binding_should_call_listener() : void
+		public function add_listener_and_call_execute_on_binding_should_call_listener():void
 		{
-			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			var binding:ISignalBinding = completed.add(newEmptyHandler());
 			binding.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
 		}
 		
 		//////
 		
 		[Test]
-		public function addOnce_listener_and_verify_once_is_true() : void
+		public function addOnce_listener_and_verify_once_is_true():void
 		{
-			var listener : Function = newEmptyHandler();
-			var binding : ISignalBinding = completed.addOnce(listener);
+			var listener:Function = newEmptyHandler();
+			var binding:ISignalBinding = completed.addOnce(listener);
 			
 			assertTrue('Binding once is true', binding.once == true);
 		}
@@ -230,10 +230,10 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_and_verify_priority_is_zero() : void
+		public function addOnce_listener_and_verify_priority_is_zero():void
 		{
-			var listener : Function = newEmptyHandler();
-			var binding : ISignalBinding = completed.addOnce(listener);
+			var listener:Function = newEmptyHandler();
+			var binding:ISignalBinding = completed.addOnce(listener);
 			
 			assertTrue('Binding priority is zero', binding.priority == 0);
 		}
@@ -241,10 +241,10 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_and_verify_binding_listener_is_same() : void
+		public function addOnce_listener_and_verify_binding_listener_is_same():void
 		{
-			var listener : Function = newEmptyHandler();
-			var binding : ISignalBinding = completed.addOnce(listener);
+			var listener:Function = newEmptyHandler();
+			var binding:ISignalBinding = completed.addOnce(listener);
 			
 			assertTrue('Binding listener is the same as the listener', binding.listener === listener);
 		}
@@ -252,9 +252,9 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_and_remove_using_binding() : void
+		public function addOnce_listener_and_remove_using_binding():void
 		{
-			var binding : ISignalBinding = completed.addOnce(newEmptyHandler());
+			var binding:ISignalBinding = completed.addOnce(newEmptyHandler());
 			binding.remove();
 			
 			assertTrue('Number of listeners should be 0', completed.numListeners == 0);
@@ -263,11 +263,11 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_pause_then_resume_on_binding_should_dispatch() : void
+		public function addOnce_listener_pause_then_resume_on_binding_should_dispatch():void
 		{
-			var binding : ISignalBinding = completed.addOnce(async.add(checkGenericEvent, 10));
-			binding.pause();
-			binding.resume();
+			var binding:ISignalBinding = completed.addOnce(async.add(checkGenericEvent, 10));
+			binding.enabled = false;
+			binding.enabled = true;
 			
 			completed.dispatch(new GenericEvent());
 		}
@@ -275,12 +275,12 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_switch_pause_and_resume_on_binding_should_not_dispatch() : void
+		public function addOnce_listener_switch_pause_and_resume_on_binding_should_not_dispatch():void
 		{
-			var binding : ISignalBinding = completed.addOnce(failIfCalled);
-			binding.pause();
-			binding.resume();
-			binding.pause();
+			var binding:ISignalBinding = completed.addOnce(failIfCalled);
+			binding.enabled = false;
+			binding.enabled = true;
+			binding.enabled = false;
 			
 			completed.dispatch();			
 		}
@@ -288,9 +288,9 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_then_dispatch_change_listener_on_binding_should_dispatch_second_listener() : void
+		public function addOnce_listener_then_dispatch_change_listener_on_binding_should_dispatch_second_listener():void
 		{
-			var binding : ISignalBinding = completed.addOnce(newEmptyHandler());
+			var binding:ISignalBinding = completed.addOnce(newEmptyHandler());
 			
 			completed.dispatch();
 			
@@ -302,14 +302,14 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_then_dispatch_change_listener_on_binding_then_pause_should_not_dispatch_second_listener() : void
+		public function addOnce_listener_then_dispatch_change_listener_on_binding_then_pause_should_not_dispatch_second_listener():void
 		{
-			var binding : ISignalBinding = completed.addOnce(newEmptyHandler());
+			var binding:ISignalBinding = completed.addOnce(newEmptyHandler());
 			
 			completed.dispatch();
 			
 			binding.listener = failIfCalled;
-			binding.pause();
+			binding.enabled = false;
 			
 			completed.dispatch();			
 		}
@@ -317,13 +317,13 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_then_change_listener_then_switch_back_and_then_should_dispatch() : void
+		public function addOnce_listener_then_change_listener_then_switch_back_and_then_should_dispatch():void
 		{
-			var binding : ISignalBinding = completed.addOnce(newEmptyHandler());
+			var binding:ISignalBinding = completed.addOnce(newEmptyHandler());
 			
 			completed.dispatch();
 			
-			var listener : Function = binding.listener;
+			var listener:Function = binding.listener;
 			
 			binding.listener = failIfCalled;
 			binding.listener = listener;
@@ -334,45 +334,45 @@ package org.osflash.signals
 		//////
 		
 		[Test(expects="ArgumentError")]
-		public function addOnce_listener_then_set_listener_to_null_should_throw_ArgumentError() : void
+		public function addOnce_listener_then_set_listener_to_null_should_throw_ArgumentError():void
 		{
-			var binding : ISignalBinding = completed.addOnce(newEmptyHandler());
+			var binding:ISignalBinding = completed.addOnce(newEmptyHandler());
 			binding.listener = null;
 		}
 		
 		//////
 		
 		[Test]
-		public function addOnce_listener_and_call_execute0_on_binding_should_call_listener() : void
+		public function addOnce_listener_and_call_execute0_on_binding_should_call_listener():void
 		{
-			var binding : ISignalBinding = completed.addOnce(newEmptyHandler());
+			var binding:ISignalBinding = completed.addOnce(newEmptyHandler());
 			binding.execute0(); 
 		}
 		
 		//////
 		
 		[Test]
-		public function addOnce_listener_and_call_execute1_on_binding_should_call_listener() : void
+		public function addOnce_listener_and_call_execute1_on_binding_should_call_listener():void
 		{
-			var binding : ISignalBinding = completed.addOnce(newEmptyHandler());
+			var binding:ISignalBinding = completed.addOnce(newEmptyHandler());
 			binding.execute1(1); 
 		}
 		
 		//////
 		
 		[Test]
-		public function addOnce_listener_and_call_execute2_on_binding_should_call_listener() : void
+		public function addOnce_listener_and_call_execute2_on_binding_should_call_listener():void
 		{
-			var binding : ISignalBinding = completed.addOnce(newEmptyHandler());
+			var binding:ISignalBinding = completed.addOnce(newEmptyHandler());
 			binding.execute2(1, 2); 
 		}
 		
 		//////
 		
 		[Test]
-		public function addOnce_listener_and_call_execute_on_binding_should_call_listener() : void
+		public function addOnce_listener_and_call_execute_on_binding_should_call_listener():void
 		{
-			var binding : ISignalBinding = completed.addOnce(newEmptyHandler());
+			var binding:ISignalBinding = completed.addOnce(newEmptyHandler());
 			binding.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
 		}
 	}

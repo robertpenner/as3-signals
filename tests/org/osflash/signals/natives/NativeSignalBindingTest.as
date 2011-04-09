@@ -155,7 +155,7 @@ package org.osflash.signals.natives
 		public function add_listener_pause_on_binding_should_not_dispatch() : void
 		{
 			var binding : ISignalBinding = clicked.add(failIfCalled);
-			binding.pause();
+			binding.enabled = false;
 			
 			sprite.dispatchEvent(new MouseEvent('click'));
 		}
@@ -166,8 +166,8 @@ package org.osflash.signals.natives
 		public function add_listener_pause_then_resume_on_binding_should_dispatch() : void
 		{
 			var binding : ISignalBinding = clicked.add(async.add(onClicked, 10));
-			binding.pause();
-			binding.resume();
+			binding.enabled = false;
+			binding.enabled = true;
 			
 			sprite.dispatchEvent(new MouseEvent('click'));
 		}
@@ -178,9 +178,9 @@ package org.osflash.signals.natives
 		public function add_listener_switch_pause_and_resume_on_binding_should_not_dispatch() : void
 		{
 			var binding : ISignalBinding = clicked.add(failIfCalled);
-			binding.pause();
-			binding.resume();
-			binding.pause();
+			binding.enabled = false;
+			binding.enabled = true;
+			binding.enabled = false;
 			
 			sprite.dispatchEvent(new MouseEvent('click'));			
 		}
@@ -209,7 +209,7 @@ package org.osflash.signals.natives
 			sprite.dispatchEvent(new MouseEvent('click'));
 			
 			binding.listener = failIfCalled;
-			binding.pause();
+			binding.enabled = false;
 			
 			sprite.dispatchEvent(new MouseEvent('click'));			
 		}
@@ -344,7 +344,7 @@ package org.osflash.signals.natives
 		public function addOnce_listener_pause_on_binding_should_not_dispatch() : void
 		{
 			var binding : ISignalBinding = clicked.addOnce(failIfCalled);
-			binding.pause();
+			binding.enabled = false;
 			
 			sprite.dispatchEvent(new MouseEvent('click'));
 		}
@@ -355,8 +355,8 @@ package org.osflash.signals.natives
 		public function addOnce_listener_pause_then_resume_on_binding_should_dispatch() : void
 		{
 			var binding : ISignalBinding = clicked.addOnce(async.add(onClicked, 10));
-			binding.pause();
-			binding.resume();
+			binding.enabled = false;
+			binding.enabled = true;
 			
 			sprite.dispatchEvent(new MouseEvent('click'));
 		}
@@ -367,9 +367,9 @@ package org.osflash.signals.natives
 		public function addOnce_listener_switch_pause_and_resume_on_binding_should_not_dispatch() : void
 		{
 			var binding : ISignalBinding = clicked.addOnce(failIfCalled);
-			binding.pause();
-			binding.resume();
-			binding.pause();
+			binding.enabled = false;
+			binding.enabled = true;
+			binding.enabled = false;
 			
 			sprite.dispatchEvent(new MouseEvent('click'));			
 		}
@@ -398,7 +398,7 @@ package org.osflash.signals.natives
 			sprite.dispatchEvent(new MouseEvent('click'));
 			
 			binding.listener = failIfCalled;
-			binding.pause();
+			binding.enabled = false;
 			
 			sprite.dispatchEvent(new MouseEvent('click'));		
 		}
