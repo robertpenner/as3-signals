@@ -15,6 +15,7 @@
   <classpaths>
     <class path="src" />
     <class path="tests" />
+    <class path="performance-test" />
   </classpaths>
   <!-- Build options -->
   <build>
