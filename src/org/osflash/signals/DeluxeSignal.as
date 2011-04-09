@@ -85,9 +85,7 @@ package org.osflash.signals
 		/** @inheritDoc */
 		override public function dispatch(...valueObjects):void
 		{
-			//
 			// Validate value objects against pre-defined value classes.
-			//
 
 			var valueObject:Object;
 			var valueClass:Class;
@@ -105,9 +103,7 @@ package org.osflash.signals
 				throw new ArgumentError('Value object <' + valueObject + '> is not an instance of <' + valueClass + '>.');
 			}
 
-			//
 			// Extract and clone event object if necessary.
-			//
 
 			var event:IEvent = valueObjects[0] as IEvent;
 
@@ -124,12 +120,9 @@ package org.osflash.signals
 				event.signal = this;
 			}
 
-			//
 			// Broadcast to listeners.
-			//
 
 			var bindingsToProcess:SignalBindingList = bindings;
-
 			if (bindingsToProcess.nonEmpty)
 			{
 				if (numValueObjects == 0)
@@ -171,9 +164,7 @@ package org.osflash.signals
 				}
 			}
 
-			//
 			// Bubble the event as far as possible.
-			//
 
 			if (!event || !event.bubbles) return;
 
@@ -183,10 +174,7 @@ package org.osflash.signals
 			{
 				if (currentTarget is IBubbleEventHandler)
 				{
-					//
 					// onEventBubbled() can stop the bubbling by returning false.
-					//
-
 					if (!IBubbleEventHandler(event.currentTarget = currentTarget).onEventBubbled(event))
 						break;
 				}
@@ -204,11 +192,6 @@ package org.osflash.signals
 			{
 				const binding:ISignalBinding = new SignalBinding(listener, once, this, priority);
 				bindings = bindings.insertWithPriority(binding);
-
-				if (null == existing) existing = new Dictionary();
-
-				existing[listener] = true;
-				
 				return binding;
 			}
 			

@@ -181,7 +181,6 @@ package org.osflash.signals.natives
 			{
 				const binding:ISignalBinding = new SignalBinding(listener, once, this, priority);
 				bindings = bindings.insertWithPriority(binding);
-				(existing ||= new Dictionary())[listener] = true;
 				return binding;
 			}
 			

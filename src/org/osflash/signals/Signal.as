@@ -25,7 +25,6 @@ package org.osflash.signals
 		protected var _valueClasses:Array;		// of Class
 
 		protected var bindings:SignalBindingList;
-		protected var existing:Dictionary;
 		
 		/**
 		 * Creates a Signal instance to dispatch value objects.
@@ -41,7 +40,6 @@ package org.osflash.signals
 		public function Signal(...valueClasses)
 		{
 			bindings = SignalBindingList.NIL;
-			existing = null;
 
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
 			this.valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array) ? valueClasses[0] : valueClasses;
@@ -85,14 +83,10 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function remove(listener:Function):ISignalBinding
 		{
-			const binding : ISignalBinding = bindings.find(listener);
+			const binding:ISignalBinding = bindings.find(listener);
+			if (!binding) return null;
 			
-			// How do we get the removed binding?
 			bindings = bindings.filterNot(listener);
-
-			if (!bindings.nonEmpty) existing = null;
-			else delete existing[listener];
-
 			return binding;
 		}
 		
@@ -100,16 +94,13 @@ package org.osflash.signals
 		public function removeAll():void
 		{
 			bindings = SignalBindingList.NIL;
-			existing = null;
 		}
 		
 		/** @inheritDoc */
 		public function dispatch(...valueObjects):void
 		{
-			//
 			// Validate value objects against pre-defined value classes.
-			//
-
+			
 			var valueObject:Object;
 			var valueClass:Class;
 
@@ -134,10 +125,8 @@ package org.osflash.signals
 					+'> is not an instance of <'+valueClass+'>.');
 			}
 
-			//
 			// Broadcast to listeners.
-			//
-
+			
 			var bindingsToProcess:SignalBindingList = bindings;
 
 			if (bindingsToProcess.nonEmpty)
@@ -188,7 +177,6 @@ package org.osflash.signals
 			{
 				const binding:ISignalBinding = new SignalBinding(listener, once, this);
 				bindings = new SignalBindingList(binding, bindings);
-				(existing ||= new Dictionary())[listener] = true;
 				return binding;
 			}
 			
@@ -197,7 +185,7 @@ package org.osflash.signals
 
 		protected function registrationPossible(listener:Function, once:Boolean):Boolean
 		{
-			if (!bindings.nonEmpty || !existing || !existing[listener]) return true;
+			if (!bindings.nonEmpty) return true;
 			
 			const existingBinding:ISignalBinding = bindings.find(listener);
 			if (!existingBinding) return true;
