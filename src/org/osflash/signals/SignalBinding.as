@@ -139,7 +139,7 @@ package org.osflash.signals
 		 */
 		public function toString():String
 		{
-			return "[SignalBinding listener: "+_listener+", once: "+_once+", priority: "+_priority+", paused: "+_enabled+"]";
+			return "[SignalBinding listener: "+_listener+", once: "+_once+", priority: "+_priority+", enabled: "+_enabled+"]";
 		}
 
 		/**
