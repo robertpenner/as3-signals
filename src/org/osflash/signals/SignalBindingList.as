@@ -209,12 +209,16 @@ package org.osflash.signals
 			return null;
 		}
 
-		public function toString(): String
+		public function toString():String
 		{
 			var buffer:String = '';
 			var p:SignalBindingList = this;
 
-			while (!p.nonEmpty) buffer += p.head+" -> ";
+			while (p.nonEmpty)
+			{
+				buffer += p.head + " -> ";
+				p = p.tail;
+			}
 
 			buffer += "Nil";
 
