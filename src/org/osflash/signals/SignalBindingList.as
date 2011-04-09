@@ -61,7 +61,7 @@ package org.osflash.signals
 		/**
 		 * The length of the list.
 		 */
-		public function get length():int
+		public function get length():uint
 		{
 			if (!nonEmpty) return 0;
 
@@ -71,7 +71,7 @@ package org.osflash.signals
 			// We could also cache the length lazy, but that is a waste of another 8b per list node (at least).
 			//
 
-			var result: int = 0;
+			var result:uint = 0;
 			var p:SignalBindingList = this;
 
 			while (p.nonEmpty)
@@ -134,46 +134,34 @@ package org.osflash.signals
 
 		public function filterNot(listener:Function):SignalBindingList
 		{
-			if (!nonEmpty) return this;
+			if (!nonEmpty || listener == null) return this;
 
 			if (listener == head.listener) return tail;
 
-			var p:SignalBindingList = this;
+			// The first item wasn't a match so the filtered list will contain it.
+			const first:SignalBindingList = new SignalBindingList(head, NIL);
+			var current:SignalBindingList = this;
 			var q:SignalBindingList = null;
-
-			var first:SignalBindingList = null;
-			var last:SignalBindingList = null;
-			
-			// Make sure we disembody the signalbinding, otherwise the binding will have a reference
-			// to the signal.
-			
-			while (p.nonEmpty)
+			var previous:SignalBindingList = null;
+			do
 			{
-				if (p.head.listener != listener)
+				if (current.head.listener == listener)
 				{
-					q = new SignalBindingList(p.head, NIL);
+					// Splice out the current head.
+					previous.tail = current.tail;
 
-					if (null != last) last.tail = q;
-					if (null == first) first = q;
-
-					last = q;
-				}
-				else
-				{
-					//
-					// No need to check if first == null and last != null
-					// since we check already at the top if listener == head.listener
-					//
-					
-					
-					
-					last.tail = p.tail;
 					return first;
 				}
+				
+				q = new SignalBindingList(current.head, NIL);
+				if (previous) previous.tail = q;
+				previous = q;
 
-				p = p.tail;
+				current = current.tail;
 			}
+			while (current.nonEmpty)
 
+			// The listener was not found so this list is unchanged.
 			return this;
 		}
 
@@ -185,7 +173,7 @@ package org.osflash.signals
 
 			while (p.nonEmpty)
 			{
-				if(p.head.listener == listener) return true;
+				if (p.head.listener == listener) return true;
 
 				p = p.tail;
 			}
@@ -201,7 +189,7 @@ package org.osflash.signals
 
 			while (p.nonEmpty)
 			{
-				if(p.head.listener == listener) return p.head;
+				if (p.head.listener == listener) return p.head;
 
 				p = p.tail;
 			}
