@@ -164,27 +164,11 @@ package org.osflash.signals.natives
 		}
 		
 		//////
-		[Test(expects="ArgumentError")]
-		public function setting_target_and_dispatchEvent_with_invalid_signal_target_should_throw_ArgumentError() : void
-		{
-			try
-			{
-				clicked.target = new MouseEvent("click");
-			}
-			catch(error : TypeError)
-			{
-			}
-			finally
-			{
-				clicked.dispatchEvent(new MouseEvent('click'));
-			}
-		}
-				
-		//////
+		
 		[Test(expects="ArgumentError")]
 		public function dispatchEvent_with_null_signal_target_should_throw_ArgumentError() : void
 		{
-			var signal : NativeRelaySignal = new NativeRelaySignal(null, "clicked", MouseEvent);
+			var signal:NativeRelaySignal = new NativeRelaySignal(null, "clicked", MouseEvent);
 			signal.dispatchEvent(new MouseEvent('click'));
 		}
 		
@@ -192,7 +176,7 @@ package org.osflash.signals.natives
 		[Test(expects="ArgumentError")]
 		public function addOnce_with_null_signal_target_should_throw_ArgumentError() : void
 		{
-			var signal : NativeRelaySignal = new NativeRelaySignal(null, "clicked", MouseEvent);
+			var signal:NativeRelaySignal = new NativeRelaySignal(null, "clicked", MouseEvent);
 			signal.addOnce(emptyHandler);
 		}
 		

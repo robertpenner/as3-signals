@@ -48,7 +48,7 @@ package org.osflash.signals.natives
 		[Test]
 		public function has_target_from_mxml_attribute():void
 		{
-			assertEquals(mxmlSprite, mxmlSprite.clicked.eventDispatcher);
+			assertEquals(mxmlSprite, mxmlSprite.clicked.target);
 		}	
 		
 		[Test]

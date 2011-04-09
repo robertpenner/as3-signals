@@ -2,10 +2,13 @@ package org.osflash.signals.natives
 {
 	import org.osflash.signals.ISignalBinding;
 	import org.osflash.signals.DeluxeSignal;
+	import org.osflash.signals.Signal;
+	import org.osflash.signals.SignalBinding;
 	import org.osflash.signals.SignalBindingList;
 
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
+	import flash.utils.Dictionary;
 
 	/**
 	 * The NativeRelaySignal class is used to relay events from an IEventDispatcher
@@ -14,11 +17,11 @@ package org.osflash.signals.natives
 	 * NativeRelaySignal has its own dispatching code,
 	 * whereas NativeSignal uses the IEventDispatcher to dispatch.
 	 */
-	public class NativeRelaySignal extends DeluxeSignal implements INativeDispatcher
+	public class NativeRelaySignal extends Signal implements INativeDispatcher
 	{
+		protected var _target:IEventDispatcher;
 		protected var _eventType:String;
 		protected var _eventClass:Class;
-		protected var _eventDispatcher:IEventDispatcher;
 
 		/**
 		 * Creates a new NativeRelaySignal instance to relay events from an IEventDispatcher.
@@ -30,29 +33,31 @@ package org.osflash.signals.natives
 		 */
 		public function NativeRelaySignal(target:IEventDispatcher, eventType:String, eventClass:Class = null)
 		{
-			super(target, eventClass || Event);
+			super(eventClass || Event);
 
 			this.eventType = eventType;
 			this.eventClass = eventClass;
-			this.eventDispatcher = target;
+			this.target = target;
 		}
 
+		
+		/** @inheritDoc */
+		public function get target():IEventDispatcher
+		{
+			return _target;
+		}
+
+		public function set target(value:IEventDispatcher):void
+		{
+			if (value == _target) return;
+			removeAll();
+			_target = value;
+		}
+		
 		/** @inheritDoc */
 		public function get eventType():String { return _eventType; }
 
 		public function set eventType(value:String):void { _eventType = value; }
-
-		/** @inheritDoc */
-		public function get eventDispatcher():IEventDispatcher { return _eventDispatcher; }
-
-		public function set eventDispatcher(value:IEventDispatcher):void { target = value; }
-
-		/** @inheritDoc */
-		override public function set target(value:Object):void
-		{
-			super.target = value;
-			_eventDispatcher = IEventDispatcher(value);
-		}
 
 		/** @inheritDoc */
 		public function get eventClass():Class { return _eventClass; }
@@ -68,29 +73,39 @@ package org.osflash.signals.natives
 			eventClass = value && value.length > 0 ? value[0] : null;
 		}
 		
+		override public function add(listener:Function):ISignalBinding
+		{
+			return addWithPriority(listener);
+		}
+		
 		/** @inheritDoc */
-		override public function addWithPriority(listener:Function, priority:int = 0):ISignalBinding
+		public function addWithPriority(listener:Function, priority:int = 0):ISignalBinding
 		{
 			const nonEmptyBefore: Boolean = bindings.nonEmpty;
 			
 			// Try to add first because it may throw an exception.
-			const binding : ISignalBinding = super.addWithPriority(listener);
+			const binding:ISignalBinding = registerListenerWithPriority(listener, false, priority);
 			// Account for cases where the same listener is added twice.
 			if (nonEmptyBefore != bindings.nonEmpty)
 				IEventDispatcher(target).addEventListener(eventType, onNativeEvent, false, priority);
 			
 			return binding;
 		}
-		
+
+		override public function addOnce(listener:Function):ISignalBinding
+		{
+			return addOnceWithPriority(listener);
+		}
+
 		/** @inheritDoc */
-		override public function addOnceWithPriority(listener:Function, priority:int = 0):ISignalBinding
+		public function addOnceWithPriority(listener:Function, priority:int = 0):ISignalBinding
 		{
 			if (null == target) throw new ArgumentError('Target object expected.');
 			
-			const nonEmptyBefore: Boolean = bindings.nonEmpty;
+			const nonEmptyBefore:Boolean = bindings.nonEmpty;
 
 			// Try to add first because it may throw an exception.
-			const binding : ISignalBinding = super.addOnceWithPriority(listener);
+			const binding:ISignalBinding = registerListenerWithPriority(listener, true, priority);
 			// Account for cases where the same listener is added twice.
 			if (nonEmptyBefore != bindings.nonEmpty)
 				IEventDispatcher(target).addEventListener(eventType, onNativeEvent, false, priority);
@@ -146,12 +161,7 @@ package org.osflash.signals.natives
 			if (event.type != eventType)
 				throw new ArgumentError('Event object has incorrect type. Expected <'+eventType+'> but was <'+event.type+'>.');
 			
-			if(target is IEventDispatcher)
-				return IEventDispatcher(target).dispatchEvent(event);
-			else if(target is INativeDispatcher)
-				return INativeDispatcher(target).dispatchEvent(event);
-			else
-				throw new ArgumentError('Target has to implement either IEventDispatcher or INativeDispatcher.');
+			return target.dispatchEvent(event);
 		}
 
 		protected function onNativeEvent(event: Event): void
@@ -164,5 +174,19 @@ package org.osflash.signals.natives
 				bindingsToProcess = bindingsToProcess.tail;
 			}
 		}
+		
+		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):ISignalBinding
+		{
+			if (!bindings.nonEmpty || verifyRegistrationOf(listener, once))
+			{
+				const binding:ISignalBinding = new SignalBinding(listener, once, this, priority);
+				bindings = bindings.insertWithPriority(binding);
+				(existing ||= new Dictionary())[listener] = true;
+				return binding;
+			}
+			
+			return bindings.find(listener);
+		}
+		
 	}
 }
