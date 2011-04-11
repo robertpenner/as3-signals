@@ -343,5 +343,30 @@ package org.osflash.signals
 			
 			assertTrue("Binding is returned", binding == completed.remove(listener));
 		}
+		
+		/////
+		
+		[Test]
+		public function verify_redispatch_of_signal_with_no_valueClasses() : void
+		{
+			const redispatch : Signal = new Signal();
+			redispatch.add(checkGenericEvent);
+			
+			completed.add(redispatch.dispatch);
+			completed.dispatch(new GenericEvent());
+		}
+		
+		/////
+		
+		[Test(expects='ArgumentError')]
+		public function verify_redispatch_of_signal() : void
+		{
+			const redispatch : Signal = new Signal();
+			redispatch.add(checkGenericEvent);
+			
+			completed = new Signal(GenericEvent);
+			completed.add(redispatch.dispatch);
+			completed.dispatch(new GenericEvent());
+		}
 	}
 }

@@ -20,6 +20,7 @@ package org.osflash.signals
 		public var _AmbiguousRelationshipTest:AmbiguousRelationshipTest;
 		public var _AmbiguousRelationshipInNativeSignalTest:AmbiguousRelationshipInNativeSignalTest;
 		public var _GenericEventTest:GenericEventTest;
+		
 		public var _NativeRelaySignalTest:NativeRelaySignalTest;
 		public var _NativeSignalTest:NativeSignalTest;
 		public var _NativeMappedSignalDefaultsTest:NativeMappedSignalDefaultsTest;
@@ -28,8 +29,10 @@ package org.osflash.signals
 		public var _NativeMappedSignalFunctionArgTest:NativeMappedSignalFunctionArgTest;
 		public var _NativeMappedSignalBoundaryUseTest:NativeMappedSignalBoundaryUseTest;
 		public var _NativeSignalBindingTest:NativeSignalBindingTest;
+		
 		public var _PriorityListenersTest:PriorityListenersTest;
 		public var _RedispatchedEventTest:RedispatchedEventTest;
+		
 		public var _DeluxeSignalAmbiguousRelationshipTest:DeluxeSignalAmbiguousRelationshipTest;
 		public var _DeluxeSignalTest:DeluxeSignalTest;
 		public var _DeluxeSignalDispatchExtraArgsTest:DeluxeSignalDispatchExtraArgsTest;
@@ -39,6 +42,8 @@ package org.osflash.signals
 		public var _DeluxeSignalWithCustomEventTest:DeluxeSignalWithCustomEventTest;
 		public var _DeluxeSignalWithGenericEventTest:DeluxeSignalWithGenericEventTest;
 		public var _DeluxeSignalBindingTest:DeluxeSignalBindingTest;
+		public var _DeluxeSignalDispatchVarArgsTest:DeluxeSignalDispatchVarArgsTest;
+		
 		public var _MXMLDeluxeSignalTest:MXMLDeluxeSignalTest;
 		public var _MXMLSignalTest:MXMLSignalTest;
 		public var _MXMLNativeSignalTest:MXMLNativeSignalTest;
@@ -50,6 +55,7 @@ package org.osflash.signals
 		public var _SignalTest:SignalTest;
 		public var _SignalWithCustomEventTest:SignalWithCustomEventTest;
 		public var _SignalBindingTest:SignalBindingTest;
+		public var _SignalDispatchVarArgsTest:SignalDispatchVarArgsTest;
 		
 		public var _SingleSignalTest:SingleSignalTest;
 		public var _SingleSignalDispatchArgsTest:SingleSignalDispatchArgsTest;
@@ -57,6 +63,7 @@ package org.osflash.signals
 		public var _SingleSignalDispatchNoArgsTest:SingleSignalDispatchNoArgsTest;
 		public var _SingleSignalDispatchNonEventTest:SingleSignalDispatchNonEventTest;
 		public var _SingleSignalBindingTest:SingleSignalBindingTest;
+		public var _SingleSignalDispatchVarArgsTest:SingleSignalDispatchVarArgsTest;
 		
 		public var _NativeSignalSetTest:NativeSignalSetTest;
 		public var _EventDispatcherSignalSetTest:EventDispatcherSignalSetTest;

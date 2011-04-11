@@ -514,5 +514,30 @@ package org.osflash.signals
 			var binding : ISignalBinding = completed.addOnce(newEmptyHandler());
 			binding.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
 		}
+		
+		//////
+		
+		[Test]
+		public function verify_listeners_that_are_strict_and_not_strict() : void
+		{
+			completed.add(newEmptyHandler());
+			
+			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			binding.strict = false;
+			
+			completed.dispatch();
+		}
+		
+		//////
+		
+		[Test]
+		public function verify_listeners_that_are_strict_and_not_strict_when_called_on_binding() : void
+		{
+			completed.add(newEmptyHandler());
+			
+			var binding : ISignalBinding = completed.add(newEmptyHandler());
+			binding.strict = false;
+			binding.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
+		}
 	}
 }
