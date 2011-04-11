@@ -1,5 +1,6 @@
 package org.osflash.signals
 {
+	import asunit.asserts.assertFalse;
 	import asunit.asserts.assertNull;
 	import asunit.asserts.assertTrue;
 	import asunit.asserts.fail;
@@ -54,7 +55,57 @@ package org.osflash.signals
 			var listener : Function = newEmptyHandler();
 			var binding : ISignalBinding = completed.add(listener);
 			
-			assertTrue('Binding once is false', binding.once == false);
+			assertFalse('Binding once is false', binding.once);
+		}
+		
+		//////
+		
+		[Test]
+		public function add_listener_and_verify_strict_is_true() : void
+		{
+			var listener : Function = newEmptyHandler();
+			var binding : ISignalBinding = completed.add(listener);
+			
+			assertTrue('Binding strict is true', binding.strict);
+		}
+		
+		//////
+		
+		[Test]
+		public function verify_strict_on_binding_after_setting_to_false() : void
+		{
+			var listener : Function = newEmptyHandler();
+			var binding : ISignalBinding = completed.add(listener);
+			binding.strict = false;
+			
+			assertFalse('Binding strict is false', binding.strict);
+		}
+		
+		//////
+		
+		[Test]
+		public function verify_strict_on_binding_after_dispatch_equals_true() : void
+		{
+			var listener : Function = newEmptyHandler();
+			var binding : ISignalBinding = completed.add(listener);
+				
+			completed.dispatch();
+							
+			assertTrue('Binding strict is true', binding.strict);
+		}
+		
+		//////
+		
+		[Test]
+		public function set_strict_to_false_and_verify_strict_on_binding_after_dispatch_equals_false() : void
+		{
+			var listener : Function = newEmptyHandler();
+			var binding : ISignalBinding = completed.add(listener);
+			binding.strict = false;
+				
+			completed.dispatch();
+							
+			assertFalse('Binding strict is false', binding.strict);
 		}
 		
 		//////

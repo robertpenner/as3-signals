@@ -200,16 +200,7 @@ package org.osflash.signals
 			
 			if (_strict)
 			{
-				if (numListenerArgs != _signal.valueClasses.length)
-				{
-					throw new ArgumentError('Listener has '+numListenerArgs+' '+argumentString
-							+' but it needs to be '+
-							_signal.valueClasses.length+' to match the signal\'s value classes.');
-				}
-			}
-			else
-			{
-				if(numListenerArgs > _signal.valueClasses.length)
+				if (numListenerArgs < _signal.valueClasses.length)
 				{
 					throw new ArgumentError('Listener has '+numListenerArgs+' '+argumentString
 							+' but it needs to be '+

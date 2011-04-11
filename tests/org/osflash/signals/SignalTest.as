@@ -37,6 +37,48 @@ package org.osflash.signals
 		//////
 		
 		[Test]
+		public function strict_should_be_true() : void
+		{
+			assertTrue('strict should be true', completed.strict);
+		}
+		
+		//////
+		
+		[Test]
+		public function verify_strict_after_setting_it_to_false() : void
+		{
+			completed.strict = false;
+			
+			assertFalse('strict should be false', completed.strict);
+		}
+		
+		//////
+		
+		[Test]
+		public function verify_strict_is_true_after_dispatch() : void
+		{
+			completed.add(newEmptyHandler());
+			completed.dispatch(new GenericEvent());
+			
+			assertTrue('strict should be true', completed.strict);
+		}
+		
+		//////
+		
+		[Test]
+		public function set_strict_to_false_and_verify_strict_is_false_after_dispatch() : void
+		{
+			completed.strict = false;
+			
+			completed.add(newEmptyHandler());
+			completed.dispatch(new GenericEvent());
+			
+			assertFalse('strict should be false', completed.strict);
+		}
+		
+		//////
+		
+		[Test]
 		public function dispatch_should_pass_event_to_listener_but_not_set_signal_or_target_properties():void
 		{
 			completed.add(async.add(checkGenericEvent, 10));
