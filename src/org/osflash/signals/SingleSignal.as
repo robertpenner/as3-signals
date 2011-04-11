@@ -23,6 +23,8 @@ package org.osflash.signals
 	public class SingleSignal implements ISignal
 	{
 		protected var _valueClasses:Array;		// of Class
+		
+		protected var _strict:Boolean = true;
 
 		protected var binding:SignalBinding;
 		
@@ -64,6 +66,13 @@ package org.osflash.signals
 		
 		/** @inheritDoc */
 		public function get numListeners():uint { return null == binding ? 0 : 1; }
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get strict():Boolean { return _strict; }
+
+		public function set strict(value:Boolean):void { _strict = value; }
 		
 		/** @inheritDoc */
 		//TODO: @throws

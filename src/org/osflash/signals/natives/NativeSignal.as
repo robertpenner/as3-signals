@@ -23,12 +23,19 @@ package org.osflash.signals.natives
 	public class NativeSignal implements INativeDispatcher
 	{
 		protected var _target:IEventDispatcher;
+		
 		protected var _eventType:String;
+		
 		protected var _eventClass:Class;
+		
 		protected var _valueClasses:Array;
+		
+		protected var _strict:Boolean = true;
 
 		protected var bindings:SignalBindingList;
+		
 		protected var existing:Dictionary;
+		
 		/**
 		 * Creates a NativeSignal instance to dispatch events on behalf of a target object.
 		 * @param	target The object on whose behalf the signal is dispatching events.
@@ -67,6 +74,13 @@ package org.osflash.signals.natives
 		{
 			eventClass = value && value.length > 0 ? value[0] : null;
 		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get strict():Boolean { return _strict; }
+
+		public function set strict(value:Boolean):void { _strict = value; }
 		
 		/** @inheritDoc */
 		public function get numListeners():uint { return bindings.length; }

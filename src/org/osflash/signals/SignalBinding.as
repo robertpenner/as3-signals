@@ -67,7 +67,11 @@ package org.osflash.signals
 			_once = once;
 			_signal = signal;
 			_priority = priority;
-
+			
+			// Work out what the strict mode is from the signal and set it here. You can change
+			// the value of strict mode on the binding itself at a later date.
+			_strict = signal.strict;
+			
 			verifyListener(listener);
 		}
 
@@ -140,7 +144,8 @@ package org.osflash.signals
 		 */
 		public function toString():String
 		{
-			return "[SignalBinding listener: "+_listener+", once: "+_once+", priority: "+_priority+", enabled: "+_enabled+"]";
+			return "[SignalBinding listener: "+_listener+", once: "+_once
+											+", priority: "+_priority+", enabled: "+_enabled+"]";
 		}
 
 		/**
@@ -155,7 +160,14 @@ package org.osflash.signals
 		 */
 		public function get strict():Boolean { return _strict; }
 
-		public function set strict(value:Boolean):void	{ _strict = value; }
+		public function set strict(value:Boolean):void
+		{ 
+			_strict = value;
+			
+			// Check that when we move from one strict mode to another strict mode and verify the 
+			// listener again.
+			verifyListener(listener);
+		}
 		
 		/**
 		 * @inheritDoc
@@ -179,10 +191,18 @@ package org.osflash.signals
 			
 			if (listener.length < _signal.valueClasses.length)
 			{
-				const argumentString:String = (listener.length == 1) ? 'argument' : 'arguments';
-
-				throw new ArgumentError('Listener has '+listener.length+' '+argumentString+' but it needs at least '+
-						_signal.valueClasses.length+' to match the signal\'s value classes.');
+				if(_strict)
+				{
+					const argumentString:String = (listener.length == 1) ? 'argument' : 'arguments';
+	
+					throw new ArgumentError('Listener has '+listener.length+' '+argumentString
+							+' but it needs at least '+
+							_signal.valueClasses.length+' to match the signal\'s value classes.');
+				}
+				else
+				{
+					// do something here!
+				}
 			}
 		}
 	}
