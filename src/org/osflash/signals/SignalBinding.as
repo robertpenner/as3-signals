@@ -70,9 +70,7 @@ package org.osflash.signals
 			
 			// Work out what the strict mode is from the signal and set it here. You can change
 			// the value of strict mode on the binding itself at a later date.
-			_strict = signal.strict;
-			
-			verifyListener(listener);
+			strict = signal.strict;
 		}
 
 		/**
@@ -83,29 +81,37 @@ package org.osflash.signals
 			if (!_enabled) return;
 			if (_once) remove();
 			
-			// Note: this is a tiny bit slower than the before (1-3ms in MassDispatchPerformance), 
-			// because every valueObject look up is now in the binding and not in the ISignal. We 
-			// should possibly look at passing the value AOT?
-			const numValueObjects : int = valueObjects.length;
-			if(numValueObjects == 0)
+			if(_strict)
 			{
-				_listener();
-			}
-			else if(numValueObjects == 1)
-			{
-				const singleValue:Object = valueObjects[0];
-				
-				_listener(singleValue);
-			}
-			else if(numValueObjects == 2)
-			{
-				const value1:Object = valueObjects[0];
-				const value2:Object = valueObjects[1];
-				
-				_listener(value1, value2);
+				// Note: this is a tiny bit slower than the before (1-3ms in MassDispatchPerformance), 
+				// because every valueObject look up is now in the binding and not in the ISignal. 
+				// We should possibly look at passing the value AOT?
+				const numValueObjects : int = valueObjects.length;
+				if(numValueObjects == 0)
+				{
+					_listener();
+				}
+				else if(numValueObjects == 1)
+				{
+					_listener(valueObjects[0]);
+				}
+				else if(numValueObjects == 2)
+				{
+					_listener(valueObjects[0], valueObjects[1]);
+				}
+				else if(numValueObjects == 3)
+				{
+					_listener(valueObjects[0], valueObjects[1], valueObjects[2]);
+				}
+				else
+				{
+					_listener.apply(null, valueObjects);
+				}
 			}
 			else
 			{
+				// We're going to pass everything in one bulk run so that varargs can be 
+				// passed through to the listeners
 				_listener.apply(null, valueObjects);
 			}
 		}
@@ -189,19 +195,25 @@ package org.osflash.signals
 				throw new Error('Internal signal reference has not been set yet.');
 			}
 			
-			if (listener.length < _signal.valueClasses.length)
+			const numListenerArgs:int = listener.length;
+			const argumentString:String = (numListenerArgs == 1) ? 'argument' : 'arguments';
+			
+			if (_strict)
 			{
-				if(_strict)
+				if (numListenerArgs != _signal.valueClasses.length)
 				{
-					const argumentString:String = (listener.length == 1) ? 'argument' : 'arguments';
-	
-					throw new ArgumentError('Listener has '+listener.length+' '+argumentString
-							+' but it needs at least '+
+					throw new ArgumentError('Listener has '+numListenerArgs+' '+argumentString
+							+' but it needs to be '+
 							_signal.valueClasses.length+' to match the signal\'s value classes.');
 				}
-				else
+			}
+			else
+			{
+				if(numListenerArgs > _signal.valueClasses.length)
 				{
-					// do something here!
+					throw new ArgumentError('Listener has '+numListenerArgs+' '+argumentString
+							+' but it needs to be '+
+							_signal.valueClasses.length+' to match the signal\'s value classes.');
 				}
 			}
 		}
