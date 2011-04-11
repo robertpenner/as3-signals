@@ -1,7 +1,7 @@
 package org.osflash.signals
 {
-	import flash.errors.IllegalOperationError;
 	import asunit.asserts.assertEquals;
+	import asunit.asserts.assertFalse;
 	import asunit.asserts.assertNull;
 	import asunit.asserts.assertTrue;
 	import asunit.asserts.fail;
@@ -11,6 +11,7 @@ package org.osflash.signals
 	import org.osflash.signals.events.IEvent;
 
 	import flash.display.Sprite;
+	import flash.errors.IllegalOperationError;
 	
 	/**
 	 * @author Simon Richardson - me@simonrichardson.info
@@ -39,6 +40,48 @@ package org.osflash.signals
 		public function numListeners_is_0_after_creation():void
 		{
 			assertEquals(0, completed.numListeners);
+		}
+		
+		//////
+		
+		[Test]
+		public function strict_should_be_true() : void
+		{
+			assertTrue('strict should be true', completed.strict);
+		}
+		
+		//////
+		
+		[Test]
+		public function verify_strict_after_setting_it_to_false() : void
+		{
+			completed.strict = false;
+			
+			assertFalse('strict should be false', completed.strict);
+		}
+		
+		//////
+		
+		[Test]
+		public function verify_strict_is_true_after_dispatch() : void
+		{
+			completed.add(newEmptyHandler());
+			completed.dispatch(new GenericEvent());
+			
+			assertTrue('strict should be true', completed.strict);
+		}
+		
+		//////
+		
+		[Test]
+		public function set_strict_to_false_and_verify_strict_is_false_after_dispatch() : void
+		{
+			completed.strict = false;
+			
+			completed.add(newEmptyHandler());
+			completed.dispatch(new GenericEvent());
+			
+			assertFalse('strict should be false', completed.strict);
 		}
 		
 		//////
