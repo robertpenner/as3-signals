@@ -181,8 +181,7 @@ package org.osflash.signals.natives
 		
 		protected function registerListener(listener:Function, once:Boolean = false, priority:int = 0):ISignalBinding
 		{
-			//TODO: Consider removing this check to allow ...args listeners.
-			if (listener.length != 1)
+			if (_strict && listener.length != 1)
 				throw new ArgumentError('Listener for native event must declare exactly 1 argument.');
 				
 			if (registrationPossible(listener, once))

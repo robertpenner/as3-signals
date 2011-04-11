@@ -1,13 +1,9 @@
-package org.osflash.signals 
+package org.osflash.signals
 {
-    /**
-     * The SignalBinding class represents a signal binding.
-     *
-     * @author Robert Penner
-	 * @author Joa Ebert
-	 * @private
-     */
-	public final class SignalBinding implements ISignalBinding
+	/**
+	 * @author Simon Richardson - simon@ustwo.co.uk
+	 */
+	public class SlotSignalBinding implements ISignalBinding
 	{
 		/**
 		 * Private backing variable for the <code>signal</code> property.
@@ -28,14 +24,6 @@ package org.osflash.signals
 		private var _strict:Boolean = true;
 		
 		/**
-		 * Private backing variable for the <code>listener</code> property.
-		 *
-		 * Visible in the signals package for fast access.
-		 * @private
-		 */
-		private var _listener:Function;
-
-		/**
 		 * Private backing variable for the <code>once</code> property.
 		 *
 		 * Visible in the signals package for fast access.
@@ -52,6 +40,11 @@ package org.osflash.signals
 		private var _priority:int;
 		
 		/**
+		 * @private
+		 */
+		private var _slot:ISignalBindingSlot;
+		
+		/**
 		 * Creates and returns a new SignalBinding object.
 		 *
 		 * @param listener The listener associated with the binding.
@@ -61,9 +54,8 @@ package org.osflash.signals
 		 *
 		 * @throws ArgumentError An error is thrown if the given listener closure is <code>null</code>.
 		 */
-		public function SignalBinding(listener:Function, once:Boolean = false, signal:ISignal = null, priority:int = 0)
+		public function SlotSignalBinding(listener:Function, once:Boolean = false, signal:ISignal = null, priority:int = 0)
 		{
-			_listener = listener;
 			_once = once;
 			_signal = signal;
 			_priority = priority;
@@ -73,6 +65,8 @@ package org.osflash.signals
 			_strict = signal.strict;
 			
 			verifyListener(listener);
+			
+			_slot = new SignalBindingSlot(listener);
 		}
 
 		/**
@@ -83,38 +77,27 @@ package org.osflash.signals
 			if (!_enabled) return;
 			if (_once) remove();
 			
-			if(_strict)
+			// Here we're using what the listener.length is to provide the correct arguments.
+			const numArguments : int = _slot.numArguments;
+			if(numArguments == 0)
 			{
-				// Note: this is a tiny bit slower than the before (1-3ms in MassDispatchPerformance), 
-				// because every valueObject look up is now in the binding and not in the ISignal. 
-				// We should possibly look at passing the value AOT?
-				const numValueObjects : int = valueObjects.length;
-				if(numValueObjects == 0)
-				{
-					_listener();
-				}
-				else if(numValueObjects == 1)
-				{
-					_listener(valueObjects[0]);
-				}
-				else if(numValueObjects == 2)
-				{
-					_listener(valueObjects[0], valueObjects[1]);
-				}
-				else if(numValueObjects == 3)
-				{
-					_listener(valueObjects[0], valueObjects[1], valueObjects[2]);
-				}
-				else
-				{
-					_listener.apply(null, valueObjects);
-				}
+				_slot.execute0();	
+			}
+			else if(numArguments == 1)
+			{
+				_slot.execute1(valueObjects[0]);
+			}
+			else if(numArguments == 2)
+			{
+				_slot.execute2(valueObjects[0], valueObjects[1]);
+			}
+			else if(numArguments == 3)
+			{
+				_slot.execute3(valueObjects[0], valueObjects[1], valueObjects[2]);
 			}
 			else
 			{
-				// We're going to pass everything in one bulk run so that varargs can be 
-				// passed through to the listeners
-				_listener.apply(null, valueObjects);
+				_slot.execute.apply(null, valueObjects);
 			}
 		}
 
@@ -123,7 +106,7 @@ package org.osflash.signals
 		 */
 		public function get listener():Function
 		{
-			return _listener;
+			return _slot.listener;
 		}
 
 		public function set listener(value:Function):void
@@ -132,7 +115,8 @@ package org.osflash.signals
 					'Given listener is null.\nDid you want to call pause() instead?');
 			
 			verifyListener(value);
-			_listener = value;
+			
+			_slot.listener = value;
 		}
 
 		/**
@@ -152,7 +136,7 @@ package org.osflash.signals
 		 */
 		public function toString():String
 		{
-			return "[SignalBinding listener: "+_listener+", once: "+_once
+			return "[SlotSignalBinding listener: "+listener+", once: "+_once
 											+", priority: "+_priority+", enabled: "+_enabled+"]";
 		}
 
@@ -182,7 +166,7 @@ package org.osflash.signals
 		 */
 		public function remove():void
 		{
-			_signal.remove(_listener);
+			_signal.remove(_slot.listener);
 		}
 
 		protected function verifyListener(listener:Function): void
@@ -195,19 +179,6 @@ package org.osflash.signals
 			if (null == _signal)
 			{
 				throw new Error('Internal signal reference has not been set yet.');
-			}
-			
-			const numListenerArgs:int = listener.length;
-			const argumentString:String = (numListenerArgs == 1) ? 'argument' : 'arguments';
-			
-			if (_strict)
-			{
-				if (numListenerArgs < _signal.valueClasses.length)
-				{
-					throw new ArgumentError('Listener has '+numListenerArgs+' '+argumentString
-							+' but it needs to be '+
-							_signal.valueClasses.length+' to match the signal\'s value classes.');
-				}
 			}
 		}
 	}
