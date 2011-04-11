@@ -128,45 +128,12 @@ package org.osflash.signals
 			// Broadcast to listeners.
 			
 			var bindingsToProcess:SignalBindingList = bindings;
-
-			if (bindingsToProcess.nonEmpty)
+			if(bindingsToProcess.nonEmpty)
 			{
-				if (numValueObjects == 0)
+				while (bindingsToProcess.nonEmpty)
 				{
-					while (bindingsToProcess.nonEmpty)
-					{
-						bindingsToProcess.head.execute0();
-						bindingsToProcess = bindingsToProcess.tail;
-					}
-				}
-				else if (numValueObjects == 1)
-				{
-					const singleValue:Object = valueObjects[0];
-
-					while (bindingsToProcess.nonEmpty)
-					{
-						bindingsToProcess.head.execute1(singleValue);
-						bindingsToProcess = bindingsToProcess.tail;
-					}
-				}
-				else if (numValueObjects == 2)
-				{
-					const value1:Object = valueObjects[0];
-					const value2:Object = valueObjects[1];
-
-					while (bindingsToProcess.nonEmpty)
-					{
-						bindingsToProcess.head.execute2(value1, value2);
-						bindingsToProcess = bindingsToProcess.tail;
-					}
-				}
-				else
-				{
-					while (bindingsToProcess.nonEmpty)
-					{
-						bindingsToProcess.head.execute(valueObjects);
-						bindingsToProcess = bindingsToProcess.tail;
-					}
+					bindingsToProcess.head.execute(valueObjects);
+					bindingsToProcess = bindingsToProcess.tail;
 				}
 			}
 		}

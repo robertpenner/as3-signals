@@ -16,11 +16,17 @@ package org.osflash.signals
 		private var _signal:ISignal;
 
 		/**
-		 * Private backing variable for the <code>paused</code> property.
+		 * Private backing variable for the <code>enabled</code> property.
 		 * @private
 		 */
 		private var _enabled:Boolean = true;
-
+		
+		/**
+		 * Private backing variable for the <code>strict</code> property.
+		 * @private
+		 */
+		private var _strict:Boolean = true;
+		
 		/**
 		 * Private backing variable for the <code>listener</code> property.
 		 *
@@ -44,7 +50,7 @@ package org.osflash.signals
 		 * @private
 		 */
 		private var _priority:int;
-
+		
 		/**
 		 * Creates and returns a new SignalBinding object.
 		 *
@@ -72,37 +78,32 @@ package org.osflash.signals
 		{
 			if (!_enabled) return;
 			if (_once) remove();
-			_listener.apply(null, valueObjects);
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function execute0():void
-		{
-			if (!_enabled) return;
-			if (_once) remove();
-			_listener();
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function execute1(value1:Object):void
-		{
-			if (!_enabled) return;
-			if (_once) remove();
-			_listener(value1);
-		}
-
-		/**
-		 * @inheritDoc
-		 */
-		public function execute2(value1:Object, value2:Object):void
-		{
-			if (!_enabled) return;
-			if (_once) remove();
-			_listener(value1, value2);
+			
+			// Note: this is a tiny bit slower than the before (1-3ms in MassDispatchPerformance), 
+			// because every valueObject look up is now in the binding and not in the ISignal. We 
+			// should possibly look at passing the value AOT?
+			const numValueObjects : int = valueObjects.length;
+			if(numValueObjects == 0)
+			{
+				_listener();
+			}
+			else if(numValueObjects == 1)
+			{
+				const singleValue:Object = valueObjects[0];
+				
+				_listener(singleValue);
+			}
+			else if(numValueObjects == 2)
+			{
+				const value1:Object = valueObjects[0];
+				const value2:Object = valueObjects[1];
+				
+				_listener(value1, value2);
+			}
+			else
+			{
+				_listener.apply(null, valueObjects);
+			}
 		}
 
 		/**
@@ -148,7 +149,14 @@ package org.osflash.signals
 		public function get enabled():Boolean { return _enabled; }
 
 		public function set enabled(value:Boolean):void	{ _enabled = value; }
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function get strict():Boolean { return _strict; }
 
+		public function set strict(value:Boolean):void	{ _strict = value; }
+		
 		/**
 		 * @inheritDoc
 		 */

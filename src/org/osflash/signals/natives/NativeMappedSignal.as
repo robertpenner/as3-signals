@@ -218,16 +218,19 @@ package org.osflash.signals.natives
 		override protected function onNativeEvent(event: Event): void
 		{
 			const mappedData:Object = mapEvent(event);
-
+			// TODO: We could in theory just cache this array, so that we're not hitting the gc
+			// every time we call onNativeEvent 
+			const singleValue:Array = [mappedData];
+			
 			var bindingsToProcess:SignalBindingList = bindings;
 
 			if (mappedData is Array)
 			{
-				if (valueClasses.length == 1 && valueClasses[0] == Array)//todo invariant
+				if (valueClasses.length == 1 && valueClasses[0] == Array)//TODO invariant
 				{
 					while (bindingsToProcess.nonEmpty)
 					{
-						bindingsToProcess.head.execute1(mappedData);
+						bindingsToProcess.head.execute(singleValue);
 						bindingsToProcess = bindingsToProcess.tail;
 					}
 				}
@@ -243,10 +246,10 @@ package org.osflash.signals.natives
 				}
 			}
 			else
-			{
+			{				
 				while (bindingsToProcess.nonEmpty)
 				{
-					bindingsToProcess.head.execute1(mappedData);
+					bindingsToProcess.head.execute(singleValue);
 					bindingsToProcess = bindingsToProcess.tail;
 				}
 			}

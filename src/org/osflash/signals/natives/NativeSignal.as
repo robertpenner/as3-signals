@@ -224,11 +224,15 @@ package org.osflash.signals.natives
 
 		protected function onNativeEvent(event: Event): void
 		{
+			// TODO: We could in theory just cache this array, so that we're not hitting the gc
+			// every time we call onNativeEvent 
+			const singleValue:Array = [event];
+			
 			var bindingsToProcess:SignalBindingList = bindings;
-
+			
 			while (bindingsToProcess.nonEmpty)
 			{
-				bindingsToProcess.head.execute1(event);
+				bindingsToProcess.head.execute(singleValue);
 				bindingsToProcess = bindingsToProcess.tail;
 			}
 		}

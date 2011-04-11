@@ -233,67 +233,7 @@ package org.osflash.signals
 			var binding : ISignalBinding = completed.add(newEmptyHandler());
 			binding.listener = null;
 		}
-		
-		//////
-		
-		[Test]
-		public function add_listener_and_call_execute0_on_binding_should_call_listener() : void
-		{
-			var binding : ISignalBinding = completed.add(newEmptyHandler());
-			binding.execute0(); 
-		}
-		
-		//////
-		
-		[Test]
-		public function add_listener_twice_and_call_execute0_on_binding_should_call_listener_and_not_on_signal_listeners() : void
-		{
-			completed.add(failIfCalled);
 			
-			var binding : ISignalBinding = completed.add(newEmptyHandler());
-			binding.execute0(); 
-		}
-		
-		//////
-		
-		[Test]
-		public function add_listener_and_call_execute1_on_binding_should_call_listener() : void
-		{
-			var binding : ISignalBinding = completed.add(newEmptyHandler());
-			binding.execute1(1); 
-		}
-		
-		//////
-		
-		[Test]
-		public function add_listener_twice_and_call_execute1_on_binding_should_call_listener_and_not_on_signal_listeners() : void
-		{
-			completed.add(failIfCalled);
-			
-			var binding : ISignalBinding = completed.add(newEmptyHandler());
-			binding.execute1(1); 
-		}
-		
-		//////
-		
-		[Test]
-		public function add_listener_and_call_execute2_on_binding_should_call_listener() : void
-		{
-			var binding : ISignalBinding = completed.add(newEmptyHandler());
-			binding.execute2(1, 2); 
-		}
-		
-		//////
-		
-		[Test]
-		public function add_listener_twice_and_call_execute2_on_binding_should_call_listener_and_not_on_signal_listeners() : void
-		{
-			completed.add(failIfCalled);
-			
-			var binding : ISignalBinding = completed.add(newEmptyHandler());
-			binding.execute2(1, 2); 
-		}
-		
 		//////
 		
 		[Test]
@@ -502,67 +442,7 @@ package org.osflash.signals
 			var binding : ISignalBinding = completed.addOnce(newEmptyHandler());
 			binding.listener = null;
 		}
-		
-		//////
-		
-		[Test]
-		public function addOnce_listener_and_call_execute0_on_binding_should_call_listener() : void
-		{
-			var binding : ISignalBinding = completed.addOnce(newEmptyHandler());
-			binding.execute0(); 
-		}
-		
-		//////
-		
-		[Test]
-		public function addOnce_listener_twice_and_call_execute0_on_binding_should_call_listener_and_not_on_signal_listeners() : void
-		{
-			completed.addOnce(failIfCalled);
-			
-			var binding : ISignalBinding = completed.addOnce(newEmptyHandler());
-			binding.execute0(); 
-		}
-		
-		//////
-		
-		[Test]
-		public function addOnce_listener_and_call_execute1_on_binding_should_call_listener() : void
-		{
-			var binding : ISignalBinding = completed.addOnce(newEmptyHandler());
-			binding.execute1(1); 
-		}
-		
-		//////
-		
-		[Test]
-		public function addOnce_listener_twice_and_call_execute1_on_binding_should_call_listener_and_not_on_signal_listeners() : void
-		{
-			completed.addOnce(failIfCalled);
-			
-			var binding : ISignalBinding = completed.addOnce(newEmptyHandler());
-			binding.execute1(1); 
-		}
-		
-		//////
-		
-		[Test]
-		public function addOnce_listener_and_call_execute2_on_binding_should_call_listener() : void
-		{
-			var binding : ISignalBinding = completed.addOnce(newEmptyHandler());
-			binding.execute2(1, 2); 
-		}
-		
-		//////
-		
-		[Test]
-		public function addOnce_listener_twice_and_call_execute2_on_binding_should_call_listener_and_not_on_signal_listeners() : void
-		{
-			completed.addOnce(failIfCalled);
-			
-			var binding : ISignalBinding = completed.addOnce(newEmptyHandler());
-			binding.execute2(1, 2); 
-		}
-		
+				
 		//////
 		
 		[Test]

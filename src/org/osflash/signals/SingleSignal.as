@@ -138,27 +138,7 @@ package org.osflash.signals
 			
 			if (null != binding)
 			{
-				if (numValueObjects == 0)
-				{
-					binding.execute0();
-				}
-				else if (numValueObjects == 1)
-				{
-					const singleValue:Object = valueObjects[0];
-					
-					binding.execute1(singleValue);
-				}
-				else if (numValueObjects == 2)
-				{
-					const value1:Object = valueObjects[0];
-					const value2:Object = valueObjects[1];
-
-					binding.execute2(value1, value2);
-				}
-				else
-				{
-					binding.execute(valueObjects);
-				}
+				binding.execute(valueObjects);
 			}
 		}
 		

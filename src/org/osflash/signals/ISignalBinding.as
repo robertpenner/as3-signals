@@ -20,6 +20,14 @@ package org.osflash.signals
 		 */
 		function get listener():Function;
 		function set listener(value:Function):void;
+		
+		/**
+		 * If the binding should use strict mode or not. Useful if you would like to use the ...rest
+		 * argument or if you don't want an exact match up of listener arguments and signal 
+		 * arguments.
+		 */
+		function get strict():Boolean;
+		function set strict(value:Boolean):void;
 
 		/**
 		 * Whether this binding is destroyed after it has been used once.
@@ -35,7 +43,6 @@ package org.osflash.signals
 		 * Whether the listener is called on execution. Defaults to true.
 		 */
 		function get enabled():Boolean;
-		
 		function set enabled(value:Boolean):void;
 
 		/**
@@ -45,26 +52,6 @@ package org.osflash.signals
 		 * @param valueObjects The array of arguments to be applied to the listener.
 		 */
 		function execute(valueObjects:Array):void;
-
-		/**
-		 * Executes a listener of arity <code>0</code>.
-		 */
-		function execute0():void;
-
-		/**
-		 * Executes a listener of arity <code>1</code>.
-		 *
-		 * @param value1 The argument for the listener.
-		 */
-		function execute1(value1:Object):void;
-
-		/**
-		 * Executes a listener of arity <code>2</code>.
-		 *
-		 * @param value1 The first argument for the listener.
-		 * @param value2 The second argument for the listener.
-		 */
-		function execute2(value1:Object, value2:Object):void;
 
 		/**
 		 * Removes the binding from its signal.
