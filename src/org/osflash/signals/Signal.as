@@ -1,7 +1,6 @@
 package org.osflash.signals
 {
 	import flash.errors.IllegalOperationError;
-	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
 
 	/** 

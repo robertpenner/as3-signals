@@ -1,14 +1,12 @@
 package org.osflash.signals.natives
 {
 	import org.osflash.signals.ISignalBinding;
-	import org.osflash.signals.DeluxeSignal;
 	import org.osflash.signals.Signal;
 	import org.osflash.signals.SignalBinding;
 	import org.osflash.signals.SignalBindingList;
 
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
-	import flash.utils.Dictionary;
 
 	/**
 	 * The NativeRelaySignal class is used to relay events from an IEventDispatcher

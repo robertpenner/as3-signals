@@ -3,8 +3,6 @@ package org.osflash.signals
 	import org.osflash.signals.events.IBubbleEventHandler;
 	import org.osflash.signals.events.IEvent;
 
-	import flash.utils.Dictionary;
-
 	/** 
 	 * Allows the valueClasses to be set in MXML, e.g.
 	 * <signals:Signal id="nameChanged">{[String, uint]}</signals:Signal>

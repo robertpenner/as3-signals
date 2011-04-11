@@ -1,10 +1,10 @@
 package org.osflash.signals.natives
 {
+	import org.osflash.signals.SignalBindingList;
+
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	import flash.utils.getQualifiedClassName;
-
-	import org.osflash.signals.SignalBindingList;
 
 	/**
 	 * <p>

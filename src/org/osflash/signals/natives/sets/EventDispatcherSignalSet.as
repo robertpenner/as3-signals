@@ -1,10 +1,9 @@
 package org.osflash.signals.natives.sets 
 {
-	import flash.events.EventDispatcher;
-
 	import org.osflash.signals.natives.NativeSignal;
 
 	import flash.events.Event;
+	import flash.events.EventDispatcher;
 
 	/**
 	 * @author Jon Adams
