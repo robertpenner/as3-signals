@@ -33,16 +33,8 @@ package org.osflash.signals
 		public var _PriorityListenersTest:PriorityListenersTest;
 		public var _RedispatchedEventTest:RedispatchedEventTest;
 		
-		public var _DeluxeSignalAmbiguousRelationshipTest:DeluxeSignalAmbiguousRelationshipTest;
-		public var _DeluxeSignalTest:DeluxeSignalTest;
-		public var _DeluxeSignalDispatchExtraArgsTest:DeluxeSignalDispatchExtraArgsTest;
-		public var _DeluxeSignalDispatchNoArgsTest:DeluxeSignalDispatchNoArgsTest;
-		public var _DeluxeSignalDispatchNonEventTest:DeluxeSignalDispatchNonEventTest;
 		public var _DeluxeSignalWithBubblingEventTest:DeluxeSignalWithBubblingEventTest;
-		public var _DeluxeSignalWithCustomEventTest:DeluxeSignalWithCustomEventTest;
 		public var _DeluxeSignalWithGenericEventTest:DeluxeSignalWithGenericEventTest;
-		public var _DeluxeSignalBindingTest:DeluxeSignalBindingTest;
-		public var _DeluxeSignalDispatchVarArgsTest:DeluxeSignalDispatchVarArgsTest;
 		
 		public var _MXMLDeluxeSignalTest:MXMLDeluxeSignalTest;
 		public var _MXMLSignalTest:MXMLSignalTest;
