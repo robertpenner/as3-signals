@@ -34,8 +34,6 @@ package org.osflash.signals.natives
 
 		protected var bindings:SignalBindingList;
 		
-		protected var existing:Dictionary;
-		
 		/**
 		 * Creates a NativeSignal instance to dispatch events on behalf of a target object.
 		 * @param	target The object on whose behalf the signal is dispatching events.
@@ -45,8 +43,6 @@ package org.osflash.signals.natives
 		public function NativeSignal(target:IEventDispatcher = null, eventType:String = "", eventClass:Class = null)
 		{
 			bindings = SignalBindingList.NIL;
-			existing = null;
-
 			this.target = target;
 			this.eventType = eventType;
 			this.eventClass = eventClass;
@@ -91,8 +87,7 @@ package org.osflash.signals.natives
 		public function set target(value:IEventDispatcher):void
 		{
 			if (value == _target) return;
-
-			removeAll();
+			if (_target) removeAll();
 			_target = value;
 		}
 		
@@ -107,7 +102,7 @@ package org.osflash.signals.natives
 		//TODO: @throws
 		public function addWithPriority(listener:Function, priority:int = 0):ISignalBinding
 		{
-			return registerListener(listener, false, priority);
+			return registerListenerWithPriority(listener, false, priority);
 		}
 		
 		/** @inheritDoc */
@@ -119,34 +114,27 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		public function addOnceWithPriority(listener:Function, priority:int = 0):ISignalBinding
 		{
-			return registerListener(listener, true, priority);
+			return registerListenerWithPriority(listener, true, priority);
 		}
 		
 		/** @inheritDoc */
 		public function remove(listener:Function):ISignalBinding
 		{
-			const binding : ISignalBinding = bindings.find(listener);
+			const binding:ISignalBinding = bindings.find(listener);
+			if (!binding) return null;
 			bindings = bindings.filterNot(listener);
 
-			if (!bindings.nonEmpty)
-			{
-				if(existing != null)
-				{
-					target.removeEventListener(eventType, onNativeEvent);
-					existing = null;
-				}
-			}
-			else delete existing[listener];
+			if (!bindings.nonEmpty) 
+				target.removeEventListener(eventType, onNativeEvent);
+				
 			return binding;
 		}
 		
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			if (null != existing) target.removeEventListener(eventType, onNativeEvent);
-
+			if (target) target.removeEventListener(eventType, onNativeEvent);
 			bindings = SignalBindingList.NIL;
-			existing = null;
 		}
 
 		/**
@@ -169,7 +157,8 @@ package org.osflash.signals.natives
 		 */
 		public function dispatchEvent(event:Event):Boolean
 		{
-			if (null == event) throw new ArgumentError('Event object expected.');
+			if (!target) throw new ArgumentError('Target object cannot be null.');
+			if (!event)  throw new ArgumentError('Event object cannot be null.');
 			
 			if (!(event is eventClass))
 				throw new ArgumentError('Event object '+event+' is not an instance of '+eventClass+'.');
@@ -180,24 +169,19 @@ package org.osflash.signals.natives
 			return target.dispatchEvent(event);
 		}
 		
-		protected function registerListener(listener:Function, once:Boolean = false, priority:int = 0):ISignalBinding
+		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):ISignalBinding
 		{
+			if (!target) throw new ArgumentError('Target object cannot be null.');
+
 			if (_strict && listener.length != 1)
-				throw new ArgumentError('Listener for native event must declare exactly 1 argument.');
+				throw new ArgumentError('Listener for native event must declare exactly 1 argument but had ' + listener.length + '.');
 				
 			if (registrationPossible(listener, once))
 			{
 				const binding:ISignalBinding = new SignalBinding(listener, once, this, priority);
-				bindings = bindings.insertWithPriority(binding);
-
-				if (null == existing)
-				{
-					existing = new Dictionary();
+				if (!bindings.nonEmpty) 
 					target.addEventListener(eventType, onNativeEvent, false, priority);
-				}
-
-				existing[listener] = true;
-				
+				bindings = bindings.insertWithPriority(binding);
 				return binding;
 			}
 			
@@ -206,33 +190,23 @@ package org.osflash.signals.natives
 
 		protected function registrationPossible(listener: Function,  once: Boolean): Boolean
 		{
-			if (!bindings.nonEmpty || !existing || !existing[listener]) return true;
+			if (!bindings.nonEmpty) return true;
 
 			const existingBinding:ISignalBinding = bindings.find(listener);
-
-			if (null != existingBinding)
+			if (existingBinding)
 			{
 				if (existingBinding.once != once)
 				{
-					//
 					// If the listener was previously added, definitely don't add it again.
 					// But throw an exception if their once value differs.
-					//
-
 					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 				}
 
-				//
 				// Listener was already added.
-				//
-
 				return false;
 			}
 
-			//
 			// This listener has not been added before.
-			//
-
 			return true;
 		}
 

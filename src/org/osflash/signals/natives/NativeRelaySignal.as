@@ -48,7 +48,7 @@ package org.osflash.signals.natives
 		public function set target(value:IEventDispatcher):void
 		{
 			if (value == _target) return;
-			removeAll();
+			if (_target) removeAll();
 			_target = value;
 		}
 		
@@ -68,26 +68,13 @@ package org.osflash.signals.natives
 
 		override public function set valueClasses(value:Array):void
 		{
-			eventClass = value && value.length > 0 ? value[0] : null;
+			eventClass = (value && value.length > 0) ? value[0] : null;
 		}
 		
+		// TODO: @throws
 		override public function add(listener:Function):ISignalBinding
 		{
 			return addWithPriority(listener);
-		}
-		
-		/** @inheritDoc */
-		public function addWithPriority(listener:Function, priority:int = 0):ISignalBinding
-		{
-			const nonEmptyBefore: Boolean = bindings.nonEmpty;
-			
-			// Try to add first because it may throw an exception.
-			const binding:ISignalBinding = registerListenerWithPriority(listener, false, priority);
-			// Account for cases where the same listener is added twice.
-			if (nonEmptyBefore != bindings.nonEmpty)
-				IEventDispatcher(target).addEventListener(eventType, onNativeEvent, false, priority);
-			
-			return binding;
 		}
 
 		override public function addOnce(listener:Function):ISignalBinding
@@ -96,30 +83,24 @@ package org.osflash.signals.natives
 		}
 
 		/** @inheritDoc */
+		public function addWithPriority(listener:Function, priority:int = 0):ISignalBinding
+		{
+			return registerListenerWithPriority(listener, false, priority);
+		}
+
+		/** @inheritDoc */
 		public function addOnceWithPriority(listener:Function, priority:int = 0):ISignalBinding
 		{
-			if (null == target) throw new ArgumentError('Target object expected.');
-			
-			const nonEmptyBefore:Boolean = bindings.nonEmpty;
-
-			// Try to add first because it may throw an exception.
-			const binding:ISignalBinding = registerListenerWithPriority(listener, true, priority);
-			// Account for cases where the same listener is added twice.
-			if (nonEmptyBefore != bindings.nonEmpty)
-				IEventDispatcher(target).addEventListener(eventType, onNativeEvent, false, priority);
-			
-			return binding;
+			return registerListenerWithPriority(listener, true, priority);
 		}
 		
 		/** @inheritDoc */
 		override public function remove(listener:Function):ISignalBinding
 		{
-			const nonEmptyBefore: Boolean = bindings.nonEmpty;
-
-			const binding :ISignalBinding = super.remove(listener);
-
-			if (nonEmptyBefore != bindings.nonEmpty) IEventDispatcher(target).removeEventListener(eventType, onNativeEvent);
-
+			const nonEmptyBefore:Boolean = bindings.nonEmpty;
+			const binding:ISignalBinding = super.remove(listener);
+			if (nonEmptyBefore != bindings.nonEmpty) 
+				target.removeEventListener(eventType, onNativeEvent);
 			return binding;
 		}
 
@@ -128,7 +109,7 @@ package org.osflash.signals.natives
 		 */
 		override public function removeAll(): void
 		{
-			if(bindings.nonEmpty) IEventDispatcher(target).removeEventListener(eventType, onNativeEvent);
+			if (target) target.removeEventListener(eventType, onNativeEvent);
 			super.removeAll();
 		}
 
@@ -151,7 +132,8 @@ package org.osflash.signals.natives
 		 */
 		public function dispatchEvent(event:Event):Boolean
 		{
-			if (null == event) throw new ArgumentError('Event object expected.');
+			if (!target) throw new ArgumentError('Target object cannot be null.');
+			if (!event)  throw new ArgumentError('Event object cannot be null.');
 
 			if (!(event is eventClass))
 				throw new ArgumentError('Event object '+event+' is not an instance of '+eventClass+'.');
@@ -162,7 +144,7 @@ package org.osflash.signals.natives
 			return target.dispatchEvent(event);
 		}
 
-		protected function onNativeEvent(event: Event): void
+		protected function onNativeEvent(event:Event): void
 		{
 			// TODO: We could in theory just cache this array, so that we're not hitting the gc
 			// every time we call onNativeEvent 
@@ -179,14 +161,23 @@ package org.osflash.signals.natives
 		
 		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):ISignalBinding
 		{
+			if (!target) throw new ArgumentError('Target object cannot be null.');
+			const nonEmptyBefore:Boolean = bindings.nonEmpty;
+			
+			var binding:ISignalBinding = null;
 			if (registrationPossible(listener, once))
 			{
-				const binding:ISignalBinding = new SignalBinding(listener, once, this, priority);
+				binding = new SignalBinding(listener, once, this, priority);
 				bindings = bindings.insertWithPriority(binding);
-				return binding;
 			}
-			
-			return bindings.find(listener);
+			else
+				binding = bindings.find(listener);
+				
+			// Account for cases where the same listener is added twice.
+			if (nonEmptyBefore != bindings.nonEmpty)
+				target.addEventListener(eventType, onNativeEvent, false, priority);
+				
+			return binding;
 		}
 		
 	}
