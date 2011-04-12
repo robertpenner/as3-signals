@@ -64,14 +64,15 @@ package org.osflash.signals
 			return addWithPriority(listener);
 		}
 
-		public function addWithPriority(listener:Function, priority:int = 0):ISignalBinding
-		{
-			return registerListenerWithPriority(listener, false, priority);
-		}
-
 		override public function addOnce(listener:Function):ISignalBinding
 		{
 			return addOnceWithPriority(listener);
+		}
+
+		/** @inheritDoc */
+		public function addWithPriority(listener:Function, priority:int = 0):ISignalBinding
+		{
+			return registerListenerWithPriority(listener, false, priority);
 		}
 
 		/** @inheritDoc */

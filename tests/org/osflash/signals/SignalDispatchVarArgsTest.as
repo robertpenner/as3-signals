@@ -2,30 +2,26 @@ package org.osflash.signals
 {
 	import asunit.asserts.assertEqualsArrays;
 	import asunit.asserts.assertEquals;
-	import asunit.framework.IAsync;
+
 	/**
 	 * @author Simon Richardson - simon@ustwo.co.uk
 	 */
 	public class SignalDispatchVarArgsTest
 	{
-		
-		[Inject]
-	    public var async:IAsync;
-	
-		public var completed:Signal;
+		public var signal:ISignal;
 
 		[Before]
 		public function setUp():void
 		{
-			completed = new Signal(int, int, int, int);
-			completed.strict = false;
+			signal = new Signal(int, int, int, int);
+			signal.strict = false;
 		}
 
 		[After]
 		public function tearDown():void
 		{
-			completed.removeAll();
-			completed = null;
+			signal.removeAll();
+			signal = null;
 		}
 		
 		//////
@@ -33,7 +29,7 @@ package org.osflash.signals
 		[Test]
 		public function adding_vararg_at_0_should_not_throw_error() : void
 		{
-			completed.add(handlerArgsAt0());
+			signal.add(handlerArgsAt0());
 		}
 		
 		//////
@@ -41,7 +37,7 @@ package org.osflash.signals
 		[Test]
 		public function adding_vararg_at_1_should_not_throw_error() : void
 		{
-			completed.add(handlerArgsAt1());
+			signal.add(handlerArgsAt1());
 		}
 		
 		//////
@@ -49,7 +45,7 @@ package org.osflash.signals
 		[Test]
 		public function adding_vararg_at_2_should_not_throw_error() : void
 		{
-			completed.add(handlerArgsAt2());
+			signal.add(handlerArgsAt2());
 		}
 		
 		//////
@@ -57,8 +53,8 @@ package org.osflash.signals
 		[Test]
 		public function adding_vararg_at_0_then_dispatch_should_not_throw_error() : void
 		{
-			completed.add(handlerArgsAt0());
-			completed.dispatch(0, 1, 2, 3);
+			signal.add(handlerArgsAt0());
+			signal.dispatch(0, 1, 2, 3);
 		}
 		
 		//////
@@ -66,8 +62,8 @@ package org.osflash.signals
 		[Test]
 		public function adding_vararg_at_1_then_dispatch_should_not_throw_error() : void
 		{
-			completed.add(handlerArgsAt1());
-			completed.dispatch(0, 1, 2, 3);
+			signal.add(handlerArgsAt1());
+			signal.dispatch(0, 1, 2, 3);
 		}
 		
 		//////
@@ -75,8 +71,8 @@ package org.osflash.signals
 		[Test]
 		public function adding_vararg_at_2_then_dispatch_should_not_throw_error() : void
 		{
-			completed.add(handlerArgsAt2());
-			completed.dispatch(0, 1, 2, 3);
+			signal.add(handlerArgsAt2());
+			signal.dispatch(0, 1, 2, 3);
 		}
 		
 		//////
@@ -84,8 +80,8 @@ package org.osflash.signals
 		[Test]
 		public function verify_num_args_after_dispatch() : void
 		{
-			completed.add(verifyNumArgs);
-			completed.dispatch(0, 1, 2, 3);
+			signal.add(verifyNumArgs);
+			signal.dispatch(0, 1, 2, 3);
 		}
 		
 		/////
@@ -96,8 +92,8 @@ package org.osflash.signals
 			const redispatch : Signal = new Signal();
 			redispatch.add(handlerArgsAt0());
 			
-			completed.add(redispatch.dispatch);
-			completed.dispatch(0, 1, 2, 3);
+			signal.add(redispatch.dispatch);
+			signal.dispatch(0, 1, 2, 3);
 		}
 				
 		private function handlerArgsAt0() : Function

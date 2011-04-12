@@ -129,7 +129,7 @@ package org.osflash.signals
 		public function set listener(value:Function):void
 		{
 			if (null == value) throw new ArgumentError(
-					'Given listener is null.\nDid you want to call pause() instead?');
+					'Given listener is null.\nDid you want to set enabled to false instead?');
 			
 			verifyListener(value);
 			_listener = value;
