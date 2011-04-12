@@ -8,6 +8,7 @@ h3. High Priority
 * integrate native signal sets from jonopus
 * finish base classes using signal sets, e.g. SignalSprite
 * SignalBinding: optional pass-through params suggested by xtyler
+* unit tests for SignalBindingList
 
 h3. Medium Priority
 
