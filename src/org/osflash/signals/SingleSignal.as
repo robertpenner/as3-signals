@@ -169,10 +169,6 @@ package org.osflash.signals
 				return binding;
 			}
 			
-			//
-			// TODO : Question about returning null, as you're adding the same listener twice. We 
-			// could possibly have a way to locate the binding by listener?
-			//
 			return binding;
 		}
 
