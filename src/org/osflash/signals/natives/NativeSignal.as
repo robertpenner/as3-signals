@@ -7,7 +7,6 @@ package org.osflash.signals.natives
 	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
-	import flash.utils.Dictionary;
 
 	/** 
 	 * Allows the eventClass to be set in MXML, e.g.
