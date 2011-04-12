@@ -2,6 +2,7 @@ package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
 	import asunit.framework.IAsync;
+	import org.osflash.signals.ISignalTestBase;
 
 	import org.osflash.signals.IPrioritySignal;
 	import org.osflash.signals.ISignalBinding;
@@ -13,11 +14,8 @@ package org.osflash.signals.natives
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
 
-	public class NativeSignalTest
+	public class NativeSignalTest extends ISignalTestBase
 	{
-	    [Inject]
-	    public var async:IAsync;
-	
 		private var clicked:NativeSignal;
 		private var sprite:IEventDispatcher;
 
@@ -26,6 +24,7 @@ package org.osflash.signals.natives
 		{
 			sprite = new Sprite();
 			clicked = new NativeSignal(sprite, 'click', MouseEvent);
+			signal = new NativeSignal(new EventDispatcher(), 'test', Event);
 		}
 
 		[After]
@@ -99,20 +98,6 @@ package org.osflash.signals.natives
 		}
 		//////
 		
-		[Test]
-		public function add_listener_then_remove_function_not_in_listeners_should_do_nothing():void
-		{
-			clicked.add(newEmptyHandler());
-			clicked.remove(newEmptyHandler());
-			assertEquals(1, clicked.numListeners);
-		}
-		
-		private function newEmptyHandler():Function
-		{
-			return function(e:*):void {};
-		}
-		
-		//////
 		[Test]
 		public function addOnce_and_dispatch_from_signal_should_remove_listener_automatically():void
 		{
@@ -253,7 +238,6 @@ package org.osflash.signals.natives
 		{
 		}
 		
-		//////
 		// Captures Issue #14
 		[Test]
 		public function addOnce_same_handler_in_handler_and_dispatch_should_call_it_again():void
@@ -275,71 +259,8 @@ package org.osflash.signals.natives
 			
 			assertEquals(1, clicked.numListeners);
 		}
-		
-		
-		//////
-		[Test]
-		public function can_use_anonymous_listeners():void
-		{
-			var bindings:Array = [];
-			
-			for ( var i:int = 0; i < 100;  i++ )
-			{
-				bindings.push(clicked.add(function(e:MouseEvent):void{}));
-			}
-			
-			assertTrue("there should be 100 listeners", clicked.numListeners == 100);
-			
-			for each( var binding:ISignalBinding in bindings )
-			{
-				clicked.remove(binding.listener);
-			}
-			assertTrue("all anonymous listeners removed", clicked.numListeners == 0);
-		}
-		
-		//////
-		[Test]
-		public function can_use_anonymous_listeners_in_addOnce():void
-		{
-			var bindings:Array = [];
-			
-			for ( var i:int = 0; i < 100;  i++ )
-			{
-				bindings.push(clicked.addOnce(function(e:MouseEvent):void{}));
-			}
-			
-			assertTrue("there should be 100 listeners", clicked.numListeners == 100);
-			
-			for each( var binding:ISignalBinding in bindings )
-			{
-				clicked.remove(binding.listener);
-			}
-			assertTrue("all anonymous listeners removed", clicked.numListeners == 0);
-		}
-		
-		//////
-		
-		[Test]
-		public function removed_listener_should_return_binding():void
-		{
-			var listener:Function = function(e:MouseEvent):void{};
-			var binding:ISignalBinding = clicked.add(listener);
-			
-			assertTrue("Binding is returned", binding == clicked.remove(listener));
-		}
-		
-		//////
-		
-		[Test]
-		public function removed_listener_should_be_returned():void
-		{
-			var binding:ISignalBinding = clicked.add(function(e:MouseEvent):void{});
-			var listener:Function = binding.listener;
-			
-			assertTrue("Binding is returned", binding == clicked.remove(listener));
-		}
-		
-		////// Captures Issue #24
+				
+		// Captures Issue #24
 		[Test]
 		public function setting_target_to_a_different_object_should_remove_all_listeners_from_1st_target():void
 		{
@@ -347,7 +268,7 @@ package org.osflash.signals.natives
 			clicked.target = new EventDispatcher();
 			assertFalse(sprite.hasEventListener('click'));
 		}
-		//////
+		
 		[Test]
 		public function setting_target_to_the_same_object_should_not_remove_listeners():void
 		{

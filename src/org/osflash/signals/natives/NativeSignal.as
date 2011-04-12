@@ -154,6 +154,7 @@ package org.osflash.signals.natives
 		 */
 		public function dispatch(...valueObjects):void
 		{
+			//TODO: check if ...valueObjects can ever be null.
 			if (null == valueObjects) throw new ArgumentError('Event object expected.');
 
 			if (valueObjects.length != 1) throw new ArgumentError('No more than one Event object expected.');

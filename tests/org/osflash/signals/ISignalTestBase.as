@@ -2,7 +2,7 @@ package org.osflash.signals
 {
 	import asunit.asserts.*;
 	import asunit.framework.IAsync;
-	import org.osflash.signals.events.GenericEvent;
+	import flash.events.Event;
 	
 	public class ISignalTestBase
 	{
@@ -28,7 +28,7 @@ package org.osflash.signals
 		public function addOnce_and_dispatch_should_remove_listener_automatically():void
 		{
 			signal.addOnce(newEmptyHandler());
-			signal.dispatch();
+			dispatchSignal();
 			assertEquals('there should be no listeners', 0, signal.numListeners);
 		}	
 		
@@ -37,7 +37,7 @@ package org.osflash.signals
 		{
 			signal.add(failIfCalled);
 			signal.remove(failIfCalled);
-			signal.dispatch();
+			dispatchSignal();
 		}
 		
 		[Test]
@@ -52,10 +52,10 @@ package org.osflash.signals
 		public function add_2_listeners_remove_2nd_then_dispatch_should_call_1st_not_2nd_listener():void
 		{
 			var called:Boolean = false;
-			signal.add(function():void { called = true; });
+			signal.add(function(e:* = null):void { called = true; });
 			signal.add(failIfCalled);
 			signal.remove(failIfCalled);
-			signal.dispatch();
+			dispatchSignal();
 			assertTrue(called);
 		}
 		
@@ -110,9 +110,9 @@ package org.osflash.signals
 		{
 			var calledA:Boolean = false;
 			var calledB:Boolean = false;
-			signal.add(function():void { calledA = true; });
-			signal.add(function():void { calledB = true; });
-			signal.dispatch();
+			signal.add(function(e:* = null):void { calledA = true; });
+			signal.add(function(e:* = null):void { calledB = true; });
+			dispatchSignal();
 			assertTrue(calledA);
 			assertTrue(calledB);
 		}
@@ -143,7 +143,7 @@ package org.osflash.signals
 		public function verify_strict_is_true_after_dispatch() : void
 		{
 			signal.add(newEmptyHandler());
-			signal.dispatch(new GenericEvent());
+			dispatchSignal();
 			assertTrue('strict should be true', signal.strict);
 		}
 		
@@ -153,7 +153,7 @@ package org.osflash.signals
 			signal.strict = false;
 			
 			signal.add(newEmptyHandler());
-			signal.dispatch(new GenericEvent());
+			dispatchSignal();
 			
 			assertFalse('strict should be false', signal.strict);
 		}
@@ -164,10 +164,10 @@ package org.osflash.signals
 			signal.add(selfRemover);
 			// async.add verifies the second listener is called
 			signal.add(async.add(newEmptyHandler(), 10));
-			signal.dispatch();
+			dispatchSignal();
 		}
 		
-		private function selfRemover():void
+		private function selfRemover(e:* = null):void
 		{
 			signal.remove(selfRemover);
 		}
@@ -177,10 +177,10 @@ package org.osflash.signals
 		{
 			signal.add(async.add(allRemover, 10));
 			signal.add(async.add(newEmptyHandler(), 10));
-			signal.dispatch();
+			dispatchSignal();
 		}
 
-		private function allRemover():void
+		private function allRemover(e:* = null):void
 		{
 			signal.removeAll();
 		}
@@ -189,10 +189,10 @@ package org.osflash.signals
 		public function adding_a_listener_during_dispatch_should_not_call_it():void
 		{
 			signal.add(async.add(addListenerDuringDispatch, 10));
-			signal.dispatch(new GenericEvent());
+			dispatchSignal();
 		}
 		
-		private function addListenerDuringDispatch():void
+		private function addListenerDuringDispatch(e:* = null):void
 		{
 			signal.add(failIfCalled);
 		}	
@@ -251,14 +251,19 @@ package org.osflash.signals
 			assertSame(binding, signal.remove(listener));
 		}
 		
+		protected function dispatchSignal():void 
+		{
+			signal.dispatch(new Event('test'));
+		}
+		
 		////// UTILITY METHODS //////
 
 		protected static function newEmptyHandler():Function
 		{
-			return function(...args):void {};
+			return function(e:* = null, ...args):void {};
 		}
 		
-		protected static function failIfCalled():void
+		protected static function failIfCalled(e:* = null):void
 		{
 			fail('This function should not have been called.');
 		}
