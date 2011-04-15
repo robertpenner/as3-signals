@@ -30,7 +30,6 @@ package org.osflash.signals
 		/**
 		 * Private backing variable for the <code>listener</code> property.
 		 *
-		 * Visible in the signals package for fast access.
 		 * @private
 		 */
 		private var _listener:Function;
@@ -52,6 +51,13 @@ package org.osflash.signals
 		private var _priority:int;
 		
 		/**
+		 * Private backing variable for the <code>params</code> property.
+		 * 
+		 * @private
+		 */
+		private var _params:Array;
+		
+		/**
 		 * Creates and returns a new SignalBinding object.
 		 *
 		 * @param listener The listener associated with the binding.
@@ -67,7 +73,7 @@ package org.osflash.signals
 			_once = once;
 			_signal = signal;
 			_priority = priority;
-			
+							
 			// Work out what the strict mode is from the signal and set it here. You can change
 			// the value of strict mode on the binding itself at a later date.
 			_strict = signal.strict;
@@ -83,11 +89,17 @@ package org.osflash.signals
 			if (!_enabled) return;
 			if (_once) remove();
 			
+			// If we have parameters, add them to the valueObject
+			// Note: This could be exensive if we're after the fastest dispatch possible.
+			if(null != _params && _params.length > 0)
+			{
+				// Should there be any checking on the params against the listener?
+				valueObjects = valueObjects.concat(_params);
+			}
+			
 			if(_strict)
 			{
-				// Note: this is a tiny bit slower than the before (1-3ms in MassDispatchPerformance), 
-				// because every valueObject look up is now in the binding and not in the ISignal. 
-				// We should possibly look at passing the value AOT?
+				// Dispatch as normal
 				const numValueObjects : int = valueObjects.length;
 				if(numValueObjects == 0)
 				{
@@ -176,6 +188,13 @@ package org.osflash.signals
 			// listener again.
 			verifyListener(listener);
 		}
+		
+		/**
+		 * @inheritDoc
+		 */		
+		public function get params() : Array { return _params; }
+		
+		public function set params(value : Array) : void { _params = value; }
 		
 		/**
 		 * @inheritDoc

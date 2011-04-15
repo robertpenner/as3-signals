@@ -83,7 +83,6 @@ package org.osflash.signals
 			signal = new Signal(GenericEvent);
 			signal.add(redispatch.dispatch);
 			signal.dispatch(new GenericEvent());
-		}
-		
+		}	
 	}
 }

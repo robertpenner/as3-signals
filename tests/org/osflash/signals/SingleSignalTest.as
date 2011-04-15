@@ -2,6 +2,7 @@ package org.osflash.signals
 {
 	import asunit.asserts.assertEquals;
 	import asunit.asserts.assertFalse;
+	import asunit.asserts.assertNotNull;
 	import asunit.asserts.assertNull;
 	import asunit.asserts.assertTrue;
 	import asunit.asserts.fail;
@@ -12,6 +13,7 @@ package org.osflash.signals
 
 	import flash.display.Sprite;
 	import flash.errors.IllegalOperationError;
+	import flash.events.Event;
 	
 	/**
 	 * @author Simon Richardson - me@simonrichardson.info
@@ -21,25 +23,25 @@ package org.osflash.signals
 		[Inject]
 	    public var async:IAsync;
 		
-		public var completed:SingleSignal;
+		public var signal:SingleSignal;
 		
 		[Before]
 		public function setUp():void
 		{
-			completed = new SingleSignal();
+			signal = new SingleSignal();
 		}
 
 		[After]
 		public function tearDown():void
 		{
-			completed.removeAll();
-			completed = null;
+			signal.removeAll();
+			signal = null;
 		}
 		
 		[Test]
 		public function numListeners_is_0_after_creation():void
 		{
-			assertEquals(0, completed.numListeners);
+			assertEquals(0, signal.numListeners);
 		}
 		
 		//////
@@ -47,7 +49,7 @@ package org.osflash.signals
 		[Test]
 		public function strict_should_be_true() : void
 		{
-			assertTrue('strict should be true', completed.strict);
+			assertTrue('strict should be true', signal.strict);
 		}
 		
 		//////
@@ -55,9 +57,9 @@ package org.osflash.signals
 		[Test]
 		public function verify_strict_after_setting_it_to_false() : void
 		{
-			completed.strict = false;
+			signal.strict = false;
 			
-			assertFalse('strict should be false', completed.strict);
+			assertFalse('strict should be false', signal.strict);
 		}
 		
 		//////
@@ -65,10 +67,10 @@ package org.osflash.signals
 		[Test]
 		public function verify_strict_is_true_after_dispatch() : void
 		{
-			completed.add(newEmptyHandler());
-			completed.dispatch(new GenericEvent());
+			signal.add(newEmptyHandler());
+			signal.dispatch(new GenericEvent());
 			
-			assertTrue('strict should be true', completed.strict);
+			assertTrue('strict should be true', signal.strict);
 		}
 		
 		//////
@@ -76,12 +78,12 @@ package org.osflash.signals
 		[Test]
 		public function set_strict_to_false_and_verify_strict_is_false_after_dispatch() : void
 		{
-			completed.strict = false;
+			signal.strict = false;
 			
-			completed.add(newEmptyHandler());
-			completed.dispatch(new GenericEvent());
+			signal.add(newEmptyHandler());
+			signal.dispatch(new GenericEvent());
 			
-			assertFalse('strict should be false', completed.strict);
+			assertFalse('strict should be false', signal.strict);
 		}
 		
 		//////
@@ -89,8 +91,8 @@ package org.osflash.signals
 		[Test]
 		public function dispatch_should_pass_event_to_listener_but_not_set_signal_or_target_properties():void
 		{
-			completed.add(async.add(checkGenericEvent, 10));
-			completed.dispatch(new GenericEvent());
+			signal.add(async.add(checkGenericEvent, 10));
+			signal.dispatch(new GenericEvent());
 		}
 		
 		protected function checkGenericEvent(e:GenericEvent):void
@@ -104,8 +106,8 @@ package org.osflash.signals
 		[Test(expects="flash.errors.IllegalOperationError")]
 		public function add_two_listeners_should_throw_an_error():void
 		{
-			completed.add(checkGenericEvent);
-			completed.add(checkGenericEvent);
+			signal.add(checkGenericEvent);
+			signal.add(checkGenericEvent);
 		}
 		
 		//////
@@ -115,7 +117,7 @@ package org.osflash.signals
 		{
 			for(var i : int = 0; i<100; i++)
 			{
-				completed.add(checkGenericEvent);
+				signal.add(checkGenericEvent);
 			}
 		}
 		
@@ -124,10 +126,10 @@ package org.osflash.signals
 		[Test]
 		public function add_one_listeners_then_remove_it_then_add_another_listener():void
 		{
-			completed.add(failIfCalled);
-			completed.remove(failIfCalled);
-			completed.add(checkGenericEvent);
-			completed.dispatch(new GenericEvent());
+			signal.add(failIfCalled);
+			signal.remove(failIfCalled);
+			signal.add(checkGenericEvent);
+			signal.dispatch(new GenericEvent());
 		}	
 		
 		//////
@@ -135,9 +137,9 @@ package org.osflash.signals
 		[Test]
 		public function addOnce_and_dispatch_should_remove_listener_automatically():void
 		{
-			completed.addOnce(newEmptyHandler());
-			completed.dispatch(new GenericEvent());
-			assertEquals('there should be no listeners', 0, completed.numListeners);
+			signal.addOnce(newEmptyHandler());
+			signal.dispatch(new GenericEvent());
+			assertEquals('there should be no listeners', 0, signal.numListeners);
 		}
 		
 		//////
@@ -145,9 +147,9 @@ package org.osflash.signals
 		[Test]
 		public function add_listener_then_remove_then_dispatch_should_not_call_listener():void
 		{
-			completed.add(failIfCalled);
-			completed.remove(failIfCalled);
-			completed.dispatch(new GenericEvent());
+			signal.add(failIfCalled);
+			signal.remove(failIfCalled);
+			signal.dispatch(new GenericEvent());
 		}
 		
 		private function failIfCalled(e:IEvent):void
@@ -160,9 +162,9 @@ package org.osflash.signals
 		[Test]
 		public function add_listener_then_remove_function_not_in_listeners_should_do_nothing():void
 		{
-			completed.add(newEmptyHandler());
-			completed.remove(newEmptyHandler());
-			assertEquals(1, completed.numListeners);
+			signal.add(newEmptyHandler());
+			signal.remove(newEmptyHandler());
+			assertEquals(1, signal.numListeners);
 		}
 		
 		private function newEmptyHandler():Function
@@ -176,19 +178,19 @@ package org.osflash.signals
 		public function addOnce_same_listener_twice_should_only_add_it_once():void
 		{
 			var func:Function = newEmptyHandler();
-			completed.addOnce(func);
-			completed.addOnce(func);
+			signal.addOnce(func);
+			signal.addOnce(func);
 		}
 		
 		//////
 		[Test]
 		public function dispatch_non_IEvent_without_error():void
 		{
-			completed.addOnce(checkSprite);
+			signal.addOnce(checkSprite);
 			// Sprite doesn't have a target property,
 			// so if the signal tried to set .target,
 			// an error would be thrown and this test would fail.
-			completed.dispatch(new Sprite());
+			signal.dispatch(new Sprite());
 		}
 		
 		private function checkSprite(sprite:Sprite):void
@@ -200,19 +202,19 @@ package org.osflash.signals
 		[Test]
 		public function adding_a_listener_during_dispatch_should_not_call_it():void
 		{
-			completed.add(async.add(addListenerDuringDispatch, 10));
-			completed.dispatch(new GenericEvent());
+			signal.add(async.add(addListenerDuringDispatch, 10));
+			signal.dispatch(new GenericEvent());
 		}
 		
 		private function addListenerDuringDispatch():void
 		{
 			try
 			{
-				completed.add(failIfCalled);
+				signal.add(failIfCalled);
 			}
 			catch(error : IllegalOperationError)
 			{
-				assertTrue('there should be 1 listener', completed.numListeners == 1);
+				assertTrue('there should be 1 listener', signal.numListeners == 1);
 			}
 			catch(error : Error)
 			{
@@ -226,9 +228,9 @@ package org.osflash.signals
 		public function removed_listener_should_return_binding():void
 		{
 			var listener:Function = function():void{};
-			var binding:ISignalBinding = completed.add(listener);
+			var binding:ISignalBinding = signal.add(listener);
 			
-			assertTrue("Binding is returned", binding == completed.remove(listener));
+			assertTrue("Binding is returned", binding == signal.remove(listener));
 		}
 		
 		//////
@@ -236,10 +238,115 @@ package org.osflash.signals
 		[Test]
 		public function removed_listener_should_be_returned():void
 		{
-			var binding:ISignalBinding = completed.add(function():void{});
+			var binding:ISignalBinding = signal.add(function():void{});
 			var listener:Function = binding.listener;
 			
-			assertTrue("Binding is returned", binding == completed.remove(listener));
+			assertTrue("Binding is returned", binding == signal.remove(listener));
+		}
+		
+		
+		[Test]
+		public function binding_params_are_null_when_created():void
+		{
+			var listener:Function = newEmptyHandler();
+			var binding:ISignalBinding = signal.add(listener);
+
+			assertNull('params should be null', binding.params); 
+		}
+
+		[Test]
+		public function binding_params_should_not_be_null_after_adding_array():void
+		{
+			var listener:Function = newEmptyHandler();
+			var binding:ISignalBinding = signal.add(listener);
+			binding.params = [];
+
+			assertNotNull('params should not be null', binding.params); 
+		}
+
+		[Test]
+		public function binding_params_with_one_param_should_be_sent_through_to_listener():void
+		{
+			var listener:Function = function(...args):void
+									{ 
+										assertTrue(args[0] is int);
+										assertEquals(args[0], 1234);
+									};
+
+			var binding:ISignalBinding = signal.add(listener);
+			binding.params = [1234];
+
+			signal.dispatch();
+		}	
+
+		[Test]
+		public function binding_params_with_multiple_params_should_be_sent_through_to_listener():void
+		{
+			var listener:Function = function(...args):void
+									{ 
+										assertTrue(args[0] is int);
+										assertEquals(args[0], 12345);
+										
+										assertTrue(args[1] is String);
+										assertEquals(args[1], 'text');
+										
+										assertTrue(args[2] is Sprite);
+										assertEquals(args[2], binding.params[2]);
+									};
+
+			var binding:ISignalBinding = signal.add(listener);
+			binding.params = [12345, 'text', new Sprite()];
+
+			signal.dispatch();
+		}
+				
+		[Test]
+		public function verify_chaining_of_binding_params():void
+		{
+			var listener:Function = function(...args):void
+									{ 
+										assertEquals(args.length, 1);
+										assertEquals(args[0], 1234567);
+									};
+			
+			signal.add(listener).params = [1234567];
+						
+			signal.dispatch();
+		}
+		
+		[Test]
+		public function verify_chaining_and_concat_of_binding_params():void
+		{
+			var listener:Function = function(...args):void
+									{ 
+										assertEquals(args.length, 2);
+										assertEquals(args[0], 12345678);
+										assertEquals(args[1], 'text');
+									};
+			
+			signal.add(listener).params = [12345678].concat(['text']);
+						
+			signal.dispatch();
+		}
+		
+		
+		[Test]
+		public function verify_chaining_and_pushing_on_to_binding_params():void
+		{
+			var listener:Function = function(...args):void
+									{ 
+										assertEquals(args.length, 2);
+										assertEquals(args[0], 123456789);
+										assertEquals(args[1], 'text');
+									};
+			
+			// This is ugly, but I put money on somebody will attempt to do this!
+			
+			var bindings:ISignalBinding;
+			(bindings = signal.add(listener)).params = [123456789];
+			bindings.params.push('text');
+			
+			signal.dispatch();
 		}
 	}
 }

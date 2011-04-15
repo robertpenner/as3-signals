@@ -2,6 +2,8 @@ package org.osflash.signals
 {
 	import asunit.asserts.*;
 	import asunit.framework.IAsync;
+
+	import flash.display.Sprite;
 	import flash.events.Event;
 	
 	public class ISignalTestBase
@@ -253,6 +255,146 @@ package org.osflash.signals
 		
 		protected function dispatchSignal():void 
 		{
+			signal.dispatch(new Event('test'));
+		}
+		
+		[Test]
+		public function binding_params_are_null_when_created():void
+		{
+			var listener:Function = newEmptyHandler();
+			var binding:ISignalBinding = signal.add(listener);
+
+			assertNull('params should be null', binding.params); 
+		}
+
+		[Test]
+		public function binding_params_should_not_be_null_after_adding_array():void
+		{
+			var listener:Function = newEmptyHandler();
+			var binding:ISignalBinding = signal.add(listener);
+			binding.params = [];
+
+			assertNotNull('params should not be null', binding.params); 
+		}
+
+		[Test]
+		public function binding_params_with_one_param_should_be_sent_through_to_listener():void
+		{
+			var listener:Function = function(e:Event, ...args):void
+									{ 
+										assertNotNull(e);
+										
+										assertTrue(args[0] is int);
+										assertEquals(args[0], 1234);
+									};
+
+			var binding:ISignalBinding = signal.add(listener);
+			binding.params = [1234];
+
+			signal.dispatch(new Event('test'));
+		}	
+
+		[Test]
+		public function binding_params_with_multiple_params_should_be_sent_through_to_listener():void
+		{
+			var listener:Function = function(e:Event, ...args):void
+									{ 
+										assertNotNull(e);
+											
+										assertTrue(args[0] is int);
+										assertEquals(args[0], 12345);
+										
+										assertTrue(args[1] is String);
+										assertEquals(args[1], 'text');
+										
+										assertTrue(args[2] is Sprite);
+										assertEquals(args[2], binding.params[2]);
+									};
+
+			var binding:ISignalBinding = signal.add(listener);
+			binding.params = [12345, 'text', new Sprite()];
+
+			signal.dispatch(new Event('test'));
+		}
+		
+		[Test]
+		public function binding_params_should_not_effect_other_bindings():void
+		{
+			var listener0:Function = function(e:Event):void
+									{ 
+										assertNotNull(e);
+										
+										assertEquals(arguments.length, 1);
+									};
+			
+			signal.add(listener0);
+			
+			var listener1:Function = function(e:Event):void
+									{ 
+										assertNotNull(e);
+										
+										assertEquals(arguments.length, 2);
+										assertEquals(arguments[1], 123456);
+									};
+			
+			var binding:ISignalBinding = signal.add(listener1);
+			binding.params = [123456];
+			
+			signal.dispatch(new Event('test'));
+		}
+		
+		[Test]
+		public function verify_chaining_of_binding_params():void
+		{
+			var listener:Function = function(e:Event, ...args):void
+									{ 
+										assertNotNull(e);
+										
+										assertEquals(args.length, 1);
+										assertEquals(args[0], 1234567);
+									};
+			
+			signal.add(listener).params = [1234567];
+						
+			signal.dispatch(new Event('test'));
+		}
+		
+		[Test]
+		public function verify_chaining_and_concat_of_binding_params():void
+		{
+			var listener:Function = function(e:Event, ...args):void
+									{ 
+										assertNotNull(e);
+										
+										assertEquals(args.length, 2);
+										assertEquals(args[0], 12345678);
+										assertEquals(args[1], 'text');
+									};
+			
+			signal.add(listener).params = [12345678].concat(['text']);
+						
+			signal.dispatch(new Event('test'));
+		}
+		
+		
+		[Test]
+		public function verify_chaining_and_pushing_on_to_binding_params():void
+		{
+			var listener:Function = function(e:Event, ...args):void
+									{ 
+										assertNotNull(e);
+										
+										assertEquals(args.length, 2);
+										assertEquals(args[0], 123456789);
+										assertEquals(args[1], 'text');
+									};
+			
+			// This is ugly, but I put money on somebody will attempt to do this!
+			
+			var bindings:ISignalBinding;
+			(bindings = signal.add(listener)).params = [123456789];
+			bindings.params.push('text');
+			
 			signal.dispatch(new Event('test'));
 		}
 		

@@ -28,6 +28,18 @@ package org.osflash.signals
 		 */
 		function get strict():Boolean;
 		function set strict(value:Boolean):void;
+		
+		/**
+		 * Allows the ISignalBinding to inject parameters when dispatching. The params will be at 
+		 * the tail of the arguments and the ISignal arguments will be at the head follow.
+		 * 
+		 * var signal:ISignal = new Signal(int, String);
+		 * signal.add(handler).params = [1];
+		 * signal.dispatch('a');
+		 * function handler(num:int, str:String):void{}
+		 */
+		function get params():Array;
+		function set params(value:Array):void;
 
 		/**
 		 * Whether this binding is destroyed after it has been used once.
