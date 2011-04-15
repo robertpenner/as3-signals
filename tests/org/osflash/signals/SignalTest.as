@@ -84,5 +84,56 @@ package org.osflash.signals
 			signal.add(redispatch.dispatch);
 			signal.dispatch(new GenericEvent());
 		}	
+		
+		[Test]
+		public function binding_params_with_multiple_named_params_should_be_sent_through_to_listener():void
+		{
+			var listener:Function = function(number:int, string:String, sprite:Sprite):void
+									{ 
+										assertEquals(number, 12345);
+										assertEquals(string, 'text');
+										assertEquals(sprite, binding.params[2]);
+									};
+
+			var binding:ISignalBinding = signal.add(listener);
+			binding.params = [12345, 'text', new Sprite()];
+
+			signal.dispatch();
+		}
+		
+		[Test]
+		public function binding_params_with_with_10_params_should_be_sent_through_to_listener():void
+		{
+			// Test the function.apply - maying sure we get everything we ask for.
+			var listener:Function = function(
+												number:int, 
+												string:String, 
+												sprite:Sprite,
+												alpha0:String,
+												alpha1:String,
+												alpha2:String,
+												alpha3:String,
+												alpha4:String,
+												alpha5:String,
+												alpha6:String
+												):void
+									{ 
+										assertEquals(number, 12345);
+										assertEquals(string, 'text');
+										assertEquals(sprite, binding.params[2]);
+										assertEquals(alpha0, 'a');
+										assertEquals(alpha1, 'b');
+										assertEquals(alpha2, 'c');
+										assertEquals(alpha3, 'd');
+										assertEquals(alpha4, 'e');
+										assertEquals(alpha5, 'f');
+										assertEquals(alpha6, 'g');
+									};
+
+			var binding:ISignalBinding = signal.add(listener);
+			binding.params = [12345, 'text', new Sprite(), "a", "b", "c", "d", "e", "f", "g"];
+
+			signal.dispatch();
+		}
 	}
 }
