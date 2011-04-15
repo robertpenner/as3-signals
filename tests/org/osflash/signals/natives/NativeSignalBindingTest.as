@@ -4,7 +4,7 @@ package org.osflash.signals.natives
 	import asunit.asserts.assertTrue;
 
 	import org.osflash.signals.ISignalBinding;
-	import org.osflash.signals.ISignalBindingTest;
+	import org.osflash.signals.ISignalBindingTestBase;
 	import org.osflash.signals.events.GenericEvent;
 
 	import flash.display.Sprite;
@@ -14,7 +14,7 @@ package org.osflash.signals.natives
 	/**
 	 * @author Simon Richardson - me@simonrichardson.info
 	 */
-	public class NativeSignalBindingTest extends ISignalBindingTest
+	public class NativeSignalBindingTest extends ISignalBindingTestBase
 	{
 		private var sprite:IEventDispatcher;
 		

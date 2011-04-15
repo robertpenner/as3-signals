@@ -16,7 +16,7 @@ package org.osflash.signals
 	/**
 	 * @author Simon Richardson - simon@ustwo.co.uk
 	 */
-	public class ISignalBindingTest
+	public class ISignalBindingTestBase
 	{
 		
 		[Inject]

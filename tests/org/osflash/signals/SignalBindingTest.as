@@ -4,7 +4,7 @@ package org.osflash.signals
 	/**
 	 * @author Simon Richardson - simon@ustwo.co.uk
 	 */
-	public class SignalBindingTest extends ISignalBindingTest
+	public class SignalBindingTest extends ISignalBindingTestBase
 	{
 
 		[Before]
