@@ -8,7 +8,7 @@ package org.osflash.signals
 	 */
 	public final class SignalBindingList
 	{
-		public static const NIL: SignalBindingList = new SignalBindingList(null, null);
+		public static const NIL:SignalBindingList = new SignalBindingList(null, null);
 
 		/**
 		 * Creates and returns a new SignalBindingList object.
@@ -21,9 +21,9 @@ package org.osflash.signals
 		 */
 		public function SignalBindingList(head:ISignalBinding, tail:SignalBindingList)
 		{
-			if(null == head && null == tail)
+			if (!head && !tail)
 			{
-				if(null != NIL) throw new ArgumentError(
+				if (NIL) throw new ArgumentError(
 						'Parameters head and tail are null. Use the NIL element instead.');
 
 				//this is the NIL element per definition
@@ -31,7 +31,7 @@ package org.osflash.signals
 			}
 			else
 			{
-				if(null == tail) throw new ArgumentError('Tail must not be null.');
+				if (!tail) throw new ArgumentError('Tail must not be null.');
 
 				this.head = head;
 				this.tail = tail;
@@ -39,13 +39,10 @@ package org.osflash.signals
 			}
 		}
 
-		//
 		// Although those variables are not const, they would be if AS3 would handle it correct.
-		//
-
-		public var head: ISignalBinding;
-		public var tail: SignalBindingList;
-		public var nonEmpty: Boolean;
+		public var head:ISignalBinding;
+		public var tail:SignalBindingList;
+		public var nonEmpty:Boolean;
 
 		/**
 		 * Whether or not the list is empty.
@@ -65,11 +62,9 @@ package org.osflash.signals
 		{
 			if (!nonEmpty) return 0;
 
-			//
 			// We could cache the length, but it would make methods like filterNot unnecessarily complicated.
 			// Instead we assume that O(n) is okay since the length property is used in rare cases.
 			// We could also cache the length lazy, but that is a waste of another 8b per list node (at least).
-			//
 
 			var result:uint = 0;
 			var p:SignalBindingList = this;
@@ -83,18 +78,18 @@ package org.osflash.signals
 			return result;
 		}
 
-		public function prepend(value:SignalBinding):SignalBindingList
+		public function prepend(value:ISignalBinding):SignalBindingList
 		{
 			return new SignalBindingList(value, this);
 		}
 
-		public function insertWithPriority(value: ISignalBinding):SignalBindingList
+		public function insertWithPriority(value:ISignalBinding):SignalBindingList
 		{
 			if (!nonEmpty) return new SignalBindingList(value, this);
 
-			const priority: int = value.priority;
+			const priority:int = value.priority;
 
-			if(priority > this.head.priority) return new SignalBindingList(value, this);
+			if (priority > this.head.priority) return new SignalBindingList(value, this);
 
 			var p:SignalBindingList = this;
 			var q:SignalBindingList = null;
@@ -108,7 +103,7 @@ package org.osflash.signals
 				{
 					q = new SignalBindingList(value, p);
 
-					if(null != last) last.tail = q;
+					if (null != last) last.tail = q;
 
 					return q;
 				}
@@ -165,11 +160,9 @@ package org.osflash.signals
 			if (!nonEmpty) return false;
 
 			var p:SignalBindingList = this;
-
 			while (p.nonEmpty)
 			{
 				if (p.head.listener == listener) return true;
-
 				p = p.tail;
 			}
 
@@ -181,11 +174,9 @@ package org.osflash.signals
 			if (!nonEmpty) return null;
 
 			var p:SignalBindingList = this;
-
 			while (p.nonEmpty)
 			{
 				if (p.head.listener == listener) return p.head;
-
 				p = p.tail;
 			}
 
