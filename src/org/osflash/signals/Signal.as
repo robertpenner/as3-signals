@@ -25,7 +25,7 @@ package org.osflash.signals
 
 		protected var _strict:Boolean = true;
 		
-		protected var bindings:SignalBindingList;
+		protected var bindings:SignalBindingList = SignalBindingList.NIL;
 		
 		/**
 		 * Creates a Signal instance to dispatch value objects.
@@ -35,13 +35,11 @@ package org.osflash.signals
 		 * but not: signal.dispatch(true, 42.5)
 		 * nor: signal.dispatch()
 		 *
-		 * NOTE: Subclasses cannot call super.apply(null, valueClasses),
+		 * NOTE: In AS3, subclasses cannot call super.apply(null, valueClasses),
 		 * but this constructor has logic to support super(valueClasses).
 		 */
 		public function Signal(...valueClasses)
 		{
-			bindings = SignalBindingList.NIL;
-
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
 			this.valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array) ? valueClasses[0] : valueClasses;
 		}
@@ -151,9 +149,9 @@ package org.osflash.signals
 		{
 			if (registrationPossible(listener, once))
 			{
-				const binding:ISignalBinding = new SignalBinding(listener, once, this);
-				bindings = new SignalBindingList(binding, bindings);
-				return binding;
+				const newBinding:ISignalBinding = new SignalBinding(listener, once, this);
+				bindings = bindings.prepend(newBinding);
+				return newBinding;
 			}
 			
 			return bindings.find(listener);
