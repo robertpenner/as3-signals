@@ -164,7 +164,7 @@ package org.osflash.signals
 			
 			if (!binding || verifyRegistrationOf(listener, once))
 			{
-				binding = new SignalBinding(listener, once, this);
+				binding = new SignalBinding(listener, this, once);
 				
 				return binding;
 			}

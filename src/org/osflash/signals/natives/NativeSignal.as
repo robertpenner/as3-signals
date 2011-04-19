@@ -177,7 +177,7 @@ package org.osflash.signals.natives
 				
 			if (registrationPossible(listener, once))
 			{
-				const binding:ISignalBinding = new SignalBinding(listener, once, this, priority);
+				const binding:ISignalBinding = new SignalBinding(listener, this, once, priority);
 				if (!bindings.nonEmpty) 
 					target.addEventListener(eventType, onNativeEvent, false, priority);
 				bindings = bindings.insertWithPriority(binding);

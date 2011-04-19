@@ -9,52 +9,12 @@ package org.osflash.signals
      */
 	public final class SignalBinding implements ISignalBinding
 	{
-		/**
-		 * Private backing variable for the <code>signal</code> property.
-		 * @private
-		 */
 		private var _signal:ISignal;
-
-		/**
-		 * Private backing variable for the <code>enabled</code> property.
-		 * @private
-		 */
 		private var _enabled:Boolean = true;
-		
-		/**
-		 * Private backing variable for the <code>strict</code> property.
-		 * @private
-		 */
 		private var _strict:Boolean = true;
-		
-		/**
-		 * Private backing variable for the <code>listener</code> property.
-		 *
-		 * @private
-		 */
 		private var _listener:Function;
-
-		/**
-		 * Private backing variable for the <code>once</code> property.
-		 *
-		 * Visible in the signals package for fast access.
-		 * @private
-		 */
-		private var _once:Boolean;
-
-		/**
-		 * Private backing variable for the <code>priority</code> property.
-		 *
-		 * Visible in the signals package for fast access.
-		 * @private
-		 */
-		private var _priority:int;
-		
-		/**
-		 * Private backing variable for the <code>params</code> property.
-		 * 
-		 * @private
-		 */
+		private var _once:Boolean = false;
+		private var _priority:int = 0;
 		private var _params:Array;
 		
 		/**
@@ -67,7 +27,7 @@ package org.osflash.signals
 		 *
 		 * @throws ArgumentError An error is thrown if the given listener closure is <code>null</code>.
 		 */
-		public function SignalBinding(listener:Function, once:Boolean = false, signal:ISignal = null, priority:int = 0)
+		public function SignalBinding(listener:Function, signal:ISignal, once:Boolean = false, priority:int = 0)
 		{
 			_listener = listener;
 			_once = once;

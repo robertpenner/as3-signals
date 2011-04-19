@@ -167,7 +167,7 @@ package org.osflash.signals.natives
 			var binding:ISignalBinding = null;
 			if (registrationPossible(listener, once))
 			{
-				binding = new SignalBinding(listener, once, this, priority);
+				binding = new SignalBinding(listener, this, once, priority);
 				bindings = bindings.insertWithPriority(binding);
 			}
 			else
