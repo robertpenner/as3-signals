@@ -47,6 +47,7 @@ package org.osflash.signals
 		public var _SignalTest:SignalTest;
 		public var _SignalWithCustomEventTest:SignalWithCustomEventTest;
 		public var _SignalBindingTest:SignalBindingTest;
+		public var _SignalBindingListTest:SignalBindingListTest;
 		public var _SignalDispatchVarArgsTest:SignalDispatchVarArgsTest;
 		
 		public var _SingleSignalTest:SingleSignalTest;

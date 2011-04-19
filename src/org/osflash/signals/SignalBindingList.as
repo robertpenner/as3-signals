@@ -19,22 +19,20 @@ package org.osflash.signals
 		 * @param head The head of the list.
 		 * @param tail The tail of the list.
 		 */
-		public function SignalBindingList(head:ISignalBinding, tail:SignalBindingList)
+		public function SignalBindingList(head:ISignalBinding, tail:SignalBindingList = null)
 		{
 			if (!head && !tail)
 			{
 				if (NIL) throw new ArgumentError(
 						'Parameters head and tail are null. Use the NIL element instead.');
 
-				//this is the NIL element per definition
+				//this is the NIL element as per definition
 				nonEmpty = false;
 			}
 			else
 			{
-				if (!tail) throw new ArgumentError('Tail must not be null.');
-
 				this.head = head;
-				this.tail = tail;
+				this.tail = tail || NIL;
 				nonEmpty = true;
 			}
 		}
@@ -42,7 +40,7 @@ package org.osflash.signals
 		// Although those variables are not const, they would be if AS3 would handle it correct.
 		public var head:ISignalBinding;
 		public var tail:SignalBindingList;
-		public var nonEmpty:Boolean;
+		public var nonEmpty:Boolean = false;
 
 		/**
 		 * Whether or not the list is empty.
@@ -109,7 +107,7 @@ package org.osflash.signals
 				}
 				else
 				{
-					q = new SignalBindingList(p.head, NIL);
+					q = new SignalBindingList(p.head);
 
 					if (null != last) last.tail = q;
 					if (null == first) first = q;
@@ -122,7 +120,7 @@ package org.osflash.signals
 
 			if (first == null || last == null) throw new Error('Internal error.');
 
-			last.tail = new SignalBindingList(value, NIL);
+			last.tail = new SignalBindingList(value);
 
 			return first;
 		}
@@ -134,7 +132,7 @@ package org.osflash.signals
 			if (listener == head.listener) return tail;
 
 			// The first item wasn't a match so the filtered list will contain it.
-			const first:SignalBindingList = new SignalBindingList(head, NIL);
+			const first:SignalBindingList = new SignalBindingList(head);
 			var current:SignalBindingList = tail;
 			var previous:SignalBindingList = first;
 			
@@ -147,7 +145,7 @@ package org.osflash.signals
 					return first;
 				}
 				
-				previous = previous.tail = new SignalBindingList(current.head, NIL);
+				previous = previous.tail = new SignalBindingList(current.head);
 				current = current.tail;
 			}
 
@@ -194,7 +192,7 @@ package org.osflash.signals
 				p = p.tail;
 			}
 
-			buffer += "Nil";
+			buffer += "NIL";
 
 			return "[List "+buffer+"]";
 		}
