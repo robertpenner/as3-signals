@@ -43,17 +43,6 @@ package org.osflash.signals
 		public var nonEmpty:Boolean = false;
 
 		/**
-		 * Whether or not the list is empty.
-		 *
-		 * <code>isEmpty</code> is the same as <code>!nonEmpty</code>. If performance is a criteria one should always
-		 * use the <code>nonEmpty</code> method. <code>isEmpty</code> is only a wrapper for convinience.
-		 */
-		public function get isEmpty():Boolean
-		{
-			return !nonEmpty;
-		}
-
-		/**
 		 * The length of the list.
 		 */
 		public function get length():uint
