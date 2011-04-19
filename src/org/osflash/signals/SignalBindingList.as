@@ -37,7 +37,7 @@ package org.osflash.signals
 			}
 		}
 
-		// Although those variables are not const, they would be if AS3 would handle it correct.
+		// Although those variables are not const, they would be if AS3 would handle it correctly.
 		public var head:ISignalBinding;
 		public var tail:SignalBindingList;
 		public var nonEmpty:Boolean = false;
@@ -82,7 +82,7 @@ package org.osflash.signals
 			if (!nonEmpty) return new SignalBindingList(binding);
 			// Special case: just one binding.
 			if (tail == NIL) 
-				return new SignalBindingList(head, new SignalBindingList(binding));
+				return new SignalBindingList(binding).prepend(head);
 			
 			const wholeClone:SignalBindingList = new SignalBindingList(head);
 			var subClone:SignalBindingList = wholeClone;
@@ -98,48 +98,31 @@ package org.osflash.signals
 			return wholeClone;
 		}		
 		
-		public function insertWithPriority(value:ISignalBinding):SignalBindingList
+		public function insertWithPriority(binding:ISignalBinding):SignalBindingList
 		{
-			if (!nonEmpty) return new SignalBindingList(value, this);
+			if (!nonEmpty) return new SignalBindingList(binding);
 
-			const priority:int = value.priority;
+			const priority:int = binding.priority;
+			// Special case: new binding has the highest priority.
+			if (priority > this.head.priority) return prepend(binding);
 
-			if (priority > this.head.priority) return new SignalBindingList(value, this);
-
-			var p:SignalBindingList = this;
 			var q:SignalBindingList = null;
+			const wholeClone:SignalBindingList = new SignalBindingList(head);
+			var subClone:SignalBindingList = wholeClone;
+			var current:SignalBindingList = tail;
 
-			var first:SignalBindingList = null;
-			var last:SignalBindingList = null;
-
-			while (p.nonEmpty)
+			// Find a binding with lower priority and go in front of it.
+			while (current.nonEmpty)
 			{
-				if (priority > p.head.priority)
-				{
-					q = new SignalBindingList(value, p);
-
-					if (null != last) last.tail = q;
-
-					return q;
-				}
-				else
-				{
-					q = new SignalBindingList(p.head);
-
-					if (null != last) last.tail = q;
-					if (null == first) first = q;
-
-					last = q;
-				}
-
-				p = p.tail;
+				if (priority > current.head.priority)
+					return current.prepend(binding);
+				
+				subClone = subClone.tail = new SignalBindingList(current.head);
+				current = current.tail;
 			}
-
-			if (first == null || last == null) throw new Error('Internal error.');
-
-			last.tail = new SignalBindingList(value);
-
-			return first;
+			// Binding has lowest priority.
+			subClone.tail = new SignalBindingList(binding);
+			return wholeClone;
 		}
 		
 		public function filterNot(listener:Function):SignalBindingList
