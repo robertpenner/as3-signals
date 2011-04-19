@@ -150,7 +150,7 @@ package org.osflash.signals
 			if (registrationPossible(listener, once))
 			{
 				const newBinding:ISignalBinding = new SignalBinding(listener, this, once);
-				bindings = bindings.prepend(newBinding);
+				bindings = bindings.append(newBinding);
 				return newBinding;
 			}
 			

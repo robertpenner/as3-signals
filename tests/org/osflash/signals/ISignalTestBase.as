@@ -120,6 +120,53 @@ package org.osflash.signals
 		}
 		
 		[Test]
+		public function two_listeners_are_called_in_same_order_as_added():void
+		{
+			var calledA:Boolean = false;
+			var calledB:Boolean = false;
+			const listenerA:Function = 
+				function(e:* = null):void
+				{
+					assertFalse('listener B should not have been called yet', calledB);
+					calledA = true;
+				};
+				
+			const listenerB:Function = 
+				function(e:* = null):void
+				{
+					assertTrue('listener A should have been called already', calledA);
+					calledB = true;
+				};
+				
+			signal.add(listenerA);
+			signal.add(listenerB);
+			dispatchSignal();
+			assertTrue(calledB);
+		}
+
+		[Test]
+		public function third_listener_added_is_called_after_first_two():void
+		{
+			var calledA:Boolean = false;
+			var calledB:Boolean = false;
+			var calledC:Boolean = false;
+				
+			const listenerC:Function = 
+				function(e:* = null):void
+				{
+					assertTrue('listener A should have been called already', calledA);
+					assertTrue('listener B should have been called already', calledB);
+					calledC = true;
+				};
+				
+			signal.add(function(e:* = null):void { calledA = true; });
+			signal.add(function(e:* = null):void { calledB = true; });
+			signal.add(listenerC);
+			dispatchSignal();
+			assertTrue(calledC);
+		}		
+		
+		[Test]
 		public function add_the_same_listener_twice_should_not_throw_error():void
 		{
 			var listener:Function = newEmptyHandler();
@@ -209,13 +256,13 @@ package org.osflash.signals
 			{
 				bindings.push(signal.add(newEmptyHandler()));
 			}
-			assertTrue("there should be 10 listeners", signal.numListeners == 10);
+			assertEquals("there should be 10 listeners", 10, signal.numListeners);
 
 			for each( var binding:ISignalBinding in bindings )
 			{
 				signal.remove(binding.listener);
 			}
-			assertTrue("all anonymous listeners removed", signal.numListeners == 0);
+			assertEquals("all anonymous listeners removed", 0, signal.numListeners);
 		}
 		
 		//TODO: clarify test purpose through naming and/or implementation
@@ -228,13 +275,13 @@ package org.osflash.signals
 			{
 				bindings.push(signal.addOnce(newEmptyHandler()));
 			}
-			assertTrue("there should be 10 listeners", signal.numListeners == 10);
+			assertEquals("there should be 10 listeners", 10, signal.numListeners);
 
 			for each( var binding:ISignalBinding in bindings )
 			{
 				signal.remove(binding.listener);
 			}
-			assertTrue("all anonymous listeners removed", signal.numListeners == 0);
+			assertEquals("all anonymous listeners removed", 0, signal.numListeners);
 		}		
 	
 		[Test]
@@ -257,7 +304,7 @@ package org.osflash.signals
 		{
 			signal.dispatch(new Event('test'));
 		}
-						
+		
 		////// UTILITY METHODS //////
 
 		protected static function newEmptyHandler():Function

@@ -48,6 +48,7 @@ package org.osflash.signals
 		public function get length():uint
 		{
 			if (!nonEmpty) return 0;
+			if (tail == NIL) return 1;
 
 			// We could cache the length, but it would make methods like filterNot unnecessarily complicated.
 			// Instead we assume that O(n) is okay since the length property is used in rare cases.
@@ -64,12 +65,39 @@ package org.osflash.signals
 
 			return result;
 		}
-
-		public function prepend(value:ISignalBinding):SignalBindingList
+		
+		public function prepend(binding:ISignalBinding):SignalBindingList
 		{
-			return new SignalBindingList(value, this);
+			return new SignalBindingList(binding, this);
 		}
 
+		/**
+		 * Clones the list and adds a binding to the end.
+		 * @param	binding
+		 * @return	A new list with the binding appended to the end.
+		 */
+		public function append(binding:ISignalBinding):SignalBindingList
+		{
+			if (!binding) return this;
+			if (!nonEmpty) return new SignalBindingList(binding);
+			// Special case: just one binding.
+			if (tail == NIL) 
+				return new SignalBindingList(head, new SignalBindingList(binding));
+			
+			const wholeClone:SignalBindingList = new SignalBindingList(head);
+			var subClone:SignalBindingList = wholeClone;
+			var current:SignalBindingList = tail;
+
+			while (current.nonEmpty)
+			{
+				subClone = subClone.tail = new SignalBindingList(current.head);
+				current = current.tail;
+			}
+			// Append the new binding last.
+			subClone.tail = new SignalBindingList(binding);
+			return wholeClone;
+		}		
+		
 		public function insertWithPriority(value:ISignalBinding):SignalBindingList
 		{
 			if (!nonEmpty) return new SignalBindingList(value, this);
@@ -113,7 +141,7 @@ package org.osflash.signals
 
 			return first;
 		}
-
+		
 		public function filterNot(listener:Function):SignalBindingList
 		{
 			if (!nonEmpty || listener == null) return this;
@@ -121,20 +149,20 @@ package org.osflash.signals
 			if (listener == head.listener) return tail;
 
 			// The first item wasn't a match so the filtered list will contain it.
-			const first:SignalBindingList = new SignalBindingList(head);
+			const wholeClone:SignalBindingList = new SignalBindingList(head);
+			var subClone:SignalBindingList = wholeClone;
 			var current:SignalBindingList = tail;
-			var previous:SignalBindingList = first;
 			
 			while (current.nonEmpty)
 			{
 				if (current.head.listener == listener)
 				{
 					// Splice out the current head.
-					previous.tail = current.tail;
-					return first;
+					subClone.tail = current.tail;
+					return wholeClone;
 				}
 				
-				previous = previous.tail = new SignalBindingList(current.head);
+				subClone = subClone.tail = new SignalBindingList(current.head);
 				current = current.tail;
 			}
 
