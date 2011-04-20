@@ -4,18 +4,18 @@ import asunit.asserts.assertEquals;
 public class PrioritySignalTest extends ISignalTestBase {
 
     private var prioritySignal:IPrioritySignal;
-    private var gotListenerPriorities:Array;
+    private var gotListenerDispatchOrder:Array;
 
     [Before]
     public function setUp():void {
-        gotListenerPriorities = [];
+        gotListenerDispatchOrder = [];
         prioritySignal = new PrioritySignal();
         signal = prioritySignal;
     }
 
     [After]
     override public function destroySignal():void {
-        gotListenerPriorities = null;
+        gotListenerDispatchOrder = null;
         prioritySignal.removeAll();
         prioritySignal = null;
         signal = null;
@@ -23,9 +23,9 @@ public class PrioritySignalTest extends ISignalTestBase {
 
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_1():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_1():void {
 
-        const expectedListenerPriorities:Array = [A,B,C];
+        const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerA, 3 );
         prioritySignal.addWithPriority( listenerB, 2 );
@@ -33,14 +33,14 @@ public class PrioritySignalTest extends ISignalTestBase {
 
         prioritySignal.dispatch();
 
-        assertArrayEqual( expectedListenerPriorities, gotListenerPriorities );
+        assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
 
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_2():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_2():void {
 
-        const expectedListenerPriorities:Array = [A,B,C];
+        const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerA, 3 );
         prioritySignal.addWithPriority( listenerC, 1 );
@@ -48,14 +48,14 @@ public class PrioritySignalTest extends ISignalTestBase {
 
         prioritySignal.dispatch();
 
-        assertArrayEqual( expectedListenerPriorities, gotListenerPriorities );
+        assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
 
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_3():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_3():void {
 
-        const expectedListenerPriorities:Array = [A,B,C];
+        const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerB, 2 );
         prioritySignal.addWithPriority( listenerA, 3 );
@@ -63,14 +63,14 @@ public class PrioritySignalTest extends ISignalTestBase {
 
         prioritySignal.dispatch();
 
-        assertArrayEqual( expectedListenerPriorities, gotListenerPriorities );
+        assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
 
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_4():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_4():void {
 
-        const expectedListenerPriorities:Array = [A,B,C];
+        const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerB, 2 );
         prioritySignal.addWithPriority( listenerA, 3 );
@@ -78,14 +78,14 @@ public class PrioritySignalTest extends ISignalTestBase {
 
         prioritySignal.dispatch();
 
-        assertArrayEqual( expectedListenerPriorities, gotListenerPriorities );
+        assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
 
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_5():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_5():void {
 
-        const expectedListenerPriorities:Array = [A,B,C];
+        const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerC, 1 );
         prioritySignal.addWithPriority( listenerA, 3 );
@@ -93,14 +93,14 @@ public class PrioritySignalTest extends ISignalTestBase {
 
         prioritySignal.dispatch();
 
-        assertArrayEqual( expectedListenerPriorities, gotListenerPriorities );
+        assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
 
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_6():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_6():void {
 
-        const expectedListenerPriorities:Array = [A,B,C];
+        const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerC, 1 );
         prioritySignal.addWithPriority( listenerB, 2 );
@@ -108,15 +108,15 @@ public class PrioritySignalTest extends ISignalTestBase {
 
         prioritySignal.dispatch();
 
-        assertArrayEqual( expectedListenerPriorities, gotListenerPriorities );
+        assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
 
     }
 
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_unconsecutive_1():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_unconsecutive_1():void {
 
-        const expectedListenerPriorities:Array = [A,B,C];
+        const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerA, 20 );
         prioritySignal.addWithPriority( listenerB, 10 );
@@ -124,13 +124,13 @@ public class PrioritySignalTest extends ISignalTestBase {
 
         prioritySignal.dispatch();
 
-        assertArrayEqual( expectedListenerPriorities, gotListenerPriorities );
+        assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_unconsecutive_2():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_unconsecutive_2():void {
 
-        const expectedListenerPriorities:Array = [A,B,C];
+        const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerA, 20 );
         prioritySignal.addWithPriority( listenerC, 5 );
@@ -138,13 +138,13 @@ public class PrioritySignalTest extends ISignalTestBase {
 
         prioritySignal.dispatch();
 
-        assertArrayEqual( expectedListenerPriorities, gotListenerPriorities );
+        assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_unconsecutive_3():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_unconsecutive_3():void {
 
-        const expectedListenerPriorities:Array = [A,B,C];
+        const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerB, 10 );
         prioritySignal.addWithPriority( listenerA, 20 );
@@ -152,13 +152,13 @@ public class PrioritySignalTest extends ISignalTestBase {
 
         prioritySignal.dispatch();
 
-        assertArrayEqual( expectedListenerPriorities, gotListenerPriorities );
+        assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_unconsecutive_4():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_unconsecutive_4():void {
 
-        const expectedListenerPriorities:Array = [A,B,C];
+        const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerB, 10 );
         prioritySignal.addWithPriority( listenerC, 5 );
@@ -166,13 +166,13 @@ public class PrioritySignalTest extends ISignalTestBase {
 
         prioritySignal.dispatch();
 
-        assertArrayEqual( expectedListenerPriorities, gotListenerPriorities );
+        assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_unconsecutive_5():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_unconsecutive_5():void {
 
-        const expectedListenerPriorities:Array = [A,B,C];
+        const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerC, 5 );
         prioritySignal.addWithPriority( listenerA, 20 );
@@ -180,13 +180,13 @@ public class PrioritySignalTest extends ISignalTestBase {
 
         prioritySignal.dispatch();
 
-        assertArrayEqual( expectedListenerPriorities, gotListenerPriorities );
+        assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_unconsecutive_6():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_unconsecutive_6():void {
 
-        const expectedListenerPriorities:Array = [A,B,C];
+        const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerC, 5 );
         prioritySignal.addWithPriority( listenerB, 10 );
@@ -194,13 +194,13 @@ public class PrioritySignalTest extends ISignalTestBase {
 
         prioritySignal.dispatch();
 
-        assertArrayEqual( expectedListenerPriorities, gotListenerPriorities );
+        assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_negative_1():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_negative_1():void {
 
-        const expectedListenerPriorities:Array = [A,B,C];
+        const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerA, -1 );
         prioritySignal.addWithPriority( listenerB, -2 );
@@ -208,14 +208,14 @@ public class PrioritySignalTest extends ISignalTestBase {
 
         prioritySignal.dispatch();
 
-        assertArrayEqual( expectedListenerPriorities, gotListenerPriorities );
+        assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
     }
 
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_negative_2():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_negative_2():void {
 
-        const expectedListenerPriorities:Array = [A,B,C];
+        const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerA, -1 );
         prioritySignal.addWithPriority( listenerC, -3 );
@@ -223,13 +223,13 @@ public class PrioritySignalTest extends ISignalTestBase {
 
         prioritySignal.dispatch();
 
-        assertArrayEqual( expectedListenerPriorities, gotListenerPriorities );
+        assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_negative_3():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_negative_3():void {
 
-        const expectedListenerPriorities:Array = [A,B,C];
+        const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerB, -2 );
         prioritySignal.addWithPriority( listenerA, -1 );
@@ -237,13 +237,13 @@ public class PrioritySignalTest extends ISignalTestBase {
 
         prioritySignal.dispatch();
 
-        assertArrayEqual( expectedListenerPriorities, gotListenerPriorities );
+        assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_negative_4():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_negative_4():void {
 
-        const expectedListenerPriorities:Array = [A,B,C];
+        const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerB, -2 );
         prioritySignal.addWithPriority( listenerC, -3 );
@@ -251,13 +251,13 @@ public class PrioritySignalTest extends ISignalTestBase {
 
         prioritySignal.dispatch();
 
-        assertArrayEqual( expectedListenerPriorities, gotListenerPriorities );
+        assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_negative_5():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_negative_5():void {
 
-        const expectedListenerPriorities:Array = [A,B,C];
+        const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerC, -3 );
         prioritySignal.addWithPriority( listenerA, -1 );
@@ -265,13 +265,13 @@ public class PrioritySignalTest extends ISignalTestBase {
 
         prioritySignal.dispatch();
 
-        assertArrayEqual( expectedListenerPriorities, gotListenerPriorities );
+        assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_negative_6():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_negative_6():void {
 
-        const expectedListenerPriorities:Array = [A,B,C];
+        const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerC, -3 );
         prioritySignal.addWithPriority( listenerB, -2 );
@@ -279,25 +279,25 @@ public class PrioritySignalTest extends ISignalTestBase {
 
         prioritySignal.dispatch();
 
-        assertArrayEqual( expectedListenerPriorities, gotListenerPriorities );
+        assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
     }
 
 
     private function listenerA():void {
-        gotListenerPriorities.push( A );
+        gotListenerDispatchOrder.push( A );
     }
 
     private function listenerB():void {
-        gotListenerPriorities.push( B );
+        gotListenerDispatchOrder.push( B );
     }
 
     private function listenerC():void {
-        gotListenerPriorities.push( C );
+        gotListenerDispatchOrder.push( C );
     }
 
     private function assertArrayEqual( expected:Array, got:Array ):void {
         assertEquals( "array length unequal", expected.length, got.length );
-        for ( var i:int = 0; i < gotListenerPriorities.length; i++ ) {
+        for ( var i:int = 0; i < gotListenerDispatchOrder.length; i++ ) {
             assertEquals( "@i=" + i, expected[i], got[i] );
         }
     }
