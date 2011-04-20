@@ -32,11 +32,10 @@ public class PrioritySignal extends Signal implements IPrioritySignal {
 
     protected function registerListenerWithPriority( listener:Function, once:Boolean = false, priority:int = 0 ):ISignalBinding {
         if ( registrationPossible( listener, once ) ) {
-            const binding:ISignalBinding = new SignalBinding( listener, once, this, priority );
+            const binding:ISignalBinding = new SignalBinding( listener, this, once, priority );
             bindings = bindings.insertWithPriority( binding );
             return binding;
         }
-
         return bindings.find( listener );
     }
 
