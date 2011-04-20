@@ -73,8 +73,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         const expectedListenerDispatchOrder:Array = [A,B,C];
 
         prioritySignal.addWithPriority( listenerB, 2 );
-        prioritySignal.addWithPriority( listenerA, 3 );
         prioritySignal.addWithPriority( listenerC, 1 );
+        prioritySignal.addWithPriority( listenerA, 3 );
 
         prioritySignal.dispatch();
 
