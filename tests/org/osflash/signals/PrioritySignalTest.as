@@ -23,7 +23,7 @@ public class PrioritySignalTest extends ISignalTestBase {
 
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_1():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_1():void {
 
         const expectedListenerPriorities:Array = [A,B,C];
 
@@ -38,7 +38,7 @@ public class PrioritySignalTest extends ISignalTestBase {
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_2():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_2():void {
 
         const expectedListenerPriorities:Array = [A,B,C];
 
@@ -53,7 +53,7 @@ public class PrioritySignalTest extends ISignalTestBase {
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_3():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_3():void {
 
         const expectedListenerPriorities:Array = [A,B,C];
 
@@ -68,7 +68,7 @@ public class PrioritySignalTest extends ISignalTestBase {
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_4():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_4():void {
 
         const expectedListenerPriorities:Array = [A,B,C];
 
@@ -83,7 +83,7 @@ public class PrioritySignalTest extends ISignalTestBase {
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_5():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_5():void {
 
         const expectedListenerPriorities:Array = [A,B,C];
 
@@ -98,7 +98,7 @@ public class PrioritySignalTest extends ISignalTestBase {
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_6():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_6():void {
 
         const expectedListenerPriorities:Array = [A,B,C];
 
@@ -114,7 +114,7 @@ public class PrioritySignalTest extends ISignalTestBase {
 
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_unconsecutive_1():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_unconsecutive_1():void {
 
         const expectedListenerPriorities:Array = [A,B,C];
 
@@ -128,7 +128,7 @@ public class PrioritySignalTest extends ISignalTestBase {
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_unconsecutive_2():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_unconsecutive_2():void {
 
         const expectedListenerPriorities:Array = [A,B,C];
 
@@ -142,7 +142,7 @@ public class PrioritySignalTest extends ISignalTestBase {
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_unconsecutive_3():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_unconsecutive_3():void {
 
         const expectedListenerPriorities:Array = [A,B,C];
 
@@ -156,7 +156,7 @@ public class PrioritySignalTest extends ISignalTestBase {
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_unconsecutive_4():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_unconsecutive_4():void {
 
         const expectedListenerPriorities:Array = [A,B,C];
 
@@ -170,7 +170,7 @@ public class PrioritySignalTest extends ISignalTestBase {
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_unconsecutive_5():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_unconsecutive_5():void {
 
         const expectedListenerPriorities:Array = [A,B,C];
 
@@ -184,7 +184,7 @@ public class PrioritySignalTest extends ISignalTestBase {
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_unconsecutive_6():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_unconsecutive_6():void {
 
         const expectedListenerPriorities:Array = [A,B,C];
 
@@ -198,7 +198,7 @@ public class PrioritySignalTest extends ISignalTestBase {
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_negative_1():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_negative_1():void {
 
         const expectedListenerPriorities:Array = [A,B,C];
 
@@ -213,7 +213,7 @@ public class PrioritySignalTest extends ISignalTestBase {
 
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_negative_2():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_negative_2():void {
 
         const expectedListenerPriorities:Array = [A,B,C];
 
@@ -227,7 +227,7 @@ public class PrioritySignalTest extends ISignalTestBase {
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_negative_3():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_negative_3():void {
 
         const expectedListenerPriorities:Array = [A,B,C];
 
@@ -241,7 +241,7 @@ public class PrioritySignalTest extends ISignalTestBase {
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_negative_4():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_negative_4():void {
 
         const expectedListenerPriorities:Array = [A,B,C];
 
@@ -255,7 +255,7 @@ public class PrioritySignalTest extends ISignalTestBase {
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_negative_5():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_negative_5():void {
 
         const expectedListenerPriorities:Array = [A,B,C];
 
@@ -269,7 +269,7 @@ public class PrioritySignalTest extends ISignalTestBase {
     }
 
     [Test]
-    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_added_order_even_if_negative_6():void {
+    public function listeners_added_with_higher_priority_should_be_called_first_independant_of_order_added_even_if_negative_6():void {
 
         const expectedListenerPriorities:Array = [A,B,C];
 
