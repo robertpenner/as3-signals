@@ -115,11 +115,16 @@ package org.osflash.signals
 			while (current.nonEmpty)
 			{
 				if (priority > current.head.priority)
-					return current.prepend(binding);
+				{
+					const newTail : SignalBindingList = current.prepend(binding);
+					return new SignalBindingList(head, newTail);
+				}
 				
 				subClone = subClone.tail = new SignalBindingList(current.head);
 				current = current.tail;
 			}
+
+
 			// Binding has lowest priority.
 			subClone.tail = new SignalBindingList(binding);
 			return wholeClone;
