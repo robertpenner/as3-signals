@@ -106,7 +106,6 @@ package org.osflash.signals
 			// Special case: new binding has the highest priority.
 			if (priority > this.head.priority) return prepend(binding);
 
-			var q:SignalBindingList = null;
 			const wholeClone:SignalBindingList = new SignalBindingList(head);
 			var subClone:SignalBindingList = wholeClone;
 			var current:SignalBindingList = tail;
