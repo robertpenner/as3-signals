@@ -31,6 +31,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         prioritySignal.addWithPriority( listenerB, 2 );
         prioritySignal.addWithPriority( listenerC, 1 );
 
+        assertEquals( "3 listeners have been added", 3, prioritySignal.numListeners );
+
         prioritySignal.dispatch();
 
         assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
@@ -45,6 +47,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         prioritySignal.addWithPriority( listenerA, 3 );
         prioritySignal.addWithPriority( listenerC, 1 );
         prioritySignal.addWithPriority( listenerB, 2 );
+
+        assertEquals( "3 listeners have been added", 3, prioritySignal.numListeners );
 
         prioritySignal.dispatch();
 
@@ -61,6 +65,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         prioritySignal.addWithPriority( listenerA, 3 );
         prioritySignal.addWithPriority( listenerC, 1 );
 
+        assertEquals( "3 listeners have been added", 3, prioritySignal.numListeners );
+
         prioritySignal.dispatch();
 
         assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
@@ -75,6 +81,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         prioritySignal.addWithPriority( listenerB, 2 );
         prioritySignal.addWithPriority( listenerC, 1 );
         prioritySignal.addWithPriority( listenerA, 3 );
+
+        assertEquals( "3 listeners have been added", 3, prioritySignal.numListeners );
 
         prioritySignal.dispatch();
 
@@ -91,6 +99,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         prioritySignal.addWithPriority( listenerA, 3 );
         prioritySignal.addWithPriority( listenerB, 2 );
 
+       assertEquals( "3 listeners have been added", 3, prioritySignal.numListeners );
+
         prioritySignal.dispatch();
 
         assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
@@ -105,6 +115,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         prioritySignal.addWithPriority( listenerC, 1 );
         prioritySignal.addWithPriority( listenerB, 2 );
         prioritySignal.addWithPriority( listenerA, 3 );
+
+        assertEquals( "3 listeners have been added", 3, prioritySignal.numListeners );
 
         prioritySignal.dispatch();
 
@@ -122,6 +134,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         prioritySignal.addWithPriority( listenerB, 10 );
         prioritySignal.addWithPriority( listenerC, 5 );
 
+        assertEquals( "3 listeners have been added", 3, prioritySignal.numListeners );
+
         prioritySignal.dispatch();
 
         assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
@@ -135,6 +149,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         prioritySignal.addWithPriority( listenerA, 20 );
         prioritySignal.addWithPriority( listenerC, 5 );
         prioritySignal.addWithPriority( listenerB, 10 );
+
+        assertEquals( "3 listeners have been added", 3, prioritySignal.numListeners );
 
         prioritySignal.dispatch();
 
@@ -150,6 +166,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         prioritySignal.addWithPriority( listenerA, 20 );
         prioritySignal.addWithPriority( listenerC, 5 );
 
+        assertEquals( "3 listeners have been added", 3, prioritySignal.numListeners );
+
         prioritySignal.dispatch();
 
         assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
@@ -163,6 +181,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         prioritySignal.addWithPriority( listenerB, 10 );
         prioritySignal.addWithPriority( listenerC, 5 );
         prioritySignal.addWithPriority( listenerA, 20 );
+
+        assertEquals( "3 listeners have been added", 3, prioritySignal.numListeners );
 
         prioritySignal.dispatch();
 
@@ -178,6 +198,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         prioritySignal.addWithPriority( listenerA, 20 );
         prioritySignal.addWithPriority( listenerB, 10 );
 
+        assertEquals( "3 listeners have been added", 3, prioritySignal.numListeners );
+
         prioritySignal.dispatch();
 
         assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
@@ -192,6 +214,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         prioritySignal.addWithPriority( listenerB, 10 );
         prioritySignal.addWithPriority( listenerA, 20 );
 
+        assertEquals( "3 listeners have been added", 3, prioritySignal.numListeners );
+
         prioritySignal.dispatch();
 
         assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
@@ -205,6 +229,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         prioritySignal.addWithPriority( listenerA, -1 );
         prioritySignal.addWithPriority( listenerB, -2 );
         prioritySignal.addWithPriority( listenerC, -3 );
+
+        assertEquals( "3 listeners have been added", 3, prioritySignal.numListeners );
 
         prioritySignal.dispatch();
 
@@ -221,6 +247,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         prioritySignal.addWithPriority( listenerC, -3 );
         prioritySignal.addWithPriority( listenerB, -2 );
 
+        assertEquals( "3 listeners have been added", 3, prioritySignal.numListeners );
+
         prioritySignal.dispatch();
 
         assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
@@ -234,6 +262,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         prioritySignal.addWithPriority( listenerB, -2 );
         prioritySignal.addWithPriority( listenerA, -1 );
         prioritySignal.addWithPriority( listenerC, -3 );
+
+        assertEquals( "3 listeners have been added", 3, prioritySignal.numListeners );
 
         prioritySignal.dispatch();
 
@@ -249,6 +279,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         prioritySignal.addWithPriority( listenerC, -3 );
         prioritySignal.addWithPriority( listenerA, -1 );
 
+        assertEquals( "3 listeners have been added", 3, prioritySignal.numListeners );
+
         prioritySignal.dispatch();
 
         assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
@@ -263,6 +295,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         prioritySignal.addWithPriority( listenerA, -1 );
         prioritySignal.addWithPriority( listenerB, -2 );
 
+        assertEquals( "3 listeners have been added", 3, prioritySignal.numListeners );
+
         prioritySignal.dispatch();
 
         assertArrayEqual( expectedListenerDispatchOrder, gotListenerDispatchOrder );
@@ -276,6 +310,8 @@ public class PrioritySignalTest extends ISignalTestBase {
         prioritySignal.addWithPriority( listenerC, -3 );
         prioritySignal.addWithPriority( listenerB, -2 );
         prioritySignal.addWithPriority( listenerA, -1 );
+
+        assertEquals( "3 listeners have been added", 3, prioritySignal.numListeners );
 
         prioritySignal.dispatch();
 
