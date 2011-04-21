@@ -76,6 +76,8 @@
     <hidden path=".git" />
     <hidden path="bin" />
     <hidden path="libs" />
+    <hidden path=".idea" />
+    <hidden path="report" />
   </hiddenPaths>
   <!-- Executed before build -->
   <preBuildCommand />
@@ -83,7 +85,7 @@
   <postBuildCommand alwaysRun="False" />
   <!-- Other project options -->
   <options>
-    <option showHiddenPaths="True" />
+    <option showHiddenPaths="False" />
     <option testMovie="NewTab" />
   </options>
 </project>
