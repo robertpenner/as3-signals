@@ -72,6 +72,7 @@ package org.osflash.signals.natives.sets
 		 */
 		public function get numListeners():int 
 		{
+			// TODO : This is horrid, it's very expensive to call this if there is a lot of signals.
 			var count:int = 0;
 			for each (var signal:INativeDispatcher in _signals) 
 			{
@@ -85,6 +86,7 @@ package org.osflash.signals.natives.sets
 		 */
 		public function get signals():Array 
 		{
+			// TODO : This is horrid, it's very expensive to call this if there is a lot of signals.
 			var result:Array = [];
 			for each (var signal:INativeDispatcher in _signals) 
 			{

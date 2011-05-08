@@ -30,12 +30,14 @@ package org.osflash.signals.natives.sets
 		}
 		public function get exitFrame():NativeSignal 
 		{
-			return getNativeSignal(Event.EXIT_FRAME);
+			// Using a string here because we need to target FP9
+			return getNativeSignal("exitFrame");
 		}
 		
 		public function get frameConstructed():NativeSignal 
 		{
-			return getNativeSignal(Event.FRAME_CONSTRUCTED);
+			// Using a string here because we need to target FP9
+			return getNativeSignal("frameConstructed");
 		}
 
 		public function get removed():NativeSignal 
