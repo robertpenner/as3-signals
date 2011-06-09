@@ -144,10 +144,12 @@ package org.osflash.signals.natives
 				var mappedData:Object = mapEvent(valueObjects[0] as Event);
 				dispatchMappedData(mappedData);
 			} 
+			/*
 			else 
 			{
 				super.dispatch.apply(null, valueObjects);
 			}
+			*/
 		}
 
 		private function areValueObjectValidForMapping(valueObjects:Array):Boolean

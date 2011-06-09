@@ -115,6 +115,17 @@ package org.osflash.signals.natives
 			dispatchTestEvent();
 		}
 		
+		[Test]
+		public function shouldnt_callback_during_checking_of_event_class_type ():void
+		{
+			signalMappingToEventType.add(function (value:String):void
+			{
+				fail("should fail");
+			});
+
+			sprite.dispatchEvent(new FakeMouseEvent(FakeMouseEvent.CLICK));
+		}
+
 		private function checkMappedEventTypeArgument(argument:String):void
 		{
 			assertSame(EventType, argument);
