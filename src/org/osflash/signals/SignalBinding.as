@@ -72,6 +72,8 @@ package org.osflash.signals
 			if (!_paused)
 			{
 				if (_once) remove();
+				
+				if (_listener.length < valueObjects.length) valueObjects.length = _listener.length;
 				_listener.apply(null, valueObjects);
 			}
 		}
@@ -96,7 +98,9 @@ package org.osflash.signals
 			if (!_paused)
 			{
 				if (_once) remove();
-				_listener(value1);
+				
+				if (_listener.length == 0) _listener();
+				else _listener(value1);
 			}
 		}
 
@@ -108,7 +112,10 @@ package org.osflash.signals
 			if (!_paused)
 			{
 				if (_once) remove();
-				_listener(value1, value2);
+				
+				if (_listener.length == 0) _listener();
+				else if (_listener.length == 1) _listener(value1);
+				else _listener(value1, value2);
 			}
 		}
 
@@ -127,20 +134,8 @@ package org.osflash.signals
 
 			if(null == _signal) throw new Error(
 				'Internal signal reference has not been set yet.');
-
-			if(value.length < _signal.valueClasses.length)
-			{
-				// trim the length of the arguments passed in to match what the function takes if
-				// it's less. varargs functions return 0 for their argument length, so this means if
-				// someone listens with a varargs function, no arguments will be inserted into the
-				// varargs.
-				_listener = function(...args) :* {
-					args.length = value.length;
-					return value.apply(this, args);
-				};
-			} else {
-				_listener = value;
-			}
+				
+			_listener = value;
 		}
 
 		/**
