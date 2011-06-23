@@ -21,7 +21,7 @@ button.clicked.add(onClicked);
 </code></pre>
 
 I am still looking for impressions, critiques and suggestions.  
-My email is info _at_ robertpenner.com.
+My email is robert _at_ robertpenner.com.
 I'm "@robpenner on Twitter":http://twitter.com/robpenner.
 
 h2. Background on AS3 Events
