@@ -194,7 +194,7 @@ package org.osflash.signals.natives.sets
 		public function add_exitFrame_then_EventDispatcher_dispatch_should_call_signal_listener():void
 		{
 			signalSet.exitFrame.add(async.add(handleEvent));
-			sprite.dispatchEvent(new Event(Event.EXIT_FRAME));
+			sprite.dispatchEvent(new Event("exitFrame"));
 		}
 		
 		//////
@@ -203,7 +203,7 @@ package org.osflash.signals.natives.sets
 		public function add_frameConstructed_then_EventDispatcher_dispatch_should_call_signal_listener():void
 		{
 			signalSet.frameConstructed.add(async.add(handleEvent));
-			sprite.dispatchEvent(new Event(Event.FRAME_CONSTRUCTED));
+			sprite.dispatchEvent(new Event("frameConstructed"));
 		}
 		
 		//////
@@ -274,7 +274,7 @@ package org.osflash.signals.natives.sets
 			const binding : ISignalBinding = signalSet.exitFrame.add(failIfCalled);
 			binding.enabled = false;
 			
-			sprite.dispatchEvent(new Event(Event.EXIT_FRAME));
+			sprite.dispatchEvent(new Event("exitFrame"));
 		}
 		
 		//////
@@ -285,7 +285,7 @@ package org.osflash.signals.natives.sets
 			const binding : ISignalBinding = signalSet.frameConstructed.add(failIfCalled);
 			binding.enabled = false;
 			
-			sprite.dispatchEvent(new Event(Event.FRAME_CONSTRUCTED));
+			sprite.dispatchEvent(new Event("frameConstructed"));
 		}
 		
 		//////
