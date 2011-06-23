@@ -49,6 +49,12 @@ package org.osflash.signals
 			assertSame(SignalBindingList.NIL, nullTail.tail);
 		}
 		
+		[Test(expects="ArgumentError")]
+		public function constructing_with_null_head_throws_error():void
+		{
+			new SignalBindingList(null, listOfA);
+		}
+		
 		[Test]
 		public function list_with_one_listener_contains_it():void
 		{

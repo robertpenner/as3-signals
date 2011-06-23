@@ -68,6 +68,6 @@ package org.osflash.signals
 		/**
 		 * Removes the binding from its signal.
 		 */
-		function remove(): void;
+		function remove():void;
 	}
 }

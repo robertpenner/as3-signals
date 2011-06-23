@@ -4,7 +4,6 @@ package org.osflash.signals
 	 * The SignalBindingList class represents an immutable list of SignalBinding objects.
 	 *
 	 * @author Joa Ebert
-	 * @private
 	 */
 	public final class SignalBindingList
 	{
@@ -20,18 +19,22 @@ package org.osflash.signals
 		 * Use the <code>NIL</code> element to represent an empty list. 
 		 * <code>NIL.prepend(value)</code> would create a list containing <code>value</code>.
 		 *
-		 * @param head The head of the list.
-		 * @param tail The tail of the list.
+		 * @param head The first binding in the list.
+		 * @param tail A list containing all bindings except head.
 		 */
 		public function SignalBindingList(head:ISignalBinding, tail:SignalBindingList = null)
 		{
 			if (!head && !tail)
 			{
-				if (NIL) throw new ArgumentError(
-						'Parameters head and tail are null. Use the NIL element instead.');
-
+				if (NIL) 
+					throw new ArgumentError('Parameters head and tail are null. Use the NIL element instead.');
+					
 				//this is the NIL element as per definition
 				nonEmpty = false;
+			}
+			else if (!head)
+			{
+				throw new ArgumentError('Parameter head cannot be null.');
 			}
 			else
 			{
@@ -92,10 +95,12 @@ package org.osflash.signals
 		{
 			if (!binding) return this;
 			if (!nonEmpty) return new SignalBindingList(binding);
-			// Special case: just one binding.
+			// Special case: just one binding currently in the list.
 			if (tail == NIL) 
 				return new SignalBindingList(binding).prepend(head);
 			
+			// The list already has two or more bindings.
+			// We have to build a new list with cloned items because they are immutable.
 			const wholeClone:SignalBindingList = new SignalBindingList(head);
 			var subClone:SignalBindingList = wholeClone;
 			var current:SignalBindingList = tail;
@@ -118,7 +123,6 @@ package org.osflash.signals
 			// Special case: new binding has the highest priority.
 			if (priority > this.head.priority) return prepend(binding);
 
-			var q:SignalBindingList = null;
 			const wholeClone:SignalBindingList = new SignalBindingList(head);
 			var subClone:SignalBindingList = wholeClone;
 			var current:SignalBindingList = tail;
@@ -136,12 +140,17 @@ package org.osflash.signals
 				current = current.tail;
 			}
 
-
 			// Binding has lowest priority.
 			subClone.tail = new SignalBindingList(binding);
 			return wholeClone;
 		}
 		
+		/**
+		 * Returns the bindings in this list that do not contain the supplied listener.
+		 * Note: assumes the listener is not repeated within the list.
+		 * @param	listener The function to remove.
+		 * @return A list consisting of all elements of this list that do not have listener.
+		 */
 		public function filterNot(listener:Function):SignalBindingList
 		{
 			if (!nonEmpty || listener == null) return this;
