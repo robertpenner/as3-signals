@@ -17,7 +17,7 @@ package org.osflash.signals
 		 *
 		 * <p>A user never has to create a SignalBindingList manually. 
 		 * Use the <code>NIL</code> element to represent an empty list. 
-		 * <code>NIL.prepend(value)</code> would create a list containing <code>value</code>.
+		 * <code>NIL.prepend(value)</code> would create a list containing <code>value</code>.</p>
 		 *
 		 * @param head The first binding in the list.
 		 * @param tail A list containing all bindings except head.

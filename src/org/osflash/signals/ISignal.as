@@ -32,6 +32,20 @@ package org.osflash.signals
 		function add(listener:Function):ISignalBinding;
 		
 		/**
+		 * Subscribes a conditional listener for this signal. When the listener is invoked,
+		 * the signal will check the return value of the function. If the return
+		 * value is a truthy value (true, > 0, or not null), the listener is
+		 * removed. If the value is falsey (false, 0, null, or nothing), the
+		 * listener is kept around.
+		 * @param	listener A function with arguments that matches the value 
+		 * classes dispatched by the signal and returns true or false indicating
+		 * whether the listener should be removed or not after the invocation.
+		 * If value classes are not specified (e.g. via Signal constructor), dispatch() can be called without arguments.
+		 * @return a ISignalBinding, which contains the function passed as the parameter
+		 */
+		function addConditionally(listener:Function/*<Boolean>*/):ISignalBinding;
+		
+		/**
 		 * Subscribes a one-time listener for this signal.
 		 * The signal will remove the listener automatically the first time it is called,
 		 * after the dispatch to all listeners is complete.
@@ -41,7 +55,7 @@ package org.osflash.signals
 		 * @return a ISignalBinding, which contains the Function passed as the parameter
 		 */
 		function addOnce(listener:Function):ISignalBinding;
-
+		
 		/**
 		 * Dispatches an object to listeners.
 		 * @param	valueObjects	Any number of parameters to send to listeners. Will be type-checked against valueClasses.

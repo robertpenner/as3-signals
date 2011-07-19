@@ -2,7 +2,7 @@ package org.osflash.signals
 {
 	import asunit.asserts.*;
 	import asunit.framework.IAsync;
-
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	
@@ -99,6 +99,15 @@ package org.osflash.signals
 		}
 		
 		[Test]
+		public function addConditionally_same_listener_twice_should_only_add_it_once():void
+		{
+			const func:Function = newEmptyHandler();
+			signal.addConditionally(func);
+			signal.addConditionally(func);
+			assertEquals(1, signal.numListeners);
+		}
+		
+		[Test]
 		public function addOnce_same_listener_twice_should_only_add_it_once():void
 		{
 			var func:Function = newEmptyHandler();
@@ -119,7 +128,6 @@ package org.osflash.signals
 			assertTrue(calledB);
 		}
 		
-
 		[Test]
 		public function add_the_same_listener_twice_should_not_throw_error():void
 		{
@@ -237,6 +245,33 @@ package org.osflash.signals
 			}
 			assertEquals("all anonymous listeners removed", 0, signal.numListeners);
 		}		
+		
+		[Test]
+		public function addConditionally_removes_listener_when_listener_returns_true():void
+		{
+			signal.addConditionally(function(e:* = null, ...args):Boolean{return true;});
+			assertEquals("there should be 1 listener", 1, signal.numListeners);
+			dispatchSignal();
+			assertEquals("addConditionally removed listener func when it returned true", 0, signal.numListeners);
+		}
+		
+		[Test]
+		public function addConditionally_does_not_remove_listener_when_listener_returns_false():void
+		{
+			signal.addConditionally(function(e:* = null, ...args):Boolean{return false;});
+			assertEquals("there should be 1 listener", 1, signal.numListeners);
+			dispatchSignal();
+			assertEquals("addConditionally didn't remove the listener func when it returned false", 1, signal.numListeners);
+		}
+		
+		[Test]
+		public function addConditionally_does_not_remove_listener_when_listener_return_type_is_void():void
+		{
+			signal.addConditionally(newEmptyHandler());
+			assertEquals("there should be 1 listener", 1, signal.numListeners);
+			dispatchSignal();
+			assertEquals("addConditionally didn't remove the listener func when its return type is void", 1, signal.numListeners);
+		}
 	
 		[Test]
 		public function add_listener_returns_binding_with_same_listener():void

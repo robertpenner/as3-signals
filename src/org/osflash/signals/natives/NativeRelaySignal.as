@@ -1,12 +1,13 @@
 package org.osflash.signals.natives
 {
+	import flash.events.Event;
+	import flash.events.IEventDispatcher;
+	
+	import org.osflash.signals.ConditionalSignalBinding;
 	import org.osflash.signals.ISignalBinding;
 	import org.osflash.signals.Signal;
 	import org.osflash.signals.SignalBinding;
 	import org.osflash.signals.SignalBindingList;
-
-	import flash.events.Event;
-	import flash.events.IEventDispatcher;
 
 	/**
 	 * The NativeRelaySignal class is used to relay events from an IEventDispatcher
@@ -88,6 +89,33 @@ package org.osflash.signals.natives
 			return registerListenerWithPriority(listener, false, priority);
 		}
 
+		/** @inheritDoc */
+		override public function addConditionally(listener:Function/*<Boolean>*/):ISignalBinding
+		{
+			return addConditionallyWithPriority(listener);
+		}
+		
+		public function addConditionallyWithPriority(listener:Function/*<Boolean>*/, priority:int = 0):ISignalBinding
+		{
+			if (!target) throw new ArgumentError('Target object cannot be null.');
+			const nonEmptyBefore:Boolean = bindings.nonEmpty;
+			
+			var binding:ISignalBinding = null;
+			if (registrationPossible(listener, false))
+			{
+				binding = new ConditionalSignalBinding(listener, this, priority);
+				bindings = bindings.insertWithPriority(binding);
+			}
+			else
+				binding = bindings.find(listener);
+			
+			// Account for cases where the same listener is added twice.
+			if (nonEmptyBefore != bindings.nonEmpty)
+				target.addEventListener(eventType, onNativeEvent, false, priority);
+			
+			return binding;
+		}
+		
 		/** @inheritDoc */
 		public function addOnceWithPriority(listener:Function, priority:int = 0):ISignalBinding
 		{

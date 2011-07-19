@@ -17,7 +17,22 @@ package org.osflash.signals
 		 * @return a ISignalBinding, which contains the Function passed as the parameter
 		 * @see ISignalBinding
 		 */
-		function addWithPriority(listener:Function, priority:int = 0):ISignalBinding
+		function addWithPriority(listener:Function, priority:int = 0):ISignalBinding;
+		
+		/**
+		 * Subscribes a conditional listener for the signal. If the listener
+		 * returns a truthy value (true, > 0, not null), the listener will
+		 * be removed from the signal. If the listener returns a falsey value
+		 * (false, 0, null, or nothing), the listener won't be removed from
+		 * the signal.
+		 * 
+		 * @param	listener A function with an argument list that matches the
+		 * types of arguments dispatched by the signal.
+		 * @return an ISignalBinding, which contains the Function passed as the
+		 * parameter.
+		 * @see ISignalBinding
+		 */
+		function addConditionallyWithPriority(listener:Function/*<Boolean>*/, priority:int = 0):ISignalBinding;
 		
 		/**
 		 * Subscribes a one-time listener for this signal.
@@ -33,6 +48,6 @@ package org.osflash.signals
 		 * @return a ISignalBinding, which contains the Function passed as the parameter
 		 * @see ISignalBinding
 		 */
-		function addOnceWithPriority(listener:Function, priority:int = 0):ISignalBinding
+		function addOnceWithPriority(listener:Function, priority:int = 0):ISignalBinding;
 	}
 }

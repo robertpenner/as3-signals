@@ -20,6 +20,15 @@ public class PrioritySignal extends Signal implements IPrioritySignal {
     public function addWithPriority( listener:Function, priority:int = 0 ):ISignalBinding {
         return registerListenerWithPriority( listener, false, priority );
     }
+	
+	public function addConditionallyWithPriority(listener:Function/*<Boolean>*/, priority:int = 0):ISignalBinding {
+		if ( registrationPossible( listener, false ) ) {
+			const binding:ISignalBinding = new ConditionalSignalBinding( listener, this, priority );
+			bindings = bindings.insertWithPriority( binding );
+			return binding;
+		}
+		return bindings.find( listener );
+	}
 
     /** @inheritDoc */
     public function addOnceWithPriority( listener:Function, priority:int = 0 ):ISignalBinding {

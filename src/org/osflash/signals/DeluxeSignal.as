@@ -63,6 +63,11 @@ package org.osflash.signals
 		{
 			return addWithPriority(listener);
 		}
+		
+		override public function addConditionally(listener:Function):ISignalBinding
+		{
+			return addConditionallyWithPriority(listener);
+		}
 
 		override public function addOnce(listener:Function):ISignalBinding
 		{
@@ -73,6 +78,19 @@ package org.osflash.signals
 		public function addWithPriority(listener:Function, priority:int = 0):ISignalBinding
 		{
 			return registerListenerWithPriority(listener, false, priority);
+		}
+		
+		/** @inheritDoc */
+		public function addConditionallyWithPriority(listener:Function/*<Boolean>*/, priority:int = 0):ISignalBinding
+		{
+			if (registrationPossible(listener, false))
+			{
+				const newBinding:ISignalBinding = new ConditionalSignalBinding(listener, this, priority);
+				bindings = bindings.insertWithPriority(newBinding);
+				return newBinding;
+			}
+			
+			return bindings.find(listener);
 		}
 
 		/** @inheritDoc */

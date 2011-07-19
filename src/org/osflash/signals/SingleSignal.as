@@ -26,7 +26,7 @@ package org.osflash.signals
 		
 		protected var _strict:Boolean = true;
 
-		protected var binding:SignalBinding;
+		protected var binding:ISignalBinding;
 		
 		/**
 		 * Creates a Signal instance to dispatch value objects.
@@ -79,6 +79,26 @@ package org.osflash.signals
 		public function add(listener:Function):ISignalBinding
 		{
 			return registerListener(listener);
+		}
+		
+		/** @inheritDoc */
+		public function addConditionally(listener:Function/*<Boolean>*/):ISignalBinding
+		{
+			if(binding != null)
+			{
+				//
+				// If the listener exits previously added, definitely don't add it.
+				//
+				
+				throw new IllegalOperationError('You cannot add or addOnce with a listener already added, remove the current listener first.');
+			}
+			
+			if (!binding || verifyRegistrationOf(listener, false))
+			{
+				return binding = new ConditionalSignalBinding(listener, this);
+			}
+			
+			return binding;
 		}
 		
 		/** @inheritDoc */

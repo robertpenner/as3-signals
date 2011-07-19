@@ -81,6 +81,19 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
+		public function addConditionally(listener:Function/*<Boolean>*/):ISignalBinding
+		{
+			if (registrationPossible(listener, false))
+			{
+				const newBinding:ISignalBinding = new ConditionalSignalBinding(listener, this);
+				bindings = bindings.prepend(newBinding);
+				return newBinding;
+			}
+			
+			return bindings.find(listener);
+		}
+		
+		/** @inheritDoc */
 		public function addOnce(listener:Function):ISignalBinding
 		{
 			return registerListener(listener, true);

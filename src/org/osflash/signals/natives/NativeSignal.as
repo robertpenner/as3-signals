@@ -1,12 +1,13 @@
 package org.osflash.signals.natives
 {
-	import org.osflash.signals.ISignalBinding;
-	import org.osflash.signals.SignalBinding;
-	import org.osflash.signals.SignalBindingList;
-
 	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
+	
+	import org.osflash.signals.ConditionalSignalBinding;
+	import org.osflash.signals.ISignalBinding;
+	import org.osflash.signals.SignalBinding;
+	import org.osflash.signals.SignalBindingList;
 
 	/** 
 	 * Allows the eventClass to be set in MXML, e.g.
@@ -102,6 +103,27 @@ package org.osflash.signals.natives
 		public function addWithPriority(listener:Function, priority:int = 0):ISignalBinding
 		{
 			return registerListenerWithPriority(listener, false, priority);
+		}
+		
+		/** @inheritDoc */
+		public function addConditionally(listener:Function/*<Boolean>*/):ISignalBinding
+		{
+			return addConditionallyWithPriority(listener);
+		}
+		
+		/** @inheritDoc */
+		public function addConditionallyWithPriority(listener:Function/*<Boolean>*/, priority:int = 0):ISignalBinding
+		{
+			if (registrationPossible(listener, false))
+			{
+				const binding:ISignalBinding = new ConditionalSignalBinding(listener, this, priority);
+				if (!bindings.nonEmpty) 
+					target.addEventListener(eventType, onNativeEvent, false, priority);
+				bindings = bindings.insertWithPriority(binding);
+				return binding;
+			}
+			
+			return bindings.find(listener);
 		}
 		
 		/** @inheritDoc */
