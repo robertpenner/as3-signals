@@ -15,6 +15,8 @@ package org.osflash.signals
 		private var bindingB:ISignalBinding;
 		private var bindingC:ISignalBinding;
 		private var listOfA:SignalBindingList;
+		private var listOfAB:SignalBindingList;
+		private var listOfABC:SignalBindingList;
 		
 		[Before]
 		public function setUp():void
@@ -27,6 +29,8 @@ package org.osflash.signals
 			bindingB = new SignalBinding(listenerB, signal);
 			bindingC = new SignalBinding(listenerC, signal);
 			listOfA = new SignalBindingList(bindingA);
+			listOfAB = listOfA.append(bindingB);
+			listOfABC = listOfAB.append(bindingC);
 		}
 		
 		[Test]
@@ -60,6 +64,12 @@ package org.osflash.signals
 		{
 			assertTrue(listOfA.contains(listenerA));
 		}
+		
+		[Test]
+		public function find_the_only_listener_yields_its_binding():void
+		{
+			assertSame(bindingA, listOfA.find(listenerA));
+		}
 
 		[Test]
 		public function list_with_one_listener_has_it_in_its_head():void
@@ -74,10 +84,46 @@ package org.osflash.signals
 		}
 
 		[Test]
+		public function find_in_empty_list_yields_null():void
+		{
+			assertNull(SignalBindingList.NIL.find(listenerA));
+		}		
+		
+		[Test]
 		public function NIL_does_not_contain_null_listener():void
 		{
 			assertFalse(SignalBindingList.NIL.contains(null));
 		}
+		
+		[Test]
+		public function find_the_1st_of_2_listeners_yields_its_binding():void
+		{
+			assertSame(bindingA, listOfAB.find(listenerA));
+		}		
+		
+		[Test]
+		public function find_the_2nd_of_2_listeners_yields_its_binding():void
+		{
+			assertSame(bindingB, listOfAB.find(listenerB));
+		}	
+		
+		[Test]
+		public function find_the_1st_of_3_listeners_yields_its_binding():void
+		{
+			assertSame(bindingA, listOfABC.find(listenerA));
+		}	
+		
+		[Test]
+		public function find_the_2nd_of_3_listeners_yields_its_binding():void
+		{
+			assertSame(bindingB, listOfABC.find(listenerB));
+		}	
+		
+		[Test]
+		public function find_the_3rd_of_3_listeners_yields_its_binding():void
+		{
+			assertSame(bindingC, listOfABC.find(listenerC));
+		}	
 		
 		[Test]
 		public function prepend_a_binding_makes_it_head_of_new_list():void
@@ -134,6 +180,53 @@ package org.osflash.signals
 		{
 			const newList:SignalBindingList = listOfA.append(null);
 			assertSame(listOfA, newList);
-		}		
+		}
+		
+		[Test]
+		public function filterNot_on_empty_list_yields_same_list():void
+		{
+			const newList:SignalBindingList = SignalBindingList.NIL.filterNot(listenerA);
+			assertSame(SignalBindingList.NIL, newList);
+		}
+		
+		[Test]
+		public function filterNot_null_yields_same_list():void
+		{
+			const newList:SignalBindingList = listOfA.filterNot(null);
+			assertSame(listOfA, newList);
+		}
+		
+		[Test]
+		public function filterNot_head_from_list_of_1_yields_empty_list():void
+		{
+			const newList:SignalBindingList = listOfA.filterNot(listOfA.head.listener);
+			assertSame(SignalBindingList.NIL, newList);
+		}
+		
+		[Test]
+		public function filterNot_1st_listener_from_list_of_2_yields_list_of_2nd_listener():void
+		{
+			const newList:SignalBindingList = listOfAB.filterNot(listenerA);
+			assertSame(listenerB, newList.head.listener);
+			assertEquals(1, newList.length);
+		}	
+		
+		[Test]
+		public function filterNot_2nd_listener_from_list_of_2_yields_list_of_head():void
+		{
+			const newList:SignalBindingList = listOfAB.filterNot(listenerB);
+			assertSame(listenerA, newList.head.listener);
+			assertEquals(1, newList.length);
+		}
+		
+		[Test]
+		public function filterNot_2nd_listener_from_list_of_3_yields_list_of_1st_and_3rd():void
+		{
+			const newList:SignalBindingList = listOfABC.filterNot(listenerB);
+			assertSame(listenerA, newList.head.listener);
+			assertSame(listenerC, newList.tail.head.listener);
+			assertEquals(2, newList.length);
+		}
+		
 	}
 }

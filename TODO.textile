@@ -6,7 +6,7 @@ h3. High Priority
 
 * finish base classes using signal sets, e.g. SignalSprite
 * SignalBinding: optional pass-through params suggested by xtyler
-* unit tests for SignalBindingList: insertWithPriority(), filterNot(), contains(), find()
+* unit tests for SignalBindingList: insertWithPriority()
 * ask community about impact of reversing order of listeners
 
 h3. Medium Priority
