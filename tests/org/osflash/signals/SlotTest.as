@@ -14,9 +14,9 @@ package org.osflash.signals
 		}
 		
 		[Test]
-		public function add_listener_pause_then_resume_on_slot_should_dispatch() : void
+		public function add_listener_pause_then_resume_on_slot_should_dispatch():void
 		{
-			var slot : ISlot = signal.add(async.add(checkGenericEvent, 10));
+			var slot:ISlot = signal.add(async.add(checkGenericEvent, 10));
 			slot.enabled = false;
 			slot.enabled = true;
 			
@@ -24,9 +24,9 @@ package org.osflash.signals
 		}
 		
 		[Test]
-		public function addOnce_listener_pause_then_resume_on_slot_should_dispatch() : void
+		public function addOnce_listener_pause_then_resume_on_slot_should_dispatch():void
 		{
-			var slot : ISlot = signal.addOnce(async.add(checkGenericEvent, 10));
+			var slot:ISlot = signal.addOnce(async.add(checkGenericEvent, 10));
 			slot.enabled = false;
 			slot.enabled = true;
 			

@@ -60,7 +60,7 @@ package org.osflash.signals
 			if(_strict)
 			{
 				// Dispatch as normal
-				const numValueObjects : int = valueObjects.length;
+				const numValueObjects:int = valueObjects.length;
 				if(numValueObjects == 0)
 				{
 					_listener();
@@ -152,9 +152,9 @@ package org.osflash.signals
 		/**
 		 * @inheritDoc
 		 */		
-		public function get params() : Array { return _params; }
+		public function get params():Array { return _params; }
 		
-		public function set params(value : Array) : void { _params = value; }
+		public function set params(value:Array):void { _params = value; }
 		
 		/**
 		 * @inheritDoc

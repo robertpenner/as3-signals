@@ -1,9 +1,8 @@
 package org.osflash.signals
 {
 	import asunit.asserts.*;
-	import org.osflash.signals.support.SpriteWithSignals;
 
-	import flash.display.Sprite;
+	import org.osflash.signals.support.SpriteWithSignals;
 
 	public class MXMLSignalTest
 	{	

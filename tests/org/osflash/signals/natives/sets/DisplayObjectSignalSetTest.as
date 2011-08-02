@@ -56,7 +56,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function numListeners_should_be_zero() : void
+		public function numListeners_should_be_zero():void
 		{
 			assertTrue('Number of listeners should be 0.', signalSet.numListeners == 0);
 		}
@@ -64,7 +64,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function signals_should_be_not_null() : void
+		public function signals_should_be_not_null():void
 		{
 			assertNotNull('Signals should not be null.', signalSet.signals);
 		}
@@ -72,7 +72,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function signals_length_should_be_empty() : void
+		public function signals_length_should_be_empty():void
 		{
 			assertTrue('Signals length should be 0.', signalSet.signals.length == 0);
 		}
@@ -80,7 +80,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function signals_length_should_be_zero_after_removeAll() : void
+		public function signals_length_should_be_zero_after_removeAll():void
 		{
 			signalSet.removeAll();
 			
@@ -90,7 +90,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function numListeners_should_be_zero_after_removeAll() : void
+		public function numListeners_should_be_zero_after_removeAll():void
 		{
 			signalSet.removeAll();
 			
@@ -100,7 +100,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function added_signal_should_not_be_null() : void
+		public function added_signal_should_not_be_null():void
 		{
 			assertNotNull('Added NativeSignal should not be null', signalSet.added);
 		}
@@ -108,7 +108,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function addedToStage_signal_should_not_be_null() : void
+		public function addedToStage_signal_should_not_be_null():void
 		{
 			assertNotNull('AddedToStage NativeSignal should not be null', signalSet.addedToStage);
 		}
@@ -116,7 +116,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function enterFrame_signal_should_not_be_null() : void
+		public function enterFrame_signal_should_not_be_null():void
 		{
 			assertNotNull('EnterFrame NativeSignal should not be null', signalSet.enterFrame);
 		}
@@ -124,7 +124,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function exitFrame_signal_should_not_be_null() : void
+		public function exitFrame_signal_should_not_be_null():void
 		{
 			assertNotNull('ExitFrame NativeSignal should not be null', signalSet.exitFrame);
 		}
@@ -132,7 +132,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function frameConstructed_signal_should_not_be_null() : void
+		public function frameConstructed_signal_should_not_be_null():void
 		{
 			assertNotNull('FrameConstructed NativeSignal should not be null', signalSet.frameConstructed);
 		}
@@ -140,7 +140,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function removed_signal_should_not_be_null() : void
+		public function removed_signal_should_not_be_null():void
 		{
 			assertNotNull('Removed NativeSignal should not be null', signalSet.removed);
 		}
@@ -148,7 +148,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function removedFromStage_signal_should_not_be_null() : void
+		public function removedFromStage_signal_should_not_be_null():void
 		{
 			assertNotNull('RemovedFromStage NativeSignal should not be null', signalSet.removedFromStage);
 		}
@@ -156,7 +156,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function render_signal_should_not_be_null() : void
+		public function render_signal_should_not_be_null():void
 		{
 			assertNotNull('Render NativeSignal should not be null', signalSet.render);
 		}
@@ -238,7 +238,7 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_added_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const slot : ISlot = signalSet.added.add(failIfCalled);
+			const slot:ISlot = signalSet.added.add(failIfCalled);
 			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event(Event.ADDED));
@@ -249,7 +249,7 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_addedToStage_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const slot : ISlot = signalSet.addedToStage.add(failIfCalled);
+			const slot:ISlot = signalSet.addedToStage.add(failIfCalled);
 			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event(Event.ADDED_TO_STAGE));
@@ -260,7 +260,7 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_enterFrame_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const slot : ISlot = signalSet.enterFrame.add(failIfCalled);
+			const slot:ISlot = signalSet.enterFrame.add(failIfCalled);
 			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event(Event.ENTER_FRAME));
@@ -271,7 +271,7 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_exitFrame_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const slot : ISlot = signalSet.exitFrame.add(failIfCalled);
+			const slot:ISlot = signalSet.exitFrame.add(failIfCalled);
 			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event("exitFrame"));
@@ -282,7 +282,7 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_frameConstructed_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const slot : ISlot = signalSet.frameConstructed.add(failIfCalled);
+			const slot:ISlot = signalSet.frameConstructed.add(failIfCalled);
 			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event("frameConstructed"));
@@ -293,7 +293,7 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_removed_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const slot : ISlot = signalSet.removed.add(failIfCalled);
+			const slot:ISlot = signalSet.removed.add(failIfCalled);
 			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event(Event.REMOVED));
@@ -304,7 +304,7 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_removedFromStage_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const slot : ISlot = signalSet.removedFromStage.add(failIfCalled);
+			const slot:ISlot = signalSet.removedFromStage.add(failIfCalled);
 			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event(Event.REMOVED_FROM_STAGE));
@@ -315,7 +315,7 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_render_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const slot : ISlot = signalSet.render.add(failIfCalled);
+			const slot:ISlot = signalSet.render.add(failIfCalled);
 			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event(Event.RENDER));

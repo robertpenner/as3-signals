@@ -1,10 +1,9 @@
 package org.osflash.signals
 {
 	import asunit.asserts.*;
+
 	import org.osflash.signals.events.IEvent;
 	import org.osflash.signals.support.SpriteWithDeluxeSignals;
-
-	import flash.display.Sprite;
 
 	public class MXMLDeluxeSignalTest
 	{	

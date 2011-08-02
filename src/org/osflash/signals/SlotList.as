@@ -132,7 +132,7 @@ package org.osflash.signals
 			{
 				if (priority > current.head.priority)
 				{
-					const newTail : SlotList = current.prepend(slot);
+					const newTail:SlotList = current.prepend(slot);
 					return new SlotList(head, newTail);
 				}
 				

@@ -10,9 +10,9 @@ package org.osflash.signals.natives.base
 	public class SignalShape extends Shape
 	{
 
-		private var _signals : DisplayObjectSignalSet;
+		private var _signals:DisplayObjectSignalSet;
 
-		public function get signals() : DisplayObjectSignalSet
+		public function get signals():DisplayObjectSignalSet
 		{
 			return _signals ||= new DisplayObjectSignalSet(this);
 		}

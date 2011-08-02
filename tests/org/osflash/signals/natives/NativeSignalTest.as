@@ -1,18 +1,11 @@
 package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
-	import asunit.framework.IAsync;
-	import org.osflash.signals.ISignalTestBase;
-
-	import org.osflash.signals.IPrioritySignal;
-	import org.osflash.signals.ISignalBinding;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
 	import flash.events.MouseEvent;
-	import flash.events.TimerEvent;
 
 	public class NativeSignalTest extends INativeDispatcherTestBase
 	{

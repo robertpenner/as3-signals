@@ -31,7 +31,7 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function adding_vararg_at_0_should_not_throw_error() : void
+		public function adding_vararg_at_0_should_not_throw_error():void
 		{
 			completed.add(handlerArgsAt0());
 		}
@@ -39,7 +39,7 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function adding_vararg_at_1_should_not_throw_error() : void
+		public function adding_vararg_at_1_should_not_throw_error():void
 		{
 			completed.add(handlerArgsAt1());
 		}
@@ -47,7 +47,7 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function adding_vararg_at_2_should_not_throw_error() : void
+		public function adding_vararg_at_2_should_not_throw_error():void
 		{
 			completed.add(handlerArgsAt2());
 		}
@@ -55,7 +55,7 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function adding_vararg_at_0_then_dispatch_should_not_throw_error() : void
+		public function adding_vararg_at_0_then_dispatch_should_not_throw_error():void
 		{
 			completed.add(handlerArgsAt0());
 			completed.dispatch(0, 1, 2, 3);
@@ -64,7 +64,7 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function adding_vararg_at_1_then_dispatch_should_not_throw_error() : void
+		public function adding_vararg_at_1_then_dispatch_should_not_throw_error():void
 		{
 			completed.add(handlerArgsAt1());
 			completed.dispatch(0, 1, 2, 3);
@@ -73,7 +73,7 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function adding_vararg_at_2_then_dispatch_should_not_throw_error() : void
+		public function adding_vararg_at_2_then_dispatch_should_not_throw_error():void
 		{
 			completed.add(handlerArgsAt2());
 			completed.dispatch(0, 1, 2, 3);
@@ -82,13 +82,13 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function verify_num_args_after_dispatch() : void
+		public function verify_num_args_after_dispatch():void
 		{
 			completed.add(verifyNumArgs);
 			completed.dispatch(0, 1, 2, 3);
 		}
 				
-		private function handlerArgsAt0() : Function
+		private function handlerArgsAt0():Function
 		{
 			return function(...args):void 
 			{
@@ -97,7 +97,7 @@ package org.osflash.signals
 			};
 		}
 		
-		private function handlerArgsAt1() : Function
+		private function handlerArgsAt1():Function
 		{
 			return function(a:int, ...args):void 
 			{
@@ -106,7 +106,7 @@ package org.osflash.signals
 			};
 		}
 		
-		private function handlerArgsAt2() : Function
+		private function handlerArgsAt2():Function
 		{
 			return function(a:int, b:int, ...args):void 
 			{
@@ -115,7 +115,7 @@ package org.osflash.signals
 			};
 		}
 		
-		private function verifyNumArgs(...args) : void
+		private function verifyNumArgs(...args):void
 		{
 			assertEquals('Number of arguments should be 4', 4, args.length);
 		}

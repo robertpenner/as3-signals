@@ -7,9 +7,9 @@ package org.osflash.signals.natives.base
 	public class SignalMovieClip extends MovieClip
 	{
 
-		private var _signals : InteractiveObjectSignalSet;
+		private var _signals:InteractiveObjectSignalSet;
 
-		public function get signals() : InteractiveObjectSignalSet
+		public function get signals():InteractiveObjectSignalSet
 		{
 			return _signals ||= new InteractiveObjectSignalSet(this);
 		}

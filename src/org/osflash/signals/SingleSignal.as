@@ -93,7 +93,7 @@ package org.osflash.signals
 			if(slot && slot.listener == listener)
 			{
 				// This will need to be a clone I think
-				const bind : ISlot = slot;
+				const bind:ISlot = slot;
 				
 				slot = null;
 				

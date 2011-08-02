@@ -56,7 +56,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function numListeners_should_be_zero() : void
+		public function numListeners_should_be_zero():void
 		{
 			assertTrue('Number of listeners should be 0.', signalSet.numListeners == 0);
 		}
@@ -64,7 +64,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function signals_should_be_not_null() : void
+		public function signals_should_be_not_null():void
 		{
 			assertNotNull('Signals should not be null.', signalSet.signals);
 		}
@@ -72,7 +72,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function signals_length_should_be_empty() : void
+		public function signals_length_should_be_empty():void
 		{
 			assertTrue('Signals length should be 0.', signalSet.signals.length == 0);
 		}
@@ -80,7 +80,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function signals_length_should_be_zero_after_removeAll() : void
+		public function signals_length_should_be_zero_after_removeAll():void
 		{
 			signalSet.removeAll();
 			
@@ -90,7 +90,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function numListeners_should_be_zero_after_removeAll() : void
+		public function numListeners_should_be_zero_after_removeAll():void
 		{
 			signalSet.removeAll();
 			
@@ -100,7 +100,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function activate_signal_should_not_be_null() : void
+		public function activate_signal_should_not_be_null():void
 		{
 			assertNotNull('Activate NativeSignal should not be null', signalSet.activate);
 		}
@@ -108,7 +108,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function deactivate_signal_should_not_be_null() : void
+		public function deactivate_signal_should_not_be_null():void
 		{
 			assertNotNull('Deactivate NativeSignal should not be null', signalSet.deactivate);
 		}
@@ -136,7 +136,7 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_activate_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const slot : ISlot = signalSet.activate.add(failIfCalled);
+			const slot:ISlot = signalSet.activate.add(failIfCalled);
 			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event(Event.ACTIVATE));
@@ -147,7 +147,7 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_deactivate_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const slot : ISlot = signalSet.deactivate.add(failIfCalled);
+			const slot:ISlot = signalSet.deactivate.add(failIfCalled);
 			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event(Event.DEACTIVATE));

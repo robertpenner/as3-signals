@@ -43,7 +43,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function numListeners_should_be_zero() : void
+		public function numListeners_should_be_zero():void
 		{
 			assertTrue('Number of listeners should be 0.', signalSet.numListeners == 0);
 		}
@@ -51,7 +51,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function signals_should_be_not_null() : void
+		public function signals_should_be_not_null():void
 		{
 			assertNotNull('Signals should not be null.', signalSet.signals);
 		}
@@ -59,7 +59,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function signals_length_should_be_empty() : void
+		public function signals_length_should_be_empty():void
 		{
 			assertTrue('Signals length should be 0.', signalSet.signals.length == 0);
 		}
@@ -67,7 +67,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function signals_length_should_be_zero_after_removeAll() : void
+		public function signals_length_should_be_zero_after_removeAll():void
 		{
 			signalSet.removeAll();
 			
@@ -77,7 +77,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function numListeners_should_be_zero_after_removeAll() : void
+		public function numListeners_should_be_zero_after_removeAll():void
 		{
 			signalSet.removeAll();
 			
@@ -87,16 +87,16 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function getNativeSignal_should_return_NativeSignal() : void
+		public function getNativeSignal_should_return_NativeSignal():void
 		{
-			const result : NativeSignal = signalSet.getNativeSignal(Event.INIT);
+			const result:NativeSignal = signalSet.getNativeSignal(Event.INIT);
 			assertTrue('getNativeSignal should return type NativeSignal.', result is NativeSignal);
 		}
 		
 		//////
 		
 		[Test]
-		public function getNativeSignal_should_not_throw_Error_when_null_is_used_as_classType() : void
+		public function getNativeSignal_should_not_throw_Error_when_null_is_used_as_classType():void
 		{
 			signalSet.getNativeSignal(Event.INIT, null);
 		}
@@ -104,7 +104,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test(expects='ArgumentError')]
-		public function getNativeSignal_should_throw_Error_when_used_for_event_type() : void
+		public function getNativeSignal_should_throw_Error_when_used_for_event_type():void
 		{
 			signalSet.getNativeSignal(null);
 		}
@@ -112,7 +112,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function getNativeSignal_should_increment_num_signals_to_one() : void
+		public function getNativeSignal_should_increment_num_signals_to_one():void
 		{
 			signalSet.getNativeSignal(Event.INIT);
 			
@@ -122,7 +122,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function getNativeSignal_with_same_event_type_should_have_signal_length_of_one() : void
+		public function getNativeSignal_with_same_event_type_should_have_signal_length_of_one():void
 		{
 			signalSet.getNativeSignal(Event.INIT);
 			signalSet.getNativeSignal(Event.INIT);
@@ -133,7 +133,7 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function getNativeSignal_with_different_eventType_should_increment_num_signals_to_two() : void
+		public function getNativeSignal_with_different_eventType_should_increment_num_signals_to_two():void
 		{
 			signalSet.getNativeSignal(Event.INIT);
 			signalSet.getNativeSignal(Event.ACTIVATE);
@@ -144,9 +144,9 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function getNativeSignal_with_lots_of_different_eventType_should_increment_num_signals_to_100() : void
+		public function getNativeSignal_with_lots_of_different_eventType_should_increment_num_signals_to_100():void
 		{
-			for(var i : int = 0; i<100; i++)
+			for(var i:int = 0; i<100; i++)
 			{
 				signalSet.getNativeSignal("event" + i);
 			}
@@ -157,9 +157,9 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function get_lots_of_getNativeSignal_then_removeAll_should_have_zero_signals() : void
+		public function get_lots_of_getNativeSignal_then_removeAll_should_have_zero_signals():void
 		{
-			for(var i : int = 0; i<100; i++)
+			for(var i:int = 0; i<100; i++)
 			{
 				signalSet.getNativeSignal("event" + i);
 			}
@@ -172,9 +172,9 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function getNativeSignal_and_add_listener() : void
+		public function getNativeSignal_and_add_listener():void
 		{
-			const nativeSignal : NativeSignal = signalSet.getNativeSignal(Event.INIT);
+			const nativeSignal:NativeSignal = signalSet.getNativeSignal(Event.INIT);
 			nativeSignal.add(newEmptyHandler());
 			
 			assertTrue('Number of listeners should be 1.', signalSet.numListeners == 1);
@@ -183,11 +183,11 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function getNativeSignal_and_add_10_listeners() : void
+		public function getNativeSignal_and_add_10_listeners():void
 		{
-			const nativeSignal : NativeSignal = signalSet.getNativeSignal(Event.INIT);
+			const nativeSignal:NativeSignal = signalSet.getNativeSignal(Event.INIT);
 			
-			for(var i : int = 0; i<10; i++)
+			for(var i:int = 0; i<10; i++)
 			{
 				nativeSignal.add(newEmptyHandler());
 			}
@@ -198,11 +198,11 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function getNativeSignal_and_add_10_listeners_and_removeAll() : void
+		public function getNativeSignal_and_add_10_listeners_and_removeAll():void
 		{
-			const nativeSignal : NativeSignal = signalSet.getNativeSignal(Event.INIT);
+			const nativeSignal:NativeSignal = signalSet.getNativeSignal(Event.INIT);
 			
-			for(var i : int = 0; i<10; i++)
+			for(var i:int = 0; i<10; i++)
 			{
 				nativeSignal.add(newEmptyHandler());
 			}
@@ -215,11 +215,11 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function getNativeSignal_and_add_10_listeners_and_removeAll_from_signal() : void
+		public function getNativeSignal_and_add_10_listeners_and_removeAll_from_signal():void
 		{
-			const nativeSignal : NativeSignal = signalSet.getNativeSignal(Event.INIT);
+			const nativeSignal:NativeSignal = signalSet.getNativeSignal(Event.INIT);
 			
-			for(var i : int = 0; i<10; i++)
+			for(var i:int = 0; i<10; i++)
 			{
 				nativeSignal.add(newEmptyHandler());
 			}
@@ -232,9 +232,9 @@ package org.osflash.signals.natives.sets
 		//////
 		
 		[Test]
-		public function get_two_getNativeSignal_and_add_10_listeners_to_each() : void
+		public function get_two_getNativeSignal_and_add_10_listeners_to_each():void
 		{
-			const nativeSignal0 : NativeSignal = signalSet.getNativeSignal(Event.INIT);
+			const nativeSignal0:NativeSignal = signalSet.getNativeSignal(Event.INIT);
 			
 			var i:int = 0;
 			for(i = 0; i<10; i++)
@@ -242,7 +242,7 @@ package org.osflash.signals.natives.sets
 				nativeSignal0.add(newEmptyHandler());
 			}
 			
-			const nativeSignal1 : NativeSignal = signalSet.getNativeSignal(Event.CHANGE);
+			const nativeSignal1:NativeSignal = signalSet.getNativeSignal(Event.CHANGE);
 			
 			for(i = 0; i<10; i++)
 			{

@@ -50,10 +50,10 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function verify_strict_on_slot_after_dispatch_equals_true() : void
+		public function verify_strict_on_slot_after_dispatch_equals_true():void
 		{
-			var listener : Function = newEmptyHandler();
-			var slot : ISlot = signal.add(listener);
+			var listener:Function = newEmptyHandler();
+			var slot:ISlot = signal.add(listener);
 				
 			signal.dispatch(new Event('click'));
 							
@@ -63,10 +63,10 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function set_strict_to_false_and_verify_strict_on_slot_after_dispatch_equals_false() : void
+		public function set_strict_to_false_and_verify_strict_on_slot_after_dispatch_equals_false():void
 		{
-			var listener : Function = newEmptyHandler();
-			var slot : ISlot = signal.add(listener);
+			var listener:Function = newEmptyHandler();
+			var slot:ISlot = signal.add(listener);
 			slot.strict = false;
 				
 			signal.dispatch(new Event('click'));
@@ -77,9 +77,9 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_pause_on_slot_should_not_dispatch() : void
+		public function add_listener_pause_on_slot_should_not_dispatch():void
 		{
-			var slot : ISlot = signal.add(failIfCalled);
+			var slot:ISlot = signal.add(failIfCalled);
 			slot.enabled = false;
 			
 			signal.dispatch(new Event('click'));
@@ -89,9 +89,9 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_switch_pause_and_resume_on_slot_should_not_dispatch() : void
+		public function add_listener_switch_pause_and_resume_on_slot_should_not_dispatch():void
 		{
-			var slot : ISlot = signal.add(failIfCalled);
+			var slot:ISlot = signal.add(failIfCalled);
 			slot.enabled = false;
 			slot.enabled = true;
 			slot.enabled = false;
@@ -102,9 +102,9 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_then_dispatch_change_listener_on_slot_should_dispatch_second_listener() : void
+		public function add_listener_then_dispatch_change_listener_on_slot_should_dispatch_second_listener():void
 		{
-			var slot : ISlot = signal.add(newEmptyHandler());
+			var slot:ISlot = signal.add(newEmptyHandler());
 			
 			signal.dispatch(new Event('click'));
 			
@@ -116,9 +116,9 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_then_dispatch_change_listener_on_slot_then_pause_should_not_dispatch_second_listener() : void
+		public function add_listener_then_dispatch_change_listener_on_slot_then_pause_should_not_dispatch_second_listener():void
 		{
-			var slot : ISlot = signal.add(newEmptyHandler());
+			var slot:ISlot = signal.add(newEmptyHandler());
 			
 			signal.dispatch(new Event('click'));
 			
@@ -131,13 +131,13 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_then_change_listener_then_switch_back_and_then_should_dispatch() : void
+		public function add_listener_then_change_listener_then_switch_back_and_then_should_dispatch():void
 		{
-			var slot : ISlot = signal.add(newEmptyHandler());
+			var slot:ISlot = signal.add(newEmptyHandler());
 			
 			signal.dispatch(new Event('click'));
 			
-			var listener : Function = slot.listener;
+			var listener:Function = slot.listener;
 			
 			slot.listener = failIfCalled;
 			slot.listener = listener;
@@ -148,9 +148,9 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_pause_on_slot_should_not_dispatch() : void
+		public function addOnce_listener_pause_on_slot_should_not_dispatch():void
 		{
-			var slot : ISlot = signal.addOnce(failIfCalled);
+			var slot:ISlot = signal.addOnce(failIfCalled);
 			slot.enabled = false;
 			
 			signal.dispatch(new Event('click'));
@@ -159,9 +159,9 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_switch_pause_and_resume_on_slot_should_not_dispatch() : void
+		public function addOnce_listener_switch_pause_and_resume_on_slot_should_not_dispatch():void
 		{
-			var slot : ISlot = signal.addOnce(failIfCalled);
+			var slot:ISlot = signal.addOnce(failIfCalled);
 			slot.enabled = false;
 			slot.enabled = true;
 			slot.enabled = false;
@@ -172,9 +172,9 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_then_dispatch_change_listener_on_slot_should_dispatch_second_listener() : void
+		public function addOnce_listener_then_dispatch_change_listener_on_slot_should_dispatch_second_listener():void
 		{
-			var slot : ISlot = signal.addOnce(newEmptyHandler());
+			var slot:ISlot = signal.addOnce(newEmptyHandler());
 			
 			signal.dispatch(new Event('click'));
 			
@@ -186,9 +186,9 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_then_dispatch_change_listener_on_slot_then_pause_should_not_dispatch_second_listener() : void
+		public function addOnce_listener_then_dispatch_change_listener_on_slot_then_pause_should_not_dispatch_second_listener():void
 		{
-			var slot : ISlot = signal.addOnce(newEmptyHandler());
+			var slot:ISlot = signal.addOnce(newEmptyHandler());
 			
 			signal.dispatch(new Event('click'));
 			
@@ -201,13 +201,13 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_then_change_listener_then_switch_back_and_then_should_dispatch() : void
+		public function addOnce_listener_then_change_listener_then_switch_back_and_then_should_dispatch():void
 		{
-			var slot : ISlot = signal.addOnce(newEmptyHandler());
+			var slot:ISlot = signal.addOnce(newEmptyHandler());
 			
 			signal.dispatch(new Event('click'));
 			
-			var listener : Function = slot.listener;
+			var listener:Function = slot.listener;
 			
 			slot.listener = failIfCalled;
 			slot.listener = listener;
@@ -218,11 +218,11 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function verify_listeners_that_are_strict_and_not_strict() : void
+		public function verify_listeners_that_are_strict_and_not_strict():void
 		{
 			signal.add(newEmptyHandler());
 			
-			var slot : ISlot = signal.add(newEmptyHandler());
+			var slot:ISlot = signal.add(newEmptyHandler());
 			slot.strict = false;
 			
 			signal.dispatch(new Event('click'));
@@ -231,10 +231,10 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_and_verify_once_is_false() : void
+		public function add_listener_and_verify_once_is_false():void
 		{
-			var listener : Function = newEmptyHandler();
-			var slot : ISlot = signal.add(listener);
+			var listener:Function = newEmptyHandler();
+			var slot:ISlot = signal.add(listener);
 			
 			assertFalse('Slot once is false', slot.once);
 		}
@@ -242,10 +242,10 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_and_verify_strict_is_true() : void
+		public function add_listener_and_verify_strict_is_true():void
 		{
-			var listener : Function = newEmptyHandler();
-			var slot : ISlot = signal.add(listener);
+			var listener:Function = newEmptyHandler();
+			var slot:ISlot = signal.add(listener);
 			
 			assertTrue('Slot strict is true', slot.strict);
 		}
@@ -253,10 +253,10 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function verify_strict_on_slot_after_setting_to_false() : void
+		public function verify_strict_on_slot_after_setting_to_false():void
 		{
-			var listener : Function = newEmptyHandler();
-			var slot : ISlot = signal.add(listener);
+			var listener:Function = newEmptyHandler();
+			var slot:ISlot = signal.add(listener);
 			slot.strict = false;
 			
 			assertFalse('Slot strict is false', slot.strict);
@@ -265,10 +265,10 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_and_verify_priority_is_zero() : void
+		public function add_listener_and_verify_priority_is_zero():void
 		{
-			var listener : Function = newEmptyHandler();
-			var slot : ISlot = signal.add(listener);
+			var listener:Function = newEmptyHandler();
+			var slot:ISlot = signal.add(listener);
 			
 			assertTrue('Slot priority is zero', slot.priority == 0);
 		}
@@ -276,10 +276,10 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_and_verify_slot_listener_is_same() : void
+		public function add_listener_and_verify_slot_listener_is_same():void
 		{
-			var listener : Function = newEmptyHandler();
-			var slot : ISlot = signal.add(listener);
+			var listener:Function = newEmptyHandler();
+			var slot:ISlot = signal.add(listener);
 			
 			assertTrue('Slot listener is the same as the listener', slot.listener === listener);
 		}
@@ -287,11 +287,11 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_same_listener_twice_and_verify_slots_are_the_same() : void
+		public function add_same_listener_twice_and_verify_slots_are_the_same():void
 		{
-			var listener : Function = newEmptyHandler();
-			var slot0 : ISlot = signal.add(listener);
-			var slot1 : ISlot = signal.add(listener);
+			var listener:Function = newEmptyHandler();
+			var slot0:ISlot = signal.add(listener);
+			var slot1:ISlot = signal.add(listener);
 			
 			assertTrue('Slots are equal if they\'re they have the same listener', slot0 === slot1);
 		}
@@ -299,11 +299,11 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_same_listener_twice_and_verify_slot_listeners_are_the_same() : void
+		public function add_same_listener_twice_and_verify_slot_listeners_are_the_same():void
 		{
-			var listener : Function = newEmptyHandler();
-			var slot0 : ISlot = signal.add(listener);
-			var slot1 : ISlot = signal.add(listener);
+			var listener:Function = newEmptyHandler();
+			var slot0:ISlot = signal.add(listener);
+			var slot1:ISlot = signal.add(listener);
 			
 			assertTrue('Slot listener is the same as the listener', slot0.listener === slot1.listener);
 		}
@@ -311,9 +311,9 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_and_remove_using_slot() : void
+		public function add_listener_and_remove_using_slot():void
 		{
-			var slot : ISlot = signal.add(newEmptyHandler());
+			var slot:ISlot = signal.add(newEmptyHandler());
 			slot.remove();
 			
 			assertTrue('Number of listeners should be 0', signal.numListeners == 0);
@@ -322,10 +322,10 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_same_listener_twice_and_remove_using_slot_should_have_no_listeners() : void
+		public function add_same_listener_twice_and_remove_using_slot_should_have_no_listeners():void
 		{
-			var listener : Function = newEmptyHandler();
-			var slot0 : ISlot = signal.add(listener);
+			var listener:Function = newEmptyHandler();
+			var slot0:ISlot = signal.add(listener);
 			signal.add(listener);
 			
 			slot0.remove();
@@ -336,12 +336,12 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_lots_of_same_listener_and_remove_using_slot_should_have_no_listeners() : void
+		public function add_lots_of_same_listener_and_remove_using_slot_should_have_no_listeners():void
 		{
-			var listener : Function = newEmptyHandler();
-			for(var i : int = 0; i<100; i++)
+			var listener:Function = newEmptyHandler();
+			for(var i:int = 0; i<100; i++)
 			{
-				var slot0 : ISlot = signal.add(listener);
+				var slot0:ISlot = signal.add(listener);
 			}
 			
 			slot0.remove();
@@ -352,39 +352,39 @@ package org.osflash.signals
 		//////
 		
 		[Test(expects="ArgumentError")]
-		public function add_listener_then_set_listener_to_null_should_throw_ArgumentError() : void
+		public function add_listener_then_set_listener_to_null_should_throw_ArgumentError():void
 		{
-			var slot : ISlot = signal.add(newEmptyHandler());
+			var slot:ISlot = signal.add(newEmptyHandler());
 			slot.listener = null;
 		}
 				
 		//////
 		
 		[Test]
-		public function add_listener_and_call_execute_on_slot_should_call_listener() : void
+		public function add_listener_and_call_execute_on_slot_should_call_listener():void
 		{
-			var slot : ISlot = signal.add(newEmptyHandler());
+			var slot:ISlot = signal.add(newEmptyHandler());
 			slot.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
 		}
 		
 		//////
 		
 		[Test]
-		public function add_listener_twice_and_call_execute_on_slot_should_call_listener_and_not_on_signal_listeners() : void
+		public function add_listener_twice_and_call_execute_on_slot_should_call_listener_and_not_on_signal_listeners():void
 		{
 			signal.add(failIfCalled);
 			
-			var slot : ISlot = signal.add(newEmptyHandler());
+			var slot:ISlot = signal.add(newEmptyHandler());
 			slot.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
 		}
 		
 		//////
 		
 		[Test]
-		public function addOnce_listener_and_verify_once_is_true() : void
+		public function addOnce_listener_and_verify_once_is_true():void
 		{
-			var listener : Function = newEmptyHandler();
-			var slot : ISlot = signal.addOnce(listener);
+			var listener:Function = newEmptyHandler();
+			var slot:ISlot = signal.addOnce(listener);
 			
 			assertTrue('Slot once is true', slot.once == true);
 		}
@@ -392,10 +392,10 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_and_verify_priority_is_zero() : void
+		public function addOnce_listener_and_verify_priority_is_zero():void
 		{
-			var listener : Function = newEmptyHandler();
-			var slot : ISlot = signal.addOnce(listener);
+			var listener:Function = newEmptyHandler();
+			var slot:ISlot = signal.addOnce(listener);
 			
 			assertTrue('Slot priority is zero', slot.priority == 0);
 		}
@@ -403,10 +403,10 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_and_verify_slot_listener_is_same() : void
+		public function addOnce_listener_and_verify_slot_listener_is_same():void
 		{
-			var listener : Function = newEmptyHandler();
-			var slot : ISlot = signal.addOnce(listener);
+			var listener:Function = newEmptyHandler();
+			var slot:ISlot = signal.addOnce(listener);
 			
 			assertTrue('Slot listener is the same as the listener', slot.listener === listener);
 		}
@@ -414,11 +414,11 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_same_listener_twice_and_verify_slots_are_the_same() : void
+		public function addOnce_same_listener_twice_and_verify_slots_are_the_same():void
 		{
-			var listener : Function = newEmptyHandler();
-			var slot0 : ISlot = signal.addOnce(listener);
-			var slot1 : ISlot = signal.addOnce(listener);
+			var listener:Function = newEmptyHandler();
+			var slot0:ISlot = signal.addOnce(listener);
+			var slot1:ISlot = signal.addOnce(listener);
 			
 			assertTrue('Slots are equal if they\'re they have the same listener', slot0 === slot1);
 		}
@@ -426,11 +426,11 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_same_listener_twice_and_verify_slot_listeners_are_the_same() : void
+		public function addOnce_same_listener_twice_and_verify_slot_listeners_are_the_same():void
 		{
-			var listener : Function = newEmptyHandler();
-			var slot0 : ISlot = signal.addOnce(listener);
-			var slot1 : ISlot = signal.addOnce(listener);
+			var listener:Function = newEmptyHandler();
+			var slot0:ISlot = signal.addOnce(listener);
+			var slot1:ISlot = signal.addOnce(listener);
 			
 			assertTrue('Slot listener is the same as the listener', slot0.listener === slot1.listener);
 		}
@@ -438,9 +438,9 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_and_remove_using_slot() : void
+		public function addOnce_listener_and_remove_using_slot():void
 		{
-			var slot : ISlot = signal.addOnce(newEmptyHandler());
+			var slot:ISlot = signal.addOnce(newEmptyHandler());
 			slot.remove();
 			
 			assertTrue('Number of listeners should be 0', signal.numListeners == 0);
@@ -449,10 +449,10 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_same_listener_twice_and_remove_using_slot_should_have_no_listeners() : void
+		public function addOnce_same_listener_twice_and_remove_using_slot_should_have_no_listeners():void
 		{
-			var listener : Function = newEmptyHandler();
-			var slot0 : ISlot = signal.addOnce(listener);
+			var listener:Function = newEmptyHandler();
+			var slot0:ISlot = signal.addOnce(listener);
 			signal.addOnce(listener);
 			
 			slot0.remove();
@@ -463,12 +463,12 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_lots_of_same_listener_and_remove_using_slot_should_have_no_listeners() : void
+		public function addOnce_lots_of_same_listener_and_remove_using_slot_should_have_no_listeners():void
 		{
-			var listener : Function = newEmptyHandler();
-			for(var i : int = 0; i<100; i++)
+			var listener:Function = newEmptyHandler();
+			for(var i:int = 0; i<100; i++)
 			{
-				var slot0 : ISlot = signal.addOnce(listener);
+				var slot0:ISlot = signal.addOnce(listener);
 			}
 			
 			slot0.remove();
@@ -479,40 +479,40 @@ package org.osflash.signals
 		//////
 		
 		[Test(expects="ArgumentError")]
-		public function addOnce_listener_then_set_listener_to_null_should_throw_ArgumentError() : void
+		public function addOnce_listener_then_set_listener_to_null_should_throw_ArgumentError():void
 		{
-			var slot : ISlot = signal.addOnce(newEmptyHandler());
+			var slot:ISlot = signal.addOnce(newEmptyHandler());
 			slot.listener = null;
 		}
 				
 		//////
 		
 		[Test]
-		public function addOnce_listener_and_call_execute_on_slot_should_call_listener() : void
+		public function addOnce_listener_and_call_execute_on_slot_should_call_listener():void
 		{
-			var slot : ISlot = signal.addOnce(newEmptyHandler());
+			var slot:ISlot = signal.addOnce(newEmptyHandler());
 			slot.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
 		}
 		
 		//////
 		
 		[Test]
-		public function addOnce_listener_twice_and_call_execute_on_slot_should_call_listener_and_not_on_signal_listeners() : void
+		public function addOnce_listener_twice_and_call_execute_on_slot_should_call_listener_and_not_on_signal_listeners():void
 		{
 			signal.addOnce(failIfCalled);
 			
-			var slot : ISlot = signal.addOnce(newEmptyHandler());
+			var slot:ISlot = signal.addOnce(newEmptyHandler());
 			slot.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
 		}
 		
 		//////
 		
 		[Test]
-		public function verify_listeners_that_are_strict_and_not_strict_when_called_on_slot() : void
+		public function verify_listeners_that_are_strict_and_not_strict_when_called_on_slot():void
 		{
 			signal.add(newEmptyHandler());
 			
-			var slot : ISlot = signal.add(newEmptyHandler());
+			var slot:ISlot = signal.add(newEmptyHandler());
 			slot.strict = false;
 			slot.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
 		}

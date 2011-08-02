@@ -13,7 +13,6 @@ package org.osflash.signals
 
 	import flash.display.Sprite;
 	import flash.errors.IllegalOperationError;
-	import flash.events.Event;
 	
 	/**
 	 * @author Simon Richardson - me@simonrichardson.info
@@ -47,7 +46,7 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function strict_should_be_true() : void
+		public function strict_should_be_true():void
 		{
 			assertTrue('strict should be true', signal.strict);
 		}
@@ -55,7 +54,7 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function verify_strict_after_setting_it_to_false() : void
+		public function verify_strict_after_setting_it_to_false():void
 		{
 			signal.strict = false;
 			
@@ -65,7 +64,7 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function verify_strict_is_true_after_dispatch() : void
+		public function verify_strict_is_true_after_dispatch():void
 		{
 			signal.add(newEmptyHandler());
 			signal.dispatch(new GenericEvent());
@@ -76,7 +75,7 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function set_strict_to_false_and_verify_strict_is_false_after_dispatch() : void
+		public function set_strict_to_false_and_verify_strict_is_false_after_dispatch():void
 		{
 			signal.strict = false;
 			
@@ -115,7 +114,7 @@ package org.osflash.signals
 		[Test(expects="flash.errors.IllegalOperationError")]
 		public function add_one_hundred_listeners_should_throw_an_error():void
 		{
-			for(var i : int = 0; i<100; i++)
+			for(var i:int = 0; i<100; i++)
 			{
 				signal.add(checkGenericEvent);
 			}
@@ -212,11 +211,11 @@ package org.osflash.signals
 			{
 				signal.add(failIfCalled);
 			}
-			catch(error : IllegalOperationError)
+			catch(error:IllegalOperationError)
 			{
 				assertTrue('there should be 1 listener', signal.numListeners == 1);
 			}
-			catch(error : Error)
+			catch(error:Error)
 			{
 				fail('This error should not have been thrown.');
 			}

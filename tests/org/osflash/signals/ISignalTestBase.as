@@ -3,7 +3,6 @@ package org.osflash.signals
 	import asunit.asserts.*;
 	import asunit.framework.IAsync;
 
-	import flash.display.Sprite;
 	import flash.events.Event;
 	
 	public class ISignalTestBase
@@ -129,21 +128,21 @@ package org.osflash.signals
 		}
 		
 		[Test]
-		public function strict_should_be_true() : void
+		public function strict_should_be_true():void
 		{
 			assertTrue('strict should be true', signal.strict);
 		}
 		
 		
 		[Test]
-		public function verify_strict_after_setting_it_to_false() : void
+		public function verify_strict_after_setting_it_to_false():void
 		{
 			signal.strict = false;
 			assertFalse('strict should be false', signal.strict);
 		}
 		
 		[Test]
-		public function verify_strict_is_true_after_dispatch() : void
+		public function verify_strict_is_true_after_dispatch():void
 		{
 			signal.add(newEmptyHandler());
 			dispatchSignal();
@@ -151,7 +150,7 @@ package org.osflash.signals
 		}
 		
 		[Test]
-		public function set_strict_to_false_and_verify_strict_is_false_after_dispatch() : void
+		public function set_strict_to_false_and_verify_strict_is_false_after_dispatch():void
 		{
 			signal.strict = false;
 			

@@ -63,7 +63,7 @@ package org.osflash.signals
 		/////
 		
 		[Test]
-		public function verify_redispatch_of_signal_with_no_valueClasses() : void
+		public function verify_redispatch_of_signal_with_no_valueClasses():void
 		{
 			const redispatch:Signal = new Signal();
 			redispatch.add(checkGenericEvent);
@@ -73,7 +73,7 @@ package org.osflash.signals
 		}
 				
 		[Test(expects='ArgumentError')]
-		public function verify_redispatch_of_signal() : void
+		public function verify_redispatch_of_signal():void
 		{
 			const redispatch:Signal = new Signal();
 			redispatch.add(checkGenericEvent);

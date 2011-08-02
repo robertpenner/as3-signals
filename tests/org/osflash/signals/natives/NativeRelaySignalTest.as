@@ -1,13 +1,9 @@
 package org.osflash.signals.natives
 {
 	import asunit.asserts.*;
-	import asunit.framework.IAsync;
-	import flash.events.Event;
-
-	import org.osflash.signals.ISignal;
-	import org.osflash.signals.ISignalBinding;
 
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.MouseEvent;
 
