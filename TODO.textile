@@ -4,11 +4,10 @@ h2. v0.9
 
 h3. High Priority
 
-* reduce duplication in test code 
-* integrate native signal sets from jonopus
 * finish base classes using signal sets, e.g. SignalSprite
 * SignalBinding: optional pass-through params suggested by xtyler
-* unit tests for SignalBindingList
+* unit tests for SignalBindingList: insertWithPriority(), filterNot(), contains(), find()
+* ask community about impact of reversing order of listeners
 
 h3. Medium Priority
 
