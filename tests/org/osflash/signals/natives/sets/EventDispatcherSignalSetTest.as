@@ -1,6 +1,6 @@
 package org.osflash.signals.natives.sets
 {
-	import org.osflash.signals.ISignalBinding;
+	import org.osflash.signals.ISlot;
 	import asunit.asserts.fail;
 	import asunit.asserts.assertNotNull;
 	import asunit.asserts.assertSame;
@@ -136,8 +136,8 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_activate_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const binding : ISignalBinding = signalSet.activate.add(failIfCalled);
-			binding.enabled = false;
+			const slot : ISlot = signalSet.activate.add(failIfCalled);
+			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event(Event.ACTIVATE));
 		}
@@ -147,8 +147,8 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_deactivate_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const binding : ISignalBinding = signalSet.deactivate.add(failIfCalled);
-			binding.enabled = false;
+			const slot : ISlot = signalSet.deactivate.add(failIfCalled);
+			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event(Event.DEACTIVATE));
 		}

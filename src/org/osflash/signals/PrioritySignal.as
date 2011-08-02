@@ -17,26 +17,26 @@ public class PrioritySignal extends Signal implements IPrioritySignal {
     }
 
     /** @inheritDoc */
-    public function addWithPriority( listener:Function, priority:int = 0 ):ISignalBinding {
+    public function addWithPriority( listener:Function, priority:int = 0 ):ISlot {
         return registerListenerWithPriority( listener, false, priority );
     }
 
     /** @inheritDoc */
-    public function addOnceWithPriority( listener:Function, priority:int = 0 ):ISignalBinding {
+    public function addOnceWithPriority( listener:Function, priority:int = 0 ):ISlot {
         return registerListenerWithPriority( listener, true, priority );
     }
 
-    override protected function registerListener( listener:Function, once:Boolean = false ):ISignalBinding {
+    override protected function registerListener( listener:Function, once:Boolean = false ):ISlot {
         return registerListenerWithPriority( listener, once );
     }
 
-    protected function registerListenerWithPriority( listener:Function, once:Boolean = false, priority:int = 0 ):ISignalBinding {
+    protected function registerListenerWithPriority( listener:Function, once:Boolean = false, priority:int = 0 ):ISlot {
         if ( registrationPossible( listener, once ) ) {
-            const binding:ISignalBinding = new SignalBinding( listener, this, once, priority );
-            bindings = bindings.insertWithPriority( binding );
-            return binding;
+            const slot:ISlot = new Slot( listener, this, once, priority );
+            slots = slots.insertWithPriority( slot );
+            return slot;
         }
-        return bindings.find( listener );
+        return slots.find( listener );
     }
 
 }

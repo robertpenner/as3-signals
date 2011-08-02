@@ -26,7 +26,7 @@ package org.osflash.signals
 		
 		protected var _strict:Boolean = true;
 
-		protected var binding:SignalBinding;
+		protected var slot:Slot;
 		
 		/**
 		 * Creates a Signal instance to dispatch value objects.
@@ -65,7 +65,7 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function get numListeners():uint { return null == binding ? 0 : 1; }
+		public function get numListeners():uint { return null == slot ? 0 : 1; }
 		
 		/**
 		 * @inheritDoc
@@ -76,26 +76,26 @@ package org.osflash.signals
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function):ISignalBinding
+		public function add(listener:Function):ISlot
 		{
 			return registerListener(listener);
 		}
 		
 		/** @inheritDoc */
-		public function addOnce(listener:Function):ISignalBinding
+		public function addOnce(listener:Function):ISlot
 		{
 			return registerListener(listener, true);
 		}
 		
 		/** @inheritDoc */
-		public function remove(listener:Function):ISignalBinding
+		public function remove(listener:Function):ISlot
 		{
-			if(binding && binding.listener == listener)
+			if(slot && slot.listener == listener)
 			{
 				// This will need to be a clone I think
-				const bind : ISignalBinding = binding;
+				const bind : ISlot = slot;
 				
-				binding = null;
+				slot = null;
 				
 				return bind;
 			}
@@ -106,8 +106,8 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			if(binding) binding.remove();
-			binding = null;
+			if(slot) slot.remove();
+			slot = null;
 		}
 		
 		/** @inheritDoc */
@@ -145,15 +145,15 @@ package org.osflash.signals
 			// Broadcast to listeners.
 			//
 			
-			if (null != binding)
+			if (null != slot)
 			{
-				binding.execute(valueObjects);
+				slot.execute(valueObjects);
 			}
 		}
 		
-		protected function registerListener(listener:Function, once:Boolean = false):ISignalBinding
+		protected function registerListener(listener:Function, once:Boolean = false):ISlot
 		{
-			if (null != binding) 
+			if (null != slot) 
 			{
 				//
 				// If the listener exits previously added, definitely don't add it.
@@ -162,25 +162,25 @@ package org.osflash.signals
 				throw new IllegalOperationError('You cannot add or addOnce with a listener already added, remove the current listener first.');
 			}
 			
-			if (!binding || verifyRegistrationOf(listener, once))
+			if (!slot || verifyRegistrationOf(listener, once))
 			{
-				binding = new SignalBinding(listener, this, once);
+				slot = new Slot(listener, this, once);
 				
-				return binding;
+				return slot;
 			}
 			
-			return binding;
+			return slot;
 		}
 
 		protected function verifyRegistrationOf(listener: Function,  once: Boolean): Boolean
 		{
-			if(!binding || binding.listener != listener) return false;
+			if(!slot || slot.listener != listener) return false;
 			
-			const existingBinding:ISignalBinding = binding;
+			const existingSlot:ISlot = slot;
 
-			if (null != existingBinding)
+			if (null != existingSlot)
 			{
-				if (existingBinding.once != once)
+				if (existingSlot.once != once)
 				{
 					//
 					// If the listener was previously added, definitely don't add it again.

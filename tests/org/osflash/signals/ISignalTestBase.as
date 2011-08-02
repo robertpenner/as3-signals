@@ -204,17 +204,17 @@ package org.osflash.signals
 		[Test]
 		public function can_use_anonymous_listeners():void
 		{
-			var bindings:Array = [];
+			var slots:Array = [];
 			
 			for ( var i:int = 0; i < 10;  i++ )
 			{
-				bindings.push(signal.add(newEmptyHandler()));
+				slots.push(signal.add(newEmptyHandler()));
 			}
 			assertEquals("there should be 10 listeners", 10, signal.numListeners);
 
-			for each( var binding:ISignalBinding in bindings )
+			for each( var slot:ISlot in slots )
 			{
-				signal.remove(binding.listener);
+				signal.remove(slot.listener);
 			}
 			assertEquals("all anonymous listeners removed", 0, signal.numListeners);
 		}
@@ -223,35 +223,35 @@ package org.osflash.signals
 		[Test]
 		public function can_use_anonymous_listeners_in_addOnce():void
 		{
-			var bindings:Array = [];
+			var slots:Array = [];
 			
 			for ( var i:int = 0; i < 10;  i++ )
 			{
-				bindings.push(signal.addOnce(newEmptyHandler()));
+				slots.push(signal.addOnce(newEmptyHandler()));
 			}
 			assertEquals("there should be 10 listeners", 10, signal.numListeners);
 
-			for each( var binding:ISignalBinding in bindings )
+			for each( var slot:ISlot in slots )
 			{
-				signal.remove(binding.listener);
+				signal.remove(slot.listener);
 			}
 			assertEquals("all anonymous listeners removed", 0, signal.numListeners);
 		}		
 	
 		[Test]
-		public function add_listener_returns_binding_with_same_listener():void
+		public function add_listener_returns_slot_with_same_listener():void
 		{
 			var listener:Function = newEmptyHandler();
-			var binding:ISignalBinding = signal.add(listener);
-			assertSame(listener, binding.listener);
+			var slot:ISlot = signal.add(listener);
+			assertSame(listener, slot.listener);
 		}
 		
 		[Test]
-		public function remove_listener_returns_same_binding_as_when_it_was_added():void
+		public function remove_listener_returns_same_slot_as_when_it_was_added():void
 		{
 			var listener:Function = newEmptyHandler();
-			var binding:ISignalBinding = signal.add(listener);
-			assertSame(binding, signal.remove(listener));
+			var slot:ISlot = signal.add(listener);
+			assertSame(slot, signal.remove(listener));
 		}
 		
 		protected function dispatchSignal():void 

@@ -1,8 +1,8 @@
 package org.osflash.signals.natives
 {
-	import org.osflash.signals.ISignalBinding;
-	import org.osflash.signals.SignalBinding;
-	import org.osflash.signals.SignalBindingList;
+	import org.osflash.signals.ISlot;
+	import org.osflash.signals.Slot;
+	import org.osflash.signals.SlotList;
 
 	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
@@ -31,7 +31,7 @@ package org.osflash.signals.natives
 		
 		protected var _strict:Boolean = true;
 
-		protected var bindings:SignalBindingList;
+		protected var slots:SlotList;
 		
 		/**
 		 * Creates a NativeSignal instance to dispatch events on behalf of a target object.
@@ -41,7 +41,7 @@ package org.osflash.signals.natives
 		 */
 		public function NativeSignal(target:IEventDispatcher = null, eventType:String = "", eventClass:Class = null)
 		{
-			bindings = SignalBindingList.NIL;
+			slots = SlotList.NIL;
 			this.target = target;
 			this.eventType = eventType;
 			this.eventClass = eventClass;
@@ -78,7 +78,7 @@ package org.osflash.signals.natives
 		public function set strict(value:Boolean):void { _strict = value; }
 		
 		/** @inheritDoc */
-		public function get numListeners():uint { return bindings.length; }
+		public function get numListeners():uint { return slots.length; }
 		
 		/** @inheritDoc */
 		public function get target():IEventDispatcher { return _target; }
@@ -92,48 +92,48 @@ package org.osflash.signals.natives
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function):ISignalBinding
+		public function add(listener:Function):ISlot
 		{
 			return addWithPriority(listener);
 		}
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function addWithPriority(listener:Function, priority:int = 0):ISignalBinding
+		public function addWithPriority(listener:Function, priority:int = 0):ISlot
 		{
 			return registerListenerWithPriority(listener, false, priority);
 		}
 		
 		/** @inheritDoc */
-		public function addOnce(listener:Function):ISignalBinding
+		public function addOnce(listener:Function):ISlot
 		{
 			return addOnceWithPriority(listener);
 		}
 		
 		/** @inheritDoc */
-		public function addOnceWithPriority(listener:Function, priority:int = 0):ISignalBinding
+		public function addOnceWithPriority(listener:Function, priority:int = 0):ISlot
 		{
 			return registerListenerWithPriority(listener, true, priority);
 		}
 		
 		/** @inheritDoc */
-		public function remove(listener:Function):ISignalBinding
+		public function remove(listener:Function):ISlot
 		{
-			const binding:ISignalBinding = bindings.find(listener);
-			if (!binding) return null;
-			bindings = bindings.filterNot(listener);
+			const slot:ISlot = slots.find(listener);
+			if (!slot) return null;
+			slots = slots.filterNot(listener);
 
-			if (!bindings.nonEmpty) 
+			if (!slots.nonEmpty) 
 				target.removeEventListener(eventType, onNativeEvent);
 				
-			return binding;
+			return slot;
 		}
 		
 		/** @inheritDoc */
 		public function removeAll():void
 		{
 			if (target) target.removeEventListener(eventType, onNativeEvent);
-			bindings = SignalBindingList.NIL;
+			slots = SlotList.NIL;
 		}
 
 		/**
@@ -168,7 +168,7 @@ package org.osflash.signals.natives
 			return target.dispatchEvent(event);
 		}
 		
-		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):ISignalBinding
+		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):ISlot
 		{
 			if (!target) throw new ArgumentError('Target object cannot be null.');
 
@@ -177,24 +177,24 @@ package org.osflash.signals.natives
 				
 			if (registrationPossible(listener, once))
 			{
-				const binding:ISignalBinding = new SignalBinding(listener, this, once, priority);
-				if (!bindings.nonEmpty) 
+				const slot:ISlot = new Slot(listener, this, once, priority);
+				if (!slots.nonEmpty) 
 					target.addEventListener(eventType, onNativeEvent, false, priority);
-				bindings = bindings.insertWithPriority(binding);
-				return binding;
+				slots = slots.insertWithPriority(slot);
+				return slot;
 			}
 			
-			return bindings.find(listener);
+			return slots.find(listener);
 		}
 
 		protected function registrationPossible(listener: Function,  once: Boolean): Boolean
 		{
-			if (!bindings.nonEmpty) return true;
+			if (!slots.nonEmpty) return true;
 
-			const existingBinding:ISignalBinding = bindings.find(listener);
-			if (existingBinding)
+			const existingSlot:ISlot = slots.find(listener);
+			if (existingSlot)
 			{
-				if (existingBinding.once != once)
+				if (existingSlot.once != once)
 				{
 					// If the listener was previously added, definitely don't add it again.
 					// But throw an exception if their once value differs.
@@ -215,12 +215,12 @@ package org.osflash.signals.natives
 			// every time we call onNativeEvent 
 			const singleValue:Array = [event];
 			
-			var bindingsToProcess:SignalBindingList = bindings;
+			var slotsToProcess:SlotList = slots;
 			
-			while (bindingsToProcess.nonEmpty)
+			while (slotsToProcess.nonEmpty)
 			{
-				bindingsToProcess.head.execute(singleValue);
-				bindingsToProcess = bindingsToProcess.tail;
+				slotsToProcess.head.execute(singleValue);
+				slotsToProcess = slotsToProcess.tail;
 			}
 		}
 	}

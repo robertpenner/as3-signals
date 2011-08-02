@@ -1,6 +1,6 @@
 package org.osflash.signals.natives
 {
-	import org.osflash.signals.SignalBindingList;
+	import org.osflash.signals.SlotList;
 
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
@@ -222,35 +222,35 @@ package org.osflash.signals.natives
 			// every time we call onNativeEvent 
 			const singleValue:Array = [mappedData];
 			
-			var bindingsToProcess:SignalBindingList = bindings;
+			var slotsToProcess:SlotList = slots;
 
 			if (mappedData is Array)
 			{
 				if (valueClasses.length == 1 && valueClasses[0] == Array)//TODO invariant
 				{
-					while (bindingsToProcess.nonEmpty)
+					while (slotsToProcess.nonEmpty)
 					{
-						bindingsToProcess.head.execute(singleValue);
-						bindingsToProcess = bindingsToProcess.tail;
+						slotsToProcess.head.execute(singleValue);
+						slotsToProcess = slotsToProcess.tail;
 					}
 				}
 				else
 				{
 					const mappedDataArray: Array = mappedData as Array;
 
-					while (bindingsToProcess.nonEmpty)
+					while (slotsToProcess.nonEmpty)
 					{
-						bindingsToProcess.head.execute(mappedDataArray);
-						bindingsToProcess = bindingsToProcess.tail;
+						slotsToProcess.head.execute(mappedDataArray);
+						slotsToProcess = slotsToProcess.tail;
 					}
 				}
 			}
 			else
 			{				
-				while (bindingsToProcess.nonEmpty)
+				while (slotsToProcess.nonEmpty)
 				{
-					bindingsToProcess.head.execute(singleValue);
-					bindingsToProcess = bindingsToProcess.tail;
+					slotsToProcess.head.execute(singleValue);
+					slotsToProcess = slotsToProcess.tail;
 				}
 			}
 		}

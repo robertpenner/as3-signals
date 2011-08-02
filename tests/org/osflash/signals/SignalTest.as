@@ -1,10 +1,8 @@
 package org.osflash.signals
 {
 	import asunit.asserts.*;
-	import asunit.framework.IAsync;
 
 	import org.osflash.signals.events.GenericEvent;
-	import org.osflash.signals.events.IEvent;
 
 	import flash.display.Sprite;
 
@@ -45,21 +43,21 @@ package org.osflash.signals
 		}
 		
 		[Test]
-		public function removed_listener_should_return_binding():void
+		public function removed_listener_should_return_slot():void
 		{
 			var listener:Function = function():void{};
-			var binding:ISignalBinding = signal.add(listener);
+			var slot:ISlot = signal.add(listener);
 			
-			assertTrue("Binding is returned", binding == signal.remove(listener));
+			assertTrue("Slot is returned", slot == signal.remove(listener));
 		}
 		
 		[Test]
 		public function removed_listener_should_be_returned():void
 		{
-			var binding:ISignalBinding = signal.add(function():void{});
-			var listener:Function = binding.listener;
+			var slot:ISlot = signal.add(function():void{});
+			var listener:Function = slot.listener;
 			
-			assertTrue("Binding is returned", binding == signal.remove(listener));
+			assertTrue("Slot is returned", slot == signal.remove(listener));
 		}
 		
 		/////
@@ -86,23 +84,23 @@ package org.osflash.signals
 		}	
 		
 		[Test]
-		public function binding_params_with_multiple_named_params_should_be_sent_through_to_listener():void
+		public function slot_params_with_multiple_named_params_should_be_sent_through_to_listener():void
 		{
 			var listener:Function = function(number:int, string:String, sprite:Sprite):void
 									{ 
 										assertEquals(number, 12345);
 										assertEquals(string, 'text');
-										assertEquals(sprite, binding.params[2]);
+										assertEquals(sprite, slot.params[2]);
 									};
 
-			var binding:ISignalBinding = signal.add(listener);
-			binding.params = [12345, 'text', new Sprite()];
+			var slot:ISlot = signal.add(listener);
+			slot.params = [12345, 'text', new Sprite()];
 
 			signal.dispatch();
 		}
 		
 		[Test]
-		public function binding_params_with_with_10_params_should_be_sent_through_to_listener():void
+		public function slot_params_with_with_10_params_should_be_sent_through_to_listener():void
 		{
 			// Test the function.apply - maying sure we get everything we ask for.
 			var listener:Function = function(
@@ -120,7 +118,7 @@ package org.osflash.signals
 									{ 
 										assertEquals(number, 12345);
 										assertEquals(string, 'text');
-										assertEquals(sprite, binding.params[2]);
+										assertEquals(sprite, slot.params[2]);
 										assertEquals(alpha0, 'a');
 										assertEquals(alpha1, 'b');
 										assertEquals(alpha2, 'c');
@@ -130,8 +128,8 @@ package org.osflash.signals
 										assertEquals(alpha6, 'g');
 									};
 
-			var binding:ISignalBinding = signal.add(listener);
-			binding.params = [12345, 'text', new Sprite(), "a", "b", "c", "d", "e", "f", "g"];
+			var slot:ISlot = signal.add(listener);
+			slot.params = [12345, 'text', new Sprite(), "a", "b", "c", "d", "e", "f", "g"];
 
 			signal.dispatch();
 		}

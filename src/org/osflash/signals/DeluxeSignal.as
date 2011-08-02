@@ -59,24 +59,24 @@ package org.osflash.signals
 		}
 
 		// TODO: @throws
-		override public function add(listener:Function):ISignalBinding
+		override public function add(listener:Function):ISlot
 		{
 			return addWithPriority(listener);
 		}
 
-		override public function addOnce(listener:Function):ISignalBinding
+		override public function addOnce(listener:Function):ISlot
 		{
 			return addOnceWithPriority(listener);
 		}
 
 		/** @inheritDoc */
-		public function addWithPriority(listener:Function, priority:int = 0):ISignalBinding
+		public function addWithPriority(listener:Function, priority:int = 0):ISlot
 		{
 			return registerListenerWithPriority(listener, false, priority);
 		}
 
 		/** @inheritDoc */
-		public function addOnceWithPriority(listener:Function, priority:int = 0):ISignalBinding
+		public function addOnceWithPriority(listener:Function, priority:int = 0):ISlot
 		{
 			return registerListenerWithPriority(listener, true, priority);
 		}
@@ -129,11 +129,11 @@ package org.osflash.signals
 
 			// Broadcast to listeners.
 
-			var bindingsToProcess:SignalBindingList = bindings;
-			while (bindingsToProcess.nonEmpty)
+			var slotsToProcess:SlotList = slots;
+			while (slotsToProcess.nonEmpty)
 			{
-				bindingsToProcess.head.execute(valueObjects);
-				bindingsToProcess = bindingsToProcess.tail;
+				slotsToProcess.head.execute(valueObjects);
+				slotsToProcess = slotsToProcess.tail;
 			}
 
 			// Bubble the event as far as possible.
@@ -153,21 +153,21 @@ package org.osflash.signals
 			}
 		}
 
-		override protected function registerListener(listener:Function, once:Boolean = false):ISignalBinding
+		override protected function registerListener(listener:Function, once:Boolean = false):ISlot
 		{
 			return registerListenerWithPriority(listener, once);
 		}
 
-		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):ISignalBinding
+		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):ISlot
 		{
 			if (registrationPossible(listener, once))
 			{
-				const binding:ISignalBinding = new SignalBinding(listener, this, once, priority);
-				bindings = bindings.insertWithPriority(binding);
-				return binding;
+				const slot:ISlot = new Slot(listener, this, once, priority);
+				slots = slots.insertWithPriority(slot);
+				return slot;
 			}
 			
-			return bindings.find(listener);
+			return slots.find(listener);
 		}
 	}
 }

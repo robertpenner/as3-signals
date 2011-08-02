@@ -1,20 +1,14 @@
 package org.osflash.signals.natives
 {
-	import asunit.asserts.assertFalse;
-	import asunit.asserts.assertTrue;
-
-	import org.osflash.signals.ISignalBinding;
-	import org.osflash.signals.ISignalBindingTestBase;
-	import org.osflash.signals.events.GenericEvent;
+	import org.osflash.signals.ISlotTestBase;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
-	import flash.events.MouseEvent;
 	/**
 	 * @author Simon Richardson - me@simonrichardson.info
 	 */
-	public class NativeSignalBindingTest extends ISignalBindingTestBase
+	public class NativeSignalSlotTest extends ISlotTestBase
 	{
 		private var sprite:IEventDispatcher;
 		

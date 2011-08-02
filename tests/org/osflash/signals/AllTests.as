@@ -8,7 +8,7 @@ package org.osflash.signals
 	import org.osflash.signals.natives.NativeMappedSignalFunctionNoArgsTest;
 	import org.osflash.signals.natives.NativeMappedSignalObjectArgTest;
 	import org.osflash.signals.natives.NativeRelaySignalTest;
-	import org.osflash.signals.natives.NativeSignalBindingTest;
+	import org.osflash.signals.natives.NativeSignalSlotTest;
 	import org.osflash.signals.natives.NativeSignalTest;
 	import org.osflash.signals.natives.sets.DisplayObjectSignalSetTest;
 	import org.osflash.signals.natives.sets.EventDispatcherSignalSetTest;
@@ -28,7 +28,7 @@ package org.osflash.signals
 		public var _NativeMappedSignalFunctionNoArgsTest:NativeMappedSignalFunctionNoArgsTest;
 		public var _NativeMappedSignalFunctionArgTest:NativeMappedSignalFunctionArgTest;
 		public var _NativeMappedSignalBoundaryUseTest:NativeMappedSignalBoundaryUseTest;
-		public var _NativeSignalBindingTest:NativeSignalBindingTest;
+		public var _NativeSlotTest:NativeSignalSlotTest;
 		
 		public var _PriorityListenersTest:PriorityListenersTest;
 		public var _RedispatchedEventTest:RedispatchedEventTest;
@@ -46,8 +46,8 @@ package org.osflash.signals
 		public var _SignalDispatchNonEventTest:SignalDispatchNonEventTest;
 		public var _SignalTest:SignalTest;
 		public var _SignalWithCustomEventTest:SignalWithCustomEventTest;
-		public var _SignalBindingTest:SignalBindingTest;
-		public var _SignalBindingListTest:SignalBindingListTest;
+		public var _SlotTest:SlotTest;
+		public var _SlotListTest:SlotListTest;
 		public var _SignalDispatchVarArgsTest:SignalDispatchVarArgsTest;
 		
 		public var _SingleSignalTest:SingleSignalTest;
@@ -55,7 +55,7 @@ package org.osflash.signals
 		public var _SingleSignalDispatchExtraArgsTest:SingleSignalDispatchExtraArgsTest;
 		public var _SingleSignalDispatchNoArgsTest:SingleSignalDispatchNoArgsTest;
 		public var _SingleSignalDispatchNonEventTest:SingleSignalDispatchNonEventTest;
-		public var _SingleSignalBindingTest:SingleSignalBindingTest;
+		public var _SingleSignalSlotTest:SingleSignalSlotTest;
 		public var _SingleSignalDispatchVarArgsTest:SingleSignalDispatchVarArgsTest;
 		
 		public var _NativeSignalSetTest:NativeSignalSetTest;

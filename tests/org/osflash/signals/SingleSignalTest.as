@@ -225,12 +225,12 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function removed_listener_should_return_binding():void
+		public function removed_listener_should_return_slot():void
 		{
 			var listener:Function = function():void{};
-			var binding:ISignalBinding = signal.add(listener);
+			var slot:ISlot = signal.add(listener);
 			
-			assertTrue("Binding is returned", binding == signal.remove(listener));
+			assertTrue("Slot is returned", slot == signal.remove(listener));
 		}
 		
 		//////
@@ -238,34 +238,34 @@ package org.osflash.signals
 		[Test]
 		public function removed_listener_should_be_returned():void
 		{
-			var binding:ISignalBinding = signal.add(function():void{});
-			var listener:Function = binding.listener;
+			var slot:ISlot = signal.add(function():void{});
+			var listener:Function = slot.listener;
 			
-			assertTrue("Binding is returned", binding == signal.remove(listener));
+			assertTrue("Slot is returned", slot == signal.remove(listener));
 		}
 		
 		
 		[Test]
-		public function binding_params_are_null_when_created():void
+		public function slot_params_are_null_when_created():void
 		{
 			var listener:Function = newEmptyHandler();
-			var binding:ISignalBinding = signal.add(listener);
+			var slot:ISlot = signal.add(listener);
 
-			assertNull('params should be null', binding.params); 
+			assertNull('params should be null', slot.params); 
 		}
 
 		[Test]
-		public function binding_params_should_not_be_null_after_adding_array():void
+		public function slot_params_should_not_be_null_after_adding_array():void
 		{
 			var listener:Function = newEmptyHandler();
-			var binding:ISignalBinding = signal.add(listener);
-			binding.params = [];
+			var slot:ISlot = signal.add(listener);
+			slot.params = [];
 
-			assertNotNull('params should not be null', binding.params); 
+			assertNotNull('params should not be null', slot.params); 
 		}
 
 		[Test]
-		public function binding_params_with_one_param_should_be_sent_through_to_listener():void
+		public function slot_params_with_one_param_should_be_sent_through_to_listener():void
 		{
 			var listener:Function = function(...args):void
 									{ 
@@ -273,14 +273,14 @@ package org.osflash.signals
 										assertEquals(args[0], 1234);
 									};
 
-			var binding:ISignalBinding = signal.add(listener);
-			binding.params = [1234];
+			var slot:ISlot = signal.add(listener);
+			slot.params = [1234];
 
 			signal.dispatch();
 		}	
 
 		[Test]
-		public function binding_params_with_multiple_params_should_be_sent_through_to_listener():void
+		public function slot_params_with_multiple_params_should_be_sent_through_to_listener():void
 		{
 			var listener:Function = function(...args):void
 									{ 
@@ -291,17 +291,17 @@ package org.osflash.signals
 										assertEquals(args[1], 'text');
 										
 										assertTrue(args[2] is Sprite);
-										assertEquals(args[2], binding.params[2]);
+										assertEquals(args[2], slot.params[2]);
 									};
 
-			var binding:ISignalBinding = signal.add(listener);
-			binding.params = [12345, 'text', new Sprite()];
+			var slot:ISlot = signal.add(listener);
+			slot.params = [12345, 'text', new Sprite()];
 
 			signal.dispatch();
 		}
 				
 		[Test]
-		public function verify_chaining_of_binding_params():void
+		public function verify_chaining_of_slot_params():void
 		{
 			var listener:Function = function(...args):void
 									{ 
@@ -315,7 +315,7 @@ package org.osflash.signals
 		}
 		
 		[Test]
-		public function verify_chaining_and_concat_of_binding_params():void
+		public function verify_chaining_and_concat_of_slot_params():void
 		{
 			var listener:Function = function(...args):void
 									{ 
@@ -331,7 +331,7 @@ package org.osflash.signals
 		
 		
 		[Test]
-		public function verify_chaining_and_pushing_on_to_binding_params():void
+		public function verify_chaining_and_pushing_on_to_slot_params():void
 		{
 			var listener:Function = function(...args):void
 									{ 
@@ -342,9 +342,9 @@ package org.osflash.signals
 			
 			// This is ugly, but I put money on somebody will attempt to do this!
 			
-			var bindings:ISignalBinding;
-			(bindings = signal.add(listener)).params = [123456789];
-			bindings.params.push('text');
+			var slots:ISlot;
+			(slots = signal.add(listener)).params = [123456789];
+			slots.params.push('text');
 			
 			signal.dispatch();
 		}

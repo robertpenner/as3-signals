@@ -8,21 +8,21 @@
 package org.osflash.signals
 {
 	/**
-	 * The ISignalBinding interface defines the basic properties of a
+	 * The ISlot interface defines the basic properties of a
 	 * listener associated with a Signal.
 	 *
 	 * @author Joa Ebert
 	 */
-	public interface ISignalBinding
+	public interface ISlot
 	{
 		/**
-		 * The listener associated with this binding.
+		 * The listener associated with this slot.
 		 */
 		function get listener():Function;
 		function set listener(value:Function):void;
 		
 		/**
-		 * If the binding should use strict mode or not. Useful if you would like to use the ...rest
+		 * If the slot should use strict mode or not. Useful if you would like to use the ...rest
 		 * argument or if you don't want an exact match up of listener arguments and signal 
 		 * arguments.
 		 */
@@ -30,7 +30,7 @@ package org.osflash.signals
 		function set strict(value:Boolean):void;
 		
 		/**
-		 * Allows the ISignalBinding to inject parameters when dispatching. The params will be at 
+		 * Allows the ISlot to inject parameters when dispatching. The params will be at 
 		 * the tail of the arguments and the ISignal arguments will be at the head follow.
 		 * 
 		 * var signal:ISignal = new Signal(int, String);
@@ -42,12 +42,12 @@ package org.osflash.signals
 		function set params(value:Array):void;
 
 		/**
-		 * Whether this binding is destroyed after it has been used once.
+		 * Whether this slot is destroyed after it has been used once.
 		 */
 		function get once():Boolean;
 
 		/**
-		 * The priority of this binding.
+		 * The priority of this slot.
 		 */
 		function get priority():int;
 		
@@ -66,7 +66,7 @@ package org.osflash.signals
 		function execute(valueObjects:Array):void;
 
 		/**
-		 * Removes the binding from its signal.
+		 * Removes the slot from its signal.
 		 */
 		function remove():void;
 	}

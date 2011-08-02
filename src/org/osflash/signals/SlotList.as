@@ -1,28 +1,28 @@
 package org.osflash.signals
 {
 	/**
-	 * The SignalBindingList class represents an immutable list of SignalBinding objects.
+	 * The SlotList class represents an immutable list of Slot objects.
 	 *
 	 * @author Joa Ebert
 	 */
-	public final class SignalBindingList
+	public final class SlotList
 	{
 		/**
 		 * Represents an empty list. Used as the list terminator.
 		 */
-		public static const NIL:SignalBindingList = new SignalBindingList(null, null);
+		public static const NIL:SlotList = new SlotList(null, null);
 
 		/**
-		 * Creates and returns a new SignalBindingList object.
+		 * Creates and returns a new SlotList object.
 		 *
-		 * <p>A user never has to create a SignalBindingList manually. 
+		 * <p>A user never has to create a SlotList manually. 
 		 * Use the <code>NIL</code> element to represent an empty list. 
 		 * <code>NIL.prepend(value)</code> would create a list containing <code>value</code>.
 		 *
-		 * @param head The first binding in the list.
-		 * @param tail A list containing all bindings except head.
+		 * @param head The first slot in the list.
+		 * @param tail A list containing all slots except head.
 		 */
-		public function SignalBindingList(head:ISignalBinding, tail:SignalBindingList = null)
+		public function SlotList(head:ISlot, tail:SlotList = null)
 		{
 			if (!head && !tail)
 			{
@@ -45,12 +45,12 @@ package org.osflash.signals
 		}
 
 		// Although those variables are not const, they would be if AS3 would handle it correctly.
-		public var head:ISignalBinding;
-		public var tail:SignalBindingList;
+		public var head:ISlot;
+		public var tail:SlotList;
 		public var nonEmpty:Boolean = false;
 
 		/**
-		 * The number of bindings in the list.
+		 * The number of slots in the list.
 		 */
 		public function get length():uint
 		{
@@ -62,7 +62,7 @@ package org.osflash.signals
 			// We could also cache the length lazy, but that is a waste of another 8b per list node (at least).
 
 			var result:uint = 0;
-			var p:SignalBindingList = this;
+			var p:SlotList = this;
 
 			while (p.nonEmpty)
 			{
@@ -74,93 +74,93 @@ package org.osflash.signals
 		}
 		
 		/**
-		 * Prepends a binding to this list.
-		 * @param	binding The item to be prepended.
-		 * @return	A list consisting of binding followed by all elements of this list.
+		 * Prepends a slot to this list.
+		 * @param	slot The item to be prepended.
+		 * @return	A list consisting of slot followed by all elements of this list.
 		 */
-		public function prepend(binding:ISignalBinding):SignalBindingList
+		public function prepend(slot:ISlot):SlotList
 		{
-			return new SignalBindingList(binding, this);
+			return new SlotList(slot, this);
 		}
 
 		/**
-		 * Appends a binding to this list.
+		 * Appends a slot to this list.
 		 * Note: appending is O(n). Where possible, prepend which is O(1).
 		 * In some cases, many list items must be cloned to 
 		 * avoid changing existing lists.
-		 * @param	binding The item to be appended.
-		 * @return	A list consisting of all elements of this list followed by binding.
+		 * @param	slot The item to be appended.
+		 * @return	A list consisting of all elements of this list followed by slot.
 		 */
-		public function append(binding:ISignalBinding):SignalBindingList
+		public function append(slot:ISlot):SlotList
 		{
-			if (!binding) return this;
-			if (!nonEmpty) return new SignalBindingList(binding);
-			// Special case: just one binding currently in the list.
+			if (!slot) return this;
+			if (!nonEmpty) return new SlotList(slot);
+			// Special case: just one slot currently in the list.
 			if (tail == NIL) 
-				return new SignalBindingList(binding).prepend(head);
+				return new SlotList(slot).prepend(head);
 			
-			// The list already has two or more bindings.
+			// The list already has two or more slots.
 			// We have to build a new list with cloned items because they are immutable.
-			const wholeClone:SignalBindingList = new SignalBindingList(head);
-			var subClone:SignalBindingList = wholeClone;
-			var current:SignalBindingList = tail;
+			const wholeClone:SlotList = new SlotList(head);
+			var subClone:SlotList = wholeClone;
+			var current:SlotList = tail;
 
 			while (current.nonEmpty)
 			{
-				subClone = subClone.tail = new SignalBindingList(current.head);
+				subClone = subClone.tail = new SlotList(current.head);
 				current = current.tail;
 			}
-			// Append the new binding last.
-			subClone.tail = new SignalBindingList(binding);
+			// Append the new slot last.
+			subClone.tail = new SlotList(slot);
 			return wholeClone;
 		}		
 		
-		public function insertWithPriority(binding:ISignalBinding):SignalBindingList
+		public function insertWithPriority(slot:ISlot):SlotList
 		{
-			if (!nonEmpty) return new SignalBindingList(binding);
+			if (!nonEmpty) return new SlotList(slot);
 
-			const priority:int = binding.priority;
-			// Special case: new binding has the highest priority.
-			if (priority > this.head.priority) return prepend(binding);
+			const priority:int = slot.priority;
+			// Special case: new slot has the highest priority.
+			if (priority > this.head.priority) return prepend(slot);
 
-			const wholeClone:SignalBindingList = new SignalBindingList(head);
-			var subClone:SignalBindingList = wholeClone;
-			var current:SignalBindingList = tail;
+			const wholeClone:SlotList = new SlotList(head);
+			var subClone:SlotList = wholeClone;
+			var current:SlotList = tail;
 
-			// Find a binding with lower priority and go in front of it.
+			// Find a slot with lower priority and go in front of it.
 			while (current.nonEmpty)
 			{
 				if (priority > current.head.priority)
 				{
-					const newTail : SignalBindingList = current.prepend(binding);
-					return new SignalBindingList(head, newTail);
+					const newTail : SlotList = current.prepend(slot);
+					return new SlotList(head, newTail);
 				}
 				
-				subClone = subClone.tail = new SignalBindingList(current.head);
+				subClone = subClone.tail = new SlotList(current.head);
 				current = current.tail;
 			}
 
-			// Binding has lowest priority.
-			subClone.tail = new SignalBindingList(binding);
+			// Slot has lowest priority.
+			subClone.tail = new SlotList(slot);
 			return wholeClone;
 		}
 		
 		/**
-		 * Returns the bindings in this list that do not contain the supplied listener.
+		 * Returns the slots in this list that do not contain the supplied listener.
 		 * Note: assumes the listener is not repeated within the list.
 		 * @param	listener The function to remove.
 		 * @return A list consisting of all elements of this list that do not have listener.
 		 */
-		public function filterNot(listener:Function):SignalBindingList
+		public function filterNot(listener:Function):SlotList
 		{
 			if (!nonEmpty || listener == null) return this;
 
 			if (listener == head.listener) return tail;
 
 			// The first item wasn't a match so the filtered list will contain it.
-			const wholeClone:SignalBindingList = new SignalBindingList(head);
-			var subClone:SignalBindingList = wholeClone;
-			var current:SignalBindingList = tail;
+			const wholeClone:SlotList = new SlotList(head);
+			var subClone:SlotList = wholeClone;
+			var current:SlotList = tail;
 			
 			while (current.nonEmpty)
 			{
@@ -171,7 +171,7 @@ package org.osflash.signals
 					return wholeClone;
 				}
 				
-				subClone = subClone.tail = new SignalBindingList(current.head);
+				subClone = subClone.tail = new SlotList(current.head);
 				current = current.tail;
 			}
 
@@ -183,7 +183,7 @@ package org.osflash.signals
 		{
 			if (!nonEmpty) return false;
 
-			var p:SignalBindingList = this;
+			var p:SlotList = this;
 			while (p.nonEmpty)
 			{
 				if (p.head.listener == listener) return true;
@@ -193,11 +193,11 @@ package org.osflash.signals
 			return false;
 		}
 
-		public function find(listener:Function):ISignalBinding
+		public function find(listener:Function):ISlot
 		{
 			if (!nonEmpty) return null;
 
-			var p:SignalBindingList = this;
+			var p:SlotList = this;
 			while (p.nonEmpty)
 			{
 				if (p.head.listener == listener) return p.head;
@@ -210,7 +210,7 @@ package org.osflash.signals
 		public function toString():String
 		{
 			var buffer:String = '';
-			var p:SignalBindingList = this;
+			var p:SlotList = this;
 
 			while (p.nonEmpty)
 			{

@@ -1,13 +1,13 @@
 package org.osflash.signals 
 {
     /**
-     * The SignalBinding class represents a signal binding.
+     * The Slot class represents a signal slot.
      *
      * @author Robert Penner
 	 * @author Joa Ebert
 	 * @private
      */
-	public final class SignalBinding implements ISignalBinding
+	public final class Slot implements ISlot
 	{
 		private var _signal:ISignal;
 		private var _enabled:Boolean = true;
@@ -18,16 +18,16 @@ package org.osflash.signals
 		private var _params:Array;
 		
 		/**
-		 * Creates and returns a new SignalBinding object.
+		 * Creates and returns a new Slot object.
 		 *
-		 * @param listener The listener associated with the binding.
+		 * @param listener The listener associated with the slot.
 		 * @param once Whether or not the listener should be executed only once.
-		 * @param signal The signal associated with the binding.
-		 * @param priority The priority of the binding.
+		 * @param signal The signal associated with the slot.
+		 * @param priority The priority of the slot.
 		 *
 		 * @throws ArgumentError An error is thrown if the given listener closure is <code>null</code>.
 		 */
-		public function SignalBinding(listener:Function, signal:ISignal, once:Boolean = false, priority:int = 0)
+		public function Slot(listener:Function, signal:ISignal, once:Boolean = false, priority:int = 0)
 		{
 			_listener = listener;
 			_once = once;
@@ -35,7 +35,7 @@ package org.osflash.signals
 			_priority = priority;
 							
 			// Work out what the strict mode is from the signal and set it here. You can change
-			// the value of strict mode on the binding itself at a later date.
+			// the value of strict mode on the slot itself at a later date.
 			_strict = signal.strict;
 			
 			verifyListener(listener);
@@ -124,7 +124,7 @@ package org.osflash.signals
 		 */
 		public function toString():String
 		{
-			return "[SignalBinding listener: "+_listener+", once: "+_once
+			return "[Slot listener: "+_listener+", once: "+_once
 											+", priority: "+_priority+", enabled: "+_enabled+"]";
 		}
 

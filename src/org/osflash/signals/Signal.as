@@ -25,7 +25,7 @@ package org.osflash.signals
 
 		protected var _strict:Boolean = true;
 		
-		protected var bindings:SignalBindingList = SignalBindingList.NIL;
+		protected var slots:SlotList = SlotList.NIL;
 		
 		/**
 		 * Creates a Signal instance to dispatch value objects.
@@ -71,35 +71,35 @@ package org.osflash.signals
 		public function set strict(value:Boolean):void { _strict = value; }
 		
 		/** @inheritDoc */
-		public function get numListeners():uint { return bindings.length; }
+		public function get numListeners():uint { return slots.length; }
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function):ISignalBinding
+		public function add(listener:Function):ISlot
 		{
 			return registerListener(listener);
 		}
 		
 		/** @inheritDoc */
-		public function addOnce(listener:Function):ISignalBinding
+		public function addOnce(listener:Function):ISlot
 		{
 			return registerListener(listener, true);
 		}
 		
 		/** @inheritDoc */
-		public function remove(listener:Function):ISignalBinding
+		public function remove(listener:Function):ISlot
 		{
-			const binding:ISignalBinding = bindings.find(listener);
-			if (!binding) return null;
+			const slot:ISlot = slots.find(listener);
+			if (!slot) return null;
 			
-			bindings = bindings.filterNot(listener);
-			return binding;
+			slots = slots.filterNot(listener);
+			return slot;
 		}
 		
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			bindings = SignalBindingList.NIL;
+			slots = SlotList.NIL;
 		}
 		
 		/** @inheritDoc */
@@ -134,37 +134,37 @@ package org.osflash.signals
 
 			// Broadcast to listeners.
 			
-			var bindingsToProcess:SignalBindingList = bindings;
-			if(bindingsToProcess.nonEmpty)
+			var slotsToProcess:SlotList = slots;
+			if(slotsToProcess.nonEmpty)
 			{
-				while (bindingsToProcess.nonEmpty)
+				while (slotsToProcess.nonEmpty)
 				{
-					bindingsToProcess.head.execute(valueObjects);
-					bindingsToProcess = bindingsToProcess.tail;
+					slotsToProcess.head.execute(valueObjects);
+					slotsToProcess = slotsToProcess.tail;
 				}
 			}
 		}
 
-		protected function registerListener(listener:Function, once:Boolean = false):ISignalBinding
+		protected function registerListener(listener:Function, once:Boolean = false):ISlot
 		{
 			if (registrationPossible(listener, once))
 			{
-				const newBinding:ISignalBinding = new SignalBinding(listener, this, once);
-				bindings = bindings.prepend(newBinding);
-				return newBinding;
+				const newSlot:ISlot = new Slot(listener, this, once);
+				slots = slots.prepend(newSlot);
+				return newSlot;
 			}
 			
-			return bindings.find(listener);
+			return slots.find(listener);
 		}
 
 		protected function registrationPossible(listener:Function, once:Boolean):Boolean
 		{
-			if (!bindings.nonEmpty) return true;
+			if (!slots.nonEmpty) return true;
 			
-			const existingBinding:ISignalBinding = bindings.find(listener);
-			if (!existingBinding) return true;
+			const existingSlot:ISlot = slots.find(listener);
+			if (!existingSlot) return true;
 
-			if (existingBinding.once != once)
+			if (existingSlot.once != once)
 			{
 				// If the listener was previously added, definitely don't add it again.
 				// But throw an exception if their once values differ.

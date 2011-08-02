@@ -16,7 +16,7 @@ package org.osflash.signals
 	/**
 	 * @author Simon Richardson - simon@ustwo.co.uk
 	 */
-	public class ISignalBindingTestBase
+	public class ISlotTestBase
 	{
 		
 		[Inject]
@@ -50,37 +50,37 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function verify_strict_on_binding_after_dispatch_equals_true() : void
+		public function verify_strict_on_slot_after_dispatch_equals_true() : void
 		{
 			var listener : Function = newEmptyHandler();
-			var binding : ISignalBinding = signal.add(listener);
+			var slot : ISlot = signal.add(listener);
 				
 			signal.dispatch(new Event('click'));
 							
-			assertTrue('Binding strict is true', binding.strict);
+			assertTrue('Slot strict is true', slot.strict);
 		}
 		
 		//////
 		
 		[Test]
-		public function set_strict_to_false_and_verify_strict_on_binding_after_dispatch_equals_false() : void
+		public function set_strict_to_false_and_verify_strict_on_slot_after_dispatch_equals_false() : void
 		{
 			var listener : Function = newEmptyHandler();
-			var binding : ISignalBinding = signal.add(listener);
-			binding.strict = false;
+			var slot : ISlot = signal.add(listener);
+			slot.strict = false;
 				
 			signal.dispatch(new Event('click'));
 							
-			assertFalse('Binding strict is false', binding.strict);
+			assertFalse('Slot strict is false', slot.strict);
 		}
 		
 		//////
 		
 		[Test]
-		public function add_listener_pause_on_binding_should_not_dispatch() : void
+		public function add_listener_pause_on_slot_should_not_dispatch() : void
 		{
-			var binding : ISignalBinding = signal.add(failIfCalled);
-			binding.enabled = false;
+			var slot : ISlot = signal.add(failIfCalled);
+			slot.enabled = false;
 			
 			signal.dispatch(new Event('click'));
 		}
@@ -89,12 +89,12 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_switch_pause_and_resume_on_binding_should_not_dispatch() : void
+		public function add_listener_switch_pause_and_resume_on_slot_should_not_dispatch() : void
 		{
-			var binding : ISignalBinding = signal.add(failIfCalled);
-			binding.enabled = false;
-			binding.enabled = true;
-			binding.enabled = false;
+			var slot : ISlot = signal.add(failIfCalled);
+			slot.enabled = false;
+			slot.enabled = true;
+			slot.enabled = false;
 			
 			signal.dispatch(new Event('click'));		
 		}
@@ -102,13 +102,13 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_then_dispatch_change_listener_on_binding_should_dispatch_second_listener() : void
+		public function add_listener_then_dispatch_change_listener_on_slot_should_dispatch_second_listener() : void
 		{
-			var binding : ISignalBinding = signal.add(newEmptyHandler());
+			var slot : ISlot = signal.add(newEmptyHandler());
 			
 			signal.dispatch(new Event('click'));
 			
-			binding.listener = newEmptyHandler();
+			slot.listener = newEmptyHandler();
 			
 			signal.dispatch(new Event('click'));		
 		}
@@ -116,14 +116,14 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_listener_then_dispatch_change_listener_on_binding_then_pause_should_not_dispatch_second_listener() : void
+		public function add_listener_then_dispatch_change_listener_on_slot_then_pause_should_not_dispatch_second_listener() : void
 		{
-			var binding : ISignalBinding = signal.add(newEmptyHandler());
+			var slot : ISlot = signal.add(newEmptyHandler());
 			
 			signal.dispatch(new Event('click'));
 			
-			binding.listener = failIfCalled;
-			binding.enabled = false;
+			slot.listener = failIfCalled;
+			slot.enabled = false;
 			
 			signal.dispatch(new Event('click'));		
 		}
@@ -133,25 +133,14 @@ package org.osflash.signals
 		[Test]
 		public function add_listener_then_change_listener_then_switch_back_and_then_should_dispatch() : void
 		{
-			var binding : ISignalBinding = signal.add(newEmptyHandler());
+			var slot : ISlot = signal.add(newEmptyHandler());
 			
 			signal.dispatch(new Event('click'));
 			
-			var listener : Function = binding.listener;
+			var listener : Function = slot.listener;
 			
-			binding.listener = failIfCalled;
-			binding.listener = listener;
-			
-			signal.dispatch(new Event('click'));
-		}
-		
-		//////
-		
-		[Test]
-		public function addOnce_listener_pause_on_binding_should_not_dispatch() : void
-		{
-			var binding : ISignalBinding = signal.addOnce(failIfCalled);
-			binding.enabled = false;
+			slot.listener = failIfCalled;
+			slot.listener = listener;
 			
 			signal.dispatch(new Event('click'));
 		}
@@ -159,12 +148,23 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_switch_pause_and_resume_on_binding_should_not_dispatch() : void
+		public function addOnce_listener_pause_on_slot_should_not_dispatch() : void
 		{
-			var binding : ISignalBinding = signal.addOnce(failIfCalled);
-			binding.enabled = false;
-			binding.enabled = true;
-			binding.enabled = false;
+			var slot : ISlot = signal.addOnce(failIfCalled);
+			slot.enabled = false;
+			
+			signal.dispatch(new Event('click'));
+		}
+		
+		//////
+		
+		[Test]
+		public function addOnce_listener_switch_pause_and_resume_on_slot_should_not_dispatch() : void
+		{
+			var slot : ISlot = signal.addOnce(failIfCalled);
+			slot.enabled = false;
+			slot.enabled = true;
+			slot.enabled = false;
 			
 			signal.dispatch(new Event('click'));		
 		}
@@ -172,13 +172,13 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_then_dispatch_change_listener_on_binding_should_dispatch_second_listener() : void
+		public function addOnce_listener_then_dispatch_change_listener_on_slot_should_dispatch_second_listener() : void
 		{
-			var binding : ISignalBinding = signal.addOnce(newEmptyHandler());
+			var slot : ISlot = signal.addOnce(newEmptyHandler());
 			
 			signal.dispatch(new Event('click'));
 			
-			binding.listener = newEmptyHandler();
+			slot.listener = newEmptyHandler();
 			
 			signal.dispatch(new Event('click'));		
 		}
@@ -186,14 +186,14 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_listener_then_dispatch_change_listener_on_binding_then_pause_should_not_dispatch_second_listener() : void
+		public function addOnce_listener_then_dispatch_change_listener_on_slot_then_pause_should_not_dispatch_second_listener() : void
 		{
-			var binding : ISignalBinding = signal.addOnce(newEmptyHandler());
+			var slot : ISlot = signal.addOnce(newEmptyHandler());
 			
 			signal.dispatch(new Event('click'));
 			
-			binding.listener = failIfCalled;
-			binding.enabled = false;
+			slot.listener = failIfCalled;
+			slot.enabled = false;
 			
 			signal.dispatch(new Event('click'));
 		}
@@ -203,14 +203,14 @@ package org.osflash.signals
 		[Test]
 		public function addOnce_listener_then_change_listener_then_switch_back_and_then_should_dispatch() : void
 		{
-			var binding : ISignalBinding = signal.addOnce(newEmptyHandler());
+			var slot : ISlot = signal.addOnce(newEmptyHandler());
 			
 			signal.dispatch(new Event('click'));
 			
-			var listener : Function = binding.listener;
+			var listener : Function = slot.listener;
 			
-			binding.listener = failIfCalled;
-			binding.listener = listener;
+			slot.listener = failIfCalled;
+			slot.listener = listener;
 			
 			signal.dispatch(new Event('click'));
 		}
@@ -222,8 +222,8 @@ package org.osflash.signals
 		{
 			signal.add(newEmptyHandler());
 			
-			var binding : ISignalBinding = signal.add(newEmptyHandler());
-			binding.strict = false;
+			var slot : ISlot = signal.add(newEmptyHandler());
+			slot.strict = false;
 			
 			signal.dispatch(new Event('click'));
 		}
@@ -234,9 +234,9 @@ package org.osflash.signals
 		public function add_listener_and_verify_once_is_false() : void
 		{
 			var listener : Function = newEmptyHandler();
-			var binding : ISignalBinding = signal.add(listener);
+			var slot : ISlot = signal.add(listener);
 			
-			assertFalse('Binding once is false', binding.once);
+			assertFalse('Slot once is false', slot.once);
 		}
 		
 		//////
@@ -245,21 +245,21 @@ package org.osflash.signals
 		public function add_listener_and_verify_strict_is_true() : void
 		{
 			var listener : Function = newEmptyHandler();
-			var binding : ISignalBinding = signal.add(listener);
+			var slot : ISlot = signal.add(listener);
 			
-			assertTrue('Binding strict is true', binding.strict);
+			assertTrue('Slot strict is true', slot.strict);
 		}
 		
 		//////
 		
 		[Test]
-		public function verify_strict_on_binding_after_setting_to_false() : void
+		public function verify_strict_on_slot_after_setting_to_false() : void
 		{
 			var listener : Function = newEmptyHandler();
-			var binding : ISignalBinding = signal.add(listener);
-			binding.strict = false;
+			var slot : ISlot = signal.add(listener);
+			slot.strict = false;
 			
-			assertFalse('Binding strict is false', binding.strict);
+			assertFalse('Slot strict is false', slot.strict);
 		}
 		
 		//////
@@ -268,53 +268,53 @@ package org.osflash.signals
 		public function add_listener_and_verify_priority_is_zero() : void
 		{
 			var listener : Function = newEmptyHandler();
-			var binding : ISignalBinding = signal.add(listener);
+			var slot : ISlot = signal.add(listener);
 			
-			assertTrue('Binding priority is zero', binding.priority == 0);
+			assertTrue('Slot priority is zero', slot.priority == 0);
 		}
 		
 		//////
 		
 		[Test]
-		public function add_listener_and_verify_binding_listener_is_same() : void
+		public function add_listener_and_verify_slot_listener_is_same() : void
 		{
 			var listener : Function = newEmptyHandler();
-			var binding : ISignalBinding = signal.add(listener);
+			var slot : ISlot = signal.add(listener);
 			
-			assertTrue('Binding listener is the same as the listener', binding.listener === listener);
+			assertTrue('Slot listener is the same as the listener', slot.listener === listener);
 		}
 				
 		//////
 		
 		[Test]
-		public function add_same_listener_twice_and_verify_bindings_are_the_same() : void
+		public function add_same_listener_twice_and_verify_slots_are_the_same() : void
 		{
 			var listener : Function = newEmptyHandler();
-			var binding0 : ISignalBinding = signal.add(listener);
-			var binding1 : ISignalBinding = signal.add(listener);
+			var slot0 : ISlot = signal.add(listener);
+			var slot1 : ISlot = signal.add(listener);
 			
-			assertTrue('Bindings are equal if they\'re they have the same listener', binding0 === binding1);
+			assertTrue('Slots are equal if they\'re they have the same listener', slot0 === slot1);
 		}
 		
 		//////
 		
 		[Test]
-		public function add_same_listener_twice_and_verify_binding_listeners_are_the_same() : void
+		public function add_same_listener_twice_and_verify_slot_listeners_are_the_same() : void
 		{
 			var listener : Function = newEmptyHandler();
-			var binding0 : ISignalBinding = signal.add(listener);
-			var binding1 : ISignalBinding = signal.add(listener);
+			var slot0 : ISlot = signal.add(listener);
+			var slot1 : ISlot = signal.add(listener);
 			
-			assertTrue('Binding listener is the same as the listener', binding0.listener === binding1.listener);
+			assertTrue('Slot listener is the same as the listener', slot0.listener === slot1.listener);
 		}
 		
 		//////
 		
 		[Test]
-		public function add_listener_and_remove_using_binding() : void
+		public function add_listener_and_remove_using_slot() : void
 		{
-			var binding : ISignalBinding = signal.add(newEmptyHandler());
-			binding.remove();
+			var slot : ISlot = signal.add(newEmptyHandler());
+			slot.remove();
 			
 			assertTrue('Number of listeners should be 0', signal.numListeners == 0);
 		}
@@ -322,13 +322,13 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_same_listener_twice_and_remove_using_binding_should_have_no_listeners() : void
+		public function add_same_listener_twice_and_remove_using_slot_should_have_no_listeners() : void
 		{
 			var listener : Function = newEmptyHandler();
-			var binding0 : ISignalBinding = signal.add(listener);
+			var slot0 : ISlot = signal.add(listener);
 			signal.add(listener);
 			
-			binding0.remove();
+			slot0.remove();
 			
 			assertTrue('Number of listeners should be 0', signal.numListeners == 0);
 		}
@@ -336,15 +336,15 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function add_lots_of_same_listener_and_remove_using_binding_should_have_no_listeners() : void
+		public function add_lots_of_same_listener_and_remove_using_slot_should_have_no_listeners() : void
 		{
 			var listener : Function = newEmptyHandler();
 			for(var i : int = 0; i<100; i++)
 			{
-				var binding0 : ISignalBinding = signal.add(listener);
+				var slot0 : ISlot = signal.add(listener);
 			}
 			
-			binding0.remove();
+			slot0.remove();
 			
 			assertTrue('Number of listeners should be 0', signal.numListeners == 0);
 		}
@@ -354,28 +354,28 @@ package org.osflash.signals
 		[Test(expects="ArgumentError")]
 		public function add_listener_then_set_listener_to_null_should_throw_ArgumentError() : void
 		{
-			var binding : ISignalBinding = signal.add(newEmptyHandler());
-			binding.listener = null;
+			var slot : ISlot = signal.add(newEmptyHandler());
+			slot.listener = null;
 		}
 				
 		//////
 		
 		[Test]
-		public function add_listener_and_call_execute_on_binding_should_call_listener() : void
+		public function add_listener_and_call_execute_on_slot_should_call_listener() : void
 		{
-			var binding : ISignalBinding = signal.add(newEmptyHandler());
-			binding.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
+			var slot : ISlot = signal.add(newEmptyHandler());
+			slot.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
 		}
 		
 		//////
 		
 		[Test]
-		public function add_listener_twice_and_call_execute_on_binding_should_call_listener_and_not_on_signal_listeners() : void
+		public function add_listener_twice_and_call_execute_on_slot_should_call_listener_and_not_on_signal_listeners() : void
 		{
 			signal.add(failIfCalled);
 			
-			var binding : ISignalBinding = signal.add(newEmptyHandler());
-			binding.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
+			var slot : ISlot = signal.add(newEmptyHandler());
+			slot.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
 		}
 		
 		//////
@@ -384,9 +384,9 @@ package org.osflash.signals
 		public function addOnce_listener_and_verify_once_is_true() : void
 		{
 			var listener : Function = newEmptyHandler();
-			var binding : ISignalBinding = signal.addOnce(listener);
+			var slot : ISlot = signal.addOnce(listener);
 			
-			assertTrue('Binding once is true', binding.once == true);
+			assertTrue('Slot once is true', slot.once == true);
 		}
 		
 		//////
@@ -395,53 +395,53 @@ package org.osflash.signals
 		public function addOnce_listener_and_verify_priority_is_zero() : void
 		{
 			var listener : Function = newEmptyHandler();
-			var binding : ISignalBinding = signal.addOnce(listener);
+			var slot : ISlot = signal.addOnce(listener);
 			
-			assertTrue('Binding priority is zero', binding.priority == 0);
+			assertTrue('Slot priority is zero', slot.priority == 0);
 		}
 		
 		//////
 		
 		[Test]
-		public function addOnce_listener_and_verify_binding_listener_is_same() : void
+		public function addOnce_listener_and_verify_slot_listener_is_same() : void
 		{
 			var listener : Function = newEmptyHandler();
-			var binding : ISignalBinding = signal.addOnce(listener);
+			var slot : ISlot = signal.addOnce(listener);
 			
-			assertTrue('Binding listener is the same as the listener', binding.listener === listener);
+			assertTrue('Slot listener is the same as the listener', slot.listener === listener);
 		}
 				
 		//////
 		
 		[Test]
-		public function addOnce_same_listener_twice_and_verify_bindings_are_the_same() : void
+		public function addOnce_same_listener_twice_and_verify_slots_are_the_same() : void
 		{
 			var listener : Function = newEmptyHandler();
-			var binding0 : ISignalBinding = signal.addOnce(listener);
-			var binding1 : ISignalBinding = signal.addOnce(listener);
+			var slot0 : ISlot = signal.addOnce(listener);
+			var slot1 : ISlot = signal.addOnce(listener);
 			
-			assertTrue('Bindings are equal if they\'re they have the same listener', binding0 === binding1);
+			assertTrue('Slots are equal if they\'re they have the same listener', slot0 === slot1);
 		}
 		
 		//////
 		
 		[Test]
-		public function addOnce_same_listener_twice_and_verify_binding_listeners_are_the_same() : void
+		public function addOnce_same_listener_twice_and_verify_slot_listeners_are_the_same() : void
 		{
 			var listener : Function = newEmptyHandler();
-			var binding0 : ISignalBinding = signal.addOnce(listener);
-			var binding1 : ISignalBinding = signal.addOnce(listener);
+			var slot0 : ISlot = signal.addOnce(listener);
+			var slot1 : ISlot = signal.addOnce(listener);
 			
-			assertTrue('Binding listener is the same as the listener', binding0.listener === binding1.listener);
+			assertTrue('Slot listener is the same as the listener', slot0.listener === slot1.listener);
 		}
 		
 		//////
 		
 		[Test]
-		public function addOnce_listener_and_remove_using_binding() : void
+		public function addOnce_listener_and_remove_using_slot() : void
 		{
-			var binding : ISignalBinding = signal.addOnce(newEmptyHandler());
-			binding.remove();
+			var slot : ISlot = signal.addOnce(newEmptyHandler());
+			slot.remove();
 			
 			assertTrue('Number of listeners should be 0', signal.numListeners == 0);
 		}
@@ -449,13 +449,13 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_same_listener_twice_and_remove_using_binding_should_have_no_listeners() : void
+		public function addOnce_same_listener_twice_and_remove_using_slot_should_have_no_listeners() : void
 		{
 			var listener : Function = newEmptyHandler();
-			var binding0 : ISignalBinding = signal.addOnce(listener);
+			var slot0 : ISlot = signal.addOnce(listener);
 			signal.addOnce(listener);
 			
-			binding0.remove();
+			slot0.remove();
 			
 			assertTrue('Number of listeners should be 0', signal.numListeners == 0);
 		}
@@ -463,15 +463,15 @@ package org.osflash.signals
 		//////
 		
 		[Test]
-		public function addOnce_lots_of_same_listener_and_remove_using_binding_should_have_no_listeners() : void
+		public function addOnce_lots_of_same_listener_and_remove_using_slot_should_have_no_listeners() : void
 		{
 			var listener : Function = newEmptyHandler();
 			for(var i : int = 0; i<100; i++)
 			{
-				var binding0 : ISignalBinding = signal.addOnce(listener);
+				var slot0 : ISlot = signal.addOnce(listener);
 			}
 			
-			binding0.remove();
+			slot0.remove();
 			
 			assertTrue('Number of listeners should be 0', signal.numListeners == 0);
 		}
@@ -481,63 +481,63 @@ package org.osflash.signals
 		[Test(expects="ArgumentError")]
 		public function addOnce_listener_then_set_listener_to_null_should_throw_ArgumentError() : void
 		{
-			var binding : ISignalBinding = signal.addOnce(newEmptyHandler());
-			binding.listener = null;
+			var slot : ISlot = signal.addOnce(newEmptyHandler());
+			slot.listener = null;
 		}
 				
 		//////
 		
 		[Test]
-		public function addOnce_listener_and_call_execute_on_binding_should_call_listener() : void
+		public function addOnce_listener_and_call_execute_on_slot_should_call_listener() : void
 		{
-			var binding : ISignalBinding = signal.addOnce(newEmptyHandler());
-			binding.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
+			var slot : ISlot = signal.addOnce(newEmptyHandler());
+			slot.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
 		}
 		
 		//////
 		
 		[Test]
-		public function addOnce_listener_twice_and_call_execute_on_binding_should_call_listener_and_not_on_signal_listeners() : void
+		public function addOnce_listener_twice_and_call_execute_on_slot_should_call_listener_and_not_on_signal_listeners() : void
 		{
 			signal.addOnce(failIfCalled);
 			
-			var binding : ISignalBinding = signal.addOnce(newEmptyHandler());
-			binding.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
+			var slot : ISlot = signal.addOnce(newEmptyHandler());
+			slot.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
 		}
 		
 		//////
 		
 		[Test]
-		public function verify_listeners_that_are_strict_and_not_strict_when_called_on_binding() : void
+		public function verify_listeners_that_are_strict_and_not_strict_when_called_on_slot() : void
 		{
 			signal.add(newEmptyHandler());
 			
-			var binding : ISignalBinding = signal.add(newEmptyHandler());
-			binding.strict = false;
-			binding.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
+			var slot : ISlot = signal.add(newEmptyHandler());
+			slot.strict = false;
+			slot.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
 		}
 		
 		[Test]
-		public function binding_params_are_null_when_created():void
+		public function slot_params_are_null_when_created():void
 		{
 			var listener:Function = newEmptyHandler();
-			var binding:ISignalBinding = signal.add(listener);
+			var slot:ISlot = signal.add(listener);
 
-			assertNull('params should be null', binding.params); 
+			assertNull('params should be null', slot.params); 
 		}
 
 		[Test]
-		public function binding_params_should_not_be_null_after_adding_array():void
+		public function slot_params_should_not_be_null_after_adding_array():void
 		{
 			var listener:Function = newEmptyHandler();
-			var binding:ISignalBinding = signal.add(listener);
-			binding.params = [];
+			var slot:ISlot = signal.add(listener);
+			slot.params = [];
 
-			assertNotNull('params should not be null', binding.params); 
+			assertNotNull('params should not be null', slot.params); 
 		}
 
 		[Test]
-		public function binding_params_with_one_param_should_be_sent_through_to_listener():void
+		public function slot_params_with_one_param_should_be_sent_through_to_listener():void
 		{
 			var listener:Function = function(e:Event, ...args):void
 									{ 
@@ -547,14 +547,14 @@ package org.osflash.signals
 										assertEquals(args[0], 1234);
 									};
 
-			var binding:ISignalBinding = signal.add(listener);
-			binding.params = [1234];
+			var slot:ISlot = signal.add(listener);
+			slot.params = [1234];
 
 			signal.dispatch(new MouseEvent('click'));
 		}	
 
 		[Test]
-		public function binding_params_with_multiple_params_should_be_sent_through_to_listener():void
+		public function slot_params_with_multiple_params_should_be_sent_through_to_listener():void
 		{
 			var listener:Function = function(e:Event, ...args):void
 									{ 
@@ -567,17 +567,17 @@ package org.osflash.signals
 										assertEquals(args[1], 'text');
 										
 										assertTrue(args[2] is Sprite);
-										assertEquals(args[2], binding.params[2]);
+										assertEquals(args[2], slot.params[2]);
 									};
 
-			var binding:ISignalBinding = signal.add(listener);
-			binding.params = [12345, 'text', new Sprite()];
+			var slot:ISlot = signal.add(listener);
+			slot.params = [12345, 'text', new Sprite()];
 
 			signal.dispatch(new MouseEvent('click'));
 		}
 		
 		[Test]
-		public function binding_params_should_not_effect_other_bindings():void
+		public function slot_params_should_not_effect_other_slots():void
 		{
 			var listener0:Function = function(e:Event):void
 									{ 
@@ -596,14 +596,14 @@ package org.osflash.signals
 										assertEquals(arguments[1], 123456);
 									};
 			
-			var binding:ISignalBinding = signal.add(listener1);
-			binding.params = [123456];
+			var slot:ISlot = signal.add(listener1);
+			slot.params = [123456];
 			
 			signal.dispatch(new MouseEvent('click'));
 		}
 		
 		[Test]
-		public function verify_chaining_of_binding_params():void
+		public function verify_chaining_of_slot_params():void
 		{
 			var listener:Function = function(e:Event, ...args):void
 									{ 
@@ -619,7 +619,7 @@ package org.osflash.signals
 		}
 		
 		[Test]
-		public function verify_chaining_and_concat_of_binding_params():void
+		public function verify_chaining_and_concat_of_slot_params():void
 		{
 			var listener:Function = function(e:Event, ...args):void
 									{ 
@@ -637,7 +637,7 @@ package org.osflash.signals
 		
 		
 		[Test]
-		public function verify_chaining_and_pushing_on_to_binding_params():void
+		public function verify_chaining_and_pushing_on_to_slot_params():void
 		{
 			var listener:Function = function(e:Event, ...args):void
 									{ 
@@ -650,15 +650,15 @@ package org.osflash.signals
 			
 			// This is ugly, but I put money on somebody will attempt to do this!
 			
-			var bindings:ISignalBinding;
-			(bindings = signal.add(listener)).params = [123456789];
-			bindings.params.push('text');
+			var slots:ISlot;
+			(slots = signal.add(listener)).params = [123456789];
+			slots.params.push('text');
 			
 			signal.dispatch(new MouseEvent('click'));
 		}
 		
 		[Test]
-		public function non_strict_signal_binding_params_with_one_param_should_be_sent_through_to_listener():void
+		public function non_strict_signal_slot_params_with_one_param_should_be_sent_through_to_listener():void
 		{
 			var listener:Function = function(e:Event, ...args):void
 									{ 
@@ -670,14 +670,14 @@ package org.osflash.signals
 			
 			signal.strict = false;
 			
-			var binding:ISignalBinding = signal.add(listener);
-			binding.params = [1234];
+			var slot:ISlot = signal.add(listener);
+			slot.params = [1234];
 
 			signal.dispatch(new MouseEvent('click'));
 		}	
 
 		[Test]
-		public function non_strict_signal_binding_params_with_multiple_params_should_be_sent_through_to_listener():void
+		public function non_strict_signal_slot_params_with_multiple_params_should_be_sent_through_to_listener():void
 		{
 			var listener:Function = function(e:Event, ...args):void
 									{ 
@@ -690,19 +690,19 @@ package org.osflash.signals
 										assertEquals(args[1], 'text');
 										
 										assertTrue(args[2] is Sprite);
-										assertEquals(args[2], binding.params[2]);
+										assertEquals(args[2], slot.params[2]);
 									};
 									
 			signal.strict = false;
 
-			var binding:ISignalBinding = signal.add(listener);
-			binding.params = [12345, 'text', new Sprite()];
+			var slot:ISlot = signal.add(listener);
+			slot.params = [12345, 'text', new Sprite()];
 
 			signal.dispatch(new MouseEvent('click'));
 		}
 		
 		[Test]
-		public function non_strict_signal_binding_params_should_not_effect_other_bindings():void
+		public function non_strict_signal_slot_params_should_not_effect_other_slots():void
 		{
 			var listener0:Function = function(e:Event):void
 									{ 
@@ -723,14 +723,14 @@ package org.osflash.signals
 									
 			signal.strict = false;
 			
-			var binding:ISignalBinding = signal.add(listener1);
-			binding.params = [123456];
+			var slot:ISlot = signal.add(listener1);
+			slot.params = [123456];
 			
 			signal.dispatch(new MouseEvent('click'));
 		}
 		
 		[Test]
-		public function non_strict_signal_verify_chaining_of_binding_params():void
+		public function non_strict_signal_verify_chaining_of_slot_params():void
 		{
 			var listener:Function = function(e:Event, ...args):void
 									{ 
@@ -748,7 +748,7 @@ package org.osflash.signals
 		}
 		
 		[Test]
-		public function non_strict_signal_verify_chaining_and_concat_of_binding_params():void
+		public function non_strict_signal_verify_chaining_and_concat_of_slot_params():void
 		{
 			var listener:Function = function(e:Event, ...args):void
 									{ 
@@ -768,7 +768,7 @@ package org.osflash.signals
 		
 		
 		[Test]
-		public function non_strict_signal_verify_chaining_and_pushing_on_to_binding_params():void
+		public function non_strict_signal_verify_chaining_and_pushing_on_to_slot_params():void
 		{
 			var listener:Function = function(e:Event, ...args):void
 									{ 
@@ -783,9 +783,9 @@ package org.osflash.signals
 			
 			// This is ugly, but I put money on somebody will attempt to do this!
 			
-			var bindings:ISignalBinding;
-			(bindings = signal.add(listener)).params = [123456789];
-			bindings.params.push('text');
+			var slots:ISlot;
+			(slots = signal.add(listener)).params = [123456789];
+			slots.params.push('text');
 			
 			signal.dispatch(new MouseEvent('click'));
 		}

@@ -27,9 +27,9 @@ package org.osflash.signals
 		 * @param	listener A function with arguments
 		 * that matches the value classes dispatched by the signal.
 		 * If value classes are not specified (e.g. via Signal constructor), dispatch() can be called without arguments.
-		 * @return a ISignalBinding, which contains the Function passed as the parameter
+		 * @return a ISlot, which contains the Function passed as the parameter
 		 */
-		function add(listener:Function):ISignalBinding;
+		function add(listener:Function):ISlot;
 		
 		/**
 		 * Subscribes a one-time listener for this signal.
@@ -38,9 +38,9 @@ package org.osflash.signals
 		 * @param	listener A function with arguments
 		 * that matches the value classes dispatched by the signal.
 		 * If value classes are not specified (e.g. via Signal constructor), dispatch() can be called without arguments.
-		 * @return a ISignalBinding, which contains the Function passed as the parameter
+		 * @return a ISlot, which contains the Function passed as the parameter
 		 */
-		function addOnce(listener:Function):ISignalBinding;
+		function addOnce(listener:Function):ISlot;
 
 		/**
 		 * Dispatches an object to listeners.
@@ -52,9 +52,9 @@ package org.osflash.signals
 		/**
 		 * Unsubscribes a listener from the signal.
 		 * @param	listener
-		 * @return a ISignalBinding, which contains the Function passed as the parameter
+		 * @return a ISlot, which contains the Function passed as the parameter
 		 */
-		function remove(listener:Function):ISignalBinding;
+		function remove(listener:Function):ISlot;
 
 		/**
 		 * Unsubscribes all listeners from the signal.

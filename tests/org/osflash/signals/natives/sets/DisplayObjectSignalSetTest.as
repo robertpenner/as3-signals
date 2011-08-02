@@ -6,7 +6,7 @@ package org.osflash.signals.natives.sets
 	import asunit.asserts.fail;
 	import asunit.framework.IAsync;
 
-	import org.osflash.signals.ISignalBinding;
+	import org.osflash.signals.ISlot;
 
 	import flash.display.Sprite;
 	import flash.events.Event;
@@ -238,8 +238,8 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_added_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const binding : ISignalBinding = signalSet.added.add(failIfCalled);
-			binding.enabled = false;
+			const slot : ISlot = signalSet.added.add(failIfCalled);
+			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event(Event.ADDED));
 		}
@@ -249,8 +249,8 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_addedToStage_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const binding : ISignalBinding = signalSet.addedToStage.add(failIfCalled);
-			binding.enabled = false;
+			const slot : ISlot = signalSet.addedToStage.add(failIfCalled);
+			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event(Event.ADDED_TO_STAGE));
 		}
@@ -260,8 +260,8 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_enterFrame_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const binding : ISignalBinding = signalSet.enterFrame.add(failIfCalled);
-			binding.enabled = false;
+			const slot : ISlot = signalSet.enterFrame.add(failIfCalled);
+			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event(Event.ENTER_FRAME));
 		}
@@ -271,8 +271,8 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_exitFrame_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const binding : ISignalBinding = signalSet.exitFrame.add(failIfCalled);
-			binding.enabled = false;
+			const slot : ISlot = signalSet.exitFrame.add(failIfCalled);
+			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event("exitFrame"));
 		}
@@ -282,8 +282,8 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_frameConstructed_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const binding : ISignalBinding = signalSet.frameConstructed.add(failIfCalled);
-			binding.enabled = false;
+			const slot : ISlot = signalSet.frameConstructed.add(failIfCalled);
+			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event("frameConstructed"));
 		}
@@ -293,8 +293,8 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_removed_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const binding : ISignalBinding = signalSet.removed.add(failIfCalled);
-			binding.enabled = false;
+			const slot : ISlot = signalSet.removed.add(failIfCalled);
+			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event(Event.REMOVED));
 		}
@@ -304,8 +304,8 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_removedFromStage_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const binding : ISignalBinding = signalSet.removedFromStage.add(failIfCalled);
-			binding.enabled = false;
+			const slot : ISlot = signalSet.removedFromStage.add(failIfCalled);
+			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event(Event.REMOVED_FROM_STAGE));
 		}
@@ -315,8 +315,8 @@ package org.osflash.signals.natives.sets
 		[Test]
 		public function add_render_then_pause_and_dispatch_should_not_call_signal_listener():void
 		{
-			const binding : ISignalBinding = signalSet.render.add(failIfCalled);
-			binding.enabled = false;
+			const slot : ISlot = signalSet.render.add(failIfCalled);
+			slot.enabled = false;
 			
 			sprite.dispatchEvent(new Event(Event.RENDER));
 		}

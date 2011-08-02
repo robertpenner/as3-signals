@@ -1,9 +1,9 @@
 package org.osflash.signals.natives
 {
-	import org.osflash.signals.ISignalBinding;
+	import org.osflash.signals.ISlot;
 	import org.osflash.signals.Signal;
-	import org.osflash.signals.SignalBinding;
-	import org.osflash.signals.SignalBindingList;
+	import org.osflash.signals.Slot;
+	import org.osflash.signals.SlotList;
 
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
@@ -72,36 +72,36 @@ package org.osflash.signals.natives
 		}
 		
 		// TODO: @throws
-		override public function add(listener:Function):ISignalBinding
+		override public function add(listener:Function):ISlot
 		{
 			return addWithPriority(listener);
 		}
 
-		override public function addOnce(listener:Function):ISignalBinding
+		override public function addOnce(listener:Function):ISlot
 		{
 			return addOnceWithPriority(listener);
 		}
 
 		/** @inheritDoc */
-		public function addWithPriority(listener:Function, priority:int = 0):ISignalBinding
+		public function addWithPriority(listener:Function, priority:int = 0):ISlot
 		{
 			return registerListenerWithPriority(listener, false, priority);
 		}
 
 		/** @inheritDoc */
-		public function addOnceWithPriority(listener:Function, priority:int = 0):ISignalBinding
+		public function addOnceWithPriority(listener:Function, priority:int = 0):ISlot
 		{
 			return registerListenerWithPriority(listener, true, priority);
 		}
 		
 		/** @inheritDoc */
-		override public function remove(listener:Function):ISignalBinding
+		override public function remove(listener:Function):ISlot
 		{
-			const nonEmptyBefore:Boolean = bindings.nonEmpty;
-			const binding:ISignalBinding = super.remove(listener);
-			if (nonEmptyBefore != bindings.nonEmpty) 
+			const nonEmptyBefore:Boolean = slots.nonEmpty;
+			const slot:ISlot = super.remove(listener);
+			if (nonEmptyBefore != slots.nonEmpty) 
 				target.removeEventListener(eventType, onNativeEvent);
-			return binding;
+			return slot;
 		}
 
 		/**
@@ -150,34 +150,34 @@ package org.osflash.signals.natives
 			// every time we call onNativeEvent 
 			const singleValue:Array = [event];
 			
-			var bindingsToProcess:SignalBindingList = bindings;
+			var slotsToProcess:SlotList = slots;
 
-			while (bindingsToProcess.nonEmpty)
+			while (slotsToProcess.nonEmpty)
 			{
-				bindingsToProcess.head.execute(singleValue);
-				bindingsToProcess = bindingsToProcess.tail;
+				slotsToProcess.head.execute(singleValue);
+				slotsToProcess = slotsToProcess.tail;
 			}
 		}
 		
-		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):ISignalBinding
+		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):ISlot
 		{
 			if (!target) throw new ArgumentError('Target object cannot be null.');
-			const nonEmptyBefore:Boolean = bindings.nonEmpty;
+			const nonEmptyBefore:Boolean = slots.nonEmpty;
 			
-			var binding:ISignalBinding = null;
+			var slot:ISlot = null;
 			if (registrationPossible(listener, once))
 			{
-				binding = new SignalBinding(listener, this, once, priority);
-				bindings = bindings.insertWithPriority(binding);
+				slot = new Slot(listener, this, once, priority);
+				slots = slots.insertWithPriority(slot);
 			}
 			else
-				binding = bindings.find(listener);
+				slot = slots.find(listener);
 				
 			// Account for cases where the same listener is added twice.
-			if (nonEmptyBefore != bindings.nonEmpty)
+			if (nonEmptyBefore != slots.nonEmpty)
 				target.addEventListener(eventType, onNativeEvent, false, priority);
 				
-			return binding;
+			return slot;
 		}
 		
 	}
