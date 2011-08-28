@@ -7,7 +7,7 @@ package org.osflash.signals
 	 * @author Joa Ebert
 	 * @private
      */
-	public final class Slot implements ISlot
+	public class Slot implements ISlot
 	{
 		private var _signal:ISignal;
 		private var _enabled:Boolean = true;
