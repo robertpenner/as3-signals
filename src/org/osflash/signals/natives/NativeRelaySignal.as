@@ -126,7 +126,7 @@ package org.osflash.signals.natives
 		}
 
 		/**
-		 * Unlike other signals, NativeSignal does not dispatch null
+		 * Unlike other signals, NativeRelaySignal does not dispatch null
 		 * because it causes an exception in EventDispatcher.
 		 * @inheritDoc
 		 */

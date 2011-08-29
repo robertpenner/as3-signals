@@ -1,7 +1,6 @@
 package org.osflash.signals.natives.base
 {
 	import org.osflash.signals.natives.sets.DisplayObjectSignalSet;
-
 	import flash.display.Bitmap;
 
 	/**
@@ -9,7 +8,6 @@ package org.osflash.signals.natives.base
 	 */
 	public class SignalBitmap extends Bitmap
 	{
-
 		private var _signals:DisplayObjectSignalSet;
 
 		public function get signals():DisplayObjectSignalSet
