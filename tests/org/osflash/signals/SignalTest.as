@@ -60,8 +60,6 @@ package org.osflash.signals
 			assertTrue("Slot is returned", slot == signal.remove(listener));
 		}
 		
-		/////
-		
 		[Test]
 		public function verify_redispatch_of_signal_with_no_valueClasses():void
 		{
@@ -84,7 +82,7 @@ package org.osflash.signals
 		}	
 		
 		[Test]
-		public function slot_params_with_multiple_named_params_should_be_sent_through_to_listener():void
+		public function slot_params_should_be_sent_through_to_listener():void
 		{
 			var listener:Function = function(number:int, string:String, sprite:Sprite):void
 									{ 
@@ -93,7 +91,7 @@ package org.osflash.signals
 										assertEquals(sprite, slot.params[2]);
 									};
 
-			var slot:ISlot = signal.add(listener);
+			var slot:ISlot = signal.add(async.add(listener));
 			slot.params = [12345, 'text', new Sprite()];
 
 			signal.dispatch();
@@ -128,7 +126,7 @@ package org.osflash.signals
 										assertEquals(alpha6, 'g');
 									};
 
-			var slot:ISlot = signal.add(listener);
+			var slot:ISlot = signal.add(async.add(listener));
 			slot.params = [12345, 'text', new Sprite(), "a", "b", "c", "d", "e", "f", "g"];
 
 			signal.dispatch();
