@@ -14,7 +14,6 @@ package org.osflash.signals
 		public function setUp():void
 		{
 			signal = new Signal(int, int, int, int);
-			signal.strict = false;
 		}
 
 		[After]

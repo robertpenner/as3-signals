@@ -43,24 +43,11 @@ package org.osflash.signals
 		}
 		
 		[Test]
-		public function redispatching_untyped_signal_does_not_throw_error():void
+		public function adding_dispatch_method_as_listener_does_not_throw_error():void
 		{
-			const redispatchSignal:Signal = new Signal();
-			redispatchSignal.add(checkGenericEvent);
-			
-			signal.add(redispatchSignal.dispatch);
-			signal.dispatch(new GenericEvent());
-		}
-				
-		[Test(expects='ArgumentError')]
-		public function redispatching_to_signal_with_missing_type_throws_error():void
-		{
-			const redispatchSignal:Signal = new Signal();
-			redispatchSignal.add(checkGenericEvent);
-			
+			const redispatchSignal:Signal = new Signal(GenericEvent);
 			signal = new Signal(GenericEvent);
 			signal.add(redispatchSignal.dispatch);
-			signal.dispatch(new GenericEvent());
 		}	
 		
 		[Test]

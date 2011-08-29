@@ -180,18 +180,6 @@ package org.osflash.signals
 				throw new Error('Internal signal reference has not been set yet.');
 			}
 			
-			const numListenerArgs:int = listener.length;
-			const argumentString:String = (numListenerArgs == 1) ? 'argument' : 'arguments';
-			
-			if (_strict)
-			{
-				if (numListenerArgs < _signal.valueClasses.length)
-				{
-					throw new ArgumentError('Listener has '+numListenerArgs+' '+argumentString
-							+' but it needs to be '+
-							_signal.valueClasses.length+' to match the signal\'s value classes.');
-				}
-			}
 		}
 	}
 }
