@@ -2,6 +2,7 @@ package org.osflash.signals
 {
 	import flash.errors.IllegalOperationError;
 	import flash.utils.getQualifiedClassName;
+	
 
 	/** 
 	 * Allows the valueClasses to be set in MXML, e.g.
@@ -10,7 +11,7 @@ package org.osflash.signals
 	[DefaultProperty("valueClasses")]	
 	
 	/**
-	 * Signal dispatches events to multiple listeners.
+	 * Signal dispatches events to a single listener.
 	 * It is inspired by C# events and delegates, and by
 	 * <a target="_top" href="http://en.wikipedia.org/wiki/Signals_and_slots">signals and slots</a>
 	 * in Qt.
@@ -19,10 +20,11 @@ package org.osflash.signals
 	 * <br/><br/>
 	 * Project home: <a target="_top" href="http://github.com/robertpenner/as3-signals/">http://github.com/robertpenner/as3-signals/</a>
 	 */
-	public class Signal implements ISignal
+	public class SingleSignal implements ISignal
 	{
 		protected var _valueClasses:Array;		// of Class
-		protected var slots:SlotList = SlotList.NIL;
+		
+		protected var slot:Slot;
 		
 		/**
 		 * Creates a Signal instance to dispatch value objects.
@@ -32,10 +34,10 @@ package org.osflash.signals
 		 * but not: signal.dispatch(true, 42.5)
 		 * nor: signal.dispatch()
 		 *
-		 * NOTE: In AS3, subclasses cannot call super.apply(null, valueClasses),
+		 * NOTE: Subclasses cannot call super.apply(null, valueClasses),
 		 * but this constructor has logic to support super(valueClasses).
 		 */
-		public function Signal(...valueClasses)
+		public function SingleSignal(...valueClasses)
 		{
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
 			this.valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array) ? valueClasses[0] : valueClasses;
@@ -61,7 +63,7 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function get numListeners():uint { return slots.length; }
+		public function get numListeners():uint { return null == slot ? 0 : 1; }
 		
 		/** @inheritDoc */
 		//TODO: @throws
@@ -79,32 +81,39 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function remove(listener:Function):ISlot
 		{
-			const slot:ISlot = slots.find(listener);
-			if (!slot) return null;
-			
-			slots = slots.filterNot(listener);
-			return slot;
+			if(slot && slot.listener == listener)
+			{
+				// This will need to be a clone I think
+				const bind:ISlot = slot;
+				
+				slot = null;
+				
+				return bind;
+			}
+
+			return null;
 		}
 		
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			slots = SlotList.NIL;
+			if(slot) slot.remove();
+			slot = null;
 		}
 		
 		/** @inheritDoc */
 		public function dispatch(...valueObjects):void
 		{
+			//
 			// Validate value objects against pre-defined value classes.
-			
+			//
+
 			var valueObject:Object;
 			var valueClass:Class;
 
-			// If valueClasses is empty, value objects are not type-checked. 
-			const numValueClasses:int = _valueClasses.length;
-			const numValueObjects:int = valueObjects.length;
+			const numValueClasses: int = valueClasses.length;
+			const numValueObjects: int = valueObjects.length;
 
-			// Cannot dispatch fewer objects than declared classes.
 			if (numValueObjects < numValueClasses)
 			{
 				throw new ArgumentError('Incorrect number of arguments. '+
@@ -112,56 +121,78 @@ package org.osflash.signals
 					numValueObjects+'.');
 			}
 			
-			// Cannot dispatch differently typed objects than declared classes.
-			for (var i:int = 0; i < numValueClasses; i++)
+			for (var i: int = 0; i < numValueClasses; ++i)
 			{
-				// Optimized for the optimistic case that values are correct.
-				if (valueObjects[i] is _valueClasses[i] || valueObjects[i] === null) 
-					continue;
+				valueObject = valueObjects[i];
+				valueClass = valueClasses[i];
+
+				if (valueObject === null || valueObject is valueClass) continue;
 					
-				throw new ArgumentError('Value object <'+valueObjects[i]
-					+'> is not an instance of <'+_valueClasses[i]+'>.');
+				throw new ArgumentError('Value object <'+valueObject
+					+'> is not an instance of <'+valueClass+'>.');
 			}
 
+			//
 			// Broadcast to listeners.
-			var slotsToProcess:SlotList = slots;
-			if(slotsToProcess.nonEmpty)
+			//
+			
+			if (null != slot)
 			{
-				while (slotsToProcess.nonEmpty)
-				{
-					slotsToProcess.head.execute(valueObjects);
-					slotsToProcess = slotsToProcess.tail;
-				}
+				slot.execute(valueObjects);
 			}
 		}
-
+		
 		protected function registerListener(listener:Function, once:Boolean = false):ISlot
 		{
-			if (registrationPossible(listener, once))
+			if (null != slot) 
 			{
-				const newSlot:ISlot = new Slot(listener, this, once);
-				slots = slots.prepend(newSlot);
-				return newSlot;
+				//
+				// If the listener exits previously added, definitely don't add it.
+				//
+				
+				throw new IllegalOperationError('You cannot add or addOnce with a listener already added, remove the current listener first.');
 			}
 			
-			return slots.find(listener);
+			if (!slot || verifyRegistrationOf(listener, once))
+			{
+				slot = new Slot(listener, this, once);
+				
+				return slot;
+			}
+			
+			return slot;
 		}
 
-		protected function registrationPossible(listener:Function, once:Boolean):Boolean
+		protected function verifyRegistrationOf(listener: Function,  once: Boolean): Boolean
 		{
-			if (!slots.nonEmpty) return true;
+			if(!slot || slot.listener != listener) return false;
 			
-			const existingSlot:ISlot = slots.find(listener);
-			if (!existingSlot) return true;
+			const existingSlot:ISlot = slot;
 
-			if (existingSlot.once != once)
+			if (null != existingSlot)
 			{
-				// If the listener was previously added, definitely don't add it again.
-				// But throw an exception if their once values differ.
-				throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
+				if (existingSlot.once != once)
+				{
+					//
+					// If the listener was previously added, definitely don't add it again.
+					// But throw an exception if their once value differs.
+					//
+
+					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
+				}
+
+				//
+				// Listener was already added.
+				//
+
+				return false;
 			}
+
+			//
+			// This listener has not been added before.
+			//
 			
-			return false; // Listener was already registered.
+			return true;
 		}
 	}
 }

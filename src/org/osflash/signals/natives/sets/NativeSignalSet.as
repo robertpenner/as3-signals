@@ -1,10 +1,11 @@
 package org.osflash.signals.natives.sets 
 {
-	import org.osflash.signals.natives.INativeSignalOwner;
+	import org.osflash.signals.natives.INativeDispatcher;
 	import org.osflash.signals.natives.NativeSignal;
 
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
+	import flash.utils.Dictionary;
 
 	/**
 	 * A convenient way to access a logical set of signals.
@@ -48,7 +49,8 @@ package org.osflash.signals.natives.sets
 	public class NativeSignalSet 
 	{
 		protected var target:IEventDispatcher;
-		protected var _signals:Object = {};
+		
+		protected const _signals:Dictionary = new Dictionary();
 
 		public function NativeSignalSet(target:IEventDispatcher) 
 		{
@@ -58,26 +60,21 @@ package org.osflash.signals.natives.sets
 		/**
 		 * Lazily instantiates a NativeSignal
 		 */
-		protected function getNativeSignal(eventType:String, eventClass:Class = null):NativeSignal 
+		public function getNativeSignal(eventType:String, eventClass:Class = null):NativeSignal 
 		{
+			if(null == eventType) throw new ArgumentError('eventType must not be null.');
+			
 			return _signals[eventType] ||= new NativeSignal(target, eventType, eventClass || Event);
-		}
-
-		/**
-		 * adds a INativeSignalOwner (e.g. NativeSignal) to the list of instantiated signals
-		 */
-		protected function addSignal(signal:INativeSignalOwner):void 
-		{
-			_signals[signal.eventType] = signal;
 		}
 
 		/**
 		 * The current number of listeners for the signal.
 		 */
-		public function get numListeners():uint 
+		public function get numListeners():int 
 		{
-			var count:uint = 0;
-			for each (var signal:INativeSignalOwner in _signals) 
+			// TODO : This is horrid, it's very expensive to call this if there is a lot of signals.
+			var count:int = 0;
+			for each (var signal:INativeDispatcher in _signals) 
 			{
 				count += signal.numListeners;
 			}
@@ -89,8 +86,9 @@ package org.osflash.signals.natives.sets
 		 */
 		public function get signals():Array 
 		{
+			// TODO : This is horrid, it's very expensive to call this if there is a lot of signals.
 			var result:Array = [];
-			for each (var signal:INativeSignalOwner in _signals) 
+			for each (var signal:INativeDispatcher in _signals) 
 			{
 				result[result.length] = signal;
 			}
@@ -102,7 +100,7 @@ package org.osflash.signals.natives.sets
 		 */
 		public function removeAll():void 
 		{
-			for each (var signal:INativeSignalOwner in _signals) 
+			for each (var signal:INativeDispatcher in _signals) 
 			{
 				signal.removeAll();
 				delete _signals[signal.eventType];

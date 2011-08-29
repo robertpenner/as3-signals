@@ -1,19 +1,22 @@
 package org.osflash.signals
 {
-	import asunit.asserts.*;
+	import asunit.asserts.assertEquals;
+	import asunit.asserts.assertTrue;
 	import asunit.framework.IAsync;
-
-	public class DeluxeSignalDispatchExtraArgsTest
+	/**
+	 * @author Simon Richardson - simon@ustwo.co.uk
+	 */
+	public class SingleSignalDispatchExtraArgsTest
 	{
-	    [Inject]
+		[Inject]
 	    public var async:IAsync;
-	    
-		public var completed:DeluxeSignal;
+
+		public var completed:SingleSignal;
 
 		[Before]
 		public function setUp():void
 		{
-			completed = new DeluxeSignal(this);
+			completed = new SingleSignal();
 		}
 
 		[After]
@@ -29,7 +32,7 @@ package org.osflash.signals
 			completed.add( async.add(onCompleted, 10) );
 			completed.dispatch(22, 'done', new Date());
 		}
-		
+
 		private function onCompleted(a:uint, b:String, c:Date):void
 		{
 			assertEquals(3, arguments.length);
@@ -37,7 +40,5 @@ package org.osflash.signals
 			assertEquals('done', b);
 			assertTrue(c is Date);
 		}
-		//////
-		
 	}
 }

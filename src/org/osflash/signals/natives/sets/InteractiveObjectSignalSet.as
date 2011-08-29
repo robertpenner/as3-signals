@@ -14,6 +14,7 @@ package org.osflash.signals.natives.sets
 	 */
 	public class InteractiveObjectSignalSet extends DisplayObjectSignalSet 
 	{
+		
 		public function InteractiveObjectSignalSet(target:InteractiveObject) 
 		{
 			super(target);

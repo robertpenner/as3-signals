@@ -1,19 +1,21 @@
 package org.osflash.signals
 {
-	import asunit.asserts.*;
+	import asunit.asserts.assertEquals;
 	import asunit.framework.IAsync;
-
-	public class DeluxeSignalDispatchNoArgsTest
-	{	
-	    [Inject]
+	/**
+	 * @author Simon Richardson - simon@ustwo.co.uk
+	 */
+	public class SingleSignalDispatchNoArgsTest
+	{
+		[Inject]
 	    public var async:IAsync;
-
-		public var completed:DeluxeSignal;
+	    
+		public var completed:SingleSignal;
 
 		[Before]
 		public function setUp():void
 		{
-			completed = new DeluxeSignal(this);
+			completed = new SingleSignal();
 		}
 
 		[After]

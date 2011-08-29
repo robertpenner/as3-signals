@@ -10,6 +10,7 @@ package org.osflash.signals.natives.sets
 	 */
 	public class DisplayObjectSignalSet extends EventDispatcherSignalSet 
 	{
+		
 		public function DisplayObjectSignalSet(target:DisplayObject) 
 		{
 			super(target);
@@ -27,6 +28,18 @@ package org.osflash.signals.natives.sets
 		{
 			return getNativeSignal(Event.ENTER_FRAME);
 		}
+		public function get exitFrame():NativeSignal 
+		{
+			// Using a string here because we need to target FP9
+			return getNativeSignal("exitFrame");
+		}
+		
+		public function get frameConstructed():NativeSignal 
+		{
+			// Using a string here because we need to target FP9
+			return getNativeSignal("frameConstructed");
+		}
+
 		public function get removed():NativeSignal 
 		{
 			return getNativeSignal(Event.REMOVED);

@@ -53,7 +53,7 @@ package org.osflash.signals.natives
 			sprite.dispatchEvent(new MouseEvent(EventType));
 		}
 		
-		private function emptyCallback():void {}
+		private function emptyCallback(e:* = null):void {}
 		
 		[Test]
 		public function signal_default_with_mapped_object_add_then_emptyCallback_should_be_called():void

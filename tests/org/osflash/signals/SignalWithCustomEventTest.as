@@ -59,17 +59,11 @@ package org.osflash.signals
 		{
 			assertEquals('message value in the event', 'ok', e.message);
 		}
-		//////
+
 		[Test(expects="ArgumentError")]
 		public function dispatch_wrong_event_type_should_throw_ArgumentError():void
 		{
 			messaged.dispatch(new GenericEvent());
-		}
-
-		[Test(expects="ArgumentError")]
-		public function signal_with_eventClass_adding_listener_without_args_should_throw_ArgumentError():void
-		{
-			messaged.add(function():void {});
 		}
 
 		[Test(expects="ArgumentError")]
@@ -90,12 +84,6 @@ package org.osflash.signals
 			new Signal(Date, 42);
 		}
 
-		[Test(expects="ArgumentError")]
-		public function add_listener_with_fewer_args_than_valueClasses_should_throw_ArgumentError():void
-		{
-			var signal:Signal = new Signal(Date, Array);
-			signal.add( function(date:Date):void { } );
-		}
 	}
 }
 

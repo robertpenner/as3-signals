@@ -1,7 +1,5 @@
 package org.osflash.signals
 {
-	import flash.utils.Dictionary;
-
 	import org.osflash.signals.events.IBubbleEventHandler;
 	import org.osflash.signals.events.IEvent;
 
@@ -9,8 +7,7 @@ package org.osflash.signals
 	 * Allows the valueClasses to be set in MXML, e.g.
 	 * <signals:Signal id="nameChanged">{[String, uint]}</signals:Signal>
 	 */
-	[DefaultProperty("valueClasses")]	
-	
+	[DefaultProperty("valueClasses")]
 	/**
 	 * Signal dispatches events to multiple listeners.
 	 * It is inspired by C# events and delegates, and by
@@ -23,8 +20,9 @@ package org.osflash.signals
 	 */
 	public class DeluxeSignal extends Signal implements IPrioritySignal
 	{
+
 		protected var _target:Object;
-		
+
 		/**
 		 * Creates a DeluxeSignal instance to dispatch events on behalf of a target object.
 		 * @param	target The object the signal is dispatching events on behalf of.
@@ -40,55 +38,66 @@ package org.osflash.signals
 		public function DeluxeSignal(target:Object = null, ...valueClasses)
 		{
 			_target = target;
+			
+			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
+			valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array) ? valueClasses[0]:valueClasses;
+			
 			super(valueClasses);
 		}
-		
+
 		/** @inheritDoc */
-		public function get target():Object { return _target; }
-		
+		public function get target():Object
+		{
+			return _target;
+		}
+
 		public function set target(value:Object):void
 		{
 			if (value == _target) return;
 			removeAll();
 			_target = value;
 		}
-		
-		//TODO: @throws
-		override public function add(listener:Function):Function
+
+		// TODO: @throws
+		override public function add(listener:Function):ISlot
 		{
 			return addWithPriority(listener);
 		}
-		
-		public function addWithPriority(listener:Function, priority:int = 0):Function
-		{
-			registerListenerWithPriority(listener, false, priority);
-			return listener;
-		}
-		
-		override public function addOnce(listener:Function):Function
+
+		override public function addOnce(listener:Function):ISlot
 		{
 			return addOnceWithPriority(listener);
 		}
-		
+
 		/** @inheritDoc */
-		public function addOnceWithPriority(listener:Function, priority:int = 0):Function
+		public function addWithPriority(listener:Function, priority:int = 0):ISlot
 		{
-			registerListenerWithPriority(listener, true, priority);
-			return listener;
+			return registerListenerWithPriority(listener, false, priority);
 		}
-		
+
+		/** @inheritDoc */
+		public function addOnceWithPriority(listener:Function, priority:int = 0):ISlot
+		{
+			return registerListenerWithPriority(listener, true, priority);
+		}
+
 		/** @inheritDoc */
 		override public function dispatch(...valueObjects):void
 		{
-			//
 			// Validate value objects against pre-defined value classes.
-			//
 
 			var valueObject:Object;
 			var valueClass:Class;
 
 			const numValueClasses:int = _valueClasses.length;
 			const numValueObjects:int = valueObjects.length;
+			
+			if (numValueObjects < numValueClasses)
+			{
+				throw new ArgumentError('Incorrect number of arguments. '+
+					'Expected at least '+numValueClasses+' but received '+
+					numValueObjects+'.');
+			}
 
 			for (var i:int = 0; i < numValueClasses; i++)
 			{
@@ -96,14 +105,12 @@ package org.osflash.signals
 				valueClass = _valueClasses[i];
 
 				if (valueObject === null || valueObject is valueClass) continue;
-					
+
 				throw new ArgumentError('Value object <'+valueObject
 					+'> is not an instance of <'+valueClass+'>.');
 			}
 
-			//
 			// Extract and clone event object if necessary.
-			//
 
 			var event:IEvent = valueObjects[0] as IEvent;
 
@@ -120,90 +127,47 @@ package org.osflash.signals
 				event.signal = this;
 			}
 
-			//
 			// Broadcast to listeners.
-			//
 
-			var bindingsToProcess: SignalBindingList = bindings;
-			
-			if (bindingsToProcess.nonEmpty)
+			var slotsToProcess:SlotList = slots;
+			while (slotsToProcess.nonEmpty)
 			{
-				if (numValueObjects == 0)
-				{
-					while (bindingsToProcess.nonEmpty)
-					{
-						bindingsToProcess.head.execute0();
-						bindingsToProcess = bindingsToProcess.tail;
-					}
-				}
-				else if (numValueObjects == 1)
-				{
-					const singleValue:Object = valueObjects[0];
-
-					while (bindingsToProcess.nonEmpty)
-					{
-						bindingsToProcess.head.execute1(singleValue);
-						bindingsToProcess = bindingsToProcess.tail;
-					}
-				}
-				else if (numValueObjects == 2)
-				{
-					const value1:Object = valueObjects[0];
-					const value2:Object = valueObjects[1];
-
-					while (bindingsToProcess.nonEmpty)
-					{
-						bindingsToProcess.head.execute2(value1, value2);
-						bindingsToProcess = bindingsToProcess.tail;
-					}
-				}
-				else
-				{
-					while (bindingsToProcess.nonEmpty)
-					{
-						bindingsToProcess.head.execute(valueObjects);
-						bindingsToProcess = bindingsToProcess.tail;
-					}
-				}
+				slotsToProcess.head.execute(valueObjects);
+				slotsToProcess = slotsToProcess.tail;
 			}
 
-			//
 			// Bubble the event as far as possible.
-			//
-			
+
 			if (!event || !event.bubbles) return;
 
 			var currentTarget:Object = target;
 
-			while (currentTarget && currentTarget.hasOwnProperty("parent") && (currentTarget = currentTarget.parent))
+			while (currentTarget && currentTarget.hasOwnProperty("parent") && (currentTarget = currentTarget["parent"]))
 			{
 				if (currentTarget is IBubbleEventHandler)
 				{
-					//
 					// onEventBubbled() can stop the bubbling by returning false.
-					//
-					
 					if (!IBubbleEventHandler(event.currentTarget = currentTarget).onEventBubbled(event))
 						break;
 				}
 			}
 		}
-		
-		override protected function registerListener(listener:Function, once:Boolean = false):void
+
+		override protected function registerListener(listener:Function, once:Boolean = false):ISlot
 		{
-			registerListenerWithPriority(listener, once);
+			return registerListenerWithPriority(listener, once);
 		}
-		
-		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):void
+
+		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):ISlot
 		{
-			if (!bindings.nonEmpty || verifyRegistrationOf(listener, once))
+			if (registrationPossible(listener, once))
 			{
-				bindings = bindings.insertWithPriority(new SignalBinding(listener, once, this, priority));
-
-				if (null == existing) existing = new Dictionary();
-
-				existing[listener] = true;
+				const slot:ISlot = new Slot(listener, this, once, priority);
+				slots = slots.insertWithPriority(slot);
+				return slot;
 			}
+			
+			return slots.find(listener);
 		}
 	}
 }

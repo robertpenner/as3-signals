@@ -8,26 +8,26 @@ package org.osflash.signals
 	    [Inject]
 	    public var async:IAsync;
 	    
-		public var completed:Signal;
+		public var signal:ISignal;
 
 		[Before]
 		public function setUp():void
 		{
-			completed = new Signal();
+			signal = new Signal();
 		}
 
 		[After]
 		public function tearDown():void
 		{
-			completed.removeAll();
-			completed = null;
+			signal.removeAll();
+			signal = null;
 		}
 		//////
 		[Test]
 		public function dispatch_no_args_should_call_listener_with_no_args():void
 		{
-			completed.add( async.add(onCompleted, 10) );
-			completed.dispatch();
+			signal.add( async.add(onCompleted, 10) );
+			signal.dispatch();
 		}
 		
 		private function onCompleted():void
@@ -38,14 +38,14 @@ package org.osflash.signals
 		[Test]
 		public function addOnce_in_handler_and_dispatch_should_call_new_listener():void
 		{
-			completed.addOnce( async.add(addOnceInHandler, 10) );
-			completed.dispatch();
+			signal.addOnce( async.add(addOnceInHandler, 10) );
+			signal.dispatch();
 		}
 		
 		protected function addOnceInHandler():void
 		{
-			completed.addOnce( async.add(secondAddOnceListener, 10) );
-			completed.dispatch();
+			signal.addOnce( async.add(secondAddOnceListener, 10) );
+			signal.dispatch();
 		}
 		
 		protected function secondAddOnceListener():void

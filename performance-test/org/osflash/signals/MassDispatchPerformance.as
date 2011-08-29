@@ -86,7 +86,7 @@ class Target {
 	public var mdp: MassDispatchPerformance;
 
 	public function Target(mdp: MassDispatchPerformance) {
-		this.mdp = mdp
+		this.mdp = mdp;
 	}
 
 	public function l(): void {

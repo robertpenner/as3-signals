@@ -1,194 +1,257 @@
-package org.osflash.signals.natives.sets 
+package org.osflash.signals.natives.sets
 {
-	import asunit.asserts.assertEquals;
-	import asunit.asserts.assertSame;
+	import flash.events.Event;
+	import org.osflash.signals.natives.NativeSignal;
+	import asunit.asserts.assertNotNull;
 	import asunit.asserts.assertTrue;
 	import asunit.framework.IAsync;
 
-	import org.osflash.signals.natives.NativeSignal;
-
 	import flash.display.Sprite;
-	import flash.events.Event;
-
-	public class NativeSignalSetTest 
-	{	
-
+	/**
+	 * @author Simon Richardson - me@simonrichardson.info
+	 */
+	public class NativeSignalSetTest
+	{
+		
 		[Inject]
 		public var async:IAsync;
-
-		[Inject]
-		public var context:Sprite;
+		
 		private var sprite:Sprite;
-		private var signalSet:InteractiveObjectSignalSet;
+		
+		private var signalSet:NativeSignalSet;
 
 		[Before]
-
 		public function setUp():void 
 		{
 			sprite = new Sprite();
-			signalSet = new InteractiveObjectSignalSet(sprite);
+			signalSet = new NativeSignalSet(sprite);
 		}
 
 		[After]
-
 		public function tearDown():void 
 		{
 			signalSet.removeAll();
 			signalSet = null;
 			sprite = null;
 		}
-
-		[Test]
-
-		public function subclassed_signal_set_should_instiantate():void 
+		
+		protected function newEmptyHandler():Function
 		{
-			assertTrue(signalSet is EventDispatcherSignalSet);
+			return function(e:*):void {};
 		}
-
+		
+		//////
+		
 		[Test]
-
-		public function numListeners_is_0_after_creation():void
+		public function numListeners_should_be_zero():void
 		{
-			assertEquals(signalSet.numListeners, 0);
+			assertTrue('Number of listeners should be 0.', signalSet.numListeners == 0);
 		}
-
+		
+		//////
+		
 		[Test]
-
-		public function signal_add_then_EventDispatcher_dispatch_should_call_signal_listener():void
+		public function signals_should_be_not_null():void
 		{
-			signalSet.activate.add(async.add(handleEvent));
-			sprite.dispatchEvent(new Event(Event.ACTIVATE));
+			assertNotNull('Signals should not be null.', signalSet.signals);
 		}
-
+		
+		//////
+		
 		[Test]
-
-		public function stage_events_should_all_fire():void
+		public function signals_length_should_be_empty():void
 		{
-			signalSet.added.addOnce(async.add(handleEvent));
-			signalSet.addedToStage.addOnce(async.add(handleEvent));
+			assertTrue('Signals length should be 0.', signalSet.signals.length == 0);
+		}
+		
+		//////
+		
+		[Test]
+		public function signals_length_should_be_zero_after_removeAll():void
+		{
+			signalSet.removeAll();
 			
-			signalSet.enterFrame.addOnce(async.add(handleEnterFrame));
-			signalSet.render.addOnce(async.add(handleRender));
-			
-			context.addChild(sprite);
+			assertTrue('Signals length should be 0.', signalSet.signals.length == 0);
 		}
-
-		private function handleEnterFrame(event:Event):void 
-		{
-			sprite.stage.invalidate();
-			
-			assertSame(sprite, event.target);
-		}
-
-		private function handleRender(event:Event):void 
-		{
-			assertSame(sprite, event.target);
-		}
-
+		
+		//////
+		
 		[Test]
-
-		public function should_fire_on_remove():void
+		public function numListeners_should_be_zero_after_removeAll():void
 		{
-			signalSet.removed.addOnce(async.add(handleEvent));
-			signalSet.removedFromStage.addOnce(async.add(handleEvent));
+			signalSet.removeAll();
 			
-			context.addChild(sprite);
-			context.removeChild(sprite);
+			assertTrue('Number of listeners should be 0.', signalSet.numListeners == 0);
 		}
-
+		
+		//////
+		
 		[Test]
-
-		public function add_listeners_to_two_different_signals():void 
+		public function getNativeSignal_should_return_NativeSignal():void
 		{
-			signalSet.activate.add(handleEvent);
-			signalSet.deactivate.add(handleEvent);
+			const result:NativeSignal = signalSet.getNativeSignal(Event.INIT);
+			assertTrue('getNativeSignal should return type NativeSignal.', result is NativeSignal);
+		}
+		
+		//////
+		
+		[Test]
+		public function getNativeSignal_should_not_throw_Error_when_null_is_used_as_classType():void
+		{
+			signalSet.getNativeSignal(Event.INIT, null);
+		}
+		
+		//////
+		
+		[Test(expects='ArgumentError')]
+		public function getNativeSignal_should_throw_Error_when_used_for_event_type():void
+		{
+			signalSet.getNativeSignal(null);
+		}
+		
+		//////
+		
+		[Test]
+		public function getNativeSignal_should_increment_num_signals_to_one():void
+		{
+			signalSet.getNativeSignal(Event.INIT);
 			
-			assertEquals(signalSet.numListeners, 2);
+			assertTrue('Number of Signals should be 1', signalSet.signals.length == 1);
 		}
-
+		
+		//////
+		
 		[Test]
-
-		public function add_and_remove_signals():void 
+		public function getNativeSignal_with_same_event_type_should_have_signal_length_of_one():void
 		{
-			signalSet.activate.add(handleEvent);
-			signalSet.deactivate.add(handleEvent);
+			signalSet.getNativeSignal(Event.INIT);
+			signalSet.getNativeSignal(Event.INIT);
+			
+			assertTrue('Number of Signals should be 1', signalSet.signals.length == 1);
+		}
+		
+		//////
+		
+		[Test]
+		public function getNativeSignal_with_different_eventType_should_increment_num_signals_to_two():void
+		{
+			signalSet.getNativeSignal(Event.INIT);
+			signalSet.getNativeSignal(Event.ACTIVATE);
+			
+			assertTrue('Number of Signals should be 2', signalSet.signals.length == 2);
+		}
+		
+		//////
+		
+		[Test]
+		public function getNativeSignal_with_lots_of_different_eventType_should_increment_num_signals_to_100():void
+		{
+			for(var i:int = 0; i<100; i++)
+			{
+				signalSet.getNativeSignal("event" + i);
+			}
+			
+			assertTrue('Number of Signals should be 100', signalSet.signals.length == 100);
+		}
+		
+		//////
+		
+		[Test]
+		public function get_lots_of_getNativeSignal_then_removeAll_should_have_zero_signals():void
+		{
+			for(var i:int = 0; i<100; i++)
+			{
+				signalSet.getNativeSignal("event" + i);
+			}
 			
 			signalSet.removeAll();
 			
-			assertEquals(signalSet.numListeners, 0);
+			assertTrue('Number of Signals should be 0', signalSet.signals.length == 0);
 		}
-
+		
+		//////
+		
 		[Test]
-
-		public function when_signal_adds_listener_then_target_should_have_listener():void
+		public function getNativeSignal_and_add_listener():void
 		{
-			signalSet.activate.add(emptyHandler);
-			assertEquals(1, signalSet.numListeners);
-			assertTrue(sprite.hasEventListener(Event.ACTIVATE));
-		}
-
-		[Test]
-
-		public function when_add_and_addOnce_should_have_one_listener():void
-		{
-			signalSet.activate.addOnce(emptyHandler);
-			signalSet.deactivate.add(handleEvent);
+			const nativeSignal:NativeSignal = signalSet.getNativeSignal(Event.INIT);
+			nativeSignal.add(newEmptyHandler());
 			
-			sprite.dispatchEvent(new Event(Event.ACTIVATE));
-			
-			assertEquals(1, signalSet.numListeners);
+			assertTrue('Number of listeners should be 1.', signalSet.numListeners == 1);
 		}
-
+		
+		//////
+		
 		[Test]
-
-		public function lazily_instantiats_NativeSignal():void 
+		public function getNativeSignal_and_add_10_listeners():void
 		{
-			assertEquals(signalSet.signals.length, 0);
-			assertTrue(signalSet.activate is NativeSignal);
-			assertEquals(signalSet.signals.length, 1);
-		}
-
-		[Test]
-
-		public function try_all_InteractiveObjectSignalSet_Events():void 
-		{
-			signalSet.activate.add(handleEvent);
-			signalSet.added.add(handleEvent);
-			signalSet.addedToStage.add(handleEvent);
-			signalSet.click.add(handleEvent);
-			signalSet.deactivate.add(handleEvent);
-			signalSet.doubleClick.add(handleEvent);
-			signalSet.enterFrame.add(handleEvent);
-			signalSet.focusIn.add(handleEvent);
-			signalSet.focusOut.add(handleEvent);
-			signalSet.keyDown.add(handleEvent);
-			signalSet.keyFocusChange.add(handleEvent);
-			signalSet.keyUp.add(handleEvent);
-			signalSet.mouseDown.add(handleEvent);
-			signalSet.mouseFocusChange.add(handleEvent);
-			signalSet.mouseMove.add(handleEvent);
-			signalSet.mouseOut.add(handleEvent);
-			signalSet.mouseOver.add(handleEvent);
-			signalSet.mouseUp.add(handleEvent);
-			signalSet.mouseWheel.add(handleEvent);
-			signalSet.removed.add(handleEvent);
-			signalSet.render.add(handleEvent);
-			signalSet.rollOut.add(handleEvent);
-			signalSet.rollOver.add(handleEvent);
-			signalSet.tabChildrenChange.add(handleEvent);
-			signalSet.tabEnabledChange.add(handleEvent);
-			signalSet.tabIndexChange.add(handleEvent);
+			const nativeSignal:NativeSignal = signalSet.getNativeSignal(Event.INIT);
 			
-			assertSame(26, signalSet.numListeners);
+			for(var i:int = 0; i<10; i++)
+			{
+				nativeSignal.add(newEmptyHandler());
+			}
+			
+			assertTrue('Number of listeners should be 10.', signalSet.numListeners == 10);
 		}
-
-		private function handleEvent(event:Event):void
+		
+		//////
+		
+		[Test]
+		public function getNativeSignal_and_add_10_listeners_and_removeAll():void
 		{
-			assertSame(sprite, event.target);
+			const nativeSignal:NativeSignal = signalSet.getNativeSignal(Event.INIT);
+			
+			for(var i:int = 0; i<10; i++)
+			{
+				nativeSignal.add(newEmptyHandler());
+			}
+			
+			signalSet.removeAll();
+			
+			assertTrue('Number of listeners should be 0.', signalSet.numListeners == 0);
 		}
-
-		private function emptyHandler(e:Event):void 
+		
+		//////
+		
+		[Test]
+		public function getNativeSignal_and_add_10_listeners_and_removeAll_from_signal():void
 		{
+			const nativeSignal:NativeSignal = signalSet.getNativeSignal(Event.INIT);
+			
+			for(var i:int = 0; i<10; i++)
+			{
+				nativeSignal.add(newEmptyHandler());
+			}
+			
+			nativeSignal.removeAll();
+			
+			assertTrue('Number of listeners should be 0.', signalSet.numListeners == 0);
 		}
+		
+		//////
+		
+		[Test]
+		public function get_two_getNativeSignal_and_add_10_listeners_to_each():void
+		{
+			const nativeSignal0:NativeSignal = signalSet.getNativeSignal(Event.INIT);
+			
+			var i:int = 0;
+			for(i = 0; i<10; i++)
+			{
+				nativeSignal0.add(newEmptyHandler());
+			}
+			
+			const nativeSignal1:NativeSignal = signalSet.getNativeSignal(Event.CHANGE);
+			
+			for(i = 0; i<10; i++)
+			{
+				nativeSignal1.add(newEmptyHandler());
+			}
+			
+			assertTrue('Number of listeners should be 20.', signalSet.numListeners == 20);
+		}
+		
+		//////
 	}
 }

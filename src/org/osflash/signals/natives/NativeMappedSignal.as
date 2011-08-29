@@ -1,10 +1,10 @@
 package org.osflash.signals.natives
 {
+	import org.osflash.signals.SlotList;
+
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
 	import flash.utils.getQualifiedClassName;
-
-	import org.osflash.signals.SignalBindingList;
 
 	/**
 	 * <p>
@@ -159,7 +159,7 @@ package org.osflash.signals.natives
 			{
 				if (mappingFunction.length == 1)//todo invariant
 				{
-					return mappingFunction(eventFromTarget);
+					return (mappingFunction)(eventFromTarget);
 				}
 				else
 				{
@@ -177,18 +177,16 @@ package org.osflash.signals.natives
 
 		override public function dispatchEvent(event:Event):Boolean
 		{
-			//
 			//TODO: this is only required for backwards compatibility
-			//
-			const mappedData: Object = mapEvent(event);
+			const mappedData:Object = mapEvent(event);
 			const numValueClasses:int = valueClasses.length;
 
-			if(mappedData is Array)
+			if (mappedData is Array)
 			{
-				const valueObjects: Array = mappedData as Array;
+				const valueObjects:Array = mappedData as Array;
 
-				var valueObject: Object;
-				var valueClass: Class;
+				var valueObject:Object;
+				var valueClass:Class;
 
 				for (var i:int = 0; i < numValueClasses; i++)
 				{
@@ -201,53 +199,52 @@ package org.osflash.signals.natives
 						+'> is not an instance of <'+valueClass+'>.');
 				}
 			}
-			else if(numValueClasses > 1)
+			else if (numValueClasses > 1)
 			{
 				throw new ArgumentError('Expected more than one value.');
 			}
-			else if(!(mappedData is valueClasses[0]))
+			else if (!(mappedData is valueClasses[0]))
 			{
 				throw new ArgumentError('Mapping returned '+
 						getQualifiedClassName(mappedData)+', expected '+
-						valueClasses[0]+'.')
+						valueClasses[0]+'.');
 			}
 
 			return super.dispatchEvent(event);
 		}
 
-		override protected function onNativeEvent(event: Event): void
+		override protected function onNativeEvent(event:Event):void
 		{
 			const mappedData:Object = mapEvent(event);
-
-			var bindingsToProcess:SignalBindingList = bindings;
+			var slotsToProcess:SlotList = slots;
 
 			if (mappedData is Array)
 			{
-				if (valueClasses.length == 1 && valueClasses[0] == Array)//todo invariant
+				if (valueClasses.length == 1 && valueClasses[0] == Array)//TODO invariant
 				{
-					while (bindingsToProcess.nonEmpty)
+					while (slotsToProcess.nonEmpty)
 					{
-						bindingsToProcess.head.execute1(mappedData);
-						bindingsToProcess = bindingsToProcess.tail;
+						slotsToProcess.head.execute1(mappedData);
+						slotsToProcess = slotsToProcess.tail;
 					}
 				}
 				else
 				{
-					const mappedDataArray: Array = mappedData as Array;
+					const mappedDataArray:Array = mappedData as Array;
 
-					while (bindingsToProcess.nonEmpty)
+					while (slotsToProcess.nonEmpty)
 					{
-						bindingsToProcess.head.execute(mappedDataArray);
-						bindingsToProcess = bindingsToProcess.tail;
+						slotsToProcess.head.execute(mappedDataArray);
+						slotsToProcess = slotsToProcess.tail;
 					}
 				}
 			}
 			else
-			{
-				while (bindingsToProcess.nonEmpty)
+			{				
+				while (slotsToProcess.nonEmpty)
 				{
-					bindingsToProcess.head.execute1(mappedData);
-					bindingsToProcess = bindingsToProcess.tail;
+					slotsToProcess.head.execute1(mappedData);
+					slotsToProcess = slotsToProcess.tail;
 				}
 			}
 		}

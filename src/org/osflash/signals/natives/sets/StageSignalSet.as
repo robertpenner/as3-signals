@@ -1,4 +1,5 @@
-package org.osflash.signals.natives.sets {
+package org.osflash.signals.natives.sets
+{
 	import org.osflash.signals.natives.NativeSignal;
 
 	import flash.display.Stage;
@@ -7,19 +8,26 @@ package org.osflash.signals.natives.sets {
 	/**
 	 * @author Jon Adams
 	 */
-	public class StageSignalSet extends InteractiveObjectSignalSet {
+	public class StageSignalSet extends InteractiveObjectSignalSet
+	{
 
-		public function StageSignalSet(target:Stage) {
+		public function StageSignalSet(target:Stage)
+		{
 			super(target);
 		}
 
-		public function get fullScreen():NativeSignal {
+		public function get fullScreen():NativeSignal
+		{
 			return getNativeSignal(Event.FULLSCREEN);
-		}
-		public function get mouseLeave():NativeSignal {
+		}
+
+		public function get mouseLeave():NativeSignal
+		{
 			return getNativeSignal(Event.MOUSE_LEAVE);
-		}
-		public function get resize():NativeSignal {
+		}
+
+		public function get resize():NativeSignal
+		{
 			return getNativeSignal(Event.RESIZE);
 		}
 	}
