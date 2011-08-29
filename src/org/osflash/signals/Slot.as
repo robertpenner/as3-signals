@@ -5,7 +5,6 @@ package org.osflash.signals
      *
      * @author Robert Penner
 	 * @author Joa Ebert
-	 * @private
      */
 	public class Slot implements ISlot
 	{
@@ -50,42 +49,32 @@ package org.osflash.signals
 			if (_once) remove();
 			
 			// If we have parameters, add them to the valueObject
-			// Note: This could be exensive if we're after the fastest dispatch possible.
-			if(null != _params && _params.length > 0)
+			// Note: This could be expensive if we're after the fastest dispatch possible.
+			if (_params && _params.length)
 			{
-				// Should there be any checking on the params against the listener?
 				valueObjects = valueObjects.concat(_params);
 			}
 			
-			if(_strict)
+			// NOTE: simple ifs are faster than switch: http://jacksondunstan.com/articles/1007
+			const numValueObjects:int = valueObjects.length;
+			if (numValueObjects == 0)
 			{
-				// Dispatch as normal
-				const numValueObjects:int = valueObjects.length;
-				if(numValueObjects == 0)
-				{
-					_listener();
-				}
-				else if(numValueObjects == 1)
-				{
-					_listener(valueObjects[0]);
-				}
-				else if(numValueObjects == 2)
-				{
-					_listener(valueObjects[0], valueObjects[1]);
-				}
-				else if(numValueObjects == 3)
-				{
-					_listener(valueObjects[0], valueObjects[1], valueObjects[2]);
-				}
-				else
-				{
-					_listener.apply(null, valueObjects);
-				}
+				_listener();
+			}
+			else if (numValueObjects == 1)
+			{
+				_listener(valueObjects[0]);
+			}
+			else if (numValueObjects == 2)
+			{
+				_listener(valueObjects[0], valueObjects[1]);
+			}
+			else if (numValueObjects == 3)
+			{
+				_listener(valueObjects[0], valueObjects[1], valueObjects[2]);
 			}
 			else
 			{
-				// We're going to pass everything in one bulk run so that varargs can be 
-				// passed through to the listeners
 				_listener.apply(null, valueObjects);
 			}
 		}
