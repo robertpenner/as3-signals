@@ -22,9 +22,7 @@ package org.osflash.signals
 	public class Signal implements ISignal
 	{
 		protected var _valueClasses:Array;		// of Class
-
 		protected var _strict:Boolean = true;
-		
 		protected var slots:SlotList = SlotList.NIL;
 		
 		/**
@@ -114,6 +112,7 @@ package org.osflash.signals
 			const numValueClasses:int = _valueClasses.length;
 			const numValueObjects:int = valueObjects.length;
 
+			// Cannot dispatch fewer objects than declared classes.
 			if (numValueObjects < numValueClasses)
 			{
 				throw new ArgumentError('Incorrect number of arguments. '+
@@ -121,19 +120,18 @@ package org.osflash.signals
 					numValueObjects+'.');
 			}
 			
-			for (var i: int = 0; i < numValueClasses; ++i)
+			// Cannot dispatch differently typed objects than declared classes.
+			for (var i:int = 0; i < numValueClasses; i++)
 			{
-				valueObject = valueObjects[i];
-				valueClass = _valueClasses[i];
-
-				if (valueObject === null || valueObject is valueClass) continue;
+				// Optimized for the optimistic case that values are correct.
+				if (valueObjects[i] is _valueClasses[i] || valueObjects[i] === null) 
+					continue;
 					
-				throw new ArgumentError('Value object <'+valueObject
-					+'> is not an instance of <'+valueClass+'>.');
+				throw new ArgumentError('Value object <'+valueObjects[i]
+					+'> is not an instance of <'+_valueClasses[i]+'>.');
 			}
 
 			// Broadcast to listeners.
-			
 			var slotsToProcess:SlotList = slots;
 			if(slotsToProcess.nonEmpty)
 			{
