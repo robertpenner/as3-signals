@@ -33,16 +33,23 @@ package org.osflash.signals.natives
 			assertSame(Event, clicked.eventClass);
 		}
 		
-		[Test(expects="ArgumentError")]
-		public function adding_listener_without_args_should_throw_ArgumentError():void
+		[Test]
+		public function adding_listener_with_no_args_does_not_throw_error():void
 		{
 			clicked.add(function():void {});
 		}
 
-		[Test(expects="ArgumentError")]
-		public function adding_listener_with_more_than_one_arg_should_throw_ArgumentError():void
+		[Test]
+		public function adding_listener_with_varargs_does_not_throw_error():void
 		{
-			clicked.add(function(a:*, b:*):void {});
+			clicked.add(function(...args):void {});
 		}
+
+		[Test]
+		public function adding_listener_with_more_than_one_arg_does_not_throw_error():void
+		{
+			clicked.add(function(a:*, b:*):void { } );
+		}
+		
 	}
 }

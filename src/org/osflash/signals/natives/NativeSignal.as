@@ -108,24 +108,24 @@ package org.osflash.signals.natives
 		{
 			const slot:ISlot = slots.find(listener);
 			if (!slot) return null;
+			_target.removeEventListener(_eventType, slot.execute1);
 			slots = slots.filterNot(listener);
-
-			if (!slots.nonEmpty) 
-				target.removeEventListener(eventType, onNativeEvent);
-				
 			return slot;
 		}
 		
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			if (target) target.removeEventListener(eventType, onNativeEvent);
+			var slotsToProcess:SlotList = slots;
+			while (slotsToProcess.nonEmpty)
+			{
+				target.removeEventListener(_eventType, slotsToProcess.head.execute1);
+				slotsToProcess = slotsToProcess.tail;
+			}
 			slots = SlotList.NIL;
 		}
 
-		/**
-		 * @inheritDoc
-		 */
+		/** @inheritDoc */
 		public function dispatch(...valueObjects):void
 		{
 			//TODO: check if ...valueObjects can ever be null.
@@ -159,22 +159,19 @@ package org.osflash.signals.natives
 		{
 			if (!target) throw new ArgumentError('Target object cannot be null.');
 
-			if (listener.length != 1)
-				throw new ArgumentError('Listener for native event must declare exactly 1 argument but had ' + listener.length + '.');
-				
 			if (registrationPossible(listener, once))
 			{
 				const slot:ISlot = new Slot(listener, this, once, priority);
-				if (!slots.nonEmpty) 
-					target.addEventListener(eventType, onNativeEvent, false, priority);
-				slots = slots.insertWithPriority(slot);
+				// Not necessary to insertWithPriority() because the target takes care of ordering.
+				slots = slots.prepend(slot);
+				_target.addEventListener(_eventType, slot.execute1, false, priority);
 				return slot;
 			}
 			
 			return slots.find(listener);
 		}
 
-		protected function registrationPossible(listener:Function,  once:Boolean):Boolean
+		protected function registrationPossible(listener:Function, once:Boolean):Boolean
 		{
 			if (!slots.nonEmpty) return true;
 
@@ -196,15 +193,5 @@ package org.osflash.signals.natives
 			return true;
 		}
 
-		protected function onNativeEvent(event:Event):void
-		{
-			var slotsToProcess:SlotList = slots;
-			
-			while (slotsToProcess.nonEmpty)
-			{
-				slotsToProcess.head.execute1(event);
-				slotsToProcess = slotsToProcess.tail;
-			}
-		}
 	}
 }
