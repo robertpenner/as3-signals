@@ -47,7 +47,7 @@ package org.osflash.signals
 		function get once():Boolean;
 
 		/**
-		 * The priority of this slot.
+		 * The priority of this slot. Defaults to 0.
 		 */
 		function get priority():int;
 		
@@ -58,13 +58,20 @@ package org.osflash.signals
 		function set enabled(value:Boolean):void;
 
 		/**
+		 * Executes a listener of arity <code>1</code>.
+		 *
+		 * @param value1 The argument for the listener.
+		 */
+		function execute1(value:Object):void;		
+
+		/**
 		 * Executes a listener of arity <code>n</code> where <code>n</code> is
 		 * <code>valueObjects.length</code>.
 		 *
 		 * @param valueObjects The array of arguments to be applied to the listener.
 		 */
 		function execute(valueObjects:Array):void;
-
+		
 		/**
 		 * Removes the slot from its signal.
 		 */

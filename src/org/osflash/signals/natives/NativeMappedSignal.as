@@ -177,18 +177,16 @@ package org.osflash.signals.natives
 
 		override public function dispatchEvent(event:Event):Boolean
 		{
-			//
 			//TODO: this is only required for backwards compatibility
-			//
-			const mappedData: Object = mapEvent(event);
+			const mappedData:Object = mapEvent(event);
 			const numValueClasses:int = valueClasses.length;
 
-			if(mappedData is Array)
+			if (mappedData is Array)
 			{
-				const valueObjects: Array = mappedData as Array;
+				const valueObjects:Array = mappedData as Array;
 
-				var valueObject: Object;
-				var valueClass: Class;
+				var valueObject:Object;
+				var valueClass:Class;
 
 				for (var i:int = 0; i < numValueClasses; i++)
 				{
@@ -201,11 +199,11 @@ package org.osflash.signals.natives
 						+'> is not an instance of <'+valueClass+'>.');
 				}
 			}
-			else if(numValueClasses > 1)
+			else if (numValueClasses > 1)
 			{
 				throw new ArgumentError('Expected more than one value.');
 			}
-			else if(!(mappedData is valueClasses[0]))
+			else if (!(mappedData is valueClasses[0]))
 			{
 				throw new ArgumentError('Mapping returned '+
 						getQualifiedClassName(mappedData)+', expected '+
@@ -215,13 +213,9 @@ package org.osflash.signals.natives
 			return super.dispatchEvent(event);
 		}
 
-		override protected function onNativeEvent(event: Event): void
+		override protected function onNativeEvent(event:Event):void
 		{
 			const mappedData:Object = mapEvent(event);
-			// TODO: We could in theory just cache this array, so that we're not hitting the gc
-			// every time we call onNativeEvent 
-			const singleValue:Array = [mappedData];
-			
 			var slotsToProcess:SlotList = slots;
 
 			if (mappedData is Array)
@@ -230,13 +224,13 @@ package org.osflash.signals.natives
 				{
 					while (slotsToProcess.nonEmpty)
 					{
-						slotsToProcess.head.execute(singleValue);
+						slotsToProcess.head.execute1(mappedData);
 						slotsToProcess = slotsToProcess.tail;
 					}
 				}
 				else
 				{
-					const mappedDataArray: Array = mappedData as Array;
+					const mappedDataArray:Array = mappedData as Array;
 
 					while (slotsToProcess.nonEmpty)
 					{
@@ -249,7 +243,7 @@ package org.osflash.signals.natives
 			{				
 				while (slotsToProcess.nonEmpty)
 				{
-					slotsToProcess.head.execute(singleValue);
+					slotsToProcess.head.execute1(mappedData);
 					slotsToProcess = slotsToProcess.tail;
 				}
 			}

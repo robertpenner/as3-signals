@@ -8,13 +8,13 @@ package org.osflash.signals
      */
 	public class Slot implements ISlot
 	{
-		private var _signal:ISignal;
-		private var _enabled:Boolean = true;
-		private var _strict:Boolean = true;
-		private var _listener:Function;
-		private var _once:Boolean = false;
-		private var _priority:int = 0;
-		private var _params:Array;
+		protected var _signal:ISignal;
+		protected var _enabled:Boolean = true;
+		protected var _strict:Boolean = true;
+		protected var _listener:Function;
+		protected var _once:Boolean = false;
+		protected var _priority:int = 0;
+		protected var _params:Array;
 		
 		/**
 		 * Creates and returns a new Slot object.
@@ -39,6 +39,21 @@ package org.osflash.signals
 			
 			verifyListener(listener);
 		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function execute1(value:Object):void
+		{
+			if (!_enabled) return;
+			if (_once) remove();
+			if (_params && _params.length)
+			{
+				_listener.apply(null, [value].concat(_params));
+				return;
+			}
+			_listener(value);
+		}		
 
 		/**
 		 * @inheritDoc

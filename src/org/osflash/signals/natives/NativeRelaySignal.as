@@ -107,7 +107,7 @@ package org.osflash.signals.natives
 		/**
 		 * @inheritDoc
 		 */
-		override public function removeAll(): void
+		override public function removeAll():void
 		{
 			if (target) target.removeEventListener(eventType, onNativeEvent);
 			super.removeAll();
@@ -144,17 +144,13 @@ package org.osflash.signals.natives
 			return target.dispatchEvent(event);
 		}
 
-		protected function onNativeEvent(event:Event): void
+		protected function onNativeEvent(event:Event):void
 		{
-			// TODO: We could in theory just cache this array, so that we're not hitting the gc
-			// every time we call onNativeEvent 
-			const singleValue:Array = [event];
-			
 			var slotsToProcess:SlotList = slots;
 
 			while (slotsToProcess.nonEmpty)
 			{
-				slotsToProcess.head.execute(singleValue);
+				slotsToProcess.head.execute1(event);
 				slotsToProcess = slotsToProcess.tail;
 			}
 		}
