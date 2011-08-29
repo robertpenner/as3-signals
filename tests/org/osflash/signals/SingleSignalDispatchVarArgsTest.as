@@ -18,7 +18,6 @@ package org.osflash.signals
 		public function setUp():void
 		{
 			completed = new SingleSignal(int, int, int, int);
-			completed.strict = false;
 		}
 
 		[After]

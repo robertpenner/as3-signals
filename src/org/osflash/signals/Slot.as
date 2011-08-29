@@ -10,7 +10,6 @@ package org.osflash.signals
 	{
 		protected var _signal:ISignal;
 		protected var _enabled:Boolean = true;
-		protected var _strict:Boolean = true;
 		protected var _listener:Function;
 		protected var _once:Boolean = false;
 		protected var _priority:int = 0;
@@ -33,10 +32,6 @@ package org.osflash.signals
 			_signal = signal;
 			_priority = priority;
 							
-			// Work out what the strict mode is from the signal and set it here. You can change
-			// the value of strict mode on the slot itself at a later date.
-			_strict = signal.strict;
-			
 			verifyListener(listener);
 		}
 		
@@ -138,20 +133,6 @@ package org.osflash.signals
 		public function get enabled():Boolean { return _enabled; }
 
 		public function set enabled(value:Boolean):void	{ _enabled = value; }
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function get strict():Boolean { return _strict; }
-
-		public function set strict(value:Boolean):void
-		{ 
-			_strict = value;
-			
-			// Check that when we move from one strict mode to another strict mode and verify the 
-			// listener again.
-			verifyListener(listener);
-		}
 		
 		/**
 		 * @inheritDoc

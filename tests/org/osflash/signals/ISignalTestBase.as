@@ -126,40 +126,7 @@ package org.osflash.signals
 			signal.add(listener);
 			signal.add(listener);
 		}
-		
-		[Test]
-		public function strict_should_be_true():void
-		{
-			assertTrue('strict should be true', signal.strict);
-		}
-		
-		
-		[Test]
-		public function verify_strict_after_setting_it_to_false():void
-		{
-			signal.strict = false;
-			assertFalse('strict should be false', signal.strict);
-		}
-		
-		[Test]
-		public function verify_strict_is_true_after_dispatch():void
-		{
-			signal.add(newEmptyHandler());
-			dispatchSignal();
-			assertTrue('strict should be true', signal.strict);
-		}
-		
-		[Test]
-		public function set_strict_to_false_and_verify_strict_is_false_after_dispatch():void
-		{
-			signal.strict = false;
-			
-			signal.add(newEmptyHandler());
-			dispatchSignal();
-			
-			assertFalse('strict should be false', signal.strict);
-		}
-		
+				
 		[Test]
 		public function dispatch_2_listeners_1st_listener_removes_itself_then_2nd_listener_is_still_called():void
 		{

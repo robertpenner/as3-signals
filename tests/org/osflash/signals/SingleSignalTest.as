@@ -42,50 +42,8 @@ package org.osflash.signals
 		{
 			assertEquals(0, signal.numListeners);
 		}
-		
-		//////
-		
-		[Test]
-		public function strict_should_be_true():void
-		{
-			assertTrue('strict should be true', signal.strict);
-		}
-		
-		//////
-		
-		[Test]
-		public function verify_strict_after_setting_it_to_false():void
-		{
-			signal.strict = false;
-			
-			assertFalse('strict should be false', signal.strict);
-		}
-		
-		//////
-		
-		[Test]
-		public function verify_strict_is_true_after_dispatch():void
-		{
-			signal.add(newEmptyHandler());
-			signal.dispatch(new GenericEvent());
-			
-			assertTrue('strict should be true', signal.strict);
-		}
-		
-		//////
-		
-		[Test]
-		public function set_strict_to_false_and_verify_strict_is_false_after_dispatch():void
-		{
-			signal.strict = false;
-			
-			signal.add(newEmptyHandler());
-			signal.dispatch(new GenericEvent());
-			
-			assertFalse('strict should be false', signal.strict);
-		}
-		
-		//////
+				
+
 		
 		[Test]
 		public function dispatch_should_pass_event_to_listener_but_not_set_signal_or_target_properties():void
@@ -100,7 +58,7 @@ package org.osflash.signals
 			assertNull('event.target is not set by Signal', e.target);
 		}
 		
-		//////
+
 		
 		[Test(expects="flash.errors.IllegalOperationError")]
 		public function add_two_listeners_should_throw_an_error():void
@@ -109,7 +67,7 @@ package org.osflash.signals
 			signal.add(checkGenericEvent);
 		}
 		
-		//////
+
 		
 		[Test(expects="flash.errors.IllegalOperationError")]
 		public function add_one_hundred_listeners_should_throw_an_error():void
@@ -120,7 +78,7 @@ package org.osflash.signals
 			}
 		}
 		
-		//////
+
 		
 		[Test]
 		public function add_one_listeners_then_remove_it_then_add_another_listener():void
@@ -131,7 +89,7 @@ package org.osflash.signals
 			signal.dispatch(new GenericEvent());
 		}	
 		
-		//////
+
 		
 		[Test]
 		public function addOnce_and_dispatch_should_remove_listener_automatically():void
@@ -141,7 +99,7 @@ package org.osflash.signals
 			assertEquals('there should be no listeners', 0, signal.numListeners);
 		}
 		
-		//////
+
 		
 		[Test]
 		public function add_listener_then_remove_then_dispatch_should_not_call_listener():void
@@ -156,7 +114,7 @@ package org.osflash.signals
 			fail('This event handler should not have been called.');
 		}
 		
-		//////
+
 		
 		[Test]
 		public function add_listener_then_remove_function_not_in_listeners_should_do_nothing():void
@@ -171,7 +129,7 @@ package org.osflash.signals
 			return function(e:*):void {};
 		}
 		
-		//////
+
 		
 		[Test(expects="flash.errors.IllegalOperationError")]
 		public function addOnce_same_listener_twice_should_only_add_it_once():void
@@ -181,7 +139,7 @@ package org.osflash.signals
 			signal.addOnce(func);
 		}
 		
-		//////
+
 		[Test]
 		public function dispatch_non_IEvent_without_error():void
 		{
@@ -197,7 +155,7 @@ package org.osflash.signals
 			assertTrue(sprite is Sprite);
 		}
 		
-		//////
+
 		[Test]
 		public function adding_a_listener_during_dispatch_should_not_call_it():void
 		{
@@ -221,7 +179,7 @@ package org.osflash.signals
 			}
 		}
 		
-		//////
+
 		
 		[Test]
 		public function removed_listener_should_return_slot():void
@@ -232,7 +190,7 @@ package org.osflash.signals
 			assertTrue("Slot is returned", slot == signal.remove(listener));
 		}
 		
-		//////
+
 		
 		[Test]
 		public function removed_listener_should_be_returned():void

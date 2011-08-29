@@ -22,14 +22,6 @@ package org.osflash.signals
 		function set listener(value:Function):void;
 		
 		/**
-		 * If the slot should use strict mode or not. Useful if you would like to use the ...rest
-		 * argument or if you don't want an exact match up of listener arguments and signal 
-		 * arguments.
-		 */
-		function get strict():Boolean;
-		function set strict(value:Boolean):void;
-		
-		/**
 		 * Allows the ISlot to inject parameters when dispatching. The params will be at 
 		 * the tail of the arguments and the ISignal arguments will be at the head follow.
 		 * 

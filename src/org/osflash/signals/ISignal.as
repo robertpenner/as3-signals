@@ -11,14 +11,6 @@ package org.osflash.signals
 		function get valueClasses():Array;
 		function set valueClasses(value:Array):void;
 		
-		/**
-		 * If the ISignal should use strict mode or not. Useful if you would like to use the ...rest
-		 * argument or if you don't want an exact match up of listener arguments and signal 
-		 * arguments.
-		 */
-		function get strict():Boolean;
-		function set strict(value:Boolean):void;
-		
 		/** The current number of listeners for the signal. */
 		function get numListeners():uint;
 		

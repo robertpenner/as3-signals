@@ -22,15 +22,9 @@ package org.osflash.signals.natives
 	public class NativeSignal implements INativeDispatcher
 	{
 		protected var _target:IEventDispatcher;
-		
 		protected var _eventType:String;
-		
 		protected var _eventClass:Class;
-		
 		protected var _valueClasses:Array;
-		
-		protected var _strict:Boolean = true;
-
 		protected var slots:SlotList;
 		
 		/**
@@ -69,13 +63,6 @@ package org.osflash.signals.natives
 		{
 			eventClass = value && value.length > 0 ? value[0] : null;
 		}
-		
-		/**
-		 * @inheritDoc
-		 */
-		public function get strict():Boolean { return _strict; }
-
-		public function set strict(value:Boolean):void { _strict = value; }
 		
 		/** @inheritDoc */
 		public function get numListeners():uint { return slots.length; }
@@ -172,7 +159,7 @@ package org.osflash.signals.natives
 		{
 			if (!target) throw new ArgumentError('Target object cannot be null.');
 
-			if (_strict && listener.length != 1)
+			if (listener.length != 1)
 				throw new ArgumentError('Listener for native event must declare exactly 1 argument but had ' + listener.length + '.');
 				
 			if (registrationPossible(listener, once))
