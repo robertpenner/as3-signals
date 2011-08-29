@@ -43,41 +43,23 @@ package org.osflash.signals
 		}
 		
 		[Test]
-		public function removed_listener_should_return_slot():void
+		public function redispatching_untyped_signal_does_not_throw_error():void
 		{
-			var listener:Function = function():void{};
-			var slot:ISlot = signal.add(listener);
+			const redispatchSignal:Signal = new Signal();
+			redispatchSignal.add(checkGenericEvent);
 			
-			assertTrue("Slot is returned", slot == signal.remove(listener));
-		}
-		
-		[Test]
-		public function removed_listener_should_be_returned():void
-		{
-			var slot:ISlot = signal.add(function():void{});
-			var listener:Function = slot.listener;
-			
-			assertTrue("Slot is returned", slot == signal.remove(listener));
-		}
-		
-		[Test]
-		public function verify_redispatch_of_signal_with_no_valueClasses():void
-		{
-			const redispatch:Signal = new Signal();
-			redispatch.add(checkGenericEvent);
-			
-			signal.add(redispatch.dispatch);
+			signal.add(redispatchSignal.dispatch);
 			signal.dispatch(new GenericEvent());
 		}
 				
 		[Test(expects='ArgumentError')]
-		public function verify_redispatch_of_signal():void
+		public function redispatching_to_signal_with_missing_type_throws_error():void
 		{
-			const redispatch:Signal = new Signal();
-			redispatch.add(checkGenericEvent);
+			const redispatchSignal:Signal = new Signal();
+			redispatchSignal.add(checkGenericEvent);
 			
 			signal = new Signal(GenericEvent);
-			signal.add(redispatch.dispatch);
+			signal.add(redispatchSignal.dispatch);
 			signal.dispatch(new GenericEvent());
 		}	
 		
