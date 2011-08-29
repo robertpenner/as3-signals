@@ -8,7 +8,7 @@ package org.osflash.signals
      */
 	public class Slot implements ISlot
 	{
-		protected var _signal:ISignal;
+		protected var _signal:IOnceSignal;
 		protected var _enabled:Boolean = true;
 		protected var _listener:Function;
 		protected var _once:Boolean = false;
@@ -25,7 +25,7 @@ package org.osflash.signals
 		 *
 		 * @throws ArgumentError An error is thrown if the given listener closure is <code>null</code>.
 		 */
-		public function Slot(listener:Function, signal:ISignal, once:Boolean = false, priority:int = 0)
+		public function Slot(listener:Function, signal:IOnceSignal, once:Boolean = false, priority:int = 0)
 		{
 			_listener = listener;
 			_once = once;
