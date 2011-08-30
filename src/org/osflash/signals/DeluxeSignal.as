@@ -18,9 +18,8 @@ package org.osflash.signals
 	 * <br/><br/>
 	 * Project home: <a target="_top" href="http://github.com/robertpenner/as3-signals/">http://github.com/robertpenner/as3-signals/</a>
 	 */
-	public class DeluxeSignal extends Signal implements IPrioritySignal
+	public class DeluxeSignal extends PrioritySignal
 	{
-
 		protected var _target:Object;
 
 		/**
@@ -38,7 +37,6 @@ package org.osflash.signals
 		public function DeluxeSignal(target:Object = null, ...valueClasses)
 		{
 			_target = target;
-			
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
 			valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array) ? valueClasses[0]:valueClasses;
 			
@@ -46,39 +44,13 @@ package org.osflash.signals
 		}
 
 		/** @inheritDoc */
-		public function get target():Object
-		{
-			return _target;
-		}
+		public function get target():Object	{ return _target; }
 
 		public function set target(value:Object):void
 		{
 			if (value == _target) return;
 			removeAll();
 			_target = value;
-		}
-
-		// TODO: @throws
-		override public function add(listener:Function):ISlot
-		{
-			return addWithPriority(listener);
-		}
-
-		override public function addOnce(listener:Function):ISlot
-		{
-			return addOnceWithPriority(listener);
-		}
-
-		/** @inheritDoc */
-		public function addWithPriority(listener:Function, priority:int = 0):ISlot
-		{
-			return registerListenerWithPriority(listener, false, priority);
-		}
-
-		/** @inheritDoc */
-		public function addOnceWithPriority(listener:Function, priority:int = 0):ISlot
-		{
-			return registerListenerWithPriority(listener, true, priority);
 		}
 
 		/** @inheritDoc */
@@ -99,21 +71,19 @@ package org.osflash.signals
 					numValueObjects+'.');
 			}
 
+			// Cannot dispatch differently typed objects than declared classes.
 			for (var i:int = 0; i < numValueClasses; i++)
 			{
-				valueObject = valueObjects[i];
-				valueClass = _valueClasses[i];
-
-				if (valueObject === null || valueObject is valueClass) continue;
-
-				throw new ArgumentError('Value object <'+valueObject
-					+'> is not an instance of <'+valueClass+'>.');
+				// Optimized for the optimistic case that values are correct.
+				if (valueObjects[i] is _valueClasses[i] || valueObjects[i] === null) 
+					continue;
+					
+				throw new ArgumentError('Value object <'+valueObjects[i]
+					+'> is not an instance of <'+_valueClasses[i]+'>.');
 			}
 
 			// Extract and clone event object if necessary.
-
 			var event:IEvent = valueObjects[0] as IEvent;
-
 			if (event)
 			{
 				if (event.target)
@@ -128,7 +98,6 @@ package org.osflash.signals
 			}
 
 			// Broadcast to listeners.
-
 			var slotsToProcess:SlotList = slots;
 			while (slotsToProcess.nonEmpty)
 			{
@@ -137,12 +106,12 @@ package org.osflash.signals
 			}
 
 			// Bubble the event as far as possible.
-
 			if (!event || !event.bubbles) return;
 
 			var currentTarget:Object = target;
 
-			while (currentTarget && currentTarget.hasOwnProperty("parent") && (currentTarget = currentTarget["parent"]))
+			while (currentTarget && currentTarget.hasOwnProperty("parent") 
+				   && (currentTarget = currentTarget["parent"]))
 			{
 				if (currentTarget is IBubbleEventHandler)
 				{
@@ -153,21 +122,5 @@ package org.osflash.signals
 			}
 		}
 
-		override protected function registerListener(listener:Function, once:Boolean = false):ISlot
-		{
-			return registerListenerWithPriority(listener, once);
-		}
-
-		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):ISlot
-		{
-			if (registrationPossible(listener, once))
-			{
-				const slot:ISlot = new Slot(listener, this, once, priority);
-				slots = slots.insertWithPriority(slot);
-				return slot;
-			}
-			
-			return slots.find(listener);
-		}
 	}
 }
