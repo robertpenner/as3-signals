@@ -5,7 +5,6 @@ h2. v0.9
 h3. High Priority
 
 * finish base classes using signal sets, e.g. SignalSprite
-* unit tests for SignalBindingList: insertWithPriority()
 * ask community about impact of reversing order of listeners
 
 h3. Medium Priority
@@ -14,6 +13,4 @@ h3. Medium Priority
 
 h3. Low Priority
 
-* use Hamcrest in tests
-* pull Project Sprouts integration from amoslanka
 * add MXML support for NativeMappedSignal, NativeRelaySignal

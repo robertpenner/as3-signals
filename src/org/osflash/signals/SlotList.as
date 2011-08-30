@@ -4,6 +4,7 @@ package org.osflash.signals
 	 * The SlotList class represents an immutable list of Slot objects.
 	 *
 	 * @author Joa Ebert
+	 * @author Robert Penner
 	 */
 	public final class SlotList
 	{
