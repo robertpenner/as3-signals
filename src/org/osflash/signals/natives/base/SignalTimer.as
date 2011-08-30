@@ -11,5 +11,10 @@ package org.osflash.signals.natives.base
 		{ 
 			return _signals ||= new TimerSignalSet(this);
 		}
+		
+		public function SignalTimer(delay:Number, repeatCount:int = 0)
+		{
+			super(delay, repeatCount);
+		}
 	}
 }
