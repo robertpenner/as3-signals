@@ -3,7 +3,6 @@ package org.osflash.signals
 	import flash.errors.IllegalOperationError;
 	import flash.utils.getQualifiedClassName;
 	
-
 	/** 
 	 * Allows the valueClasses to be set in MXML, e.g.
 	 * <signals:Signal id="nameChanged">{[String, uint]}</signals:Signal>
@@ -11,14 +10,7 @@ package org.osflash.signals
 	[DefaultProperty("valueClasses")]	
 	
 	/**
-	 * Signal dispatches events to a single listener.
-	 * It is inspired by C# events and delegates, and by
-	 * <a target="_top" href="http://en.wikipedia.org/wiki/Signals_and_slots">signals and slots</a>
-	 * in Qt.
-	 * A Signal adds event dispatching functionality through composition and interfaces,
-	 * rather than inheriting from a dispatcher.
-	 * <br/><br/>
-	 * Project home: <a target="_top" href="http://github.com/robertpenner/as3-signals/">http://github.com/robertpenner/as3-signals/</a>
+	 * A SingleSignal can have only one listener.
 	 */
 	public class SingleSignal implements ISignal
 	{
@@ -27,7 +19,7 @@ package org.osflash.signals
 		protected var slot:Slot;
 		
 		/**
-		 * Creates a Signal instance to dispatch value objects.
+		 * Creates a SingleSignal instance to dispatch value objects.
 		 * @param	valueClasses Any number of class references that enable type checks in dispatch().
 		 * For example, new Signal(String, uint)
 		 * would allow: signal.dispatch("the Answer", 42)
@@ -63,7 +55,7 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function get numListeners():uint { return null == slot ? 0 : 1; }
+		public function get numListeners():uint { return slot ? 1 : 0; }
 		
 		/** @inheritDoc */
 		//TODO: @throws
@@ -81,14 +73,11 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function remove(listener:Function):ISlot
 		{
-			if(slot && slot.listener == listener)
+			if (slot && slot.listener == listener)
 			{
-				// This will need to be a clone I think
-				const bind:ISlot = slot;
-				
+				const theSlot:ISlot = slot;
 				slot = null;
-				
-				return bind;
+				return theSlot;
 			}
 
 			return null;
@@ -97,23 +86,17 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			if(slot) slot.remove();
-			slot = null;
+			if (slot) slot.remove();
 		}
 		
 		/** @inheritDoc */
 		public function dispatch(...valueObjects):void
 		{
-			//
-			// Validate value objects against pre-defined value classes.
-			//
+			// If valueClasses is empty, value objects are not type-checked. 
+			const numValueClasses:int = _valueClasses.length;
+			const numValueObjects:int = valueObjects.length;
 
-			var valueObject:Object;
-			var valueClass:Class;
-
-			const numValueClasses: int = valueClasses.length;
-			const numValueObjects: int = valueObjects.length;
-
+			// Cannot dispatch fewer objects than declared classes.
 			if (numValueObjects < numValueClasses)
 			{
 				throw new ArgumentError('Incorrect number of arguments. '+
@@ -121,22 +104,19 @@ package org.osflash.signals
 					numValueObjects+'.');
 			}
 			
-			for (var i: int = 0; i < numValueClasses; ++i)
+			// Cannot dispatch differently typed objects than declared classes.
+			for (var i:int = 0; i < numValueClasses; i++)
 			{
-				valueObject = valueObjects[i];
-				valueClass = valueClasses[i];
-
-				if (valueObject === null || valueObject is valueClass) continue;
+				// Optimized for the optimistic case that values are correct.
+				if (valueObjects[i] is _valueClasses[i] || valueObjects[i] === null) 
+					continue;
 					
-				throw new ArgumentError('Value object <'+valueObject
-					+'> is not an instance of <'+valueClass+'>.');
+				throw new ArgumentError('Value object <'+valueObjects[i]
+					+'> is not an instance of <'+_valueClasses[i]+'>.');
 			}
 
-			//
-			// Broadcast to listeners.
-			//
-			
-			if (null != slot)
+			// Broadcast to the one listener.
+			if (slot)
 			{
 				slot.execute(valueObjects);
 			}
@@ -144,55 +124,14 @@ package org.osflash.signals
 		
 		protected function registerListener(listener:Function, once:Boolean = false):ISlot
 		{
-			if (null != slot) 
+			if (slot) 
 			{
-				//
 				// If the listener exits previously added, definitely don't add it.
-				//
-				
 				throw new IllegalOperationError('You cannot add or addOnce with a listener already added, remove the current listener first.');
 			}
 			
-			if (!slot || verifyRegistrationOf(listener, once))
-			{
-				slot = new Slot(listener, this, once);
-				
-				return slot;
-			}
-			
-			return slot;
+			return (slot = new Slot(listener, this, once));
 		}
 
-		protected function verifyRegistrationOf(listener: Function,  once: Boolean): Boolean
-		{
-			if(!slot || slot.listener != listener) return false;
-			
-			const existingSlot:ISlot = slot;
-
-			if (null != existingSlot)
-			{
-				if (existingSlot.once != once)
-				{
-					//
-					// If the listener was previously added, definitely don't add it again.
-					// But throw an exception if their once value differs.
-					//
-
-					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
-				}
-
-				//
-				// Listener was already added.
-				//
-
-				return false;
-			}
-
-			//
-			// This listener has not been added before.
-			//
-			
-			return true;
-		}
 	}
 }

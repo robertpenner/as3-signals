@@ -132,7 +132,7 @@ package org.osflash.signals
 
 		
 		[Test(expects="flash.errors.IllegalOperationError")]
-		public function addOnce_same_listener_twice_should_only_add_it_once():void
+		public function addOnce_same_listener_twice_should_throw_error():void
 		{
 			var func:Function = newEmptyHandler();
 			signal.addOnce(func);
