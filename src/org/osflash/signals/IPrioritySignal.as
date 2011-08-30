@@ -14,8 +14,10 @@ package org.osflash.signals
 		 * @param	listener A function with an argument
 		 * that matches the type of event dispatched by the signal.
 		 * If eventClass is not specified, the listener and dispatch() can be called without an argument.
+		 * @return a ISlot, which contains the Function passed as the parameter
+		 * @see ISlot
 		 */
-		function addWithPriority(listener:Function, priority:int = 0):Function
+		function addWithPriority(listener:Function, priority:int = 0):ISlot
 		
 		/**
 		 * Subscribes a one-time listener for this signal.
@@ -28,7 +30,9 @@ package org.osflash.signals
 		 * The priority is designated by a signed 32-bit integer.
 		 * The higher the number, the higher the priority.
 		 * All listeners with priority n are processed before listeners of priority n-1.
+		 * @return a ISlot, which contains the Function passed as the parameter
+		 * @see ISlot
 		 */
-		function addOnceWithPriority(listener:Function, priority:int = 0):Function
+		function addOnceWithPriority(listener:Function, priority:int = 0):ISlot
 	}
 }

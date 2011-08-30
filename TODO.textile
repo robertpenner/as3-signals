@@ -1,10 +1,19 @@
 h1. AS3 Signals TODO
 
 h2. v0.9
-* add MXML support for NativeMappedSignal, NativeRelaySignal
-* integrate native signal sets from jonopus
+
+h3. High Priority
+
 * finish base classes using signal sets, e.g. SignalSprite
-* pull Project Sprouts integration from amoslanka
-* introduce listener class for speed and to remove onceListeners
+* unit tests for SignalBindingList: insertWithPriority()
+* ask community about impact of reversing order of listeners
+
+h3. Medium Priority
+
 * fill in asdocs
+
+h3. Low Priority
+
 * use Hamcrest in tests
+* pull Project Sprouts integration from amoslanka
+* add MXML support for NativeMappedSignal, NativeRelaySignal

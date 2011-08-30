@@ -1,7 +1,9 @@
 package org.osflash.signals.natives
 {
-	import org.osflash.signals.DeluxeSignal;
-	import org.osflash.signals.SignalBindingList;
+	import org.osflash.signals.ISlot;
+	import org.osflash.signals.Signal;
+	import org.osflash.signals.Slot;
+	import org.osflash.signals.SlotList;
 
 	import flash.events.Event;
 	import flash.events.IEventDispatcher;
@@ -13,11 +15,11 @@ package org.osflash.signals.natives
 	 * NativeRelaySignal has its own dispatching code,
 	 * whereas NativeSignal uses the IEventDispatcher to dispatch.
 	 */
-	public class NativeRelaySignal extends DeluxeSignal implements INativeDispatcher
+	public class NativeRelaySignal extends Signal implements INativeDispatcher
 	{
+		protected var _target:IEventDispatcher;
 		protected var _eventType:String;
 		protected var _eventClass:Class;
-		protected var _eventDispatcher:IEventDispatcher;
 
 		/**
 		 * Creates a new NativeRelaySignal instance to relay events from an IEventDispatcher.
@@ -29,29 +31,31 @@ package org.osflash.signals.natives
 		 */
 		public function NativeRelaySignal(target:IEventDispatcher, eventType:String, eventClass:Class = null)
 		{
-			super(target, eventClass || Event);
+			super(eventClass || Event);
 
 			this.eventType = eventType;
 			this.eventClass = eventClass;
-			this.eventDispatcher = target;
+			this.target = target;
 		}
 
+		
+		/** @inheritDoc */
+		public function get target():IEventDispatcher
+		{
+			return _target;
+		}
+
+		public function set target(value:IEventDispatcher):void
+		{
+			if (value == _target) return;
+			if (_target) removeAll();
+			_target = value;
+		}
+		
 		/** @inheritDoc */
 		public function get eventType():String { return _eventType; }
 
 		public function set eventType(value:String):void { _eventType = value; }
-
-		/** @inheritDoc */
-		public function get eventDispatcher():IEventDispatcher { return _eventDispatcher; }
-
-		public function set eventDispatcher(value:IEventDispatcher):void { target = value; }
-
-		/** @inheritDoc */
-		override public function set target(value:Object):void
-		{
-			super.target = value;
-			_eventDispatcher = IEventDispatcher(value);
-		}
 
 		/** @inheritDoc */
 		public function get eventClass():Class { return _eventClass; }
@@ -64,55 +68,48 @@ package org.osflash.signals.natives
 
 		override public function set valueClasses(value:Array):void
 		{
-			eventClass = value && value.length > 0 ? value[0] : null;
+			eventClass = (value && value.length > 0) ? value[0] : null;
+		}
+		
+		// TODO: @throws
+		override public function add(listener:Function):ISlot
+		{
+			return addWithPriority(listener);
+		}
+
+		override public function addOnce(listener:Function):ISlot
+		{
+			return addOnceWithPriority(listener);
+		}
+
+		/** @inheritDoc */
+		public function addWithPriority(listener:Function, priority:int = 0):ISlot
+		{
+			return registerListenerWithPriority(listener, false, priority);
+		}
+
+		/** @inheritDoc */
+		public function addOnceWithPriority(listener:Function, priority:int = 0):ISlot
+		{
+			return registerListenerWithPriority(listener, true, priority);
 		}
 		
 		/** @inheritDoc */
-		override public function addWithPriority(listener:Function, priority:int = 0):Function
+		override public function remove(listener:Function):ISlot
 		{
-			const nonEmptyBefore: Boolean = bindings.nonEmpty;
-			
-			// Try to add first because it may throw an exception.
-			super.addWithPriority(listener);
-			// Account for cases where the same listener is added twice.
-			if (nonEmptyBefore != bindings.nonEmpty)
-				IEventDispatcher(target).addEventListener(eventType, onNativeEvent, false, priority);
-			
-			return listener;
-		}
-		
-		/** @inheritDoc */
-		override public function addOnceWithPriority(listener:Function, priority:int = 0):Function
-		{
-			const nonEmptyBefore: Boolean = bindings.nonEmpty;
-
-			// Try to add first because it may throw an exception.
-			super.addOnceWithPriority(listener);
-			// Account for cases where the same listener is added twice.
-			if (nonEmptyBefore != bindings.nonEmpty)
-				IEventDispatcher(target).addEventListener(eventType, onNativeEvent);
-			
-			return listener;
-		}
-		
-		/** @inheritDoc */
-		override public function remove(listener:Function):Function
-		{
-			const nonEmptyBefore: Boolean = bindings.nonEmpty;
-
-			super.remove(listener);
-
-			if (nonEmptyBefore != bindings.nonEmpty) IEventDispatcher(target).removeEventListener(eventType, onNativeEvent);
-
-			return listener;
+			const nonEmptyBefore:Boolean = slots.nonEmpty;
+			const slot:ISlot = super.remove(listener);
+			if (nonEmptyBefore != slots.nonEmpty) 
+				target.removeEventListener(eventType, onNativeEvent);
+			return slot;
 		}
 
 		/**
 		 * @inheritDoc
 		 */
-		override public function removeAll(): void
+		override public function removeAll():void
 		{
-			if(bindings.nonEmpty) IEventDispatcher(target).removeEventListener(eventType, onNativeEvent);
+			if (target) target.removeEventListener(eventType, onNativeEvent);
 			super.removeAll();
 		}
 
@@ -129,32 +126,55 @@ package org.osflash.signals.natives
 		}
 
 		/**
-		 * Unlike other signals, NativeSignal does not dispatch null
+		 * Unlike other signals, NativeRelaySignal does not dispatch null
 		 * because it causes an exception in EventDispatcher.
 		 * @inheritDoc
 		 */
 		public function dispatchEvent(event:Event):Boolean
 		{
-			if (null == event) throw new ArgumentError('Event object expected.');
+			if (!target) throw new ArgumentError('Target object cannot be null.');
+			if (!event)  throw new ArgumentError('Event object cannot be null.');
 
 			if (!(event is eventClass))
 				throw new ArgumentError('Event object '+event+' is not an instance of '+eventClass+'.');
 
 			if (event.type != eventType)
 				throw new ArgumentError('Event object has incorrect type. Expected <'+eventType+'> but was <'+event.type+'>.');
-
+			
 			return target.dispatchEvent(event);
 		}
 
-		protected function onNativeEvent(event: Event): void
+		protected function onNativeEvent(event:Event):void
 		{
-			var bindingsToProcess:SignalBindingList = bindings;
+			var slotsToProcess:SlotList = slots;
 
-			while (bindingsToProcess.nonEmpty)
+			while (slotsToProcess.nonEmpty)
 			{
-				bindingsToProcess.head.execute1(event);
-				bindingsToProcess = bindingsToProcess.tail;
+				slotsToProcess.head.execute1(event);
+				slotsToProcess = slotsToProcess.tail;
 			}
 		}
+		
+		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):ISlot
+		{
+			if (!target) throw new ArgumentError('Target object cannot be null.');
+			const nonEmptyBefore:Boolean = slots.nonEmpty;
+			
+			var slot:ISlot = null;
+			if (registrationPossible(listener, once))
+			{
+				slot = new Slot(listener, this, once, priority);
+				slots = slots.insertWithPriority(slot);
+			}
+			else
+				slot = slots.find(listener);
+				
+			// Account for cases where the same listener is added twice.
+			if (nonEmptyBefore != slots.nonEmpty)
+				target.addEventListener(eventType, onNativeEvent, false, priority);
+				
+			return slot;
+		}
+		
 	}
 }

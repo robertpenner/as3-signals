@@ -1,15 +1,12 @@
 package org.osflash.signals.natives
 {
+	import org.osflash.signals.ISlot;
+	import org.osflash.signals.Slot;
+	import org.osflash.signals.SlotList;
+
 	import flash.errors.IllegalOperationError;
 	import flash.events.Event;
-	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
-	import flash.utils.Dictionary;
-
-	import org.osflash.signals.IPrioritySignal;
-	import org.osflash.signals.ISignalBinding;
-	import org.osflash.signals.SignalBinding;
-	import org.osflash.signals.SignalBindingList;
 
 	/** 
 	 * Allows the eventClass to be set in MXML, e.g.
@@ -22,16 +19,14 @@ package org.osflash.signals.natives
 	 * A NativeSignal is essentially a mini-dispatcher locked to a specific event type and class.
 	 * It can become part of an interface.
 	 */
-	public class NativeSignal implements IPrioritySignal, INativeDispatcher
+	public class NativeSignal implements INativeDispatcher
 	{
-		protected var _eventDispatcher:IEventDispatcher;
+		protected var _target:IEventDispatcher;
 		protected var _eventType:String;
 		protected var _eventClass:Class;
 		protected var _valueClasses:Array;
-
-		protected var bindings:SignalBindingList;
-		protected var existing:Dictionary;
-
+		protected var slots:SlotList;
+		
 		/**
 		 * Creates a NativeSignal instance to dispatch events on behalf of a target object.
 		 * @param	target The object on whose behalf the signal is dispatching events.
@@ -40,10 +35,8 @@ package org.osflash.signals.natives
 		 */
 		public function NativeSignal(target:IEventDispatcher = null, eventType:String = "", eventClass:Class = null)
 		{
-			bindings = SignalBindingList.NIL;
-			existing = null;
-
-			this.eventDispatcher = target;
+			slots = SlotList.NIL;
+			this.target = target;
 			this.eventType = eventType;
 			this.eventClass = eventClass;
 		}
@@ -72,86 +65,70 @@ package org.osflash.signals.natives
 		}
 		
 		/** @inheritDoc */
-		public function get numListeners():uint { return bindings.length; }
+		public function get numListeners():uint { return slots.length; }
 		
 		/** @inheritDoc */
-		public function get eventDispatcher():IEventDispatcher { return _eventDispatcher; }
+		public function get target():IEventDispatcher { return _target; }
 		
-		public function set eventDispatcher(value:IEventDispatcher):void
+		public function set target(value:IEventDispatcher):void
 		{
-			if (value == _eventDispatcher) return;
-
-			removeAll();
-			_eventDispatcher = value;
-		}
-
-		/** @inheritDoc */
-		[Deprecated(replacement="eventDispatcher", since="0.9")]
-		public function get target():IEventDispatcher { return eventDispatcher; }
-
-		[Deprecated(replacement="eventDispatcher", since="0.9")]
-		public function set target(value:IEventDispatcher):void { eventDispatcher = value; }
-		
-		/** @inheritDoc */
-		//TODO: @throws
-		public function add(listener:Function):Function
-		{
-			return addWithPriority(listener)
+			if (value == _target) return;
+			if (_target) removeAll();
+			_target = value;
 		}
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function addWithPriority(listener:Function, priority:int = 0):Function
+		public function add(listener:Function):ISlot
 		{
-			registerListener(listener, false, priority);
-			return listener;
+			return addWithPriority(listener);
 		}
 		
 		/** @inheritDoc */
-		public function addOnce(listener:Function):Function
+		//TODO: @throws
+		public function addWithPriority(listener:Function, priority:int = 0):ISlot
 		{
-			return addOnceWithPriority(listener)
+			return registerListenerWithPriority(listener, false, priority);
 		}
 		
 		/** @inheritDoc */
-		public function addOnceWithPriority(listener:Function, priority:int = 0):Function
+		public function addOnce(listener:Function):ISlot
 		{
-			registerListener(listener, true, priority);
-			return listener;
+			return addOnceWithPriority(listener);
 		}
 		
 		/** @inheritDoc */
-		public function remove(listener:Function):Function
+		public function addOnceWithPriority(listener:Function, priority:int = 0):ISlot
 		{
-			bindings = bindings.filterNot(listener);
-
-			if (!bindings.nonEmpty)
-			{
-				if(existing != null)
-				{
-					eventDispatcher.removeEventListener(eventType, onNativeEvent);
-					existing = null;
-				}
-			}
-			else delete existing[listener];
-
-			return listener;
+			return registerListenerWithPriority(listener, true, priority);
+		}
+		
+		/** @inheritDoc */
+		public function remove(listener:Function):ISlot
+		{
+			const slot:ISlot = slots.find(listener);
+			if (!slot) return null;
+			_target.removeEventListener(_eventType, slot.execute1);
+			slots = slots.filterNot(listener);
+			return slot;
 		}
 		
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			if (null != existing) eventDispatcher.removeEventListener(eventType, onNativeEvent);
-
-			bindings = SignalBindingList.NIL;
-			existing = null;
+			var slotsToProcess:SlotList = slots;
+			while (slotsToProcess.nonEmpty)
+			{
+				target.removeEventListener(_eventType, slotsToProcess.head.execute1);
+				slotsToProcess = slotsToProcess.tail;
+			}
+			slots = SlotList.NIL;
 		}
 
-		/**
-		 * @inheritDoc
-		 */
+		/** @inheritDoc */
 		public function dispatch(...valueObjects):void
 		{
+			//TODO: check if ...valueObjects can ever be null.
 			if (null == valueObjects) throw new ArgumentError('Event object expected.');
 
 			if (valueObjects.length != 1) throw new ArgumentError('No more than one Event object expected.');
@@ -166,77 +143,55 @@ package org.osflash.signals.natives
 		 */
 		public function dispatchEvent(event:Event):Boolean
 		{
-			if (null == event) throw new ArgumentError('Event object expected.');
+			if (!target) throw new ArgumentError('Target object cannot be null.');
+			if (!event)  throw new ArgumentError('Event object cannot be null.');
 			
 			if (!(event is eventClass))
 				throw new ArgumentError('Event object '+event+' is not an instance of '+eventClass+'.');
 				
 			if (event.type != eventType)
 				throw new ArgumentError('Event object has incorrect type. Expected <'+eventType+'> but was <'+event.type+'>.');
-
-			return eventDispatcher.dispatchEvent(event);
+			
+			return target.dispatchEvent(event);
 		}
 		
-		protected function registerListener(listener:Function, once:Boolean = false, priority:int = 0):void
+		protected function registerListenerWithPriority(listener:Function, once:Boolean = false, priority:int = 0):ISlot
 		{
-			if (listener.length != 1)
-				throw new ArgumentError('Listener for native event must declare exactly 1 argument.');
-				
-			if (!bindings.nonEmpty || verifyRegistrationOf(listener, once))
+			if (!target) throw new ArgumentError('Target object cannot be null.');
+
+			if (registrationPossible(listener, once))
 			{
-				bindings = bindings.insertWithPriority(new SignalBinding(listener, once, this, priority));
-
-				if (null == existing)
-				{
-					existing = new Dictionary();
-					eventDispatcher.addEventListener(eventType, onNativeEvent, false, priority);
-				}
-
-				existing[listener] = true;
+				const slot:ISlot = new Slot(listener, this, once, priority);
+				// Not necessary to insertWithPriority() because the target takes care of ordering.
+				slots = slots.prepend(slot);
+				_target.addEventListener(_eventType, slot.execute1, false, priority);
+				return slot;
 			}
+			
+			return slots.find(listener);
 		}
 
-		protected function verifyRegistrationOf(listener: Function,  once: Boolean): Boolean
+		protected function registrationPossible(listener:Function, once:Boolean):Boolean
 		{
-			if(!existing || !existing[listener]) return true;
+			if (!slots.nonEmpty) return true;
 
-			const existingBinding:ISignalBinding = bindings.find(listener);
-
-			if (null != existingBinding)
+			const existingSlot:ISlot = slots.find(listener);
+			if (existingSlot)
 			{
-				if (existingBinding.once != once)
+				if (existingSlot.once != once)
 				{
-					//
 					// If the listener was previously added, definitely don't add it again.
 					// But throw an exception if their once value differs.
-					//
-
 					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 				}
 
-				//
 				// Listener was already added.
-				//
-
 				return false;
 			}
 
-			//
 			// This listener has not been added before.
-			//
-
 			return true;
 		}
 
-		protected function onNativeEvent(event: Event): void
-		{
-			var bindingsToProcess:SignalBindingList = bindings;
-
-			while (bindingsToProcess.nonEmpty)
-			{
-				bindingsToProcess.head.execute1(event);
-				bindingsToProcess = bindingsToProcess.tail;
-			}
-		}
 	}
 }

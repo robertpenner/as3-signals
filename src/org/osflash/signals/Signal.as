@@ -1,7 +1,6 @@
 package org.osflash.signals
 {
 	import flash.errors.IllegalOperationError;
-	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
 
 	/** 
@@ -23,9 +22,7 @@ package org.osflash.signals
 	public class Signal implements ISignal
 	{
 		protected var _valueClasses:Array;		// of Class
-
-		protected var bindings:SignalBindingList;
-		protected var existing:Dictionary;
+		protected var slots:SlotList = SlotList.NIL;
 		
 		/**
 		 * Creates a Signal instance to dispatch value objects.
@@ -35,14 +32,11 @@ package org.osflash.signals
 		 * but not: signal.dispatch(true, 42.5)
 		 * nor: signal.dispatch()
 		 *
-		 * NOTE: Subclasses cannot call super.apply(null, valueClasses),
+		 * NOTE: In AS3, subclasses cannot call super.apply(null, valueClasses),
 		 * but this constructor has logic to support super(valueClasses).
 		 */
 		public function Signal(...valueClasses)
 		{
-			bindings = SignalBindingList.NIL;
-			existing = null;
-
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
 			this.valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array) ? valueClasses[0] : valueClasses;
 		}
@@ -67,54 +61,50 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function get numListeners():uint { return bindings.length; }
+		public function get numListeners():uint { return slots.length; }
 		
 		/** @inheritDoc */
 		//TODO: @throws
-		public function add(listener:Function):Function
+		public function add(listener:Function):ISlot
 		{
-			registerListener(listener);
-			return listener;
+			return registerListener(listener);
 		}
 		
 		/** @inheritDoc */
-		public function addOnce(listener:Function):Function
+		public function addOnce(listener:Function):ISlot
 		{
-			registerListener(listener, true);
-			return listener;
+			return registerListener(listener, true);
 		}
 		
 		/** @inheritDoc */
-		public function remove(listener:Function):Function
+		public function remove(listener:Function):ISlot
 		{
-			bindings = bindings.filterNot(listener);
-
-			if (!bindings.nonEmpty) existing = null;
-			else delete existing[listener];
-
-			return listener;
+			const slot:ISlot = slots.find(listener);
+			if (!slot) return null;
+			
+			slots = slots.filterNot(listener);
+			return slot;
 		}
 		
 		/** @inheritDoc */
 		public function removeAll():void
 		{
-			bindings = SignalBindingList.NIL;
-			existing = null;
+			slots = SlotList.NIL;
 		}
 		
 		/** @inheritDoc */
 		public function dispatch(...valueObjects):void
 		{
-			//
 			// Validate value objects against pre-defined value classes.
-			//
-
+			
 			var valueObject:Object;
 			var valueClass:Class;
 
-			const numValueClasses: int = valueClasses.length;
-			const numValueObjects: int = valueObjects.length;
+			// If valueClasses is empty, value objects are not type-checked. 
+			const numValueClasses:int = _valueClasses.length;
+			const numValueObjects:int = valueObjects.length;
 
+			// Cannot dispatch fewer objects than declared classes.
 			if (numValueObjects < numValueClasses)
 			{
 				throw new ArgumentError('Incorrect number of arguments. '+
@@ -122,107 +112,56 @@ package org.osflash.signals
 					numValueObjects+'.');
 			}
 			
-			for (var i: int = 0; i < numValueClasses; ++i)
+			// Cannot dispatch differently typed objects than declared classes.
+			for (var i:int = 0; i < numValueClasses; i++)
 			{
-				valueObject = valueObjects[i];
-				valueClass = valueClasses[i];
-
-				if (valueObject === null || valueObject is valueClass) continue;
+				// Optimized for the optimistic case that values are correct.
+				if (valueObjects[i] is _valueClasses[i] || valueObjects[i] === null) 
+					continue;
 					
-				throw new ArgumentError('Value object <'+valueObject
-					+'> is not an instance of <'+valueClass+'>.');
+				throw new ArgumentError('Value object <'+valueObjects[i]
+					+'> is not an instance of <'+_valueClasses[i]+'>.');
 			}
 
-			//
 			// Broadcast to listeners.
-			//
-
-			var bindingsToProcess:SignalBindingList = bindings;
-
-			if (bindingsToProcess.nonEmpty)
+			var slotsToProcess:SlotList = slots;
+			if(slotsToProcess.nonEmpty)
 			{
-				if (numValueObjects == 0)
+				while (slotsToProcess.nonEmpty)
 				{
-					while (bindingsToProcess.nonEmpty)
-					{
-						bindingsToProcess.head.execute0();
-						bindingsToProcess = bindingsToProcess.tail;
-					}
-				}
-				else if (numValueObjects == 1)
-				{
-					const singleValue:Object = valueObjects[0];
-
-					while (bindingsToProcess.nonEmpty)
-					{
-						bindingsToProcess.head.execute1(singleValue);
-						bindingsToProcess = bindingsToProcess.tail;
-					}
-				}
-				else if (numValueObjects == 2)
-				{
-					const value1:Object = valueObjects[0];
-					const value2:Object = valueObjects[1];
-
-					while (bindingsToProcess.nonEmpty)
-					{
-						bindingsToProcess.head.execute2(value1, value2);
-						bindingsToProcess = bindingsToProcess.tail;
-					}
-				}
-				else
-				{
-					while (bindingsToProcess.nonEmpty)
-					{
-						bindingsToProcess.head.execute(valueObjects);
-						bindingsToProcess = bindingsToProcess.tail;
-					}
+					slotsToProcess.head.execute(valueObjects);
+					slotsToProcess = slotsToProcess.tail;
 				}
 			}
 		}
 
-		protected function registerListener(listener:Function, once:Boolean = false):void
+		protected function registerListener(listener:Function, once:Boolean = false):ISlot
 		{
-			if (!bindings.nonEmpty || verifyRegistrationOf(listener, once))
+			if (registrationPossible(listener, once))
 			{
-				bindings = new SignalBindingList(new SignalBinding(listener, once, this), bindings);
-
-				if (null == existing) existing = new Dictionary();
-
-				existing[listener] = true;
+				const newSlot:ISlot = new Slot(listener, this, once);
+				slots = slots.prepend(newSlot);
+				return newSlot;
 			}
+			
+			return slots.find(listener);
 		}
 
-		protected function verifyRegistrationOf(listener: Function,  once: Boolean): Boolean
+		protected function registrationPossible(listener:Function, once:Boolean):Boolean
 		{
-			if(!existing || !existing[listener]) return true;
+			if (!slots.nonEmpty) return true;
 			
-			const existingBinding:ISignalBinding = bindings.find(listener);
+			const existingSlot:ISlot = slots.find(listener);
+			if (!existingSlot) return true;
 
-			if (null != existingBinding)
+			if (existingSlot.once != once)
 			{
-				if (existingBinding.once != once)
-				{
-					//
-					// If the listener was previously added, definitely don't add it again.
-					// But throw an exception if their once value differs.
-					//
-
-					throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
-				}
-
-				//
-				// Listener was already added.
-				//
-
-				return false;
+				// If the listener was previously added, definitely don't add it again.
+				// But throw an exception if their once values differ.
+				throw new IllegalOperationError('You cannot addOnce() then add() the same listener without removing the relationship first.');
 			}
-
-			//
-			// This listener has not been added before.
-			//
 			
-			return true;
+			return false; // Listener was already registered.
 		}
 	}
 }
