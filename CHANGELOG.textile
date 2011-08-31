@@ -1,5 +1,28 @@
 h2. AS3 Signals Changelog:
 
+h3. v0.9 - NeufWar
+
+h4. API Changes
+* Removed ISignalOwner, INativeSignalOwner and IDispatcher. They became annoying, e.g. casting ISignal to Signal just to dispatch. Moved their methods into ISignal.
+
+h4. API Additions
+* ISlot: listener registration object with many features:
+** Stores values of *once* and *priority*.
+** Can *remove()* its listener from the signal.
+** Has *enabled* toggle to temporarily disconnect the listener without removing it.
+** Has optional array of *params* which are appended to the signal's dispatched values before reaching the listener. Similar to delegates that store extra args.
+* IOnceSignal: has *addOnce()* but not *add()*. Useful for completion signals. Idea by @alecmce.
+* MonoSignal: can have only one listener. Useful for callbacks and SignalCommandMap request signals. Originally implemented as SingleSignal by @stickupkid.
+* PrioritySignal: like DeluxeSignal without bubbling. Thanks to @neilmanuell.
+
+h4. Implementation Changes
+* Dispatching
+** @joa created a new, faster dispatching engine using an immutable recursive linked list (inspired by Scala). The list is like a snake which gets eaten by a snake, which gets eaten by a larger snake, and so on.
+** NOTE: Listeners are now called in reverse order, for best performance. If precise order is needed, use an IPrioritySignal. 
+
+h4. Tests
+* Refactored duplicated test code into base classes, e.g. ISignalTestBase. This greatly increased coverage across various implementations.
+	
 h3. v0.8 - Maximilian - 2010-11-14
 
 h4. API Changes
