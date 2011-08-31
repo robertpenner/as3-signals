@@ -2,19 +2,23 @@ h2. AS3 Signals Changelog:
 
 h3. v0.9 - NeufGun
 
-h4. API Changes
-* Removed ISignalOwner, INativeSignalOwner and IDispatcher. They became annoying, e.g. casting ISignal to Signal just to dispatch. Moved their methods into ISignal.
-
 h4. API Additions
 * ISlot: listener registration object with many features.
 ** A slot stores values of *once* and *priority*, replacing the untyped "listener box" objects.
 ** A slot can *remove()* its listener from the signal.
 ** Has *enabled* toggle to temporarily disconnect the listener without removing it.
+** The slot's *listener* can be changed on the fly.
 ** Has optional array of *params* which are appended to the signal's dispatched values before reaching the listener. Similar to delegates that store extra args.
-* IOnceSignal: has *addOnce()* but not *add()*. Useful for completion signals. Idea by @alecmce.
+* IOnceSignal: has *addOnce()* but not *add()*. Useful for completion signals that discard all listeners on dispatch. Idea by @alecmce.
 * MonoSignal: can have only one listener. Useful for callbacks and SignalCommandMap request signals. Originally implemented as SingleSignal by @stickupkid.
 * PrioritySignal: like DeluxeSignal without bubbling (thanks @neilmanuell).
-* Native Signal Sets: @jonopus developed an easy way to snap on NativeSignals to MovieClip, Socket, etc.
+* Native Signal Sets: 
+** @jonopus developed an easy way to snap on NativeSignals to Sprite, Timer, etc. See *org.osflash.signals.natives.sets* package.
+** Created SignalSprite, SignalTimer, etc. as example base classes. See *org.osflash.signals.natives.base* package.
+
+`h4. API Changes
+* Removed ISignalOwner, INativeSignalOwner and IDispatcher. They became annoying, e.g. casting ISignal to Signal just to dispatch. Moved their methods into ISignal.
+* *add()*, *addOnce()* and *remove()* now return ISlot.  
 
 h4. Implementation Changes
 * add() no longer checks listener.length because ...varargs listeners cannot be detected.
