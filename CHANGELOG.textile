@@ -16,7 +16,7 @@ h4. API Additions
 ** @jonopus developed an easy way to snap on NativeSignals to Sprite, Timer, etc. See *org.osflash.signals.natives.sets* package.
 ** Created SignalSprite, SignalTimer, etc. as example base classes. See *org.osflash.signals.natives.base* package.
 
-`h4. API Changes
+h4. API Changes
 * Removed ISignalOwner, INativeSignalOwner and IDispatcher. They became annoying, e.g. casting ISignal to Signal just to dispatch. Moved their methods into ISignal.
 * *add()*, *addOnce()* and *remove()* now return ISlot.  
 
@@ -37,8 +37,9 @@ h4. Tests
 * Refactored duplicated test code into base classes, e.g. ISignalTestBase. This greatly increased coverage across various implementations.
 	
 h4. Build
-* Flash Player executes on Linux (thanks @joa).
+* Build now has a "package" target to zip SWC and source together.
 * Build now has a "clean" target to remove generated folders.
+* Flash Player executes on Linux (thanks @joa).
 
 h3. v0.8 - Maximilian - 2010-11-14
 
