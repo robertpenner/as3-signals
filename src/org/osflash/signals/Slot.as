@@ -38,6 +38,21 @@ package org.osflash.signals
 		/**
 		 * @inheritDoc
 		 */
+		public function execute0():void
+		{
+			if (!_enabled) return;
+			if (_once) remove();
+			if (_params && _params.length)
+			{
+				_listener.apply(null, _params);
+				return;
+			}
+			_listener();
+		}		
+		
+		/**
+		 * @inheritDoc
+		 */
 		public function execute1(value:Object):void
 		{
 			if (!_enabled) return;
