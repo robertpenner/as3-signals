@@ -6,17 +6,17 @@ package org.osflash.signals
 	/**
 	 * @author Simon Richardson - simon@ustwo.co.uk
 	 */
-	public class SingleSignalDispatchExtraArgsTest
+	public class MonoSignalDispatchExtraArgsTest
 	{
 		[Inject]
 	    public var async:IAsync;
 
-		public var completed:SingleSignal;
+		public var completed:MonoSignal;
 
 		[Before]
 		public function setUp():void
 		{
-			completed = new SingleSignal();
+			completed = new MonoSignal();
 		}
 
 		[After]

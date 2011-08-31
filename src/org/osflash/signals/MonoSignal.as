@@ -10,16 +10,16 @@ package org.osflash.signals
 	[DefaultProperty("valueClasses")]	
 	
 	/**
-	 * A SingleSignal can have only one listener.
+	 * A MonoSignal can have only one listener.
 	 */
-	public class SingleSignal implements ISignal
+	public class MonoSignal implements ISignal
 	{
 		protected var _valueClasses:Array;		// of Class
 		
 		protected var slot:Slot;
 		
 		/**
-		 * Creates a SingleSignal instance to dispatch value objects.
+		 * Creates a MonoSignal instance to dispatch value objects.
 		 * @param	valueClasses Any number of class references that enable type checks in dispatch().
 		 * For example, new Signal(String, uint)
 		 * would allow: signal.dispatch("the Answer", 42)
@@ -29,7 +29,7 @@ package org.osflash.signals
 		 * NOTE: Subclasses cannot call super.apply(null, valueClasses),
 		 * but this constructor has logic to support super(valueClasses).
 		 */
-		public function SingleSignal(...valueClasses)
+		public function MonoSignal(...valueClasses)
 		{
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
 			this.valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array) ? valueClasses[0] : valueClasses;
