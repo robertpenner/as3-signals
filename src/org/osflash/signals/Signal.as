@@ -40,8 +40,11 @@ package org.osflash.signals
 			super(valueClasses);
 		}
 		
-		/** @inheritDoc */
-		//TODO: @throws
+		/**
+		 * @inheritDoc
+		 * @throws flash.errors.IllegalOperationError <code>IllegalOperationError</code>: You cannot addOnce() then add() the same listener without removing the relationship first.
+		 * @throws ArgumentError <code>ArgumentError</code>: Given listener is <code>null</code>.
+		 */
 		public function add(listener:Function):ISlot
 		{
 			return registerListener(listener);

@@ -59,6 +59,7 @@ package org.osflash.signals.natives.sets
 
 		/**
 		 * Lazily instantiates a NativeSignal
+		 * @throws ArgumentError <code>ArgumentError</code>: eventType must not be null.
 		 */
 		public function getNativeSignal(eventType:String, eventClass:Class = null):NativeSignal 
 		{

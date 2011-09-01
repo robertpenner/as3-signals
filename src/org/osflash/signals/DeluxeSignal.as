@@ -53,7 +53,11 @@ package org.osflash.signals
 			_target = value;
 		}
 
-		/** @inheritDoc */
+		/**
+		 * @inheritDoc
+		 * @throws ArgumentError <code>ArgumentError</code>: Incorrect number of arguments.
+		 * @throws ArgumentError <code>ArgumentError</code>: Value object is not an instance of the appropriate valueClasses Class.
+		 */
 		override public function dispatch(...valueObjects):void
 		{
 			// Validate value objects against pre-defined value classes.
