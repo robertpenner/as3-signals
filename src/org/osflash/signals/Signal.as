@@ -1,7 +1,5 @@
 package org.osflash.signals
 {
-	import flash.errors.IllegalOperationError;
-	import flash.utils.getQualifiedClassName;
 
 	/** 
 	 * Allows the valueClasses to be set in MXML, e.g.
