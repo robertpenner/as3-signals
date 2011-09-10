@@ -57,10 +57,6 @@ package org.osflash.signals
 		override public function dispatch(...valueObjects):void
 		{
 			// Validate value objects against pre-defined value classes.
-
-			var valueObject:Object;
-			var valueClass:Class;
-
 			const numValueClasses:int = _valueClasses.length;
 			const numValueObjects:int = valueObjects.length;
 			
