@@ -1,5 +1,6 @@
 package org.osflash.signals
 {
+
 	import org.osflash.signals.natives.AmbiguousRelationshipInNativeSignalTest;
 	import org.osflash.signals.natives.MXMLNativeSignalTest;
 	import org.osflash.signals.natives.NativeMappedSignalBoundaryUseTest;
@@ -13,7 +14,9 @@ package org.osflash.signals
 	import org.osflash.signals.natives.sets.DisplayObjectSignalSetTest;
 	import org.osflash.signals.natives.sets.EventDispatcherSignalSetTest;
 	import org.osflash.signals.natives.sets.NativeSignalSetTest;
-
+	import org.osflash.signals.selectives.SelectiveSignalTest;
+	import org.osflash.signals.selectives.natives.SelectiveNativeRelaySignalTest;
+	
 	[Suite]
 	public class AllTests
 	{
@@ -61,5 +64,8 @@ package org.osflash.signals
 		public var _NativeSignalSetTest:NativeSignalSetTest;
 		public var _EventDispatcherSignalSetTest:EventDispatcherSignalSetTest;
 		public var _DisplayObjectSignalSetTest:DisplayObjectSignalSetTest;
+		
+		public var _SelectiveSignalTest:SelectiveSignalTest;
+		public var _SelectiveNativeRelaySignalTest:SelectiveNativeRelaySignalTest;
 	}
 }
