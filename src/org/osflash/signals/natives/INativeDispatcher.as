@@ -33,6 +33,7 @@ package org.osflash.signals.natives
 		 * @throws	ArgumentError	<code>ArgumentError</code>: Event object is <code>null</code>.
 		 * @throws	ArgumentError	<code>ArgumentError</code>:	Event object [event] is not an instance of [eventClass].
 		 * @throws	ArgumentError	<code>ArgumentError</code>:	Event object has incorrect type. Expected [eventType] but was [event.type].
+		 * @throws  ArgumentError   <code>ArgumentError</code>:  Target object cannot be <code>null</code>.
 		 */
 		function dispatchEvent(event:Event):Boolean;
 	}

@@ -35,7 +35,10 @@ package org.osflash.signals
 			this.valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array) ? valueClasses[0] : valueClasses;
 		}
 		
-		/** @inheritDoc */
+		/**
+		 * @inheritDoc
+		 * @throws ArgumentError <code>ArgumentError</code>: Invalid valueClasses argument: item at index should be a Class but was not.
+		 */
 		[ArrayElementType("Class")]
 		public function get valueClasses():Array { return _valueClasses; }
 		
@@ -57,14 +60,21 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function get numListeners():uint { return slot ? 1 : 0; }
 		
-		/** @inheritDoc */
-		//TODO: @throws
+		/**
+		 * @inheritDoc
+		 * @throws flash.errors.IllegalOperationError <code>IllegalOperationError</code>: You cannot add or addOnce with a listener already added, remove the current listener first.
+		 * @throws ArgumentError <code>ArgumentError</code>: Given listener is <code>null</code>.
+		 */
 		public function add(listener:Function):ISlot
 		{
 			return registerListener(listener);
 		}
 		
-		/** @inheritDoc */
+		/**
+		 * @inheritDoc
+		 * @throws flash.errors.IllegalOperationError <code>IllegalOperationError</code>: You cannot add or addOnce with a listener already added, remove the current listener first.
+		 * @throws ArgumentError <code>ArgumentError</code>: Given listener is <code>null</code>.
+		 */
 		public function addOnce(listener:Function):ISlot
 		{
 			return registerListener(listener, true);
@@ -89,7 +99,11 @@ package org.osflash.signals
 			if (slot) slot.remove();
 		}
 		
-		/** @inheritDoc */
+		/**
+		 * @inheritDoc
+		 * @throws ArgumentError <code>ArgumentError</code>: Incorrect number of arguments.
+		 * @throws ArgumentError <code>ArgumentError</code>: Value object is not an instance of the appropriate valueClasses Class.
+		 */
 		public function dispatch(...valueObjects):void
 		{
 			// If valueClasses is empty, value objects are not type-checked. 

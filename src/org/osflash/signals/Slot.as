@@ -23,7 +23,8 @@ package org.osflash.signals
 		 * @param once Whether or not the listener should be executed only once.
 		 * @param priority The priority of the slot.
 		 *
-		 * @throws ArgumentError An error is thrown if the given listener closure is <code>null</code>.
+		 * @throws ArgumentError <code>ArgumentError</code>: Given listener is <code>null</code>.
+		 * @throws Error <code>Error</code>: Internal signal reference has not been set yet.
 		 */
 		public function Slot(listener:Function, signal:IOnceSignal, once:Boolean = false, priority:int = 0)
 		{
@@ -106,6 +107,8 @@ package org.osflash.signals
 
 		/**
 		 * @inheritDoc
+		 * @throws ArgumentError <code>ArgumentError</code>: Given listener is <code>null</code>. Did you want to set enabled to false instead?
+		 * @throws Error <code>Error</code>: Internal signal reference has not been set yet.
 		 */
 		public function get listener():Function
 		{
