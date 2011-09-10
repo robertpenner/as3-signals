@@ -88,11 +88,7 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function dispatch(...valueObjects):void
 		{
-			// Validate value objects against pre-defined value classes.
 			
-			var valueObject:Object;
-			var valueClass:Class;
-
 			// If valueClasses is empty, value objects are not type-checked. 
 			const numValueClasses:int = _valueClasses.length;
 			const numValueObjects:int = valueObjects.length;
