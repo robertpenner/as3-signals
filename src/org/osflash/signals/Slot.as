@@ -19,8 +19,8 @@ package org.osflash.signals
 		 * Creates and returns a new Slot object.
 		 *
 		 * @param listener The listener associated with the slot.
-		 * @param once Whether or not the listener should be executed only once.
 		 * @param signal The signal associated with the slot.
+		 * @param once Whether or not the listener should be executed only once.
 		 * @param priority The priority of the slot.
 		 *
 		 * @throws ArgumentError An error is thrown if the given listener closure is <code>null</code>.
