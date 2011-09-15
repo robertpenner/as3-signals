@@ -4,10 +4,10 @@ package org.osflash.signals.natives.base
 	import asunit.asserts.assertSame;
 	import asunit.asserts.assertTrue;
 	import asunit.framework.IAsync;
-	import flash.events.MouseEvent;
+
 	import org.osflash.signals.natives.sets.InteractiveObjectSignalSet;
 
-	import flash.events.Event;
+	import flash.events.MouseEvent;
 
 	public class SignalSpriteTest 
 	{	

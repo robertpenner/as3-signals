@@ -123,7 +123,7 @@ package org.osflash.signals.natives
 		[Test(expects="ArgumentError")]
 		public function mapping_function_has_to_many_arguments_should_throw_ArgumentError():void
 		{
-			var signal:NativeMappedSignal = new NativeMappedSignal(sprite, EventType, MouseEvent, String).mapTo(
+			new NativeMappedSignal(sprite, EventType, MouseEvent, String).mapTo(
 				function (event:MouseEvent, extraArg:Object):String {
 					return event.type;
 				}

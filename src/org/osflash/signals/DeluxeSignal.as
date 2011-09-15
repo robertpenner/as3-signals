@@ -62,7 +62,6 @@ package org.osflash.signals
 		{
 			// Validate value objects against pre-defined value classes.
 
-			var valueObject:Object;
 			var valueClass:Class;
 
 			const numValueClasses:int = _valueClasses.length;

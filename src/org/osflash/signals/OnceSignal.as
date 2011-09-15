@@ -101,7 +101,6 @@ package org.osflash.signals
 		{
 			// Validate value objects against pre-defined value classes.
 			
-			var valueObject:Object;
 			var valueClass:Class;
 
 			// If valueClasses is empty, value objects are not type-checked. 
