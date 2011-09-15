@@ -61,5 +61,7 @@ package org.osflash.signals
 		public var _NativeSignalSetTest:NativeSignalSetTest;
 		public var _EventDispatcherSignalSetTest:EventDispatcherSignalSetTest;
 		public var _DisplayObjectSignalSetTest:DisplayObjectSignalSetTest;
+		
+		public var _RelaxedSignalTest : RelaxedSignalTest;
 	}
 }
