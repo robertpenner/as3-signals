@@ -19,7 +19,7 @@ package org.osflash.signals
 	 * Project home: <a target="_top" href="http://github.com/robertpenner/as3-signals/">http://github.com/robertpenner/as3-signals/</a>
 	 */
 	
-	public class RelaxedSignal extends OnceSignal
+	public class RelaxedOnceSignal extends OnceSignal
 	{
 		/**
 		 * Creates a Signal instance to dispatch value objects.
@@ -32,7 +32,7 @@ package org.osflash.signals
 		 * NOTE: In AS3, subclasses cannot call super.apply(null, valueClasses),
 		 * but this constructor has logic to support super(valueClasses).
 		 */
-		public function RelaxedSignal(...valueClasses)
+		public function RelaxedOnceSignal(...valueClasses)
 		{
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
 			valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array) ? valueClasses[0]:valueClasses;

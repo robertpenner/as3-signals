@@ -7,9 +7,9 @@ package org.osflash.signals
 	 * @author Camille Reynders - info@creynders.be
 	 */
 	
-	public class RelaxedSignalTest
+	public class RelaxedOnceSignalTest
 	{
-		public function RelaxedSignalTest()
+		public function RelaxedOnceSignalTest()
 		{
 		}
 		
@@ -18,7 +18,7 @@ package org.osflash.signals
 		[Before]
 		public function setUp():void
 		{
-			_signal = new RelaxedSignal();
+			_signal = new RelaxedOnceSignal();
 		}
 		
 		[After]
@@ -103,7 +103,7 @@ package org.osflash.signals
 			var handler : Function =function( payload : Array ) : void{
 				handlerExecuted = true;
 			}
-			_signal = new RelaxedSignal( Array );
+			_signal = new RelaxedOnceSignal( Array );
 			_signal.dispatch( value );
 			_signal.addOnce( handler );
 			assertTrue( handlerExecuted );
