@@ -2,6 +2,7 @@ package org.osflash.signals
 {
 	import asunit.asserts.assertEquals;
 	import asunit.asserts.assertTrue;
+	import org.osflash.signals.relaxed.RelaxedOnceSignal;
 
 	/**
 	 * @author Camille Reynders - info@creynders.be

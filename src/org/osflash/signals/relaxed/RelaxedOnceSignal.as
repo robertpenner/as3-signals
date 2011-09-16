@@ -1,5 +1,8 @@
-package org.osflash.signals
+package org.osflash.signals.relaxed
 {
+	import org.osflash.signals.ISlot;
+	import org.osflash.signals.OnceSignal;
+
 	/** 
 	 * Allows the valueClasses to be set in MXML, e.g.
 	 * <signals:Signal id="nameChanged">{[String, uint]}</signals:Signal>
@@ -37,10 +40,10 @@ package org.osflash.signals
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
 			valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array) ? valueClasses[0]:valueClasses;
 			super(valueClasses);
+			_stateController = new RelaxedStateController();
 		}
 		
-		private var _dispatchedValueObjects : *;
-		private var _hasBeenDispatched : Boolean = false;
+		protected var _stateController : RelaxedStateController;
 		
 		/**
 		 * @inheritDoc
@@ -50,11 +53,7 @@ package org.osflash.signals
 		override public function addOnce(listener:Function):ISlot
 		{
 			var slot : ISlot = super.addOnce(listener);
-			
-			if( _hasBeenDispatched ){
-				slot.execute( _dispatchedValueObjects );
-			}
-			
+			_stateController.slot = slot;
 			return slot;
 		}
 		
@@ -67,8 +66,8 @@ package org.osflash.signals
 		override public function dispatch(...valueObjects):void
 		{
 			super.dispatch(valueObjects);
-			_dispatchedValueObjects = valueObjects;
-			_hasBeenDispatched = true;
+			_stateController.dispatchedValueObjects = valueObjects;
+			_stateController.hasBeenDispatched = true;
 		}
 		
 	}
