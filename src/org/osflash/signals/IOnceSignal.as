@@ -41,6 +41,8 @@ package org.osflash.signals
 
 		/**
 		 * Unsubscribes all listeners from the signal.
+		 * @param	applyingTo Optional parameter that may be associated with a Slot to remove all listeners associated with a 
+		 * given instance or Class.
 		 */
 		function removeAll(applyingTo:* = null):void
 	}
