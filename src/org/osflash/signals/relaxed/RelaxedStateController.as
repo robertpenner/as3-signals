@@ -9,34 +9,29 @@ package org.osflash.signals.relaxed
 		}
 		
 		private var _hasBeenDispatched : Boolean = false;
-		private var _dispatchedValueObjects : *;
-		private var _slot : ISlot;
+		private var _lastDispatchedValueObjects : *;
 
-		internal function get hasBeenDispatched():Boolean{
+		public function get hasBeenDispatched():Boolean{
 			return _hasBeenDispatched;
 		}
 
-		internal function set hasBeenDispatched(value:Boolean):void{
+		public function set hasBeenDispatched(value:Boolean):void{
 			_hasBeenDispatched = value;
 		}
 
-		internal function get dispatchedValueObjects():*{
-			return _dispatchedValueObjects;
+		public function get dispatchedValueObjects():*{
+			return _lastDispatchedValueObjects;
 		}
 
-		internal function set dispatchedValueObjects(value:*):void{
-			_dispatchedValueObjects = value;
+		public function set dispatchedValueObjects(value:*):void{
+			_lastDispatchedValueObjects = value;
 		}
 
-		internal function get slot():ISlot{
-			return _slot;
-		}
-
-		internal function set slot(value:ISlot):void{
-			_slot = value;
+		public function handleSlot(slot:ISlot):ISlot{
 			if( hasBeenDispatched ){
 				slot.execute( dispatchedValueObjects );
 			}
+			return slot;
 		}
 
 

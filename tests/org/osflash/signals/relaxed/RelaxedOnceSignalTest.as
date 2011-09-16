@@ -1,8 +1,8 @@
-package org.osflash.signals
+package org.osflash.signals.relaxed
 {
 	import asunit.asserts.assertEquals;
 	import asunit.asserts.assertTrue;
-	import org.osflash.signals.relaxed.RelaxedOnceSignal;
+	import org.osflash.signals.IOnceSignal;
 
 	/**
 	 * @author Camille Reynders - info@creynders.be

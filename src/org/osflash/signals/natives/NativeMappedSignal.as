@@ -40,6 +40,8 @@ package org.osflash.signals.natives
 		public function NativeMappedSignal(target:IEventDispatcher, eventType:String, eventClass:Class=null, ... mappedTypes)
 		{
 			super(target, eventType, eventClass);
+			// Cannot use super.apply(null, mappedTypes), so allow the subclass to call super(mappedTypes).
+			mappedTypes = (mappedTypes.length == 1 && mappedTypes[0] is Array) ? mappedTypes[0]:mappedTypes;
 			valueClasses = mappedTypes;
 		}
 

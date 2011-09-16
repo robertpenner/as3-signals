@@ -13,6 +13,7 @@ package org.osflash.signals
 	import org.osflash.signals.natives.sets.DisplayObjectSignalSetTest;
 	import org.osflash.signals.natives.sets.EventDispatcherSignalSetTest;
 	import org.osflash.signals.natives.sets.NativeSignalSetTest;
+	import org.osflash.signals.relaxed.RelaxedOnceSignalTest;
 
 	[Suite]
 	public class AllTests
