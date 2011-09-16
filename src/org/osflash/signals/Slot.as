@@ -14,6 +14,7 @@ package org.osflash.signals
 		protected var _once:Boolean = false;
 		protected var _priority:int = 0;
 		protected var _params:Array;
+		protected var _appliesTo:*;
 		
 		/**
 		 * Creates and returns a new Slot object.
@@ -165,6 +166,14 @@ package org.osflash.signals
 		public function remove():void
 		{
 			_signal.remove(_listener);
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function appliesTo(value:*):void
+		{
+			_appliesTo = value;
 		}
 
 		protected function verifyListener(listener:Function): void

@@ -94,9 +94,13 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function removeAll():void
+		public function removeAll(applyingTo:* = null):void
 		{
-			if (slot) slot.remove();
+			if (applyingTo)
+			{
+				//todo	
+			}
+			else if (slot) slot.remove();
 		}
 		
 		/**

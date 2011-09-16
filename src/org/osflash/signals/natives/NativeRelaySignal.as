@@ -128,10 +128,14 @@ package org.osflash.signals.natives
 		/**
 		 * @inheritDoc
 		 */
-		override public function removeAll():void
+		override public function removeAll(applyingTo:* = null):void
 		{
-			if (target) target.removeEventListener(eventType, onNativeEvent);
-			super.removeAll();
+			if (applyingTo)
+			{
+				//todo	
+			}
+			else if (target) target.removeEventListener(eventType, onNativeEvent);
+			super.removeAll(applyingTo);
 		}
 
 		/**

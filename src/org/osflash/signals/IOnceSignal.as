@@ -42,6 +42,6 @@ package org.osflash.signals
 		/**
 		 * Unsubscribes all listeners from the signal.
 		 */
-		function removeAll():void
+		function removeAll(applyingTo:* = null):void
 	}
 }

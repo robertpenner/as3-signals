@@ -87,9 +87,21 @@ package org.osflash.signals
 		}
 		
 		/** @inheritDoc */
-		public function removeAll():void
+		public function removeAll(applyingTo:* = null):void
 		{
-			slots = SlotList.NIL;
+			if (applyingTo)
+			{
+				//todo:
+				
+				//find all slots for the applyingTo prop
+					//const found:SlotList = slots.findAll(applyingTo)
+				//remove that list
+					//slots.filterOut(found)
+			}
+			else
+			{
+				slots = SlotList.NIL;
+			}
 		}
 		
 		/**
