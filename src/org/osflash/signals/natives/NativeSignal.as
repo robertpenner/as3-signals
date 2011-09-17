@@ -134,20 +134,24 @@ package org.osflash.signals.natives
 		/** @inheritDoc */
 		public function removeAll(applyingTo:* = null):void
 		{
+			var slotsToProcess:SlotList;
+			
 			if (applyingTo)
 			{
-				//todo...
+				slotsToProcess = slots.findAppliesTo(applyingTo);
 			}
 			else
 			{
-				var slotsToProcess:SlotList = slots;
-				while (slotsToProcess.nonEmpty)
-				{
-					target.removeEventListener(_eventType, slotsToProcess.head.execute1);
-					slotsToProcess = slotsToProcess.tail;
-				}
-				slots = SlotList.NIL;
+				slotsToProcess = slots;
 			}
+			
+			while (slotsToProcess.nonEmpty)
+			{
+				target.removeEventListener(_eventType, slotsToProcess.head.execute1);
+				slotsToProcess = slotsToProcess.tail;
+			}
+			
+			slots = (applyingTo) ? slots.filterNotAppliesTo(applyingTo) : SlotList.NIL;
 		}
 
 		/**

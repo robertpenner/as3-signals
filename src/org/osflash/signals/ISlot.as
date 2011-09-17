@@ -72,8 +72,8 @@ package org.osflash.signals
 		function remove():void;
 		
 		/**
-		 * Associates this slot with a certain instance or class, allowing the removal of all slots 
-		 * belonging to this object at some future date. 
+		 * Associates this slot with a certain instance or a class type, allowing the removal of all slots 
+		 * belonging to this object or class in the future. 
 		 * @param	value Either an instance or class definition to associate this slot with.
 		 */
 		function applyTo(value:*):void;

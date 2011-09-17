@@ -273,6 +273,40 @@ package org.osflash.signals
 			return null;
 		}
 
+		/**
+		 * Creates and returns a new SlotList of all slots that apply to given applicator.
+		 * 
+		 * @param	value Object instance or Class that a slot may be applied to.
+		 */
+		public function findAppliesTo(value:*):SlotList
+		{
+			if (!nonEmpty) return NIL;
+			
+			var current:SlotList = this;
+			var output:SlotList; 
+			var outputCursor:SlotList;
+			
+			while (current.nonEmpty)
+			{
+				if (current.head.doesApply(value))
+				{
+					if (output)
+					{
+						outputCursor.tail = new SlotList(current.head);
+						outputCursor = outputCursor.tail;
+					}
+					else
+					{
+						output = outputCursor = new SlotList(current.head);
+					}
+					
+				}
+				current = current.tail;
+			}
+			
+			return output || NIL;
+		}
+		
 		public function toString():String
 		{
 			var buffer:String = '';
