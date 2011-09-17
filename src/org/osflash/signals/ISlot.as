@@ -74,8 +74,14 @@ package org.osflash.signals
 		/**
 		 * Associates this slot with a certain instance or class, allowing the removal of all slots 
 		 * belonging to this object at some future date. 
-		 * @param Either an instance or class definition to associate this slot with.
+		 * @param	value Either an instance or class definition to associate this slot with.
 		 */
-		function appliesTo(value:*):void;
+		function applyTo(value:*):void;
+		
+		/**
+		 * Determines whether or not this slot applies to the supplied instane.
+		 * @param	value Either an instance or class definition to associate this slot with.
+		 */
+		function doesApply(value:*):Boolean;
 	}
 }

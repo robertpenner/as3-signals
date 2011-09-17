@@ -171,9 +171,17 @@ package org.osflash.signals
 		/**
 		 * @inheritDoc
 		 */
-		public function appliesTo(value:*):void
+		public function applyTo(value:*):void
 		{
 			_appliesTo = value;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		public function doesApply(value:*):Boolean
+		{
+			return value && (_appliesTo == value || (value is Class && _appliesTo is value) || (_appliesTo is Class && value is _appliesTo));
 		}
 
 		protected function verifyListener(listener:Function): void

@@ -192,6 +192,49 @@ package org.osflash.signals
 			// The listener was not found so this list is unchanged.
 			return this;
 		}
+		
+		/**
+		 * Returns the slots in this list that do not apply the supplied applier.
+		 * 
+		 * @param	value Object instance or class that a slot may be applied to.
+		 */
+		public function filterNotAppliesTo(value:*):SlotList
+		{
+			if (!nonEmpty) return NIL;
+				
+			var current:SlotList = this;
+			var prev:SlotList = null;
+			
+			while (current.nonEmpty)
+			{
+				if (current.head.doesApply(value))
+				{
+					if (prev) //has previous list
+					{
+						//skip over current.head
+						prev.tail = current.tail;
+						current = current.tail;
+					}
+					else 
+					{
+						//return NIL if last in list
+						if (current.length == 1) return NIL;
+						
+						//shift to next in list
+						current.head = current.tail.head;
+						current.tail = current.tail.tail;
+					}
+				}
+				else
+				{
+					//continue through the list
+					prev = current;
+					current = current.tail;
+				}
+			}
+			
+			return this;
+		}
 
 		/**
 		 * Determines whether the supplied listener Function is contained within this list

@@ -130,12 +130,8 @@ package org.osflash.signals.natives
 		 */
 		override public function removeAll(applyingTo:* = null):void
 		{
-			if (applyingTo)
-			{
-				//todo	
-			}
-			else if (target) target.removeEventListener(eventType, onNativeEvent);
 			super.removeAll(applyingTo);
+			if (!slots.nonEmpty && target) target.removeEventListener(eventType, onNativeEvent);
 		}
 
 		/**

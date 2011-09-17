@@ -98,7 +98,7 @@ package org.osflash.signals
 		{
 			if (applyingTo)
 			{
-				//todo	
+				if (slot && slot.doesApply(applyingTo)) slot.remove();
 			}
 			else if (slot) slot.remove();
 		}

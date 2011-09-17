@@ -91,12 +91,7 @@ package org.osflash.signals
 		{
 			if (applyingTo)
 			{
-				//todo:
-				
-				//find all slots for the applyingTo prop
-					//const found:SlotList = slots.findAll(applyingTo)
-				//remove that list
-					//slots.filterOut(found)
+				slots = slots.filterNotAppliesTo(applyingTo);	
 			}
 			else
 			{
