@@ -1,10 +1,3 @@
-/**
- * Created by ${PRODUCT_NAME}.
- * User: joa
- * Date: 21.11.10
- * Time: 21:19
- * To change this template use File | Settings | File Templates.
- */
 package org.osflash.signals
 {
 	/**
@@ -12,6 +5,7 @@ package org.osflash.signals
 	 * listener associated with a Signal.
 	 *
 	 * @author Joa Ebert
+	 * @author Robert Penner
 	 */
 	public interface ISlot
 	{
@@ -23,23 +17,25 @@ package org.osflash.signals
 		
 		/**
 		 * Allows the ISlot to inject parameters when dispatching. The params will be at 
-		 * the tail of the arguments and the ISignal arguments will be at the head follow.
+		 * the tail of the arguments and the ISignal arguments will be at the head.
 		 * 
-		 * var signal:ISignal = new Signal(int, String);
-		 * signal.add(handler).params = [1];
-		 * signal.dispatch('a');
-		 * function handler(num:int, str:String):void{}
+		 * var signal:ISignal = new Signal(String);
+		 * signal.add(handler).params = [42];
+		 * signal.dispatch('The Answer');
+		 * function handler(name:String, num:int):void{}
 		 */
 		function get params():Array;
 		function set params(value:Array):void;
 
 		/**
-		 * Whether this slot is destroyed after it has been used once.
+		 * Whether this slot is automatically removed after it has been used once.
 		 */
 		function get once():Boolean;
 
 		/**
-		 * The priority of this slot. Defaults to 0.
+		 * The priority of this slot should be given in the execution order.
+		 * An IPrioritySignal will call higher numbers before lower ones.
+		 * Defaults to 0.
 		 */
 		function get priority():int;
 		
@@ -48,18 +44,24 @@ package org.osflash.signals
 		 */
 		function get enabled():Boolean;
 		function set enabled(value:Boolean):void;
+		
+		/**
+		 * Executes a listener without arguments.
+		 * Existing <code>params</code> are appended before the listener is called.
+		 */
+		function execute0():void;		
 
 		/**
-		 * Executes a listener of arity <code>1</code>.
-		 *
-		 * @param value1 The argument for the listener.
+		 * Dispatches one argument to a listener.
+		 * Existing <code>params</code> are appended before the listener is called.
+		 * @param value The argument for the listener.
 		 */
 		function execute1(value:Object):void;		
 
 		/**
 		 * Executes a listener of arity <code>n</code> where <code>n</code> is
 		 * <code>valueObjects.length</code>.
-		 *
+		 * Existing <code>params</code> are appended before the listener is called.
 		 * @param valueObjects The array of arguments to be applied to the listener.
 		 */
 		function execute(valueObjects:Array):void;

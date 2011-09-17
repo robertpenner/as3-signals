@@ -6,17 +6,17 @@ package org.osflash.signals
 	/**
 	 * @author Simon Richardson - simon@ustwo.co.uk
 	 */
-	public class SingleSignalDispatchNonEventTest
+	public class MonoSignalDispatchNonEventTest
 	{
 		[Inject]
 	    public var async:IAsync;
 	    
-		public var completed:SingleSignal;
+		public var completed:MonoSignal;
 
 		[Before]
 		public function setUp():void
 		{
-			completed = new SingleSignal(Date);
+			completed = new MonoSignal(Date);
 		}
 
 		[After]
@@ -32,7 +32,7 @@ package org.osflash.signals
 		[Test]
 		public function dispatch_zero_should_call_listener_with_zero():void
 		{
-			completed = new SingleSignal(Number);
+			completed = new MonoSignal(Number);
 			completed.add( async.add(onZero, 10) );
 			completed.dispatch(0);
 		}
@@ -45,7 +45,7 @@ package org.osflash.signals
 		[Test]
 		public function dispatch_2_zeroes_should_call_listener_with_2_zeroes():void
 		{
-			completed = new SingleSignal(Number, Number);
+			completed = new MonoSignal(Number, Number);
 			completed.add( async.add(onZeroZero, 10) );
 			completed.dispatch(0, 0);
 		}
@@ -71,7 +71,7 @@ package org.osflash.signals
 		[Test]
 		public function dispatch_null_through_int_Signal_should_be_autoconverted_to_zero():void
 		{
-			completed = new SingleSignal(int);
+			completed = new MonoSignal(int);
 			completed.addOnce( async.add(checkNullConvertedToZero, 10) );
 			completed.dispatch(null);
 		}

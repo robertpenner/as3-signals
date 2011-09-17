@@ -52,13 +52,13 @@ package org.osflash.signals
 		
 		public var _SignalDispatchVarArgsTest:SignalDispatchVarArgsTest;
 		
-		public var _SingleSignalTest:SingleSignalTest;
-		public var _SingleSignalDispatchArgsTest:SingleSignalDispatchArgsTest;
-		public var _SingleSignalDispatchExtraArgsTest:SingleSignalDispatchExtraArgsTest;
-		public var _SingleSignalDispatchNoArgsTest:SingleSignalDispatchNoArgsTest;
-		public var _SingleSignalDispatchNonEventTest:SingleSignalDispatchNonEventTest;
-		public var _SingleSignalSlotTest:SingleSignalSlotTest;
-		public var _SingleSignalDispatchVarArgsTest:SingleSignalDispatchVarArgsTest;
+		public var _MonoSignalTest:MonoSignalTest;
+		public var _MonoSignalDispatchArgsTest:MonoSignalDispatchArgsTest;
+		public var _MonoSignalDispatchExtraArgsTest:MonoSignalDispatchExtraArgsTest;
+		public var _MonoSignalDispatchNoArgsTest:MonoSignalDispatchNoArgsTest;
+		public var _MonoSignalDispatchNonEventTest:MonoSignalDispatchNonEventTest;
+		public var _MonoSignalSlotTest:MonoSignalSlotTest;
+		public var _MonoSignalDispatchVarArgsTest:MonoSignalDispatchVarArgsTest;
 		
 		public var _NativeSignalSetTest:NativeSignalSetTest;
 		public var _EventDispatcherSignalSetTest:EventDispatcherSignalSetTest;

@@ -1,7 +1,6 @@
 package org.osflash.signals
 {
 	import asunit.asserts.assertEquals;
-	import asunit.asserts.assertFalse;
 	import asunit.asserts.assertNotNull;
 	import asunit.asserts.assertNull;
 	import asunit.asserts.assertTrue;
@@ -17,17 +16,17 @@ package org.osflash.signals
 	/**
 	 * @author Simon Richardson - me@simonrichardson.info
 	 */
-	public class SingleSignalTest
+	public class MonoSignalTest
 	{
 		[Inject]
 	    public var async:IAsync;
 		
-		public var signal:SingleSignal;
+		public var signal:MonoSignal;
 		
 		[Before]
 		public function setUp():void
 		{
-			signal = new SingleSignal();
+			signal = new MonoSignal();
 		}
 
 		[After]

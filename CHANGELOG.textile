@@ -1,5 +1,46 @@
 h2. AS3 Signals Changelog:
 
+h3. v0.9 - NeufGun
+
+h4. API Additions
+* ISlot: listener registration object with many features.
+** A slot stores values of *once* and *priority*, replacing the untyped "listener box" objects.
+** A slot can *remove()* its listener from the signal.
+** Has *enabled* toggle to temporarily disconnect the listener without removing it.
+** The slot's *listener* can be changed on the fly.
+** Has optional array of *params* which are appended to the signal's dispatched values before reaching the listener. Similar to delegates that store extra args.
+* IOnceSignal: has *addOnce()* but not *add()*. Useful for completion signals that discard all listeners on dispatch. Idea by @alecmce.
+* MonoSignal: can have only one listener. Useful for callbacks and SignalCommandMap request signals. Originally implemented as SingleSignal by @stickupkid.
+* PrioritySignal: like DeluxeSignal without bubbling (thanks @neilmanuell).
+* Native Signal Sets: 
+** @jonopus developed an easy way to snap on NativeSignals to Sprite, Timer, etc. See *org.osflash.signals.natives.sets* package.
+** Created SignalSprite, SignalTimer, etc. as example base classes. See *org.osflash.signals.natives.base* package.
+
+h4. API Changes
+* Removed ISignalOwner, INativeSignalOwner and IDispatcher. They became annoying, e.g. casting ISignal to Signal just to dispatch. Moved their methods into ISignal.
+* *add()*, *addOnce()* and *remove()* now return ISlot.  
+
+h4. Implementation Changes
+* add() no longer checks listener.length because ...varargs listeners cannot be detected.
+* Dispatching
+** @joa created a new, faster dispatching engine (SlotList) using an immutable recursive linked list (inspired by Scala). The list is like a snake which gets eaten by a snake, which gets eaten by a larger snake, and so on.
+** NOTE: Listeners are now called in reverse order, for best performance. If precise order is needed, use an IPrioritySignal. 
+* Enhanced MXML friendliness (ArrayElementType, better examples). 
+* More inheritance between signals to reduce code duplication.
+
+h4. Fixes
+* DeluxeSignal: now handles subclass super() calls properly (thanks @stickupkid).
+* NativeRelaySignal: better checks for null (thanks @stickupkid).
+
+h4. Tests
+* Increased test coverage significantly. Many tests from @stickupkid.
+* Refactored duplicated test code into base classes, e.g. ISignalTestBase. This greatly increased coverage across various implementations.
+	
+h4. Build
+* Build now has a "package" target to zip SWC and source together.
+* Build now has a "clean" target to remove generated folders.
+* Flash Player executes on Linux (thanks @joa).
+
 h3. v0.8 - Maximilian - 2010-11-14
 
 h4. API Changes

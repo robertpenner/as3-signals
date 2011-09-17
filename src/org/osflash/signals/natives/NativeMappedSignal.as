@@ -52,6 +52,7 @@ package org.osflash.signals.natives
 
 		/**
 		 * @inheritDoc
+		 * @throws ArgumentError <code>ArgumentError</code>: Invalid valueClasses argument: item at index should be a Class but was not.
 		 */
 		override public function set valueClasses(value:Array):void
 		{
@@ -115,6 +116,7 @@ package org.osflash.signals.natives
 		 * 
 		 * @param objectListOrFunction This can either be a list of object literals or a function that returns list of objects. 
 		 * @return The NativeMappedSignal object this method was called on. This allows the Signal to be defined and mapped in one statement.
+		 * @throws ArgumentError <code>ArgumentError</code>: Mapping function needs zero or one arguments of type Event
 		 */		
 		public function mapTo(...objectListOrFunction):NativeMappedSignal
 		{

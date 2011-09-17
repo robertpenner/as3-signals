@@ -1,7 +1,5 @@
 package org.osflash.signals
 {
-	import flash.errors.IllegalOperationError;
-	import flash.utils.getQualifiedClassName;
 
 	/** 
 	 * Allows the valueClasses to be set in MXML, e.g.
@@ -40,8 +38,11 @@ package org.osflash.signals
 			super(valueClasses);
 		}
 		
-		/** @inheritDoc */
-		//TODO: @throws
+		/**
+		 * @inheritDoc
+		 * @throws flash.errors.IllegalOperationError <code>IllegalOperationError</code>: You cannot addOnce() then add() the same listener without removing the relationship first.
+		 * @throws ArgumentError <code>ArgumentError</code>: Given listener is <code>null</code>.
+		 */
 		public function add(listener:Function):ISlot
 		{
 			return registerListener(listener);

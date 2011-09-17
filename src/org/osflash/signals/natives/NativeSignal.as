@@ -77,27 +77,45 @@ package org.osflash.signals.natives
 			_target = value;
 		}
 		
-		/** @inheritDoc */
-		//TODO: @throws
+		/**
+		 * @inheritDoc
+		 * @throws flash.errors.IllegalOperationError <code>IllegalOperationError</code>: You cannot addOnce() then add() the same listener without removing the relationship first.
+		 * @throws ArgumentError <code>ArgumentError</code>: Given listener is <code>null</code>.
+		 * @throws ArgumentError <code>ArgumentError</code>: Target object cannot be <code>null</code>.
+		 */
 		public function add(listener:Function):ISlot
 		{
 			return addWithPriority(listener);
 		}
 		
-		/** @inheritDoc */
-		//TODO: @throws
+		/**
+		 * @inheritDoc
+		 * @throws flash.errors.IllegalOperationError <code>IllegalOperationError</code>: You cannot addOnce() then add() the same listener without removing the relationship first.
+		 * @throws ArgumentError <code>ArgumentError</code>: Given listener is <code>null</code>.
+		 * @throws ArgumentError <code>ArgumentError</code>: Target object cannot be <code>null</code>.
+		 */
 		public function addWithPriority(listener:Function, priority:int = 0):ISlot
 		{
 			return registerListenerWithPriority(listener, false, priority);
 		}
 		
-		/** @inheritDoc */
+		/**
+		 * @inheritDoc
+		 * @throws flash.errors.IllegalOperationError <code>IllegalOperationError</code>: You cannot addOnce() then add() the same listener without removing the relationship first.
+		 * @throws ArgumentError <code>ArgumentError</code>: Given listener is <code>null</code>.
+		 * @throws ArgumentError <code>ArgumentError</code>: Target object cannot be <code>null</code>.
+		 */
 		public function addOnce(listener:Function):ISlot
 		{
 			return addOnceWithPriority(listener);
 		}
 		
-		/** @inheritDoc */
+		/**
+		 * @inheritDoc
+		 * @throws flash.errors.IllegalOperationError <code>IllegalOperationError</code>: You cannot addOnce() then add() the same listener without removing the relationship first.
+		 * @throws ArgumentError <code>ArgumentError</code>: Given listener is <code>null</code>.
+		 * @throws ArgumentError <code>ArgumentError</code>: Target object cannot be <code>null</code>.
+		 */
 		public function addOnceWithPriority(listener:Function, priority:int = 0):ISlot
 		{
 			return registerListenerWithPriority(listener, true, priority);
@@ -125,7 +143,15 @@ package org.osflash.signals.natives
 			slots = SlotList.NIL;
 		}
 
-		/** @inheritDoc */
+		/**
+		 * @inheritDoc
+		 * @throws ArgumentError <code>ArgumentError</code>: Event object expected.
+		 * @throws ArgumentError <code>ArgumentError</code>: No more than one Event object expected.
+		 * @throws ArgumentError <code>ArgumentError</code>: Target object cannot be <code>null</code>.
+		 * @throws ArgumentError <code>ArgumentError</code>: Event object cannot be <code>null</code>.
+		 * @throws ArgumentError <code>ArgumentError</code>: Event object [event] is not an instance of [eventClass].
+		 * @throws ArgumentError <code>ArgumentError</code>: Event object has incorrect type. Expected [eventType] but was [event.type].
+		 */
 		public function dispatch(...valueObjects):void
 		{
 			//TODO: check if ...valueObjects can ever be null.
@@ -140,6 +166,10 @@ package org.osflash.signals.natives
 		 * Unlike other signals, NativeSignal does not dispatch null
 		 * because it causes an exception in EventDispatcher.
 		 * @inheritDoc
+		 * @throws ArgumentError <code>ArgumentError</code>: Target object cannot be <code>null</code>.
+		 * @throws ArgumentError <code>ArgumentError</code>: Event object cannot be <code>null</code>.
+		 * @throws ArgumentError <code>ArgumentError</code>: Event object [event] is not an instance of [eventClass].
+		 * @throws ArgumentError <code>ArgumentError</code>: Event object has incorrect type. Expected [eventType] but was [event.type].
 		 */
 		public function dispatchEvent(event:Event):Boolean
 		{

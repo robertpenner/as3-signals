@@ -10,16 +10,16 @@ package org.osflash.signals
 	[DefaultProperty("valueClasses")]	
 	
 	/**
-	 * A SingleSignal can have only one listener.
+	 * A MonoSignal can have only one listener.
 	 */
-	public class SingleSignal implements ISignal
+	public class MonoSignal implements ISignal
 	{
 		protected var _valueClasses:Array;		// of Class
 		
 		protected var slot:Slot;
 		
 		/**
-		 * Creates a SingleSignal instance to dispatch value objects.
+		 * Creates a MonoSignal instance to dispatch value objects.
 		 * @param	valueClasses Any number of class references that enable type checks in dispatch().
 		 * For example, new Signal(String, uint)
 		 * would allow: signal.dispatch("the Answer", 42)
@@ -29,13 +29,16 @@ package org.osflash.signals
 		 * NOTE: Subclasses cannot call super.apply(null, valueClasses),
 		 * but this constructor has logic to support super(valueClasses).
 		 */
-		public function SingleSignal(...valueClasses)
+		public function MonoSignal(...valueClasses)
 		{
 			// Cannot use super.apply(null, valueClasses), so allow the subclass to call super(valueClasses).
 			this.valueClasses = (valueClasses.length == 1 && valueClasses[0] is Array) ? valueClasses[0] : valueClasses;
 		}
 		
-		/** @inheritDoc */
+		/**
+		 * @inheritDoc
+		 * @throws ArgumentError <code>ArgumentError</code>: Invalid valueClasses argument: item at index should be a Class but was not.
+		 */
 		[ArrayElementType("Class")]
 		public function get valueClasses():Array { return _valueClasses; }
 		
@@ -57,14 +60,21 @@ package org.osflash.signals
 		/** @inheritDoc */
 		public function get numListeners():uint { return slot ? 1 : 0; }
 		
-		/** @inheritDoc */
-		//TODO: @throws
+		/**
+		 * @inheritDoc
+		 * @throws flash.errors.IllegalOperationError <code>IllegalOperationError</code>: You cannot add or addOnce with a listener already added, remove the current listener first.
+		 * @throws ArgumentError <code>ArgumentError</code>: Given listener is <code>null</code>.
+		 */
 		public function add(listener:Function):ISlot
 		{
 			return registerListener(listener);
 		}
 		
-		/** @inheritDoc */
+		/**
+		 * @inheritDoc
+		 * @throws flash.errors.IllegalOperationError <code>IllegalOperationError</code>: You cannot add or addOnce with a listener already added, remove the current listener first.
+		 * @throws ArgumentError <code>ArgumentError</code>: Given listener is <code>null</code>.
+		 */
 		public function addOnce(listener:Function):ISlot
 		{
 			return registerListener(listener, true);
@@ -89,7 +99,11 @@ package org.osflash.signals
 			if (slot) slot.remove();
 		}
 		
-		/** @inheritDoc */
+		/**
+		 * @inheritDoc
+		 * @throws ArgumentError <code>ArgumentError</code>: Incorrect number of arguments.
+		 * @throws ArgumentError <code>ArgumentError</code>: Value object is not an instance of the appropriate valueClasses Class.
+		 */
 		public function dispatch(...valueObjects):void
 		{
 			// If valueClasses is empty, value objects are not type-checked. 
