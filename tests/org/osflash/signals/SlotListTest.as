@@ -228,5 +228,29 @@ package org.osflash.signals
 			assertEquals(2, newList.length);
 		}
 		
+		// Issue #56
+		[Test]
+		public function insertWithPriority_adds_4_slots_without_losing_any():void
+		{
+			var s:PrioritySignal = new PrioritySignal();
+			var l1:Function = function():void{};
+			var l2:Function = function():void{};
+			var l3:Function = function():void{};
+			var l4:Function = function():void{};
+			var slot1:ISlot = new Slot(l1, s);
+			var slot2:ISlot = new Slot(l2, s, false, -1);
+			var slot3:ISlot = new Slot(l3, s);
+			var slot4:ISlot = new Slot(l4, s);
+			var list:SlotList = new SlotList(slot1);
+			list = list.insertWithPriority(slot2);
+			list = list.insertWithPriority(slot3);
+			list = list.insertWithPriority(slot4);
+			// This was failing because one slot was being lost.
+			assertEquals("number of slots in list", 4, list.length);
+			assertEquals(slot1, list.head);
+			assertEquals(slot3, list.tail.head);
+			assertEquals(slot4, list.tail.tail.head);
+			assertEquals(slot2, list.tail.tail.tail.head);
+		}
 	}
 }
