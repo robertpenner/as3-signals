@@ -305,5 +305,21 @@ package org.osflash.signals
 			
 			signal.dispatch();
 		}
+		
+		[Test]
+		public function removeAll_doesnt_remove_when_not_applied():void
+		{
+			signal.add(newEmptyHandler());
+			signal.removeAll(this);
+			assertEquals(1, signal.numListeners);
+		}
+		
+		[Test]
+		public function removeAll_removes_listener_when_applied():void
+		{
+			signal.add(newEmptyHandler()).applyTo(this);
+			signal.removeAll(this);
+			assertEquals(0, signal.numListeners);
+		}
 	}
 }
