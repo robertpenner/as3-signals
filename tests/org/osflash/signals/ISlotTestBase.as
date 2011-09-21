@@ -7,12 +7,12 @@ package org.osflash.signals
 	import asunit.asserts.assertTrue;
 	import asunit.asserts.fail;
 	import asunit.framework.IAsync;
-
-	import org.osflash.signals.events.GenericEvent;
-
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	
+	import org.osflash.signals.events.GenericEvent;
 	/**
 	 * @author Simon Richardson - simon@ustwo.co.uk
 	 */
@@ -365,6 +365,52 @@ package org.osflash.signals
 			
 			var slot:ISlot = signal.addOnce(newEmptyHandler());
 			slot.execute([1, 2, 3, 4, 5, 6, 7, 8, 9]); 
+		}
+		
+		[Test]
+		public function applyTo_instance_correctly_doesApplyTo_instance():void
+		{
+			var instance:Object = {};
+			var listener:Function = newEmptyHandler();
+			var slot:ISlot = signal.add(newEmptyHandler);
+			
+			slot.applyTo(instance);
+			assertTrue(slot.doesApply(instance));
+			assertFalse(slot.doesApply(this));
+		}
+		
+		[Test]
+		public function applyTo_instance_correctly_doesApplyTo_class():void
+		{
+			var listener:Function = newEmptyHandler();
+			var slot:ISlot = signal.add(newEmptyHandler);
+			
+			slot.applyTo(this);
+			assertTrue(slot.doesApply(ISlotTestBase));
+			assertFalse(slot.doesApply(ISlot));
+			assertFalse(slot.doesApply({}));
+		}
+		
+		[Test]
+		public function applyTo_class_correctly_doesApplyTo_instance():void
+		{
+			var listener:Function = newEmptyHandler();
+			var slot:ISlot = signal.add(newEmptyHandler);
+			
+			slot.applyTo(ISlotTestBase);
+			assertTrue(slot.doesApply(this));
+			assertFalse(slot.doesApply({}));
+		}
+		
+		[Test]
+		public function applyTo_class_correctly_doesApplyTo_class():void
+		{
+			var listener:Function = newEmptyHandler();
+			var slot:ISlot = signal.add(newEmptyHandler);
+			
+			slot.applyTo(ISlotTestBase);
+			assertTrue(slot.doesApply(ISlotTestBase));
+			assertFalse(slot.doesApply(ISlot));
 		}
 		
 		[Test]
