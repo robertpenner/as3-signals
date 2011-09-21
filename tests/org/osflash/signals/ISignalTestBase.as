@@ -2,7 +2,7 @@ package org.osflash.signals
 {
 	import asunit.asserts.*;
 	import asunit.framework.IAsync;
-
+	
 	import flash.events.Event;
 	
 	public class ISignalTestBase
@@ -218,6 +218,46 @@ package org.osflash.signals
 			var listener:Function = newEmptyHandler();
 			var slot:ISlot = signal.add(listener);
 			assertSame(slot, signal.remove(listener));
+		}
+		
+		[Test]
+		public function removeAll_appliedTo_3_slots_removes_3():void
+		{
+			signal.add(newEmptyHandler()).applyTo(this);
+			signal.add(newEmptyHandler()).applyTo(this);
+			signal.addOnce(newEmptyHandler()).applyTo(this);
+			signal.removeAll(this);
+			assertEquals(0, signal.numListeners);
+		}
+		
+		[Test]
+		public function removeAll_appliedTo_no_slots_removes_none():void
+		{
+			signal.add(newEmptyHandler()).applyTo({});
+			signal.addOnce(newEmptyHandler());
+			signal.add(newEmptyHandler());
+			signal.removeAll(this);
+			assertEquals(3, signal.numListeners);
+		}
+		
+		[Test]
+		public function removeAll_appliedTo_2nd_slot_removes_1_only():void
+		{
+			signal.add(newEmptyHandler());
+			signal.add(newEmptyHandler()).applyTo(this);
+			signal.add(newEmptyHandler());
+			signal.removeAll(this);
+			assertEquals(2, signal.numListeners);
+		}
+		
+		[Test]
+		public function removeAll_appliedTo_1st_and_3rd_slots_removes_2_only():void
+		{
+			signal.add(newEmptyHandler()).applyTo(this);
+			signal.add(newEmptyHandler());
+			signal.add(newEmptyHandler()).applyTo(this);
+			signal.removeAll(this);
+			assertEquals(1, signal.numListeners);
 		}
 		
 		protected function dispatchSignal():void 
