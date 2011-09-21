@@ -228,5 +228,120 @@ package org.osflash.signals
 			assertEquals(2, newList.length);
 		}
 		
+		[Test]
+		public function filterNotAppliesTo_head_slot_from_list_of_1_yields_empty_list():void
+		{
+			slotA.applyTo(this);
+			const newList:SlotList = listOfA.filterNotAppliesTo(this);
+			assertEquals(SlotList.NIL, newList);
+		}
+			
+		[Test]
+		public function filterNotAppliesTo_1st_slot_from_list_of_2_yields_list_of_2nd_listener():void
+		{
+			slotA.applyTo(this);
+			const newList:SlotList = listOfAB.filterNotAppliesTo(this);
+			assertSame(slotB, newList.head);
+			assertEquals(1, newList.length);
+		}
+		
+		[Test]
+		public function filterNotAppliesTo_both_slots_from_list_of_2_yields_empty_list():void
+		{
+			slotA.applyTo(this);
+			slotB.applyTo(this);
+			const newList:SlotList = listOfAB.filterNotAppliesTo(this);
+			assertEquals(SlotList.NIL, newList);
+		}
+		
+		[Test]
+		public function filterNotAppliesTo_2nd_slot_from_list_of_3_yields_list_of_1st_and_3rd_slots():void
+		{
+			slotB.applyTo(this);
+			const newList:SlotList = listOfABC.filterNotAppliesTo(this);
+			assertEquals(2, newList.length);
+			assertSame(slotA, newList.head);
+			assertSame(slotC, newList.tail.head);
+		}
+		
+		[Test]
+		public function filterNotAppliesTo_unbound_instance_from_list_of_3_yields_list_of_3_slots():void
+		{
+			slotB.applyTo(this);
+			const newList:SlotList = listOfABC.filterNotAppliesTo({});
+			assertEquals(3, newList.length);
+			assertSame(slotA, newList.head);
+			assertSame(slotB, newList.tail.head);
+			assertSame(slotC, newList.tail.tail.head);
+		}
+		
+		[Test]
+		public function filterNotAppliesTo_3rd_slot_from_list_of_3_yields_list_of_1st_and_2nd_slots():void
+		{
+			slotC.applyTo(this);
+			const newList:SlotList = listOfABC.filterNotAppliesTo(this);
+			assertEquals(2, newList.length);
+			assertSame(slotA, newList.head);
+			assertSame(slotB, newList.tail.head);
+		}
+		
+		[Test]
+		public function findAppliesTo_no_slot_from_list_of_3_yields_empty_list():void
+		{
+			const newList:SlotList = listOfABC.findAppliesTo(this);
+			assertSame(SlotList.NIL, newList);
+		}
+		
+		[Test]
+		public function findAppliesTo_1st_slot_from_list_of_3_yields_list_of_1st_slot():void
+		{
+			slotA.applyTo(this);
+			const newList:SlotList = listOfABC.findAppliesTo(this);
+			assertSame(slotA, newList.head);
+			assertEquals(1, newList.length);
+		}
+		
+		[Test]
+		public function findAppliesTo_1st_and_3rd_slots_from_list_of_3_yields_list_of_1st_and_3rd_slots():void
+		{
+			slotA.applyTo(this);
+			slotC.applyTo(this);
+			const newList:SlotList = listOfABC.findAppliesTo(this);
+			assertSame(slotA, newList.head);
+			assertSame(slotC, newList.tail.head);
+			assertEquals(2, newList.length);
+		}
+	
+		[Test]
+		public function findAppliesTo_3rd_slot_from_list_of_3_yields_list_of_3rd_slots():void
+		{
+			slotC.applyTo(this);
+			const newList:SlotList = listOfABC.findAppliesTo(this);
+			assertSame(slotC, newList.head);
+			assertEquals(1, newList.length);
+		}
+		
+		[Test]
+		public function findAppliesTo_2nd_slot_from_list_of_3_yields_list_of_2nd_slot():void
+		{
+			slotB.applyTo(this);
+			const newList:SlotList = listOfABC.findAppliesTo(this);
+			assertSame(slotB, newList.head);
+			assertEquals(1, newList.length);
+		}
+		
+		[Test]
+		public function findAppliesTo_all_slots_from_list_of_3_yields_list_of_3_slots():void
+		{
+			slotA.applyTo(this);
+			slotB.applyTo(this);
+			slotC.applyTo(this);
+			const newList:SlotList = listOfABC.findAppliesTo(this);
+			assertSame(slotA, newList.head);
+			assertSame(slotB, newList.tail.head);
+			assertSame(slotC, newList.tail.tail.head);
+			assertEquals(3, newList.length);
+		}
+		
 	}
 }
