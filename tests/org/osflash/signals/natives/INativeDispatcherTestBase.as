@@ -306,5 +306,26 @@ package org.osflash.signals.natives
 			assertEquals(numListenersBefore, clicked.numListeners);
 		}	
 	
+		//applyTo checking
+		[Test]
+		public function applyTo_then_removeAll_removes_all():void
+		{
+			clicked.add(emptyMouseHandler).applyTo(this);
+			clicked.add(newEmptyHandler()).applyTo(this);
+			clicked.removeAll(this);
+			verifyNoListeners();
+		}
+		
+		[Test]
+		public function applyTo_then_removeAll_only_removes_applied():void
+		{
+			clicked.add(emptyMouseHandler).applyTo(this);
+			clicked.add(newEmptyHandler());
+			clicked.removeAll(this);
+			assertEquals(1, clicked.numListeners);
+			assertTrue(sprite.hasEventListener('click'));
+			clicked.removeAll();
+			verifyNoListeners();
+		}
 	}
 }
