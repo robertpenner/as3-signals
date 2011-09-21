@@ -99,12 +99,13 @@ package org.osflash.signals.natives.sets
 		/**
 		 * Unsubscribes all listeners from all signals in the set.
 		 */
-		public function removeAll():void 
+		public function removeAll(applyingTo:* = null):void 
 		{
 			for each (var signal:INativeDispatcher in _signals) 
 			{
-				signal.removeAll();
-				delete _signals[signal.eventType];
+				signal.removeAll(applyingTo);
+				if (signal.numListeners == 0)
+					delete _signals[signal.eventType];
 			}
 		}
 	}

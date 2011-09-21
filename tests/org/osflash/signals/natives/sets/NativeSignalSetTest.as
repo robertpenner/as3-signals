@@ -1,12 +1,15 @@
 package org.osflash.signals.natives.sets
 {
-	import flash.events.Event;
-	import org.osflash.signals.natives.NativeSignal;
 	import asunit.asserts.assertNotNull;
 	import asunit.asserts.assertTrue;
 	import asunit.framework.IAsync;
-
+	
 	import flash.display.Sprite;
+	import flash.events.Event;
+	
+	import org.osflash.signals.ISignal;
+	import org.osflash.signals.natives.NativeSignal;
+
 	/**
 	 * @author Simon Richardson - me@simonrichardson.info
 	 */
@@ -253,5 +256,19 @@ package org.osflash.signals.natives.sets
 		}
 		
 		//////
+		
+		[Test]
+		public function numListeners_should_be_one_after_removeAll_with_appliedTo_all_else():void
+		{
+			const signal:NativeSignal = signalSet.getNativeSignal(Event.CHANGE);
+			
+			signal.add(newEmptyHandler()).applyTo(this);
+			signal.add(newEmptyHandler());
+			signal.add(newEmptyHandler()).applyTo(this);
+			
+			signalSet.removeAll(this);
+			
+			assertTrue('Number of listeners should be 1.', signalSet.numListeners == 1);
+		}
 	}
 }
