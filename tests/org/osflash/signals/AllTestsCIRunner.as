@@ -8,11 +8,11 @@ package org.osflash.signals
 	[SWF(width='1000', height='800', backgroundColor='#333333', frameRate='31')]
 	public class AllTestsCIRunner extends MovieClip
 	{
-        private var core:TextCore;
+		private var core:TextCore;
 
 		public function AllTestsCIRunner()
 		{
-            core = new FlexUnitCICore();
+			core = new FlexUnitCICore();
 			core.start(AllTests, null, this);
 		}
 	}
