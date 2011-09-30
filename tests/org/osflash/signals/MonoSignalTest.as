@@ -1,7 +1,6 @@
 package org.osflash.signals
 {
 	import asunit.asserts.assertEquals;
-	import asunit.asserts.assertFalse;
 	import asunit.asserts.assertNotNull;
 	import asunit.asserts.assertNull;
 	import asunit.asserts.assertTrue;

@@ -34,6 +34,7 @@ package org.osflash.signals
 		public var _NativeSlotTest:NativeSignalSlotTest;
 		
 		public var _PriorityListenersTest:PriorityListenersTest;
+		public var _PrioritySignalTest:PrioritySignalTest;
 		public var _RedispatchedEventTest:RedispatchedEventTest;
 		
 		public var _DeluxeSignalWithBubblingEventTest:DeluxeSignalWithBubblingEventTest;

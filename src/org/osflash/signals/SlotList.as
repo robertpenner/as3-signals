@@ -146,10 +146,9 @@ package org.osflash.signals
 			{
 				if (priority > current.head.priority)
 				{
-					const newTail:SlotList = current.prepend(slot);
-					return new SlotList(head, newTail);
-				}
-				
+					subClone.tail = current.prepend(slot);
+					return wholeClone; 
+				}			
 				subClone = subClone.tail = new SlotList(current.head);
 				current = current.tail;
 			}
