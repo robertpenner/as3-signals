@@ -1,0 +1,6 @@
+Maven instructions
+===========
+
+In order to run the unit tests, you must 
+
+	mvn install:install-file -Dfile=./libs/asunit4-alpha.swc -DgroupId=com.asunit -DartifactId=asunit -Dversion=4.0-alpha -Dpackaging=swc

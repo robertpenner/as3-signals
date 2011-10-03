@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>org.osflash.signals</groupId>
+	<artifactId>as3-signals</artifactId>
+	<name>AS3 Signals</name>
+	<version>0.9-Beta-SNAPSHOT</version>
+	
+	<packaging>swc</packaging>
+
+	<properties>
+		<flex.version>4.5.1.21328</flex.version>
+	</properties>
+	
+	<build>
+        <sourceDirectory>src</sourceDirectory>
+		<testSourceDirectory>tests</testSourceDirectory>
+    
+        <plugins>
+			<plugin>
+				<groupId>org.sonatype.flexmojos</groupId>
+				<artifactId>flexmojos-maven-plugin</artifactId>
+				<version>4.0-RC2</version>
+                <extensions>true</extensions>
+       
+				<configuration>
+					<compilerWarnings>
+	                	<warn-no-constructor>false</warn-no-constructor>
+					</compilerWarnings>
+                </configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
+	<dependencies>
+		<!-- Global flashplayer dependency -->
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>playerglobal</artifactId>
+			<version>4.5.1.21328</version>
+			<type>swc</type>
+			<classifier>10.2</classifier>
+		</dependency>
+		
+		<!-- ASUnit dependency, tests only -->
+		<dependency>
+			<groupId>com.asunit</groupId>
+			<artifactId>asunit</artifactId>
+			<version>4.0-alpha</version>
+			<type>swc</type>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- Flex framework dependency, tests only -->
+		<dependency>
+			<groupId>com.adobe.flex.framework</groupId>
+			<artifactId>flex-framework</artifactId>
+			<version>${flex.version}</version>
+			<type>pom</type>
+			<scope>test</scope>
+		</dependency>
+		
+		
+	</dependencies>
+	
+	<!--- Repository information for flashplayer dependency -->
+	<repositories>
+      <repository>
+         <id>flex-mojos-repository</id>
+         <url>http://repository.sonatype.org/content/groups/flexgroup</url>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </repository>
+   </repositories>
+
+   <!-- Repository information for MXMLC and COMPC -->
+   <pluginRepositories>
+      <pluginRepository>
+         <id>flex-mojos-plugin-repository</id>
+         <url>http://repository.sonatype.org/content/groups/flexgroup</url>
+         <releases>
+            <enabled>true</enabled>
+         </releases>
+         <snapshots>
+            <enabled>false</enabled>
+         </snapshots>
+      </pluginRepository>
+   </pluginRepositories>
+
+</project>
