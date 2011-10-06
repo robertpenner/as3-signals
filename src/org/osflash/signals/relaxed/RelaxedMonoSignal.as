@@ -63,7 +63,7 @@ package org.osflash.signals.relaxed
 		{
 			_stateController.dispatchedValueObjects = valueObjects;
 			_stateController.hasBeenDispatched = true;
-			super.dispatch(valueObjects);
+			super.dispatch.apply( this, valueObjects);
 		}		
 	}
 }

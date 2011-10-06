@@ -2,6 +2,9 @@ package org.osflash.signals.relaxed
 {
 	import asunit.asserts.assertEquals;
 	import asunit.asserts.assertTrue;
+	
+	import org.osflash.signals.OnceSignal;
+	import org.osflash.signals.relaxed.support.RelaxedSignalTestVO;
 
 	public class RelaxedSignalTest
 	{
@@ -114,15 +117,18 @@ package org.osflash.signals.relaxed
 		
 		[Test]
 		public function testStrictPayload():void{
-			var value : Array = [ 'a', 'b', 'c' ];
-			var handlerExecuted : Boolean = false;
-			var handler : Function =function( payload : Array ) : void{
-				handlerExecuted = true;
+			var value : RelaxedSignalTestVO = new RelaxedSignalTestVO();
+			var passedPayload : RelaxedSignalTestVO;
+			var handler : Function =function( payload : RelaxedSignalTestVO ) : void{
+				passedPayload = payload;
 			}
-			_signal = new RelaxedSignal( Array );
+			_signal= new RelaxedSignal( RelaxedSignalTestVO );
 			_signal.dispatch( value );
 			_signal.addOnce( handler );
-			assertTrue( handlerExecuted );
-		}	
+			assertEquals( 'should match', value, passedPayload );
+		}
+
+		
 	}
 }
+
