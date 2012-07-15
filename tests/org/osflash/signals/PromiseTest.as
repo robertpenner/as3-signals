@@ -1,4 +1,4 @@
-package alecmce.util
+package org.osflash.signals
 {
     import org.hamcrest.assertThat;
     import org.hamcrest.object.isTrue;
