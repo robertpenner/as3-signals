@@ -62,6 +62,7 @@ package org.osflash.signals
 		public var _MonoSignalSlotTest:MonoSignalSlotTest;
 		public var _MonoSignalDispatchVarArgsTest:MonoSignalDispatchVarArgsTest;
 		
+		public var _PromiseTest:PromiseTest;
 		public var _NativeSignalSetTest:NativeSignalSetTest;
 		public var _EventDispatcherSignalSetTest:EventDispatcherSignalSetTest;
 		public var _DisplayObjectSignalSetTest:DisplayObjectSignalSetTest;
