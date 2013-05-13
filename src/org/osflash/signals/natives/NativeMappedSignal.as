@@ -165,7 +165,24 @@ package org.osflash.signals.natives
 				}
 				else
 				{
-					return mappingFunction();
+                    var obj:Object = mappingFunction();
+                    for(var i:String in obj)
+                    {
+                        var param:* = obj[i];
+                        if( param is Function )
+                        {
+                            if( param.length == 1 )
+                            {
+                                obj[i] = param( eventFromTarget );
+                            }
+                            else
+                            {
+                                obj[i] = param();
+                            }
+                        }
+                    }
+                    
+                    return obj;
 				}
 			} 
 			else if (valueClasses.length == 0) 
