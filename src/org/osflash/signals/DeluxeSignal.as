@@ -110,9 +110,11 @@ package org.osflash.signals
 
 			var currentTarget:Object = target;
 
-			while (currentTarget && currentTarget.hasOwnProperty("parent") 
-				   && (currentTarget = currentTarget["parent"]))
+			while (currentTarget && currentTarget.hasOwnProperty("parent"))
 			{
+				currentTarget = currentTarget["parent"];
+				if (!currentTarget) break;
+				
 				if (currentTarget is IBubbleEventHandler)
 				{
 					// onEventBubbled() can stop the bubbling by returning false.
