@@ -50,7 +50,7 @@ package org.osflash.signals.natives.sets
 	{
 		protected var target:IEventDispatcher;
 		
-		protected const _signals:Dictionary = new Dictionary();
+		protected const _signals:Object = {};
 
 		public function NativeSignalSet(target:IEventDispatcher) 
 		{
@@ -71,13 +71,12 @@ package org.osflash.signals.natives.sets
 		/**
 		 * The current number of listeners for the signal.
 		 */
-		public function get numListeners():int 
+		public function get numListeners():uint 
 		{
-			// TODO : This is horrid, it's very expensive to call this if there is a lot of signals.
-			var count:int = 0;
-			for each (var signal:INativeDispatcher in _signals) 
+			var count:uint;
+			for (var p:String in _signals)
 			{
-				count += signal.numListeners;
+				count += _signals[p].numListeners;
 			}
 			return count;
 		}
@@ -87,11 +86,11 @@ package org.osflash.signals.natives.sets
 		 */
 		public function get signals():Array 
 		{
-			// TODO : This is horrid, it's very expensive to call this if there is a lot of signals.
 			var result:Array = [];
-			for each (var signal:INativeDispatcher in _signals) 
+			var i:uint;
+			for (var p:String in _signals)
 			{
-				result[result.length] = signal;
+				result[i++] = _signals[p];
 			}
 			return result;
 		}
@@ -101,10 +100,10 @@ package org.osflash.signals.natives.sets
 		 */
 		public function removeAll():void 
 		{
-			for each (var signal:INativeDispatcher in _signals) 
+			for (var p:String in _signals)
 			{
-				signal.removeAll();
-				delete _signals[signal.eventType];
+				_signals[p].removeAll();
+				delete _signals[p];
 			}
 		}
 	}
