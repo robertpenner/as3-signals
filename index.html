@@ -1,82 +1,100 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
 
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
-	<title>robertpenner/as3-signals @ GitHub</title>
-	
-	<style type="text/css">
-		body {
-  		margin-top: 1.0em;
-  		background-color: #cb6918;
-		  font-family: "Helvetica,Arial,FreeSans"; 
-  		color: #ffffff;
-    }
-    #container {
-      margin: 0 auto;
-      width: 700px;
-    }
-		h1 { font-size: 3.8em; color: #3496e7; margin-bottom: 3px; }
-		h1 .small { font-size: 0.4em; }
-		h1 a { text-decoration: none }
-		h2 { font-size: 1.5em; color: #3496e7; }
-    h3 { text-align: center; color: #3496e7; }
-    a { color: #3496e7; }
-    .description { font-size: 1.2em; margin-bottom: 30px; margin-top: 30px; font-style: italic;}
-    .download { float: right; }
-		pre { background: #000; color: #fff; padding: 15px;}
-    hr { border: 0; width: 80%; border-bottom: 1px solid #aaa}
-    .footer { text-align:center; padding-top:30px; font-style: italic; }
-	</style>
-	
-</head>
+    <title>AS3 Signals by robertpenner</title>
+  </head>
 
-<body>
-  <a href="http://github.com/robertpenner/as3-signals"><img style="position: absolute; top: 0; right: 0; border: 0;" src="http://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub" /></a>
-  
-  <div id="container">
+  <body>
+    <header>
+      <div class="inner">
+        <h1>AS3 Signals</h1>
+        <h2>Signals is a new approach for AS3 events, inspired by C# events and signals/slots in Qt. </h2>
+        <a href="https://github.com/robertpenner/as3-signals" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
 
-    <div class="download">
-      <a href="http://github.com/robertpenner/as3-signals/zipball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/zip.png"></a>
-      <a href="http://github.com/robertpenner/as3-signals/tarball/master">
-        <img border="0" width="90" src="http://github.com/images/modules/download/tar.png"></a>
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <p>h1. Signals: Think Outside the Event.</p>
+
+<p><em>Signals</em> are light-weight, strongly-typed AS3 messaging tools.
+Wire your application with better APIs and less boilerplate than AS3 Events.</p>
+
+<p>h2. Concept</p>
+
+<ul>
+<li>A <em>Signal</em> is essentially a mini-dispatcher specific to one event, with its own array of listeners.</li>
+<li>A Signal gives an event a concrete membership in a class. </li>
+<li>Listeners subscribe to real objects, not to string-based channels.</li>
+<li>Event string constants are no longer needed.</li>
+<li>Signals are inspired by "C# events":<a href="http://en.wikipedia.org/wiki/C_Sharp_syntax#Events">http://en.wikipedia.org/wiki/C_Sharp_syntax#Events</a> and  "signals/slots":<a href="http://en.wikipedia.org/wiki/Signals_and_slots">http://en.wikipedia.org/wiki/Signals_and_slots</a> in Qt. </li>
+</ul>
+
+<p>h2. Syntax</p>
+
+<pre><code>// with EventDispatcher
+button.addEventListener(MouseEvent.CLICK, onClick);
+
+// Signal equivalent; past tense is recommended
+button.clicked.add(onClicked);
+</code></pre>
+
+<p>I am still looking for impressions, critiques and suggestions.<br>
+My email is robert <em>at</em> robertpenner.com.
+I'm "@robpenner on Twitter":<a href="http://twitter.com/robpenner">http://twitter.com/robpenner</a>.</p>
+
+<p>h2. Background on AS3 Events</p>
+
+<ul>
+<li>"My Critique of AS3 Events - Part 1":<a href="http://robertpenner.com/flashblog/2009/08/my-critique-of-as3-events-part-1.html">http://robertpenner.com/flashblog/2009/08/my-critique-of-as3-events-part-1.html</a>
+</li>
+<li>"AS3 Events - 7 things I've learned from community":<a href="http://robertpenner.com/flashblog/2009/09/as3-events-7-things-ive-learned-from.html">http://robertpenner.com/flashblog/2009/09/as3-events-7-things-ive-learned-from.html</a>
+</li>
+<li>"My Critique of AS3 Events - Part 2":<a href="http://robertpenner.com/flashblog/2009/09/my-critique-of-as3-events-part-2.html">http://robertpenner.com/flashblog/2009/09/my-critique-of-as3-events-part-2.html</a>
+</li>
+</ul>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/robertpenner/as3-signals/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/robertpenner/as3-signals/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/robertpenner/as3-signals"></a> is maintained by <a href="https://github.com/robertpenner">robertpenner</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
     </div>
-      
-    <h1><a href="http://github.com/robertpenner/as3-signals">as3-signals</a> 
-      <span class="small">by <a href="http://github.com/robertpenner">robertpenner</a></span></h1>
 
-    <div class="description">
-      Signals is a new approach for AS3 events, inspired by C# events and signals/slots in Qt. 
-    </div>
+            <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+          </script>
+          <script type="text/javascript">
+            try {
+              var pageTracker = _gat._getTracker("UA-2367942-1");
+            pageTracker._trackPageview();
+            } catch(err) {}
+          </script>
 
-    <h2>License</h2>
-<p>New BSD License</p>
-<h2>Authors</h2>
-<p>Robert Penner (info@robertpenner.com)<br/><br/>      </p>
-<h2>Contact</h2>
-<p>Robert Penner (info@robertpenner.com)<br/>      </p>
-
-
-    <h2>Download</h2>
-    <p>
-      You can download this project in either
-      <a href="http://github.com/robertpenner/as3-signals/zipball/master">zip</a> or
-      <a href="http://github.com/robertpenner/as3-signals/tarball/master">tar</a> formats.
-    </p>
-    <p>You can also clone the project with <a href="http://git-scm.com">Git</a>
-      by running:
-      <pre>$ git clone git://github.com/robertpenner/as3-signals</pre>
-    </p>
-      
-    <div class="footer">
-      get the source code on GitHub : <a href="http://github.com/robertpenner/as3-signals">robertpenner/as3-signals</a>
-    </div>
-    
-  </div>
-
-  
-</body>
+  </body>
 </html>
