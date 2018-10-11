@@ -9,7 +9,10 @@ package org.osflash.signals
     {
         private var _isDispatched:Boolean;
         private var valueObjects:Array;
-
+		
+		/** Whether to ignore any subsequent calls to <code>dispatch()</code>. By default, subsequent calls will throw an error. */
+		public var ignoreSubsequentDipatches:Boolean = false;
+		
 		/**
 		 * Creates a Promise instance to dispatch value objects.
 		 * @param	valueClasses Any number of class references that enable type checks in dispatch().
@@ -50,7 +53,10 @@ package org.osflash.signals
         {
             if (_isDispatched)
             {
-                throw new IllegalOperationError("You cannot dispatch() a Promise more than once");
+				if (!ignoreSubsequentDipatches)
+				{
+					throw new IllegalOperationError("You cannot dispatch() a Promise more than once");
+				}
             }
             else
             {
