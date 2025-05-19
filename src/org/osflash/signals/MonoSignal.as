@@ -14,7 +14,7 @@ package org.osflash.signals
 	 */
 	public class MonoSignal implements ISignal
 	{
-		protected var _valueClasses:Array;		// of Class
+		protected var _valueClasses:Vector.<Class>;
 		
 		protected var slot:Slot;
 		
@@ -40,20 +40,32 @@ package org.osflash.signals
 		 * @throws ArgumentError <code>ArgumentError</code>: Invalid valueClasses argument: item at index should be a Class but was not.
 		 */
 		[ArrayElementType("Class")]
-		public function get valueClasses():Array { return _valueClasses; }
+		public function get valueClasses():Array 
+		{ 
+			// Convert Vector.<Class> to Array for backward compatibility
+			if (_valueClasses == null) return [];
+			
+			const result:Array = [];
+			for (var i:int = 0; i < _valueClasses.length; i++)
+			{
+				result[i] = _valueClasses[i];
+			}
+			return result;
+		}
 		
 		public function set valueClasses(value:Array):void
 		{
 			// Clone so the Array cannot be affected from outside.
-			_valueClasses = value ? value.slice() : [];
-			for (var i:int = _valueClasses.length; i--; )
+			_valueClasses = value ? new Vector.<Class>(value.length, true) : new Vector.<Class>(0, true);
+			for (var i:int = 0; i < (value ? value.length : 0); i++)
 			{
-				if (!(_valueClasses[i] is Class))
+				if (!(value[i] is Class))
 				{
 					throw new ArgumentError('Invalid valueClasses argument: ' +
 						'item at index ' + i + ' should be a Class but was:<' +
-						_valueClasses[i] + '>.' + getQualifiedClassName(_valueClasses[i]));
+						value[i] + '>.' + getQualifiedClassName(value[i]));
 				}
+				_valueClasses[i] = value[i];
 			}
 		}
 		
@@ -107,7 +119,7 @@ package org.osflash.signals
 		public function dispatch(...valueObjects):void
 		{
 			// If valueClasses is empty, value objects are not type-checked. 
-			const numValueClasses:int = _valueClasses.length;
+			const numValueClasses:int = _valueClasses ? _valueClasses.length : 0;
 			const numValueObjects:int = valueObjects.length;
 
 			// Cannot dispatch fewer objects than declared classes.

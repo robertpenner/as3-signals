@@ -56,16 +56,18 @@ package org.osflash.signals.natives
 		 */
 		override public function set valueClasses(value:Array):void
 		{
-			_valueClasses = value ? value.slice() : [];
+			// Clone so the Array cannot be affected from outside.
+			_valueClasses = value ? new Vector.<Class>(value.length, true) : new Vector.<Class>(0, true);
 			
-			for (var i:int = _valueClasses.length; i--; )
+			for (var i:int = 0; i < (value ? value.length : 0); i++)
 			{
-				if (!(_valueClasses[i] is Class))
+				if (!(value[i] is Class))
 				{
 					throw new ArgumentError('Invalid valueClasses argument: ' +
 						'item at index ' + i + ' should be a Class but was:<' +
-						_valueClasses[i] + '>.' + getQualifiedClassName(_valueClasses[i]));
+						value[i] + '>.' + getQualifiedClassName(value[i]));
 				}
+				_valueClasses[i] = value[i];
 			}
 		}
 		
@@ -168,7 +170,7 @@ package org.osflash.signals.natives
 					return mappingFunction();
 				}
 			} 
-			else if (valueClasses.length == 0) 
+			else if (valueClasses == null || valueClasses.length == 0) 
 			{
 				return [];
 			}
@@ -222,7 +224,8 @@ package org.osflash.signals.natives
 
 			if (mappedData is Array)
 			{
-				if (valueClasses.length == 1 && valueClasses[0] == Array)//TODO invariant
+				const numValueClasses:int = valueClasses ? valueClasses.length : 0;
+				if (numValueClasses == 1 && valueClasses[0] == Array)//TODO invariant
 				{
 					while (slotsToProcess.nonEmpty)
 					{
