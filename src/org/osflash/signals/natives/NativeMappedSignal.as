@@ -170,7 +170,7 @@ package org.osflash.signals.natives
 					return mappingFunction();
 				}
 			} 
-			else if (valueClasses.length == 0) 
+			else if (valueClasses == null || valueClasses.length == 0) 
 			{
 				return [];
 			}
@@ -224,7 +224,8 @@ package org.osflash.signals.natives
 
 			if (mappedData is Array)
 			{
-				if (valueClasses.length == 1 && valueClasses[0] == Array)//TODO invariant
+				const numValueClasses:int = valueClasses ? valueClasses.length : 0;
+				if (numValueClasses == 1 && valueClasses[0] == Array)//TODO invariant
 				{
 					while (slotsToProcess.nonEmpty)
 					{
