@@ -13,7 +13,7 @@ package org.osflash.signals
 		protected var _listener:Function;
 		protected var _once:Boolean = false;
 		protected var _priority:int = 0;
-		protected var _params:Array;
+		protected var _params:Vector.<Object>;
 		
 		/**
 		 * Creates and returns a new Slot object.
@@ -45,7 +45,12 @@ package org.osflash.signals
 			if (_once) remove();
 			if (_params && _params.length)
 			{
-				_listener.apply(null, _params);
+				const paramsArray:Array = [];
+				for (var i:int = 0; i < _params.length; i++)
+				{
+					paramsArray[i] = _params[i];
+				}
+				_listener.apply(null, paramsArray);
 				return;
 			}
 			_listener();
@@ -60,7 +65,12 @@ package org.osflash.signals
 			if (_once) remove();
 			if (_params && _params.length)
 			{
-				_listener.apply(null, [value].concat(_params));
+				const valueArray:Array = [value];
+				for (var i:int = 0; i < _params.length; i++)
+				{
+					valueArray.push(_params[i]);
+				}
+				_listener.apply(null, valueArray);
 				return;
 			}
 			_listener(value);
@@ -78,7 +88,12 @@ package org.osflash.signals
 			// Note: This could be expensive if we're after the fastest dispatch possible.
 			if (_params && _params.length)
 			{
-				valueObjects = valueObjects.concat(_params);
+				const valueObjectsCopy:Array = valueObjects.concat();
+				for (var i:int = 0; i < _params.length; i++)
+				{
+					valueObjectsCopy.push(_params[i]);
+				}
+				valueObjects = valueObjectsCopy;
 			}
 			
 			// NOTE: simple ifs are faster than switch: http://jacksondunstan.com/articles/1007
@@ -155,9 +170,33 @@ package org.osflash.signals
 		/**
 		 * @inheritDoc
 		 */		
-		public function get params():Array { return _params; }
+		public function get params():Array 
+		{ 
+			if (_params == null) return null;
+			
+			// Convert Vector.<Object> to Array for backward compatibility
+			const result:Array = [];
+			for (var i:int = 0; i < _params.length; i++)
+			{
+				result[i] = _params[i];
+			}
+			return result;
+		}
 		
-		public function set params(value:Array):void { _params = value; }
+		public function set params(value:Array):void 
+		{ 
+			if (value == null) 
+			{
+				_params = null;
+				return;
+			}
+			
+			_params = new Vector.<Object>(value.length, true);
+			for (var i:int = 0; i < value.length; i++)
+			{
+				_params[i] = value[i];
+			}
+		}
 		
 		/**
 		 * @inheritDoc
